@@ -121,7 +121,7 @@ class DefaultSettingSeeder extends Seeder
                 '_maintenance' => [
                     'maintenance_mode'          => 'No',
                     'maintenance_title'         => 'Scheduled Maintenance in Progress',
-                    'maintenance_description'   => 'Our website is temporarily offline for maintenance. We're working hard to enhance your experience. Thank you for your patience.',
+                    'maintenance_description'   => "Our website is temporarily offline for maintenance. We're working hard to enhance your experience. Thank you for your patience.",
                     'maintenance_logo'          => [uploadObMedia('demo-content/maintenance.png')],
                     'maintenance_email'         => 'checkbacklater@yourdomain.com',
                 ]
@@ -208,16 +208,16 @@ class DefaultSettingSeeder extends Seeder
                         ['dispute_reason' => 'Tutor No-Show'],
                         ['dispute_reason' => 'Unsatisfactory Service or Quality of Session'],
                         ['dispute_reason' => 'Technical Issues Preventing Completion of Session'],
-                        ['dispute_reason' => 'Tutor's Inappropriate Behavior'],
+                        ['dispute_reason' => "Tutor's Inappropriate Behavior"],
                         ['dispute_reason' => 'Session Did Not Meet Agreed-Upon Goals'],
                         ['dispute_reason' => 'Late Start or Early End of Session'],
                         ['dispute_reason' => 'Other (Provide Details)'],
                     ],
-                    'dispute_message' => 'Hi Admin, I'd like to file a dispute regarding my recent session with tutorName: on formattedSessionDateTime:. The session didn't meet my expectations. I'd appreciate your help in resolving this. Thank you!',
-                    'dispute_winner_message' => 'After careful review of your dispute case, our administrative team has determined that the decision has been made in your favor. The disputed booking has been resolved and the necessary refund will be processed accordingly. The case is now officially closed. Thank you for your patience throughout this process.',
-                    'dispute_loser_message' => 'After careful review of your dispute case, our administrative team has determined that the decision has not been made in your favor. We understand this may be disappointing, but we have thoroughly evaluated all evidence and information provided. The disputed booking has now been closed. If you have any questions about future bookings, please don't hesitate to contact our support team.',
-                    'pending_dispute_tooltip_message' => 'Your dispute request has not been accepted by an admin yet. Please wait for a response.',
-                    'close_dispute_tooltip_message' => 'This dispute has not been closed yet.',
+                    'dispute_message' => "Hi Admin, I'd like to file a dispute regarding my recent session with tutorName: on formattedSessionDateTime:. The session didn't meet my expectations. I'd appreciate your help in resolving this. Thank you!",
+                    'dispute_winner_message' => "After careful review of your dispute case, our administrative team has determined that the decision has been made in your favor. The disputed booking has been resolved and the necessary refund will be processed accordingly. The case is now officially closed. Thank you for your patience throughout this process.",
+                    'dispute_loser_message' => "After careful review of your dispute case, our administrative team has determined that the decision has not been made in your favor. We understand this may be disappointing, but we have thoroughly evaluated all evidence and information provided. The disputed booking has now been closed. If you have any questions about future bookings, please don't hesitate to contact our support team.",
+                    'pending_dispute_tooltip_message' => "Your dispute request has not been accepted by an admin yet. Please wait for a response.",
+                    'close_dispute_tooltip_message' => "This dispute has not been closed yet.",
 
                 ],
             ];
@@ -281,16 +281,16 @@ class DefaultSettingSeeder extends Seeder
                     ['dispute_reason' => 'Tutor No-Show'],
                     ['dispute_reason' => 'Unsatisfactory Service or Quality of Session'],
                     ['dispute_reason' => 'Technical Issues Preventing Completion of Session'],
-                    ['dispute_reason' => 'Tutor's Inappropriate Behavior'],
+                    ['dispute_reason' => "Tutor's Inappropriate Behavior"],
                     ['dispute_reason' => 'Session Did Not Meet Agreed-Upon Goals'],
                     ['dispute_reason' => 'Late Start or Early End of Session'],
                     ['dispute_reason' => 'Other (Provide Details)'],
                 ],
-                'dispute_message' => 'Hi Admin, I'd like to file a dispute regarding my recent session with tutorName: on formattedSessionDateTime:. The session didn't meet my expectations. I'd appreciate your help in resolving this. Thank you!',
-                'dispute_winner_message' => 'After careful review of your dispute case, our administrative team has determined that the decision has been made in your favor. The disputed booking has been resolved and the necessary refund will be processed accordingly. The case is now officially closed. Thank you for your patience throughout this process.',
-                'dispute_loser_message' => 'After careful review of your dispute case, our administrative team has determined that the decision has not been made in your favor. We understand this may be disappointing, but we have thoroughly evaluated all evidence and information provided. The disputed booking has now been closed. If you have any questions about future bookings, please don't hesitate to contact our support team.',
-                'pending_dispute_tooltip_message' => 'Your dispute request has not been accepted by an admin yet. Please wait for a response.',
-                'close_dispute_tooltip_message' => 'This dispute has not been closed yet.',
+                'dispute_message' => "Hi Admin, I'd like to file a dispute regarding my recent session with tutorName: on formattedSessionDateTime:. The session didn't meet my expectations. I'd appreciate your help in resolving this. Thank you!",
+                'dispute_winner_message' => "After careful review of your dispute case, our administrative team has determined that the decision has been made in your favor. The disputed booking has been resolved and the necessary refund will be processed accordingly. The case is now officially closed. Thank you for your patience throughout this process.",
+                'dispute_loser_message' => "After careful review of your dispute case, our administrative team has determined that the decision has not been made in your favor. We understand this may be disappointing, but we have thoroughly evaluated all evidence and information provided. The disputed booking has now been closed. If you have any questions about future bookings, please don't hesitate to contact our support team.",
+                'pending_dispute_tooltip_message' => "Your dispute request has not been accepted by an admin yet. Please wait for a response.",
+                'close_dispute_tooltip_message' => "This dispute has not been closed yet.",
 
             ],
             '_email' => [ //no change
@@ -434,7 +434,7 @@ class DefaultSettingSeeder extends Seeder
                     ['help_section' => 'Check availability and flexibility'],
                 ],
                 'or_section_title'                  => 'Need help in finding the tutor?',
-                'or_section_description'            => 'We'll help you find the perfect tutor to meet your educational needs.',
+                'or_section_description'            => "We'll help you find the perfect tutor to meet your educational needs.",
                 'help_section_cta'                  => 'Contact Now',
                 'repeater_with_fields'              => [
                     [
@@ -460,7 +460,7 @@ class DefaultSettingSeeder extends Seeder
                 ],
                 'enable_tips'                => true,
                 'tip_section_title'             => 'Tips for Writing a Bias-Free Review For Tutor',
-                'tip_section_description'       => 'When crafting a review for a tutor, it's crucial to maintain fairness and objectivity. Here are ten tips to help you write a balanced and bias-free review',
+                'tip_section_description'       => "When crafting a review for a tutor, it's crucial to maintain fairness and objectivity. Here are ten tips to help you write a balanced and bias-free review",
                 'tip_bullets_repeater'          => [
                     ['tip_bullets'       => 'Be Specific and Objective'],
                     ['tip_bullets'       => 'Use Neutral Language'],
@@ -516,7 +516,7 @@ class DefaultSettingSeeder extends Seeder
             '_maintenance' => [
                 'maintenance_mode'          => 'No',
                 'maintenance_title'         => 'Scheduled Maintenance in Progress',
-                'maintenance_description'   => 'Our website is temporarily offline for maintenance. We're working hard to enhance your experience. Thank you for your patience.',
+                'maintenance_description'   => "Our website is temporarily offline for maintenance. We're working hard to enhance your experience. Thank you for your patience.",
                 'maintenance_logo'         => [uploadObMedia('demo-content/maintenance.png')],
                 'maintenance_email'         => 'checkbacklater@yourdomain.com',
             ],
