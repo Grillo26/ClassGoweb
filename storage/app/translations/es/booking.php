@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'title' => 'Título',
+    'student_name' => 'Nombre del estudiante',
+    'tutor_name' => 'Nombre del tutor',
+    'amount' => 'Cantidad',
+    'tutor_payout' => 'Pago del tutor',
+    'status' => 'Estado',
+    'subject' => 'Sujeto',
+    'subject_group' => 'Grupo de materias',
+    'id' => '#Identificación del pedido',
+    'transaction_id' => 'ID de transacción',
+    'all_bookings' => 'Todas las reservas',
+    'pending' => 'Pendiente',
+    'complete' => 'Completo',
+    'select_subject' => 'Seleccionar Asunto',
+    'select_subject_group' => 'Seleccionar grupo de materias',
+    'date' => 'Fecha',
+    'payment_method' => 'Método de pago',
+    'admin_commission' => 'Comisión administrativa',
+    'items' => 'Elementos',
+    'sessions_count' => ':count sesiones',
+    'session_count' => ':count sesión',
+    'course_count' => ':count curso',
+    'courses_count' => ':count cursos',
+];

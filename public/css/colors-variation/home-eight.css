@@ -1,0 +1,100 @@
+:root {
+    --yellow: #FFE450;
+    --green: #085E55;
+    --white: #fff;
+    --black: #000;
+}
+.page-home-eight .am-btn,
+.am-loginbtns .am-white-btn:hover,
+.am-header_nine .am-header_two_wrap .am-btn:hover,
+.page-home-eight .am-tuition-varient-two .am-primary-btn,
+.page-home-eight .am-featured-mentors-slider .splide__arrow:hover,
+.page-home-eight .am-featured-mentors.am-tutors-varient-four .am-experience-tutor-card:hover .am-primary-btn,
+.page-home-eight .am-featured-mentors.am-tutors-varient-four .am-featured-mentors-head .am-primary-btn-white:hover{
+    border-color: var(--yellow);
+    color: var(--black) !important;
+    background: var(--yellow) !important;
+}
+.page-home-eight .am-btn i::before,
+.page-home-eight .am-primary-btn:hover,
+.page-home-eight .am-whychooseus .am-whychooseus-section .am-card.am-yellow-card p,
+.page-home-eight .am-whychooseus .am-whychooseus-section .am-card.am-yellow-card h2{
+    color: var(--black) !important;
+}
+.page-home-eight .am-mission-variation-one .am-title-varient-one > span{
+    color: #4448A9;
+    background: rgba(68, 72, 169, 0.05);
+}
+.page-home-eight .am-mission-variation-one .am-title-varient-one > span::before{
+    opacity: 1;
+    background: #4448A9;
+}
+.page-home-eight .am-section_title h2{
+    color: var(--black) !important;
+    -webkit-text-fill-color: unset !important;
+}
+.page-home-eight .am-whychooseus.marketplace-stands-out-varient-two .am-section_title .am-tag{
+    color: #FF9126 !important;
+    background: rgba(255, 145, 38, 0.07) !important;
+}
+.page-home-eight .am-whychooseus.marketplace-stands-out-varient-two .am-section_title .am-tag::before{
+    background: #FF9126 !important;
+}
+.page-home-eight .am-whychooseus .am-whychooseus-section .am-card.am-yellow-card{
+    background: var(--yellow) !important;
+}
+.page-home-eight .am-whychooseus .am-whychooseus-section .am-card.am-blue-card{
+    background: var(--green) !important;
+}
+.page-home-eight .am-categories .am-section_title .am-tag{
+    color: #7846B4 !important;
+    background: #F8EBFF !important;
+}
+.page-home-eight .am-categories .am-section_title .am-tag::before{
+    background: #7846B4 !important;
+}
+.page-home-eight .am-categories .am-card-container .am-card{
+    background: #FDFDFD;
+}
+.page-home-eight .am-categories .am-card-container .am-card.am-highlighted{
+    box-shadow: 10px 10px 0px 0px rgba(255, 221, 133, 0.25);
+}
+.page-home-eight .am-whychooseus.marketplace-stands-out-varient-two,
+.page-home-eight .am-featured-mentors.am-tutors-varient-four,
+.page-home-eight .am-tuition .am-tuition_content_detail{
+    background: #FAFBFF;
+}
+.page-home-eight .am-featured-mentors-slider .splide__arrow:hover svg{
+    fill: var(--black);
+}
+.page-home-eight .am-feedback.am-feedback-three .am-title-varient-one > span{
+    color: #295C51;
+    background: rgba(41, 92, 81, 0.07);
+}
+.page-home-eight .am-feedback.am-feedback-three .am-title-varient-one > span::before{
+    opacity: 1;
+    background: #295C51;
+}
+.page-home-eight .am-tuition-varient-two,
+
+.page-home-eight .am-categories.am-verient-three{
+    background: var(--white);
+}
+.pb-themesection:has(.get-app-varient-five){
+    background: var(--white);
+}
+.page-home-eight .am-coming-section{
+    background: linear-gradient(98deg, #085E55 6.14%, #057E72 93.95%) !important;
+}
+.page-home-eight .am-coming-section .am-coming-soon_content h3 em {
+    opacity: 0.83;
+    color: var(--yellow) !important;
+}
+.page-home-eight .am-tuition .am-section_title .am-tag{
+    color: #FC3A5B;
+    background: rgba(252, 58, 91, 0.07);
+}
+.page-home-eight .am-tuition .am-section_title .am-tag::before{
+    background: #FC3A5B;
+}
+.splide .splide__slide .am-hero-container .am-hero-content .am-yellow-bar{background-color: var(--yellow);}
