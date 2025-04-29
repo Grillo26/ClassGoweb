@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name', 200)->fullText();
             $table->text('description')->nullable()->fullText();
+            $table->text('code')->nullable()->fullText();
             $table->enum('status', ['active', 'inactive'])->default('active')->index();
             $table->softDeletes();
             $table->timestamps();
