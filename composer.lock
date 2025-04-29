@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/laraguppy",
-                "reference": "4d1d78dae6a915c0bb18f4b8c317b2e08ef6c5cb"
+                "reference": "0fc02cb1ea770adf0a81d49ad039109079538f9c"
             },
             "require": {
                 "laravel/reverb": "@beta"
@@ -48,7 +48,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/laravel-installer",
-                "reference": "36e365b8f08b73c5bfb20ab326fc34928974eb85"
+                "reference": "2c7b59951c2a518e67cd89c45bb2839c7116028a"
             },
             "type": "library",
             "autoload": {
@@ -80,7 +80,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/laravel-translations",
-                "reference": "8fe9197a39d9c356372d8439d29559c3dd8deae4"
+                "reference": "c862f96ce747a37bec8d75f3ce22e1dc8e4f5f45"
             },
             "require": {
                 "based/momentum-modal": "^0.3.0",
@@ -175,7 +175,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/scssphp",
-                "reference": "43b5b3dc857c4101ab13f763482869c0fa4bff17"
+                "reference": "dfdc374085cba61b6f686c2d2adac84f81aa82ce"
             },
             "require": {
                 "ext-ctype": "*",
@@ -302,16 +302,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.342.31",
+            "version": "3.342.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "8f280712b128db6970d840f33384bf4b12cc65ea"
+                "reference": "9a0ec6b6d503409ae15e090467d3bd6d723b6c6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/8f280712b128db6970d840f33384bf4b12cc65ea",
-                "reference": "8f280712b128db6970d840f33384bf4b12cc65ea",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/9a0ec6b6d503409ae15e090467d3bd6d723b6c6a",
+                "reference": "9a0ec6b6d503409ae15e090467d3bd6d723b6c6a",
                 "shasum": ""
             },
             "require": {
@@ -393,9 +393,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.31"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.36"
             },
-            "time": "2025-04-21T18:07:14+00:00"
+            "time": "2025-04-28T18:01:39+00:00"
         },
         {
             "name": "based/momentum-modal",
@@ -2620,7 +2620,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/larabuild/optionbuilder",
-                "reference": "6f791a8cdac7533a97b6df869de8206be4017db4"
+                "reference": "8248889e31aa068650be13116241f9caffb4081d"
             },
             "type": "library",
             "extra": {
@@ -2653,7 +2653,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/larabuild/pagebuilder",
-                "reference": "e84f8ee2e8a4b6043ca7134b25a78c104b9031c5"
+                "reference": "7bb310cd03c57fccd0cc5b610415b9af767de7aa"
             },
             "type": "library",
             "extra": {
@@ -2682,16 +2682,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v11.44.2",
+            "version": "v11.44.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "f85216c82cbd38b66d67ebd20ea762cb3751a4b4"
+                "reference": "00bc6ac91a6d577bf051c18ddaa638c0d221e1c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/f85216c82cbd38b66d67ebd20ea762cb3751a4b4",
-                "reference": "f85216c82cbd38b66d67ebd20ea762cb3751a4b4",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/00bc6ac91a6d577bf051c18ddaa638c0d221e1c7",
+                "reference": "00bc6ac91a6d577bf051c18ddaa638c0d221e1c7",
                 "shasum": ""
             },
             "require": {
@@ -2893,7 +2893,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2025-03-12T14:34:30+00:00"
+            "time": "2025-04-25T12:40:47+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -7335,16 +7335,16 @@
         },
         {
             "name": "spatie/browsershot",
-            "version": "5.0.8",
+            "version": "5.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/browsershot.git",
-                "reference": "0102971ae974022ec4a7a149e8924ea355b52cc3"
+                "reference": "667b40b2a283486a7a1fc9208221e0d0471ac3e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/browsershot/zipball/0102971ae974022ec4a7a149e8924ea355b52cc3",
-                "reference": "0102971ae974022ec4a7a149e8924ea355b52cc3",
+                "url": "https://api.github.com/repos/spatie/browsershot/zipball/667b40b2a283486a7a1fc9208221e0d0471ac3e6",
+                "reference": "667b40b2a283486a7a1fc9208221e0d0471ac3e6",
                 "shasum": ""
             },
             "require": {
@@ -7391,7 +7391,7 @@
                 "webpage"
             ],
             "support": {
-                "source": "https://github.com/spatie/browsershot/tree/5.0.8"
+                "source": "https://github.com/spatie/browsershot/tree/5.0.9"
             },
             "funding": [
                 {
@@ -7399,7 +7399,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-02-17T09:56:12+00:00"
+            "time": "2025-04-28T08:54:51+00:00"
         },
         {
             "name": "spatie/laravel-package-tools",
@@ -11083,16 +11083,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.13.0",
+            "version": "1.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "024473a478be9df5fdaca2c793f2232fe788e414"
+                "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/024473a478be9df5fdaca2c793f2232fe788e414",
-                "reference": "024473a478be9df5fdaca2c793f2232fe788e414",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/1720ddd719e16cf0db4eb1c6eca108031636d46c",
+                "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c",
                 "shasum": ""
             },
             "require": {
@@ -11131,7 +11131,7 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.0"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.1"
             },
             "funding": [
                 {
@@ -11139,7 +11139,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-02-12T12:17:51+00:00"
+            "time": "2025-04-29T12:36:36+00:00"
         },
         {
             "name": "nunomaduro/collision",
