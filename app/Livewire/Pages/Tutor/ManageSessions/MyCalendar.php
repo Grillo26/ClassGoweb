@@ -16,12 +16,10 @@ use Nwidart\Modules\Facades\Module;
 
 class MyCalendar extends Component
 {
-    public $availableSlots, $subjectGroups, $days;
+    public $availableSlots, $days;
     public $currentDate, $currentMonth, $currentYear, $startOfCalendar, $endOfCalendar, $startOfWeek;
 
-    public $subjectGroupIds = null;
-    protected $bookingService, $subjectService;
-
+    protected $bookingService;
     public SessionBookingForm $form;
     public $MAX_SESSION_CHAR = 500;
     public $isLoading = true;
@@ -29,14 +27,13 @@ class MyCalendar extends Component
     public $templates = [];
     public $template_id = '';
     public $allowed_for_subscriptions = 0;
+
     public function boot() {
         $this->bookingService = new BookingService(Auth::user());
-        $this->subjectService  = new SubjectService(Auth::user());
     }
 
     public function mount() {
         $this->activeRoute = Route::currentRouteName();
-        $this->subjectGroups = $this->subjectService->getUserSubjectGroups(['subjects:id,name','group:id,name']);
         $this->startOfWeek = (int) (setting('_lernen.start_of_week') ?? Carbon::SUNDAY); 
         $this->days = Day::get();
         if(\Nwidart\Modules\Facades\Module::has('upcertify') && \Nwidart\Modules\Facades\Module::isEnabled('upcertify')){
@@ -48,7 +45,7 @@ class MyCalendar extends Component
     public function render()
     {
         $this->makeCalendar($this->currentDate);
-        $this->availableSlots = $this->bookingService->getAvailableSlots($this->subjectGroupIds, $this->currentDate);
+        $this->availableSlots = $this->bookingService->getAvailableSlots(null, $this->currentDate);
         $this->dispatch('initCalendarJs', currentDate: parseToUserTz($this->currentDate->copy())->format('F, Y'));
         return view('livewire.pages.tutor.manage-sessions.my-calendar');
     }

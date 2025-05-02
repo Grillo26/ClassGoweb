@@ -69,18 +69,6 @@
                                         <span class="am-select am-multiple-select am-filter-select" wire:ignore>
                                             <select id="filter_subject_group" data-componentid="@this" class="am-select2" data-class="subject-dropdown-select2" data-format="custom" data-searchable="true" data-wiremodel="subjectGroupIds" data-placeholder="{{ __('calendar.subject_placeholder') }}" multiple>
                                                 <option label="{{ __('calendar.subject_placeholder') }}"></option>
-                                                @foreach ($subjectGroups as $sbjGroup)
-                                                    @if ($sbjGroup->subjects->isEmpty())
-                                                        @continue
-                                                    @endif
-                                                    <optgroup label="{{ $sbjGroup->group->name }}">
-                                                        @if ($sbjGroup->subjects)
-                                                            @foreach ($sbjGroup->subjects as $sbj)
-                                                                <option value="{{ $sbj->pivot->id }}" data-price="{{ formatAmount($sbj->pivot->hour_rate) }}">{{ $sbj->name }}</option>
-                                                            @endforeach
-                                                        @endif
-                                                    </optgroup>
-                                                @endforeach
                                             </select>
                                         </span>
                                     </div>
@@ -199,31 +187,16 @@
                                     removeDay(value) {
                                         this.days.find(day => day.name === value).selected = false;
                                         this.updateSelectedDays();
+                                    },
+                                    calculateDuration() {
+                                        if (this.start_time && this.end_time) {
+                                            const start = new Date('2000-01-01 ' + this.start_time);
+                                            const end = new Date('2000-01-01 ' + this.end_time);
+                                            const diff = (end - start) / (1000 * 60); // Diferencia en minutos
+                                            @this.set('form.duration', diff);
+                                        }
                                     }
-                                    }">
-                                <div @class(['form-group form-group-half', 'am-invalid' => $errors->has('form.subject_group_id')])>
-                                    <label class="am-label-calendar am-important2">
-                                        {{ __('calendar.select_subject') }}
-                                    </label>
-                                    <span class="am-select" wire:ignore>
-                                        <select id="subject_group_id" data-componentid="@this" data-disable_onchange="true" data-live="true" class="am-select2" data-parent="#booking-modal" data-searchable="true" data-wiremodel="form.subject_group_id" data-placeholder="{{ __('calendar.subject_placeholder') }}">
-                                            <option label="{{ __('calendar.subject_placeholder') }}"></option>
-                                            @foreach ($subjectGroups as $sbjGroup)
-                                                @if ($sbjGroup->subjects->isEmpty())
-                                                    @continue
-                                                @endif
-                                                <optgroup label="{{ $sbjGroup->group->name }}">
-                                                    @if ($sbjGroup->subjects)
-                                                        @foreach ($sbjGroup->subjects as $sbj)
-                                                            <option value="{{ $sbj->pivot->id }}">{{ $sbj->name }}</option>
-                                                        @endforeach
-                                                    @endif
-                                                </optgroup>
-                                            @endforeach
-                                        </select>
-                                    </span>
-                                    <x-input-error field_name="form.subject_group_id" />
-                                </div>
+                                }">
                                 <div @class(['form-group', 'form-group-half', 'am-invalid' => $errors->has('form.date_range')])>
                                     <label class="am-label-calendar am-important2">{{ __('calendar.start_end_date') }}</label>
                                     <span class="am-select">
@@ -241,6 +214,7 @@
                                                 this.start_time = $(this.$refs.select_start_hour).select2('val') + ':'+ $(this.$refs.select_start_min).select2('val')
                                                 this.end_time   = $(this.$refs.select_end_hour).select2('val') + ':'+ $(this.$refs.select_end_min).select2('val')
                                                 this.sessionTime = this.start_time != ':' && this.end_time != ':' ? this.start_time + ' to '+ this.end_time : ''
+                                                this.calculateDuration();
                                                 $('.booking-time').dropdown('toggle');
                                             }
                                         }">
@@ -301,11 +275,8 @@
                                 </div>
                                 <div @class(['form-group', 'form-group-half', 'am-invalid' => $errors->has('form.duration')])>
                                     <label class="am-label-calendar am-important2">{{ __('calendar.session_duration') }}</label>
-                                    <span class="am-select" wire:ignore>
-                                        <select id="session_duration" data-componentid="@this" class="am-select2" data-parent="#booking-modal" data-searchable="true" data-wiremodel="form.duration" data-placeholder="{{ __('calendar.session_duration_placeholder') }}">
-                                            <option value="">{{ __('calendar.session_duration_placeholder') }}</option>                                      
-                                            <option value="20">{{ __('calendar.minutes', ['min'=>20]) }}</option>                                        
-                                        </select>
+                                    <span class="am-select">
+                                        <input type="text" class="form-control" wire:model="form.duration" readonly>
                                     </span>
                                     <x-input-error field_name="form.duration" />
                                 </div>
