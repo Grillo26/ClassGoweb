@@ -21,6 +21,7 @@ class SessionStoreRequest extends FormRequest {
             'break'                         => 'nullable',
             'recurring_days'                => 'nullable',
             'description'                   => 'nullable',
+            'subject_group_id'              => 'required|exists:user_subject_groups,id',
         ];
     }
 

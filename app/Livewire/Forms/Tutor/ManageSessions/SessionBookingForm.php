@@ -18,6 +18,7 @@ class SessionBookingForm extends Form
     public $recurring_days = [];
     public $session_fee;
     public $description;
+    public $subject_group_id;
 
     public function rules(){
         $request = new SessionStoreRequest();

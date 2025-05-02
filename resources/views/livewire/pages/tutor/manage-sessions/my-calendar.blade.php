@@ -192,8 +192,11 @@
                                         if (this.start_time && this.end_time) {
                                             const start = new Date('2000-01-01 ' + this.start_time);
                                             const end = new Date('2000-01-01 ' + this.end_time);
-                                            const diff = (end - start) / (1000 * 60); // Diferencia en minutos
-                                            @this.set('form.duration', diff);
+                                            const diffMinutes = (end - start) / (1000 * 60);
+                                            const hours = Math.floor(diffMinutes / 60);
+                                            const minutes = Math.floor(diffMinutes % 60);
+                                            const formattedDuration = `${hours}:${minutes.toString().padStart(2, '0')}`;
+                                            @this.set('form.duration', formattedDuration);
                                         }
                                     }
                                 }">
@@ -211,11 +214,22 @@
                                             end_time: @entangle('form.end_time'),
                                             sessionTime: '',
                                             updateValues() {
-                                                this.start_time = $(this.$refs.select_start_hour).select2('val') + ':'+ $(this.$refs.select_start_min).select2('val')
-                                                this.end_time   = $(this.$refs.select_end_hour).select2('val') + ':'+ $(this.$refs.select_end_min).select2('val')
-                                                this.sessionTime = this.start_time != ':' && this.end_time != ':' ? this.start_time + ' to '+ this.end_time : ''
+                                                const startHour = $(this.$refs.select_start_hour).val();
+                                                const startMin = $(this.$refs.select_start_min).val();
+                                                const endHour = $(this.$refs.select_end_hour).val();
+                                                const endMin = $(this.$refs.select_end_min).val();
+                                                
+                                                this.start_time = startHour + ':' + startMin;
+                                                this.end_time = endHour + ':' + endMin;
+                                                this.sessionTime = this.start_time + ' to ' + this.end_time;
                                                 this.calculateDuration();
-                                                $('.booking-time').dropdown('toggle');
+                                            },
+                                            init() {
+                                                // Actualizar valores cuando cambien los selectores
+                                                $(this.$refs.select_start_hour).on('change', () => this.updateValues());
+                                                $(this.$refs.select_start_min).on('change', () => this.updateValues());
+                                                $(this.$refs.select_end_hour).on('change', () => this.updateValues());
+                                                $(this.$refs.select_end_min).on('change', () => this.updateValues());
                                             }
                                         }">
                                         <input type="text" id="session_time" x-model="sessionTime" data-bs-auto-close="outside" class="form-control am-input-field" placeholder="{{ __('calendar.time_placeholder') }}" data-bs-toggle="dropdown" readonly>
@@ -223,48 +237,47 @@
                                             <ul class="am-dropdownlist">
                                                 <li>
                                                     <label class="am-label-calendar am-important2">{{ __('calendar.start_time') }}</label>
-                                                    <span class="am-select" wire:ignore>
-                                                        <select x-ref="select_start_hour" data-componentid="@this" class="am-select2" data-parent=".booking-time" data-searchable="true" data-placeholder="{{ __('calendar.hour_placeholder') }}">
-                                                            <option label="{{ __('calendar.hour_placeholder') }}"></option>
-                                                            @for ($i=0; $i < 24; $i++)
-                                                                <option value="{{ sprintf("%02d", $i) }}">{{ sprintf("%02d", $i) }}</option>
-                                                            @endfor
-                                                        </select>
-                                                    </span>
+                                                    <div class="d-flex gap-2">
+                                                        <span class="am-select" wire:ignore>
+                                                            <select x-ref="select_start_hour" class="form-control" style="font-size: 14px; padding: 8px; color: #000;">
+                                                                <option value="">{{ __('calendar.hour_placeholder') }}</option>
+                                                                @for ($i=0; $i < 24; $i++)
+                                                                    <option value="{{ sprintf("%02d", $i) }}" style="color: #000;">{{ sprintf("%02d", $i) }}</option>
+                                                                @endfor
+                                                            </select>
+                                                        </span>
+                                                        <span class="am-select" wire:ignore>
+                                                            <select x-ref="select_start_min" class="form-control" style="font-size: 14px; padding: 8px; color: #000;">
+                                                                <option value="">{{ __('calendar.minute_placeholder') }}</option>
+                                                                @for ($i=0; $i < 60; $i++)
+                                                                    <option value="{{ sprintf("%02d", $i) }}" style="color: #000;">{{ sprintf("%02d", $i) }}</option>
+                                                                @endfor
+                                                            </select>
+                                                        </span>
+                                                    </div>
                                                 </li>
-                                                <li>
-                                                    <span class="am-select" wire:ignore>
-                                                        <select x-ref="select_start_min" data-componentid="@this" class="am-select2" data-parent=".booking-time" data-searchable="true" data-placeholder="{{ __('calendar.minute_placeholder') }}">
-                                                            <option label="{{ __('calendar.minute_placeholder') }}"></option>
-                                                            @for ($i=0; $i < 60; $i++)
-                                                                <option value="{{ sprintf("%02d", $i) }}">{{ sprintf("%02d", $i) }}</option>
-                                                            @endfor
-                                                        </select>
-                                                    </span>
-                                                </li>
-                                                <li>
+                                                <li class="mt-3">
                                                     <label class="am-label-calendar am-important2">{{ __('calendar.end_time') }}</label>
-                                                    <span class="am-select" wire:ignore>
-                                                        <select x-ref="select_end_hour" data-componentid="@this" class="am-select2" data-parent=".booking-time" data-searchable="true" data-placeholder="{{ __('calendar.hour_placeholder') }}">
-                                                            <option label="{{ __('calendar.hour_placeholder') }}"></option>
-                                                            @for ($i=0; $i < 24; $i++)
-                                                                <option value="{{ sprintf("%02d", $i) }}">{{ sprintf("%02d", $i) }}</option>
-                                                            @endfor
-                                                        </select>
-                                                    </span>
-                                                </li>
-                                                <li>
-                                                    <span class="am-select" wire:ignore>
-                                                        <select x-ref="select_end_min" data-componentid="@this" class="am-select2" data-parent=".booking-time" data-searchable="true" data-placeholder="{{ __('calendar.minute_placeholder') }}">
-                                                            <option label="{{ __('calendar.minute_placeholder') }}"></option>
-                                                            @for ($i=0; $i < 60; $i++)
-                                                                <option value="{{ sprintf("%02d", $i) }}">{{ sprintf("%02d", $i) }}</option>
-                                                            @endfor
-                                                        </select>
-                                                    </span>
+                                                    <div class="d-flex gap-2">
+                                                        <span class="am-select" wire:ignore>
+                                                            <select x-ref="select_end_hour" class="form-control" style="font-size: 14px; padding: 8px; color: #000;">
+                                                                <option value="">{{ __('calendar.hour_placeholder') }}</option>
+                                                                @for ($i=0; $i < 24; $i++)
+                                                                    <option value="{{ sprintf("%02d", $i) }}" style="color: #000;">{{ sprintf("%02d", $i) }}</option>
+                                                                @endfor
+                                                            </select>
+                                                        </span>
+                                                        <span class="am-select" wire:ignore>
+                                                            <select x-ref="select_end_min" class="form-control" style="font-size: 14px; padding: 8px; color: #000;">
+                                                                <option value="">{{ __('calendar.minute_placeholder') }}</option>
+                                                                @for ($i=0; $i < 60; $i++)
+                                                                    <option value="{{ sprintf("%02d", $i) }}" style="color: #000;">{{ sprintf("%02d", $i) }}</option>
+                                                                @endfor
+                                                            </select>
+                                                        </span>
+                                                    </div>
                                                 </li>
                                             </ul>
-                                            <button type="button" x-on:click="updateValues()" class="am-btn">{{ __('calendar.add_time') }}</button>
                                         </div>
                                     </div>
                                     @if($errors->has('form.start_time'))
@@ -346,7 +359,7 @@
                                     <x-input-error field_name="form.description" />
                                 </div>
                                 <div class="form-group am-mt-10 am-form-btn-wrap">
-                                    <button type="submit" class="am-btn" wire:loading.class="am-btn_disable">{{ __('general.save_update') }}</button>
+                             <button type="submit" class="am-btn" wire:loading.class="am-btn_disable">{{ __('general.save_update') }}</button>
                                 </div>
                             </fieldset>
                         </form>
