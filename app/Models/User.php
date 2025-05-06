@@ -274,4 +274,9 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
         return $this->hasMany(\Modules\Courses\Models\Course::class, 'instructor_id');
 
     }
+
+    public function userSubjects(): HasMany
+    {
+        return $this->hasMany(UserSubject::class);
+    }
 }
