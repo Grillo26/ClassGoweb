@@ -30,9 +30,8 @@ class ManageSubjects extends Component
     #[Layout('layouts.app')]
     public function render()
     {
-        $this->selected_groups = $this->subjectService->getUserSubjectGrouaps()?->toArray() ?? [];
         $this->subjectGroups = $this->subjectService->getUserSubjectGroups();
-
+        //dd($this->subjectGroups, "grupos");
         return view('livewire.pages.tutor.manage-sessions.manage-subjects');
     }
 
@@ -44,15 +43,11 @@ class ManageSubjects extends Component
     public function mount()
     {
         $this->activeRoute = Route::currentRouteName();
-        $image_file_ext          = setting('_general.allowed_image_extensions');
-        $image_file_size          = setting('_general.max_image_size');
-        $this->allowImgFileExt   = !empty( $image_file_ext ) ?  explode(',', $image_file_ext) : ['jpg', 'png'];
-        $this->allowImageSize    = (int) (!empty( $image_file_size ) ? $image_file_size : '3');
-
-        $this->subjects = $this->subjectService->getSubjects()?->pluck('name','id')?->toArray() ?? [];
-
+        $image_file_ext = setting('_general.allowed_image_extensions');
+        $image_file_size = setting('_general.max_image_size');
+        $this->allowImgFileExt = !empty($image_file_ext) ? explode(',', $image_file_ext) : ['jpg', 'png'];
+        $this->allowImageSize = (int) (!empty($image_file_size) ? $image_file_size : '3');
     }
-
 
     public function loadData()
     {
@@ -65,24 +60,11 @@ class ManageSubjects extends Component
         $this->dispatch('toggleModel', id: 'subject_group', action: 'show');
     }
 
-    public function addNewSubject($subjectGroupId = '')
+    public function loadSubjectsByGroup($groupId)
     {
-        $this->form->reset();
-        $this->form->group_id = $subjectGroupId;
-        $this->form->hour_rate = 15;
-
-        // Obtener todas las materias del grupo seleccionado
-        $groupSubjects = $this->subjectService->getSubjectsByGroup($subjectGroupId);
+        $this->form->group_id = $groupId;
+        $groupSubjects = $this->subjectService->getSubjectsByGroup($groupId);
         
-        // Obtener las materias que ya tiene asignadas el tutor en este grupo
-        $assignedSubjects = $this->getUserGroupSubject($subjectGroupId);
-        
-        // Debug para verificar las materias
-        \Log::info('Materias para el grupo ' . $subjectGroupId, [
-            'todas' => $groupSubjects->toArray(),
-            'asignadas' => $assignedSubjects
-        ]);
-
         $result = [
             [
                 'id' => '',
@@ -90,35 +72,41 @@ class ManageSubjects extends Component
             ]
         ];
 
-        // Agregar solo las materias que NO están asignadas
         foreach ($groupSubjects as $subject) {
-            if (!isset($assignedSubjects[$subject->id])) {
-                $result[] = [
-                    'id' => $subject->id,
-                    'text' => htmlspecialchars_decode($subject->name)
-                ];
-            }
+            $result[] = [
+                'id' => $subject->id,
+                'text' => htmlspecialchars_decode($subject->name)
+            ];
         }
 
-        // Primero destruimos y limpiamos el select2 existente
-        $this->dispatch('destroySelect2');
-        
-        // Esperamos un momento antes de inicializar el nuevo select2
         $this->dispatch('initSelect2', 
             target: '.am-select2', 
             data: $result, 
             value: null,
-            reset: true,
-            timeOut: 300
+            reset: true
         );
+    }
 
-        // Finalmente mostramos el modal
+
+
+    public function addNewSubject($subjectGroupId = '')
+    {
+        $this->form->reset();
+        $this->form->group_id = $subjectGroupId;
+        $this->form->hour_rate = 15;
+
+        if ($subjectGroupId) {
+            $this->loadSubjectsByGroup($subjectGroupId);
+        }
+
         $this->dispatch('toggleModel', id: 'subject_modal', action: 'show');
     }
 
     public function getUserGroupSubject($groupId){
         return $this->subjectService->getUserGroupSubjects($groupId);
     }
+
+    
 
     #[On('delete-user-subject')]
     public function deleteSubject($params)
@@ -141,29 +129,11 @@ class ManageSubjects extends Component
         }
     }
 
-    #[On('delete-user-subject-group')]
-    public function deleteSubjectGroup($params)
-    {
-        $response = isDemoSite();
-        if( $response ){
-            $this->dispatch('showAlertMessage', type: 'error', title:  __('general.demosite_res_title') , message: __('general.demosite_res_txt'));
-            return;
-        }
-        $result = $this->subjectService->deleteUserSubjectGroup($params['groupId']);
-        if($result){
-            $this->dispatch(
-                'showAlertMessage',
-                type: 'success',
-                title: __('general.success_title') ,
-                message: __('general.delete_record')
-            );
-        } else {
-            $this->dispatch('showAlertMessage', type: 'error', message: __('general.unable_to_delete_subject_group'));
-        }
-    }
+    
 
     public function saveNewSubject()
     {
+        dd($this->form, "form");
         $validate = $this->form->validateData();
         $response = isDemoSite();
         if( $response ){
@@ -172,7 +142,9 @@ class ManageSubjects extends Component
             return;
         }
         $subject = $this->form->addNewSubject($validate);
+       
         $result = $this->subjectService->setUserSubject($this->form->edit_id, $subject);
+       
         $this->form->reset();
         $this->dispatch('showAlertMessage',
             type: !empty($result) ? 'success': 'error',
@@ -184,34 +156,15 @@ class ManageSubjects extends Component
         }
     }
 
-    public function seveSubjectGroups()
-    {
-        $this->validate([
-            'selected_groups' => 'required|min:1|array'
-        ]);
-
-        $response = isDemoSite();
-        if( $response ){
-            $this->dispatch('showAlertMessage', type: 'error', title:  __('general.demosite_res_title') , message: __('general.demosite_res_txt'));
-            $this->dispatch('toggleModel', id: 'subject_group', action: 'hide');
-            return;
-        }
-
-        $updateGroups = $this->subjectService->setSubjectGroups($this->selected_groups);
-        $this->dispatch('toggleModel', id: 'subject_group', action: 'hide');
-        $this->dispatch(
-            'showAlertMessage',
-            type: $updateGroups ? 'success': 'error',
-            title:$updateGroups ? __('general.success_title') : __('general.error_title'),
-            message: $updateGroups ?__('general.success_message') : __('general.error_msg')
-        );
-    }
 
     public function removeImage()
     {
         $this->form->image = null;
         $this->form->preview_image = null;
     }
+
+
+
 
     public function updateSubjectGroupOrder($evt)
     {

@@ -4,6 +4,7 @@ namespace App\Livewire\Pages\Admin\Taxonomy;
 
 use App\Models\Scopes\ActiveScope;
 use App\Models\Subject;
+use App\Models\SubjectGroup;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -17,6 +18,7 @@ class Subjects extends Component
     use WithPagination;
 
     public $name, $edit_id, $description, $status;
+    public $subject_group_id;
     public $editMode            = false;
     public $search              = '';
     public $sortby              = 'asc';
@@ -37,8 +39,9 @@ class Subjects extends Component
     public function render(): View
     {
         $subjects = $this->subjects;
+        $subjectGroups = $this->subjectGroups;
 
-        return view('livewire.pages.admin.taxonomy.subjects', compact('subjects'));
+        return view('livewire.pages.admin.taxonomy.subjects', compact('subjects', 'subjectGroups'));
     }
 
     #[On('refresh-list')]
@@ -46,7 +49,8 @@ class Subjects extends Component
 
     #[Computed]
     public function subjects(){
-        $subjects = Subject::withoutGlobalScope(ActiveScope::class);
+        $subjects = Subject::withoutGlobalScope(ActiveScope::class)
+            ->with('group');
 
         if( !empty($this->search) ){
             $subjects = $subjects->where(function($query){
@@ -56,7 +60,6 @@ class Subjects extends Component
         }
 
         return $subjects->orderBy('name', $this->sortby)->paginate($this->perPage);
-
     }
 
     public function updatedPage($page)
@@ -90,6 +93,7 @@ class Subjects extends Component
         $this->name                 = null;
         $this->status               = null;
         $this->description          = null;
+        $this->subject_group_id     = null;
         $this->selectedSubjects    = [];
         $this->selectAll            = false;
         $this->edit_id              = false;
@@ -102,6 +106,7 @@ class Subjects extends Component
         $this->name             = $record->name;
         $this->description      = $record->description;
         $this->status           = $record->status;
+        $this->subject_group_id = $record->subject_group_id;
         $this->editMode         = true;
     }
 
@@ -119,11 +124,13 @@ class Subjects extends Component
         }
         
         $validated_data = $this->validate([
-            'name'      => 'required|min:3',
+            'name'              => 'required|min:3',
+            'subject_group_id'  => 'required|exists:subject_groups,id',
         ]);
 
         $validated_data['name'] = sanitizeTextField($this->name);
         $validated_data['description']  = sanitizeTextField($this->description, true);
+        $validated_data['subject_group_id'] = $this->subject_group_id;
 
         if( !is_null($this->status) && in_array( $this->status, ['active', 'deactive'])){
             $validated_data['status']       = $this->status;
@@ -176,5 +183,11 @@ class Subjects extends Component
             $this->dispatch('showAlertMessage', type: 'error', message: __('general.unable_to_delete_subject'));
         }
         $this->reset();
+    }
+
+    #[Computed]
+    public function subjectGroups()
+    {
+        return SubjectGroup::orderBy('name')->get();
     }
 }

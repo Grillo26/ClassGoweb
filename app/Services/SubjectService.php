@@ -18,8 +18,13 @@ class SubjectService {
         }
     }
 
+
+
+
+        
+
     public function getUserSubjectGroups() {
-        return $this->user->groups()->select('id','subject_group_id')->with([ 'subjects'])->withWhereHas('group')->get();
+        return SubjectGroup::select('id', 'name')->get();
     }
 
     public function getSubjectsByUserRole()
@@ -64,13 +69,12 @@ class SubjectService {
     }
 
     public function getSubjects() {
-        return Subject::orderBy('name')->get(['id', 'name']);
+        return Subject::select('id', 'name', 'subject_group_id')->get();
     }
 
     public function getSubjectsByGroup($groupId) {
-        return Subject::select('subjects.id', 'subjects.name', 'subjects.description')
-                     ->where('subjects.subject_group_id', $groupId)
-                     ->orderBy('subjects.name')
+        return Subject::where('subject_group_id', $groupId)
+                     ->select('id', 'name')
                      ->get();
     }
 

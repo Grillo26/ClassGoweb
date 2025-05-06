@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->foreignId('subject_group_id')->after('id')->constrained('subject_groups')->onDelete('cascade');
+        Schema::create('payment_slot_bookings', function (Blueprint $table) {
+            $table->id();
+            $table->text('image_url');
+            $table->timestamps();
         });
     }
 
@@ -21,9 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->dropForeign(['subject_group_id']);
-            $table->dropColumn('subject_group_id');
-        });
+        Schema::dropIfExists('payment_slot_bookings');
     }
 };

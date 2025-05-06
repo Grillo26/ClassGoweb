@@ -23,9 +23,25 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
+                                    <label class="tb-label">{{ __('taxonomy.subject_group') }}</label>
+                                    <select class="form-control @error('subject_group_id') tk-invalid @enderror" wire:model="subject_group_id" required>
+                                        <option value="">{{ __('general.select_option') }}</option>
+                                        @foreach($subjectGroups as $group)
+                                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('subject_group_id')
+                                        <div class="tk-errormsg">
+                                            <span>{{ $message }}</span>
+                                        </div>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
                                     <label class="tb-label">{{ __('general.description') }}</label>
                                     <textarea class="form-control" placeholder="{{ __('general.description') }}" wire:model="description" id=""></textarea>
                                 </div>
+
+
                                 <div class="form-group tb-dbtnarea">
                                     <a href="javascript:void(0);" wire:click.prevent="update" class="tb-btn ">
                                         @if($editMode)
@@ -90,6 +106,8 @@
                                     </div>
                                 </th>
                                 <th>{{__('general.description')}}</th>
+                                <th>nivel</th>
+                                
                                 <th>{{__('general.status')}}</th>
                                 <th>{{__('general.actions')}}</th>
                             </tr>
@@ -114,6 +132,9 @@
                                         <div class="am-status-tag">
                                             <em class="tk-project-tag tk-{{ $single->status == 'active' ? 'active' : 'disabled' }}">{{ $single->status }}</em>
                                         </div>
+                                    </td>
+                                    <td data-label="nivel">
+                                        <span>{{ $single->group->name }}</span>
                                     </td>
                                     <td data-label="{{__('general.actions')}}">
                                         <ul class="tb-action-icon">

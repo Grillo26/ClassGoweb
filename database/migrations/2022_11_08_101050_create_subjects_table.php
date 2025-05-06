@@ -13,6 +13,7 @@ return new class extends Migration {
     public function up() {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('subject_group_id')->constrained()->onDelete('cascade');
             $table->string('name', 255)->fulltext();
             $table->text('description')->nullable()->fullText();
             $table->enum('status', ['active', 'inactive'])->default('active')->index();
