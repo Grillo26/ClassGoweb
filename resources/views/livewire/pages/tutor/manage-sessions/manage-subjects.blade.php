@@ -4,10 +4,6 @@
     @endslot
     @include('livewire.pages.tutor.manage-sessions.tabs')
     <div x-data="{search:'', sessionData: @entangle('form')}" class="am-userperinfo">
-        @if($isLoading)
-        @include('skeletons.manage-subject')
-        @else
-        @if($subjectGroups->isNotEmpty())
         <div class="am-title_wrap">
             <div class="am-title">
                 <h2>{{ __('subject.subject_title') }}</h2>
@@ -15,7 +11,7 @@
             </div>
         </div>
 
-        <!-- Filtros -->
+        <!-- Filtros - Siempre visibles -->
         <div class="am-filters" style="margin-bottom: 20px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
             <!-- Búsqueda -->
             <div class="am-search" style="flex: 1; min-width: 200px;">
@@ -30,7 +26,7 @@
 
             <!-- Filtro de grupos con materias -->
             <div class="am-filter-checkbox" style="display: flex; align-items: center; gap: 8px;">
-                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <label style="color:white; display: flex; align-items: center; gap: 8px; cursor: pointer;">
                     <input type="checkbox" 
                            wire:model.live="showOnlyWithSubjects" 
                            style="width: 16px; height: 16px;">
@@ -41,149 +37,155 @@
             <!-- Botón reset -->
             <button wire:click="resetFilters" 
                     class="am-btn" 
-                    style="padding: 8px 15px; background-color: #f8f9fa; border: 1px solid #ddd;">
+                    style="padding: 8px 15px; background:rgb(33, 158, 188);">
                 <i class="am-icon-refresh"></i>
                 {{ __('general.reset_filters') }}
             </button>
         </div>
 
-        <div id="subjectList" wire:sortable="updateSubjectGroupOrder" wire:sortable-group="updateSubjectOrder" class="am-subjectlist">
-            <!-- for de grupos  -->
-            @foreach ($filteredGroups as $index => $group)
-            <div class="am-subject" wire:sortable.item="{{ $group?->id }}" wire:key="subject-group-{{ $group?->id }}">
-                <div class="am-subject-heading">
-
-                    <!-- icono de grupo -->
-                    <div class="am-sotingitem" wire:sortable.handle>
-                        <i class="am-icon-youtube-1"></i>
+        @if($isLoading)
+            @include('skeletons.manage-subject')
+        @else
+            <div id="subjectList" wire:sortable="updateSubjectGroupOrder" wire:sortable-group="updateSubjectOrder" class="am-subjectlist">
+                @if($subjectGroups->isEmpty())
+                    <div class="am-no-records" style="text-align: center; padding: 30px; background: #f8f9fa; border-radius: 8px; margin: 20px auto; max-width: 500px;">
+                        <img src="{{ asset('images/subjects.png') }}" alt="No records" style="max-width: 120px; margin-bottom: 15px;">
+                        <h3 style="color: #004558; margin-bottom: 10px; font-size: 18px;">{{ __('general.no_record_title') }}</h3>
+                        <p style="color: #666; margin-bottom: 20px; font-size: 14px;">{{ __('general.no_record_desc') }}</p>
+                        <button class="am-btn" @click="search = ''; $nextTick(() => $wire.call('addNewSubjectGroup'))" wire:target="addNewSubjectGroup">
+                            {{ __('subject.add_new_subject') }}
+                            <i class="am-icon-plus-01"></i>
+                        </button>
                     </div>
+                @else
+                    @foreach ($filteredGroups as $index => $group)
+                        <div class="am-subject" wire:sortable.item="{{ $group?->id }}" wire:key="subject-group-{{ $group?->id }}">
+                            <div class="am-subject-heading">
 
-                    <!-- tarjeta con nombre de grupo -->
-                    <div wire:ignore.self @class(['am-subject-title', 'collapsed'=> $index != 0]) id="heading-{{ $group?->id }}" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $group?->id }}" aria-expanded="{{ $index == 0 ? 'true': 'false' }}">
-                        <h3>{{ $group->name }}</h3>
-                        <span class="am-subject-title-icon">
-                            <i class="am-icon-minus-02 am-subject-title-icon-open"></i>
-                            <i class="am-icon-plus-02 am-subject-title-icon-close"></i>
-                        </span>
-                    </div>
-                </div>
-
-
-
-
-
-
-                <div wire:ignore.self id="collapse-{{ $group?->id }}" @class(['collapse', 'show'=> $index == 0]) data-bs-parent="#subjectList">
-                    <div class="am-subject-body">
-                        <!-- Mostrar UserSubjects del grupo actual -->
-                        @if($userSubjects->isNotEmpty())
-                        <div class="am-user-subjects">
-                            @foreach($userSubjects as $userSubject)
-                            @if($userSubject['subject']['subject_group_id'] == $group->id)
-                            <div class="am-subject-item" style="display: flex; justify-content: space-between; align-items: center; background-color: #ffffff; border-radius: 8px; margin-bottom: 12px; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                                <!-- Ajustar espacio para el nombre y la descripción -->
-                                <div class="am-subject-info" style="flex-grow: 0; flex-shrink: 1; flex-basis: 60%;">
-                                    <h2 style="color: #004558; font-size: 16px; margin: 0; font-weight: 600;">{{ $userSubject['subject']['name'] }}</h2>
-                                    @if($userSubject['description'])
-                                    <p style="color: #555; margin: 5px 0 0 0; font-size: 14px;">{{ $userSubject['description'] }}</p>
-                                    @endif
+                                <!-- icono de grupo -->
+                                <div class="am-sotingitem" wire:sortable.handle>
+                                    <i class="am-icon-youtube-1"></i>
                                 </div>
 
-                                <!-- Asegurarse de que las acciones se queden al lado derecho -->
-                                <div class="am-subject-actions" style="display: flex; gap: 15px; flex-grow: 0; flex-shrink: 0; padding-right: 15px; width: 200px; justify-content: space-between;">
-                                    <!-- Botón Editar -->
-                                    <div class="am-itemdropdown" style="flex: 1;">
-                                        <a href="javascript:void(0);" @click="$wire.editUserSubject({{ $userSubject['id'] }})"
-                                            style="display: flex; align-items: center; justify-content: center; color: #004558; text-decoration: none; padding: 5px 10px; border: 1px solid #004558; border-radius: 4px; width: 100%;">
-                                            <i class="am-icon-pencil-02"></i>
-                                            {{ __('general.edit') }}
-                                        </a>
+                                <!-- tarjeta con nombre de grupo -->
+                                <div wire:ignore.self @class(['am-subject-title', 'collapsed'=> $index != 0]) id="heading-{{ $group?->id }}" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $group?->id }}" aria-expanded="{{ $index == 0 ? 'true': 'false' }}">
+                                    <h3>{{ $group->name }}</h3>
+                                    <span class="am-subject-title-icon">
+                                        <i class="am-icon-minus-02 am-subject-title-icon-open"></i>
+                                        <i class="am-icon-plus-02 am-subject-title-icon-close"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+
+
+
+
+
+                            <div wire:ignore.self id="collapse-{{ $group?->id }}" @class(['collapse', 'show'=> $index == 0]) data-bs-parent="#subjectList">
+                                <div class="am-subject-body">
+                                    <!-- Mostrar UserSubjects del grupo actual -->
+                                    @if($userSubjects->isNotEmpty())
+                                    <div class="am-user-subjects">
+                                        @foreach($userSubjects as $userSubject)
+                                        @if($userSubject['subject']['subject_group_id'] == $group->id)
+                                        <div class="am-subject-item" style="display: flex; justify-content: space-between; align-items: center; background-color: #ffffff; border-radius: 8px; margin-bottom: 12px; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                                            <!-- Ajustar espacio para el nombre y la descripción -->
+                                            <div class="am-subject-info" style="flex-grow: 0; flex-shrink: 1; flex-basis: 60%;">
+                                                <h2 style="color: #004558; font-size: 16px; margin: 0; font-weight: 600;">{{ $userSubject['subject']['name'] }}</h2>
+                                                @if($userSubject['description'])
+                                                <p style="color: #555; margin: 5px 0 0 0; font-size: 14px;">{{ $userSubject['description'] }}</p>
+                                                @endif
+                                            </div>
+
+                                            <!-- Asegurarse de que las acciones se queden al lado derecho -->
+                                            <div class="am-subject-actions" style="display: flex; gap: 15px; flex-grow: 0; flex-shrink: 0; padding-right: 15px; width: 200px; justify-content: space-between;">
+                                                <!-- Botón Editar -->
+                                                <div class="am-itemdropdown" style="flex: 1;">
+                                                    <a href="javascript:void(0);" @click="$wire.editUserSubject({{ $userSubject['id'] }})"
+                                                        style="display: flex; align-items: center; justify-content: center; color: #004558; text-decoration: none; padding: 5px 10px; border: 1px solid #004558; border-radius: 4px; width: 100%;">
+                                                        <i class="am-icon-pencil-02"></i>
+                                                        {{ __('general.edit') }}
+                                                    </a>
+                                                </div>
+                                                <!-- Botón Eliminar -->
+                                                <div class="am-itemdropdown" style="flex: 1;">
+                                                    <a href="javascript:void(0);" @click="$wire.dispatch('showConfirm', { subjectId: {{ $userSubject['id'] }}, action : 'delete-user-subject' })"
+                                                        style="display: flex; align-items: center; justify-content: center; color: #d9534f; text-decoration: none; padding: 5px 10px; border: 1px solid #d9534f; border-radius: 4px; width: 100%;">
+                                                        <i class="am-icon-trash-02"></i>
+                                                        {{ __('general.delete') }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
+                                        @endforeach
                                     </div>
-                                    <!-- Botón Eliminar -->
-                                    <div class="am-itemdropdown" style="flex: 1;">
-                                        <a href="javascript:void(0);" @click="$wire.dispatch('showConfirm', { subjectId: {{ $userSubject['id'] }}, action : 'delete-user-subject' })"
-                                            style="display: flex; align-items: center; justify-content: center; color: #d9534f; text-decoration: none; padding: 5px 10px; border: 1px solid #d9534f; border-radius: 4px; width: 100%;">
-                                            <i class="am-icon-trash-02"></i>
-                                            {{ __('general.delete') }}
-                                        </a>
+
+
+
+
+                                    @endif
+
+                                    <div class="am-addclasses-wrapper">
+                                        <button
+                                            class="am-add-class"
+                                            @click="
+                                                        sessionData.edit_id = null;
+                                                        $wire.call('resetForm');
+                                                        $wire.call('addNewSubject', {{ $group?->id }});
+                                                        $nextTick(() => {
+                                                            $wire.dispatch('initSummerNote', {target: '#subject_desc', wiremodel: 'form.description', componentId: @this})
+                                                            $('.am-select2').prop('disabled', false);
+                                                            clearFormErrors('#subject_modal form');
+                                                        })">
+                                            {{ __('subject.add_new_subject') }}
+                                            <i class="am-icon-plus-01"></i>
+                                            <svg>
+                                                <rect width="100%" height="100%" rx="10"></rect>
+                                            </svg>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            @endif
-                            @endforeach
                         </div>
+                    @endforeach
 
+                    <!-- Controles de paginación -->
+                    @if($totalPages > 1)
+                        <div class="am-pagination" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+                            <!-- Botón Anterior -->
+                            <button wire:click="previousPage" 
+                                    @if($currentPage == 1) disabled @endif
+                                    class="am-btn" 
+                                    style="padding: 8px 15px; @if($currentPage == 1) opacity: 0.5; @endif">
+                                <i class="am-icon-arrow-left"></i>
+                                {{ __('general.previous') }}
+                            </button>
 
+                            <!-- Números de página -->
+                            <div class="am-pagination-numbers" style="display: flex; gap: 5px;">
+                                @for($i = 1; $i <= $totalPages; $i++)
+                                    <button wire:click="goToPage({{ $i }})" 
+                                            class="am-btn" 
+                                            style="padding: 8px 15px; @if($currentPage == $i) background-color: #004558; color: white; @endif">
+                                        {{ $i }}
+                                    </button>
+                                @endfor
+                            </div>
 
-
-                        @endif
-
-                        <div class="am-addclasses-wrapper">
-                            <button
-                                class="am-add-class"
-                                @click="
-                                            sessionData.edit_id = null;
-                                            $wire.call('resetForm');
-                                            $wire.call('addNewSubject', {{ $group?->id }});
-                                            $nextTick(() => {
-                                                $wire.dispatch('initSummerNote', {target: '#subject_desc', wiremodel: 'form.description', componentId: @this})
-                                                $('.am-select2').prop('disabled', false);
-                                                clearFormErrors('#subject_modal form');
-                                            })">
-                                {{ __('subject.add_new_subject') }}
-                                <i class="am-icon-plus-01"></i>
-                                <svg>
-                                    <rect width="100%" height="100%" rx="10"></rect>
-                                </svg>
+                            <!-- Botón Siguiente -->
+                            <button wire:click="nextPage" 
+                                    @if($currentPage == $totalPages) disabled @endif
+                                    class="am-btn" 
+                                    style="padding: 8px 15px; @if($currentPage == $totalPages) opacity: 0.5; @endif">
+                                {{ __('general.next') }}
+                                <i class="am-icon-arrow-right"></i>
                             </button>
                         </div>
-                    </div>
-                </div>
+                    @endif
+                @endif
             </div>
-            @endforeach
-        </div>
-
-        <!-- Controles de paginación -->
-        @if($totalPages > 1)
-        <div class="am-pagination" style="margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 10px;">
-            <!-- Botón Anterior -->
-            <button wire:click="previousPage" 
-                    @if($currentPage == 1) disabled @endif
-                    class="am-btn" 
-                    style="padding: 8px 15px; @if($currentPage == 1) opacity: 0.5; @endif">
-                <i class="am-icon-arrow-left"></i>
-                {{ __('general.previous') }}
-            </button>
-
-            <!-- Números de página -->
-            <div class="am-pagination-numbers" style="display: flex; gap: 5px;">
-                @for($i = 1; $i <= $totalPages; $i++)
-                    <button wire:click="goToPage({{ $i }})" 
-                            class="am-btn" 
-                            style="padding: 8px 15px; @if($currentPage == $i) background-color: #004558; color: white; @endif">
-                        {{ $i }}
-                    </button>
-                @endfor
-            </div>
-
-            <!-- Botón Siguiente -->
-            <button wire:click="nextPage" 
-                    @if($currentPage == $totalPages) disabled @endif
-                    class="am-btn" 
-                    style="padding: 8px 15px; @if($currentPage == $totalPages) opacity: 0.5; @endif">
-                {{ __('general.next') }}
-                <i class="am-icon-arrow-right"></i>
-            </button>
-        </div>
-        @endif
-
-        @else
-
-
-        <x-no-record :image="asset('images/subjects.png')" :title="__('general.no_record_title')" :description="__('general.no_record_desc')" :btn_text="__('subject.add_new_subject')" @click="search = ''; $nextTick(() => $wire.call('addNewSubjectGroup'))" wire:target="addNewSubjectGroup" />
-       
-       
-        @endif
         @endif
 
         <!-- Modals -->
