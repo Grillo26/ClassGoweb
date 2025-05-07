@@ -14,7 +14,12 @@
                 <div class="am-searchdetail">
                     <div class="am-search-userdetail">
                         <div class="am-tutordetail_head">
-                            <div class="am-tutordetail_user">
+                           
+                        
+                        
+                        
+                        
+                        <div class="am-tutordetail_user">
                                 <figure class="am-tutorvone_img">
                                     @if (!empty($tutor?->profile?->image) &&
                                     Storage::disk(getStorageDisk())->exists($tutor?->profile?->image))
@@ -40,6 +45,9 @@
                                     @endif
                                 </div>
                             </div>
+
+
+
                             @if(!empty($tutor?->profile?->intro_video))
                                 <div class="am-tutordetail_fee">
                                     <strong> {!! formatAmountV2($tutor?->min_price) !!}<em>{{__('tutor.per_session') }}</em></strong>
@@ -89,7 +97,7 @@
                                                     <path d="M12.8337 6.99935C12.8337 10.221 10.222 12.8327 7.00033 12.8327M12.8337 6.99935C12.8337 3.77769 10.222 1.16602 7.00033 1.16602M12.8337 6.99935C12.8337 5.71069 10.222 4.66602 7.00033 4.66602C3.77866 4.66602 1.16699 5.71069 1.16699 6.99935M12.8337 6.99935C12.8337 8.28801 10.222 9.33268 7.00033 9.33268C3.77866 9.33268 1.16699 8.28801 1.16699 6.99935M7.00033 12.8327C3.77866 12.8327 1.16699 10.221 1.16699 6.99935M7.00033 12.8327C8.28899 12.8327 9.33366 10.221 9.33366 6.99935C9.33366 3.77769 8.28899 1.16602 7.00033 1.16602M7.00033 12.8327C5.71166 12.8327 4.66699 10.221 4.66699 6.99935C4.66699 3.77769 5.71166 1.16602 7.00033 1.16602M1.16699 6.99935C1.16699 3.77769 3.77866 1.16602 7.00033 1.16602" stroke="#585858" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
                                                 </svg>
                                                 <span><em>{{ __('tutor.social_profiles') }}</em></span>
-                                            </div>
+                                            </div
                                         </li>
                                     @endif
                                 </ul>
@@ -166,6 +174,10 @@
                                         @endif
                                     </div>
                                 </li>
+
+
+
+
                                 <li>
                                     @if(\Nwidart\Modules\Facades\Module::has('starup') && \Nwidart\Modules\Facades\Module::isEnabled('starup'))
                                         <div class="am-tutorskills-item">
@@ -202,6 +214,9 @@
                             </div>
                         @endif
                     </div>
+
+
+
                     @if(!empty($tutor?->profile?->intro_video))
                         <div class="am-detailuser_video am-detailuser_video_main">
                             <video class="video-js" data-setup='{}' preload="auto" wire:key="profile-video-{{ $tutor->id }}"

@@ -93,11 +93,11 @@ class ManageAccount extends Component
     public function updateQR()
     {
         
-            \Log::info('Inicio de la actualización del código QR para el usuario: ' . Auth::id());
+            //Log::info('Inicio de la actualización del código QR para el usuario: ' . Auth::id());
 
             // Verificar si hay archivo antes de validar
               if (!$this->qrImage) {
-                    \Log::info('No hay nadaaaaaaaa' );
+                    //Log::info('No hay nadaaaaaaaa' );
             $this->dispatch('showAlertMessage', [
                 'type' => 'error',
                 'title' => __('general.error_title'),
@@ -111,7 +111,7 @@ class ManageAccount extends Component
                 'qrImage' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Formatos permitidos
             ]);
 
-            \Log::info('Validación de imagen QR completada correctamente.');
+            //Log::info('Validación de imagen QR completada correctamente.');
 
             // Buscar el método de pago QR del usuario, incluyendo eliminados
             $existingPayout = UserPayoutMethod::withTrashed()
@@ -122,13 +122,13 @@ class ManageAccount extends Component
             // Si el registro existe pero está eliminado, restaurarlo
             if ($existingPayout && $existingPayout->trashed()) {
                 $existingPayout->restore();
-                \Log::info("Registro QR restaurado para el usuario: " . Auth::id());
+                //Log::info("Registro QR restaurado para el usuario: " . Auth::id());
             }
 
             // Si ya tiene un QR registrado, eliminar la imagen anterior
             if ($existingPayout && $existingPayout->img_qr) {
                 Storage::disk('public')->delete($existingPayout->img_qr);
-                \Log::info("Imagen QR anterior eliminada: " . $existingPayout->img_qr);
+                //Log::info("Imagen QR anterior eliminada: " . $existingPayout->img_qr);
             }
 
             // Guardar la nueva imagen y obtener la ruta
@@ -138,7 +138,7 @@ class ManageAccount extends Component
                 throw new \Exception(__('tutor.qr_upload_failed'));
             }
 
-            \Log::info("Nueva imagen QR subida correctamente: " . $path);
+            //Log::info("Nueva imagen QR subida correctamente: " . $path);
 
             // **Actualizar o crear el método de pago**
             $payout = UserPayoutMethod::updateOrCreate(
@@ -150,7 +150,7 @@ class ManageAccount extends Component
                 throw new \Exception(__('tutor.qr_save_failed'));
             }
 
-            \Log::info("Código QR guardado en la base de datos para el usuario: " . Auth::id());
+            //Log::info("Código QR guardado en la base de datos para el usuario: " . Auth::id());
 
             // Actualizar la variable de la vista
             $this->currentQRPath = $path;
