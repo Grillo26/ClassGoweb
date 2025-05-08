@@ -71,15 +71,13 @@
                                                 <select id="filter_subject_group" data-componentid="@this" class="am-select2" data-class="subject-dropdown-select2" data-format="custom" data-searchable="true" data-wiremodel="subjectGroupIds" data-placeholder="{{ __('calendar.subject_placeholder') }}" multiple>
                                                     <option label="{{ __('calendar.subject_placeholder') }}"></option>
                                                     @foreach ($subjectGroups as $sbjGroup)
-                                                        @if ($sbjGroup->subjects->isEmpty())
+                                                        @if ($sbjGroup->subjects->isEmpty() || !$sbjGroup->group)
                                                             @continue
                                                         @endif
                                                         <optgroup label="{{ $sbjGroup->group->name }}">
-                                                            @if ($sbjGroup->subjects)
-                                                                @foreach ($sbjGroup->subjects as $sbj)
-                                                                    <option value="{{ $sbj->pivot->id }}" data-price="{{ formatAmount($sbj->pivot->hour_rate) }}">{{ $sbj->name }}</option>
-                                                                @endforeach
-                                                            @endif
+                                                            @foreach ($sbjGroup->subjects as $sbj)
+                                                                <option value="{{ $sbj->pivot->id }}" data-price="{{ formatAmount($sbj->pivot->hour_rate) }}">{{ $sbj->name }}</option>
+                                                            @endforeach
                                                         </optgroup>
                                                     @endforeach
                                                 </select>
