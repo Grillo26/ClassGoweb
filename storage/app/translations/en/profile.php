@@ -16,8 +16,7 @@ return [
     'tagline' => 'Your tagline',
     'tagline_placeholder' => 'Enter your tagline',
     'grade' => 'Your Grade',
-    'select_a_country' => 'Select a country',
-    'select_a_state' => 'Select a state',
+    'select_idioms' => 'Select a language',
     'male' => 'Male',
     'school_enrollment_id' => 'School Enrollment Id',
     'school_name' => 'School Name',
@@ -43,6 +42,8 @@ return [
     'address_placeholder' => 'Enter your address',
     'language' => 'Languages I know',
     'language_placeholder' => 'Choose your languages',
+    'search_language' => 'Search for a language...',
+    'no_languages_found' => 'No languages found',
     'description' => 'A brief introduction',
     'description_placeholder' => 'Add your introduction',
     'char_left' => 'Characters Left',
@@ -70,4 +71,5 @@ return [
     'description_text' => 'Please provide your educational background to help us assess your qualifications.',
     'resume_highlights' => 'Resume Highlights',
     'social_profile_placeholder' => 'Enter :profile_name :type',
+    
 ];

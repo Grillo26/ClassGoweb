@@ -38,6 +38,10 @@ class PersonalDetails extends Component
     public $long = '';
     public $native_language = '';
     public $user_languages = [];
+    public $selected_languages = [];
+
+    // Add this property to your PersonalDetails class
+public $selected_language = '';
 
     // Archivos
     public $image;
@@ -167,32 +171,28 @@ class PersonalDetails extends Component
     public function updateInfo()
     {
 
-
-        //dd("llega por aca");
-        try {
-
-
-            dd($this->first_name,"nombre ",
+         dd($this->first_name,"nombre ",
             $this->last_name,"apellido",
             $this->phone_number,"numero",
             $this->gender,"genero",
             $this->tagline,"tagline",
             $this->description,"descripcion"
-            ,$this->native_language,"idioma");
-            
-            $this->validate([
+            ,$this->native_language,"idioma",
+            $this->user_languages,"idiomas"
+        );
+
+
+        try {
+            // Validación temporal sin los campos de ubicación
+             $this->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'phone_number' => 'nullable|string|max:20',
                 'gender' => 'required|in:male,female,not_specified',
-                'country' => 'required|exists:countries,id',
-                'state' => 'nullable|exists:states,id',
-                'city' => 'required|string|max:255',
-                'address' => 'required|string|max:255',
                 'native_language' => 'required|string|max:255',
                 'user_languages' => 'required|array',
                 'description' => 'required|string|max:500',
-            ]);
+            ]); 
 
             // Actualiza datos del perfil
             $profileData = [
@@ -204,9 +204,6 @@ class PersonalDetails extends Component
                 'description' => $this->description,
                 'native_language' => $this->native_language,
             ];
-
-
-            dd("sdadasdas",$profileData);
 
             // Maneja la imagen si se ha subido una nueva
             if ($this->image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
@@ -220,6 +217,9 @@ class PersonalDetails extends Component
 
             // Guarda los datos
             $this->profileService->setUserProfile($profileData);
+            
+            // Comentamos temporalmente la actualización de la dirección
+            /*
             $this->profileService->setUserAddress([
                 'country_id' => $this->country,
                 'state_id' => $this->state,
@@ -228,6 +228,8 @@ class PersonalDetails extends Component
                 'lat' => $this->lat,
                 'long' => $this->long,
             ]);
+            */
+            
             $this->profileService->storeUserLanguages($this->user_languages);
 
             $this->dispatch('showAlertMessage', type: 'success', message: __('general.success_message'));
@@ -293,9 +295,9 @@ class PersonalDetails extends Component
     /**
      * Elimina un idioma de la lista de idiomas seleccionados
      */
-    public function removeLanguage($languageId)
+    public function removeLanguage($languageName)
     {
-        if (($key = array_search($languageId, $this->user_languages)) !== false) {
+        if (($key = array_search($languageName, $this->user_languages)) !== false) {
             unset($this->user_languages[$key]);
             $this->user_languages = array_values($this->user_languages); // Reindexar el array
         }
@@ -320,5 +322,21 @@ class PersonalDetails extends Component
             ->take(20)
             ->get()
             ->toArray();
+    }
+
+    public function updatedSelectedLanguages($value)
+    {
+        if (is_array($value)) {
+            foreach ($value as $langId) {
+                if (!in_array($langId, $this->user_languages) && $langId != $this->native_language) {
+                    $this->user_languages[] = $langId;
+                }
+            }
+        } else {
+            if (!in_array($value, $this->user_languages) && $value != $this->native_language) {
+                $this->user_languages[] = $value;
+            }
+        }
+        $this->selected_languages = [];
     }
 }

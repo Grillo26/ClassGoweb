@@ -1,408 +1,343 @@
-{{-- Contenedor principal del componente --}}
 <div class="am-profile-setting">
-    {{-- Título de la sección --}}
-    @slot('title')
-        {{ __('profile.personal_details') }}
-    @endslot
-
-    {{-- Incluye las pestañas de navegación --}}
-    @include('livewire.pages.common.profile-settings.tabs')
-
-    {{-- Contenedor principal de la información del usuario --}}
-    <div class="am-userperinfo">
-        {{-- Encabezado con título y descripción --}}
-        <div class="am-title_wrap">
-            <div class="am-title">
-                <h2>{{ __('profile.personal_details') }}</h2>
-                <p>{{ __('profile.personal_detail_desc') }}</p>
-            </div>
+    <!-- Pantalla de carga -->
+    @if($isLoading)
+    <div class="flex justify-center items-center h-64">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">{{ __('general.loading') }}...</span>
         </div>
+    </div>
+    @else
+    <div class="am-userperinfo">
+        <h2 class="text-2xl font-semibold mb-8 text-center text-gray-800">{{ __('profile.personal_details') }}</h2>
 
-        {{-- Formulario principal --}}
-        <form wire:submit="updateInfo" class="am-themeform am-themeform_personalinfo">
-            @if($isLoading)
-                @include('skeletons.personal-details')
-            @else
-                <fieldset>
-                    {{-- Nombre completo --}}
-                    <div class="form-group">
-                        <x-input-label for="name" class="am-important" :value="__('profile.full_name')" />
-                        <div class="form-group-two-wrap">
-                            <div @class(['form-control_wrap', 'am-invalid' => $errors->has('first_name')])>
-                                <x-text-input wire:model="first_name" placeholder="{{ __('profile.first_name') }}" type="text" />
-                                <x-input-error field_name="first_name" />
-                            </div>
-                            <div @class(['form-control_wrap', 'am-invalid' => $errors->has('last_name')])>
-                                <x-text-input wire:model="last_name" placeholder="{{ __('profile.last_name') }}" type="text" />
-                                <x-input-error field_name="last_name" />
-                            </div>
-                        </div>
+        <form wire:submit.prevent="updateInfo" class="am-themeform am-themeform_personalinfo">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Sección de información personal -->
+                <div class="col-span-2">
+                    <h3 style="color:white;" class="text-xl font-medium mb-4">{{ __('profile.basic_info') }}</h3>
+                </div>
+
+                <!-- Nombre -->
+                <div>
+                    <label style="color:white;" for="first_name" class="block text-sm font-medium text-gray-700">
+                        {{ __('profile.first_name') }} <span class="text-red-500"></span>
+                    </label>
+                    <input type="text"
+                        id="first_name"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        wire:model="first_name">
+                    @error('first_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Apellido -->
+                <div>
+                    <label style="color:white;" for="last_name" class="block text-sm font-medium text-gray-700">
+                        {{ __('profile.last_name') }} <span class="text-red-500"></span>
+                    </label>
+                    <input type="text"
+                        id="last_name"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        wire:model="last_name">
+                    @error('last_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Email (deshabilitado) -->
+                <div>
+                    <label style="color:white;" for="email" class="block text-sm font-medium text-gray-700">
+                        {{ __('profile.email') }}
+                    </label>
+                    <input type="email"
+                        id="email"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100"
+                        wire:model="email"
+                        disabled>
+                </div>
+
+                <!-- Teléfono -->
+                <div>
+                    <label style="color:white;" for="phone_number" class="block text-sm font-medium text-gray-700">
+                        {{ __('profile.phone_number') }}
+                    </label>
+                    <input type="tel"
+                        id="phone_number"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        wire:model="phone_number">
+                    @error('phone_number') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Género -->
+                <div>
+                    <label style="color:white;" for="gender" class="block text-sm font-medium text-gray-700">
+                        {{ __('profile.gender') }} <span class="text-red-500"></span>
+                    </label>
+                    <select id="gender"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        wire:model="gender">
+                        <option value="male">{{ __('profile.male') }}</option>
+                        <option value="female">{{ __('profile.female') }}</option>
+                        <option value="not_specified">{{ __('profile.not_specified') }}</option>
+                    </select>
+                    @error('gender') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
+
+                <!-- Tagline -->
+                <div class="col-span-2">
+                    <label style="color:white;" for="tagline" class="block text-sm font-medium text-gray-700">
+                        {{ __('profile.tagline') }}
+                    </label>
+                    <input type="text"
+                        id="tagline"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        wire:model="tagline"
+                        placeholder="{{ __('profile.tagline_placeholder') }}">
+                </div>
+
+                <!-- Sección de Descripción -->
+                <div >
+                    <x-input-label for="introduction" class="am-important" :value="__('profile.description')" />
+                    <div class="am-editor-wrapper">
+                        <textarea wire:model="description" class="form-control" placeholder="{{ __('profile.description_placeholder') }}"></textarea>
+                        <x-input-error field_name="description" />
                     </div>
+                </div>
 
-                    {{-- Correo electrónico --}}
-                    <div class="form-group @error('email') am-invalid @enderror">
-                        <x-input-label for="email" class="am-important" :value="__('general.email')" />
-                        <x-text-input wire:model="email" disabled type="email" />
-                        <x-input-error field_name="email" />
-                    </div>
+                <!-- Sección de Idiomas -->
+              <!--   <div class="col-span-2 mt-6">
+                    <h3 class="text-xl font-medium mb-4">{{ __('profile.languages') }}</h3>
+                </div> -->
 
-                    {{-- Número de teléfono --}}
-                    <div class="form-group @error('phone_number') am-invalid @enderror">
-                        <x-input-label for="phone_number" :value="__('general.phone_number')" />
-                        <div class="form-control_wrap">
-                            <x-text-input wire:model="phone_number" placeholder="{{ __('general.enter_phone_number') }}" type="text" />
-                            <x-input-error field_name="phone_number" />
-                        </div>
-                    </div>
+                <!-- Idioma nativo -->
+                <div>
+                    <label for="native_language" class="block text-sm font-medium text-white">
+                        {{ __('profile.native_language') }} <span class="text-red-500"></span>
+                    </label>
+                    <select id="native_language"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        wire:model="native_language">
+                        <option value="">seleccione un idioma</option>
+                        @foreach($languages as $id => $name)
+                        <option value="{{ $name }}">{{ $name }}</option>
+                        @endforeach
+                    </select>
+                    @error('native_language') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
 
-                    {{-- Género --}}
-                    <div class="form-group @error('gender') am-invalid @enderror">
-                        <x-input-label for="gender" class="am-important" :value="__('profile.gender')" />
-                        <div class="am-radiowrap">
-                            <div class="am-radio">
-                                <input wire:model="gender" type="radio" id="male" name="gender" value="male">
-                                <label for="male">{{ __('profile.male') }}</label>
-                            </div>
-                            <div class="am-radio">
-                                <input wire:model="gender" type="radio" id="female" name="gender" value="female">
-                                <label for="female">{{__('profile.female')}}</label>
-                            </div>
-                            <div class="am-radio">
-                                <input wire:model="gender" type="radio" id="not_specified" name="gender" value="not_specified">
-                                <label for="not_specified">{{__('profile.not_specified')}}</label>
-                            </div>
-                        </div>
-                        <x-input-error field_name="gender" />
-                    </div>
-
-                    {{-- Idioma nativo --}}
-                    <div class="form-group @error('native_language') am-invalid @enderror">
-                        <x-input-label for="language" class="am-important" :value="__('profile.native_language')" />
-                        <div class="form-group-two-wrap am-nativelang">
-                            <span class="am-select" wire:ignore>
-                                <select class="am-select2" data-searchable="true" id="native_language" data-wiremodel="native_language">
-                                    <option value="">{{ __('profile.select_a_native_language') }}</option>
-                                    @foreach ($languages as $id => $language)
-                                        <option value="{{ $id }}" {{ $id == $this->native_language ? 'selected' : '' }}>{{ $language }}</option>
-                                    @endforeach
-                                </select>
-                            </span>
-                            <x-input-error field_name="native_language" />
-                        </div>
-                    </div>
-
-                    {{-- Idiomas conocidos --}}
-                    <div class="form-group am-knowlanguages @error('user_languages') am-invalid @enderror">
-                        <x-input-label for="Languages" class="am-important" :value="__('profile.language')" />
-                        <div class="form-group-two-wrap am-nativelang">
-                            <div id="user_lang" wire:ignore>
-                                <select class="languages am-select2" 
-                                        id="user_languages" 
-                                        multiple="multiple" 
-                                        data-placeholder="{{ __('profile.language_placeholder') }}">
-                                    @foreach ($languages as $id => $language)
-                                        <option value="{{ $id }}" 
-                                            {{ in_array($id, $user_languages) ? 'selected' : '' }}>
-                                            {{ $language }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <x-input-error field_name="user_languages" />
-                        </div>
-                    </div>
-
-                    {{-- Descripción --}}
-                    <div class="form-group @error('description') am-invalid @enderror">
-                        <x-input-label for="introduction" class="am-important" :value="__('profile.description')" />
-                        <div class="am-editor-wrapper">
-                            <div class="am-custom-editor am-custom-textarea" wire:ignore>
-                                <textarea id="profile_desc" class="form-control" placeholder="{{ __('profile.description_placeholder') }}" data-textarea="profile_desc">{{ $description }}</textarea>
-                                <span class="characters-count"></span>
-                            </div>
-                            <x-input-error field_name="description" />
-                        </div>
-                    </div>
-
-                    {{-- Foto de perfil --}}
-                    <div class="form-group">
-                        <x-input-label class="am-important" :value="__('profile.profile_photo')" />
-                        <div class="am-uploadoption" x-data="{isUploading:false, isDragging:false}">
-                            <div class="upload-section" x-data="{ isDragging: false }"
-                                x-on:dragover.prevent="isDragging = true"
-                                x-on:dragleave.prevent="isDragging = false"
-                                x-on:drop.prevent="isDragging = false; $wire.upload('image', $event.dataTransfer.files[0])"
-                                :class="{ 'dragging': isDragging }">
-                                <input type="file" 
-                                    x-on:change="$wire.upload('image', $event.target.files[0])"
-                                    accept="image/*"
-                                    class="hidden" 
-                                    id="profileImage">
-                                <label for="profileImage" class="cursor-pointer">
-                                    <div class="text-center">
-                                        <i class="fas fa-camera text-4xl mb-2"></i>
-                                        <p class="text-sm text-gray-600">
-                                            @if($isUploadingImage)
-                                                <span class="text-primary">Subiendo imagen...</span>
-                                            @else
-                                                {{ __('profile.drag_drop_image') }}
-                                            @endif
-                                        </p>
-                                    </div>
-                                </label>
-                            </div>
-
-                            @if($image)
-                                <div class="am-uploadedfile">
-                                    <img src="{{ $image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ? $image->temporaryUrl() : Storage::url($image) }}" alt="{{ $imageName }}">
-                                    <span>{{ $imageName ?: basename($image) }}</span>
-                                    <a href="#" wire:click.prevent="removeMedia('image')" class="am-delitem">
-                                        <i class="am-icon-trash-02"></i>
-                                    </a>
-                                </div>
-                            @endif
-                            <x-input-error field_name="image" />
-                        </div>
-                    </div>
-
-                    {{-- Video de introducción (solo para tutores) --}}
-                    @role('tutor')
-                        <div class="form-group">
-                            <x-input-label for="intro_video" :value="__('profile.intro_video')" />
-                            <div class="am-uploadoption" x-data="{isUploading:false, isDragging:false}">
-                                <div class="upload-section" x-data="{ isDragging: false }"
-                                    x-on:dragover.prevent="isDragging = true"
-                                    x-on:dragleave.prevent="isDragging = false"
-                                    x-on:drop.prevent="isDragging = false; $wire.upload('intro_video', $event.dataTransfer.files[0])"
-                                    :class="{ 'dragging': isDragging }">
-                                    <input type="file" 
-                                        x-on:change="$wire.upload('intro_video', $event.target.files[0])"
-                                        accept="{{ implode(',', array_map(fn($ext) => '.'.$ext, $allowVideoFileExt)) }}"
-                                        class="hidden" 
-                                        id="introVideo">
-                                    <label for="introVideo" class="cursor-pointer">
-                                        <div class="text-center">
-                                            <i class="fas fa-video text-4xl mb-2"></i>
-                                            <p class="text-sm text-gray-600">
-                                                @if($isUploadingVideo)
-                                                    <span class="text-primary">Subiendo video...</span>
-                                                @else
-                                                    {{ __('profile.drag_drop_video') }}
-                                                @endif
-                                            </p>
+                <!-- Otros idiomas -->
+                <div>
+                    <label for="languages" class="form-label text-white mb-3">
+                        {{ __('profile.other_languages') }} <span class="text-danger">*</span>
+                    </label>
+                    <div class="mb-3">
+                        <div class="dropdown">
+                            <button class="btn bg-white dropdown-toggle w-100 text-start" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                             seleccion los idiomas
+                            </button>
+                            <ul style=" list-style-type: none;max-height: 300px; overflow-y: auto;" class="dropdown-menu w-100" aria-labelledby="languageDropdown" >
+                                @foreach($languages as $id => $name)
+                                @if(!in_array($id, $user_languages) && $id != $native_language)
+                                <li class="border-bottom">
+                                    <div class="dropdown-item py-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" 
+                                                wire:model.live="selected_languages" 
+                                                value="{{ $id }}" 
+                                                id="lang{{ $id }}">
+                                            <label class="form-check-label" for="lang{{ $id }}">
+                                                {{ $name }}
+                                            </label>
                                         </div>
+                                    </div>
+                                </li>
+                                @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                        <div class="form-text text-white-50 mt-2">
+                            {{ __('profile.select_multiple') }}
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        @foreach($user_languages as $langId)
+                        @if(isset($languages[$langId]))
+                        <div class="badge bg-primary p-2 d-flex align-items-center" style="font-size: 0.9rem;">
+                            <span class="text-white">{{ $languages[$langId] }}</span>
+                            <button type="button"
+                                class="btn-close btn-close-white ms-2"
+                                style="font-size: 0.7rem;"
+                                wire:click="removeLanguage({{ $langId }})">
+                            </button>
+                        </div>
+                        @endif
+                        @endforeach
+                    </div>
+                    @error('user_languages') 
+                        <div class="invalid-feedback d-block">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
+                <!-- Sección de Ubicación -->
+
+
+
+
+
+
+
+               
+                <!-- Foto de perfil -->
+                <div class="col-span-2">
+                    <div style="border-radius: 20px; margin:20px" class="bg-white p-5  border-gray-200">
+                        <label class="block text-sm font-medium text-gray-700 mb-4">
+                            {{ __('profile.profile_picture') }}
+                        </label>
+                        <div class="flex items-start space-x-6">
+                            <!-- Preview de imagen -->
+                            <div class="flex-shrink-0" style="max-width: 100px; max-height: 100px;">
+                                @if($image && !$image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
+                                <img src="{{ Storage::url($image) }}" alt="Profile" class="img-fluid rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #e9ecef; box-shadow: 0 1px 3px rgba(0,0,0,0.1); max-width: 100%; max-height: 100%;">
+                                @elseif($image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
+                                <img src="{{ $image->temporaryUrl() }}" alt="Profile" class="img-fluid rounded-circle" style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #e9ecef; box-shadow: 0 1px 3px rgba(0,0,0,0.1); max-width: 100%; max-height: 100%;">
+                                @else
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; background-color: #f8f9fa; border: 2px solid #e9ecef; box-shadow: 0 1px 3px rgba(0,0,0,0.1); max-width: 100%; max-height: 100%;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 48px; height: 48px; color: #6c757d" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                                @endif
+                            </div>
+
+                            <!-- Controles para subir/eliminar -->
+                            <div class="flex-grow">
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <label for="image-upload" class="cursor-pointer px-5 py-2.5 bg-blue-500 text-black text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150">
+                                        {{ __('profile.upload_image') }}
+                                        <input id="image-upload"
+                                            type="file"
+                                            class="sr-only"
+                                            wire:model="image"
+                                            wire:loading.attr="disabled">
                                     </label>
+
+                                    @if($image)
+                                    <button type="button"
+                                        class="px-5 py-2.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150"
+                                        wire:click="removeMedia('image')">
+                                        {{ __('profile.remove') }}
+                                    </button>
+                                    @endif
                                 </div>
 
-                                @if($intro_video)
-                                    <div class="am-uploadedfile">
-                                        <a href="{{ $intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile ? $intro_video->temporaryUrl() : Storage::url($intro_video) }}" 
-                                           data-vbtype="iframe" 
-                                           data-gall="gall" 
-                                           class="tu-themegallery tu-thumbnails_content">
-                                            <figure>
-                                                <img src="{{ asset('images/video.jpg') }}" alt="{{ __('profile.intro_video') }}">
-                                            </figure>
-                                            <i class="fas fa-play"></i>
-                                        </a>
-                                        <span>{{ $videoName ?: basename($intro_video) }}</span>
-                                        <a href="#" wire:click.prevent="removeMedia('video')" class="am-delitem">
-                                            <i class="am-icon-trash-02"></i>
-                                        </a>
-                                    </div>
+                                <!-- Mensaje de carga -->
+                                @if($isUploadingImage)
+                                <div class="mt-3">
+                                    <span class="text-sm text-blue-500">{{ __('profile.uploading') }}...</span>
+                                </div>
                                 @endif
-                                <x-input-error field_name="intro_video" />
+
+                                @if($imageName)
+                                <div class="mt-2 text-sm text-gray-500 truncate max-w-xs">
+                                    {{ $imageName }}
+                                </div>
+                                @endif
+
+                                <div class="mt-4 text-xs text-gray-900">
+                                    {{ __('profile.allowed_formats') }}: {{ implode(', ', $allowImgFileExt) }} ({{ __('profile.max') }} {{ $maxImageSize }}MB)
+                                </div>
+
+                                @error('image') <span class="text-red-500 text-sm mt-2 block">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                    @endrole
-
-                    {{-- Botones de acción --}}
-                    <div class="form-group am-form-btns">
-                        <span>{{ __('profile.latest_changes_the_live') }}</span>
-                        <x-primary-button wire:loading.class="am-btn_disable" wire:target="updateInfo">
-                            {{ __('general.save_update') }}
-                        </x-primary-button>
                     </div>
-                </fieldset>
-            @endif
+                </div>
+
+                <!-- Video de presentación -->
+                <div style="border-radius: 20px; margin:20px" class="bg-white p-5  border-gray-200">
+                    <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
+                        <label class="block text-sm font-medium text-gray-700 mb-4">
+                            {{ __('profile.intro_video') }}
+                        </label>
+                        <div class="flex items-start space-x-6">
+                            <!-- Preview del video -->
+                            <div class="flex-shrink-0">
+                                @if($intro_video && !$intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
+                                <div class="w-[100px] h-[100px] bg-gray-700 rounded-lg flex items-center justify-center relative overflow-hidden border-2 border-gray-600 shadow-md">
+                                    <video class="absolute inset-0 w-full h-full object-cover">
+                                        <source src="{{ Storage::url($intro_video) }}" type="video/mp4">
+                                    </video>
+                                    <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                @else
+                                <div class="w-[100px] h-[100px] bg-gray-700 rounded-lg flex items-center justify-center border-2 border-gray-600 shadow-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                @endif
+                            </div>
+
+                            <!-- Controles para subir/eliminar -->
+                            <div class="flex-grow">
+                                <div class="flex items-center space-x-4">
+                                    <label for="video-upload" class="cursor-pointer px-6 py-3 bg-blue-600 text-black text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition duration-150">
+                                        {{ __('profile.upload_video') }}
+                                        <input id="video-upload"
+                                            type="file"
+                                            class="sr-only"
+                                            wire:model="intro_video"
+                                            wire:loading.attr="disabled">
+                                    </label>
+
+                                    @if($intro_video)
+                                    <button type="button"
+                                        class="px-6 py-3 border border-gray-600 rounded-lg text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition duration-150"
+                                        wire:click="removeMedia('video')">
+                                        {{ __('profile.remove') }}
+                                    </button>
+                                    @endif
+                                </div>
+
+                                <!-- Mensaje de carga -->
+                                @if($isUploadingVideo)
+                                <div class="mt-3">
+                                    <span class="text-sm text-blue-400">{{ __('profile.uploading') }}...</span>
+                                </div>
+                                @endif
+
+                                @if($videoName)
+                                <div class="mt-2 text-sm text-gray-400">
+                                    {{ $videoName }}
+                                </div>
+                                @endif
+
+                                <div class="mt-2 text-sm text-gray-800">
+                                    {{ __('profile.allowed_formats') }}: {{ implode(', ', $allowVideoFileExt) }} ({{ __('profile.max') }} {{ $maxVideoSize }}MB)
+                                </div>
+
+                                @error('intro_video') <span class="text-red-400 text-sm mt-2">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            {{-- Botones de acción --}}
+            <div class="form-group am-form-btns">
+                <span>{{ __('profile.latest_changes_the_live') }}</span>
+                <x-primary-button type="submit" wire:loading.class="am-btn_disable" wire:target="updateInfo">
+                    {{ __('general.save_update') }}
+                </x-primary-button>
+            </div>
+
         </form>
     </div>
-</div>
-
-{{-- Estilos necesarios --}}
-@push('styles')
-    @vite([
-        'public/css/croppie.css',
-        'public/summernote/summernote-lite.min.css',
-        'public/css/venobox.min.css',
-    ])
-@endpush
-
-{{-- Scripts necesarios --}}
-@push('scripts')
-    <script defer src="{{ asset('js/croppie.min.js')}}"></script>
-    <script defer src="{{ asset('js/venobox.min.js')}}"></script>
-    <script defer src="{{ asset('summernote/summernote-lite.min.js')}}"></script>
-
-    {{-- Script para Google Places --}}
-    @if($enableGooglePlaces)
-        <script>
-            function initializePlaceApi() {
-                const tutorAddress = document.getElementById('user_address');
-                if (tutorAddress) {
-                    tutorAddress.addEventListener('input', function(e) {
-                        if (e.target.value == '') {
-                            Livewire.dispatch('address-cleared');
-                        }
-                    });
-
-                    if(typeof google != 'undefined' && typeof google.maps.places != 'undefined'){
-                        const autocompleteTutor = new google.maps.places.Autocomplete(tutorAddress);
-                        google.maps.event.addListener(autocompleteTutor, 'place_changed', function () {
-                            const place = autocompleteTutor.getPlace();
-                            const address = place.formatted_address;
-                            const lat = place.geometry.location.lat();
-                            const lng = place.geometry.location.lng();
-                            
-                            let countryCode = '';
-                            place.address_components?.forEach((item) => {
-                                if(item.types.includes('country')){
-                                    countryCode = item.short_name;
-                                }
-                            });
-
-                            Livewire.dispatch('address-updated', {
-                                address: address,
-                                lat: lat,
-                                lng: lng,
-                                countryCode: countryCode
-                            });
-                        });
-                    }
-                }
-            }
-
-            if(document.readyState === 'complete') {
-                initializePlaceApi();
-            } else {
-                window.addEventListener('load', initializePlaceApi);
-            }
-        </script>
     @endif
-
-    {{-- Script principal --}}
-    <script type="text/javascript" data-navigate-once>
-        const livewireComponentId = "{{ $this->getId() }}";
-        let livewireComponent = null;
-        
-        // Función para inicializar cualquier select con Select2
-        function initializeSingleSelect(selector, options, livewireModel, isMultiple = false) {
-            const element = $(selector);
-            if (element.length) {
-                if (element.data('select2')) { 
-                    element.select2('destroy'); 
-                }
-                
-                try {
-                    const defaultOptions = {
-                        width: '100%',
-                        placeholder: element.data('placeholder') || '',
-                        allowClear: true,
-                        language: { 
-                            noResults: function() { return "{{ __('general.no_results_found') }}"; }, 
-                            searching: function() { return "{{ __('general.searching') }}..."; } 
-                        }
-                    };
-
-                    const selectOptions = {
-                        ...defaultOptions,
-                        ...options,
-                        multiple: isMultiple,
-                        closeOnSelect: !isMultiple
-                    };
-
-                    element.select2(selectOptions).on('change', function(e) {
-                        if(livewireComponent) {
-                            const value = $(this).val();
-                            livewireComponent.set(livewireModel, value);
-                        }
-                    });
-                    return true;
-                } catch (error) {
-                    console.error(`Select2 Init Error ${selector}:`, error);
-                }
-            }
-            return false;
-        }
-        
-        // Inicializa todos los selectores
-        function initializeAllSelects() {
-            if (!livewireComponent) { 
-                try { 
-                    livewireComponent = window.Livewire.find(livewireComponentId); 
-                } catch(e) { 
-                    console.error('Cannot find Livewire component:', e);
-                    return; 
-                }
-            }
-            
-            // País
-            initializeSingleSelect('#user_country', {
-                dropdownParent: $('#user_country').closest('.form-group-half'), 
-                placeholder: "{{ __('profile.select_a_country') }}"
-            }, 'country');
-
-            // Estado
-            initializeSingleSelect('#country_state', {
-                dropdownParent: $('#country_state').closest('.form-group-half'),
-                placeholder: "{{ __('profile.select_a_state') }}"
-            }, 'state');
-
-            // Idioma Nativo
-            initializeSingleSelect('#native_language', {
-                dropdownParent: $('#native_language').closest('.am-nativelang'), 
-                placeholder: "{{ __('profile.select_a_native_language') }}"
-            }, 'native_language');
-            
-            // Idiomas Conocidos (Multiple)
-            initializeSingleSelect('#user_languages', {
-                dropdownParent: $('#user_languages').closest('.am-nativelang'),
-                placeholder: "{{ __('profile.language_placeholder') }}",
-                tags: false,
-                tokenSeparators: [',', ' '],
-                maximumSelectionLength: 5
-            }, 'user_languages', true);
-        }
-
-        // Eventos de Livewire
-        document.addEventListener('livewire:init', ({ component }) => {
-            if (component && component.id === livewireComponentId) {
-                livewireComponent = component;
-                requestAnimationFrame(initializeAllSelects);
-            }
-        });
-        
-        document.addEventListener('livewire:update', ({ component }) => {
-            if (component && component.id === livewireComponentId) {
-                livewireComponent = component;
-                initializeAllSelects();
-            }
-        });
-
-        // Eventos de Google Places
-        document.addEventListener('address-cleared', () => {
-            if (livewireComponent) {
-                livewireComponent.set('address', '');
-            }
-        });
-
-        document.addEventListener('address-updated', (event) => {
-            if (livewireComponent) {
-                livewireComponent.set('address', event.detail.address);
-                livewireComponent.set('lat', event.detail.lat);
-                livewireComponent.set('long', event.detail.lng);
-                livewireComponent.set('countryName', event.detail.countryCode);
-            }
-        });
-    </script>
-@endpush
+</div>
