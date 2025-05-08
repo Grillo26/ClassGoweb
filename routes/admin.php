@@ -24,6 +24,7 @@ use App\Livewire\Pages\Admin\Taxonomy\SubjectGroups;
 use App\Livewire\Pages\Admin\Taxonomy\Subjects;
 use App\Livewire\Pages\Admin\Upgrade\Upgrade;
 use App\Livewire\Pages\Admin\Users\Users;
+use App\Http\Controllers\Admin\AlianzaController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -67,4 +68,15 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::get('clear-cache', [GeneralController::class, 'clearCache'])->name('clear-cache');
     Route::post('update-smtp-settings', [GeneralController::class, 'updateSMTPSettings'])->name('update-smtp-settings');
     Route::post('update-social-login-settings', [GeneralController::class, 'updateSocialLoginSettings'])->name('update-social-login-settings');
+
+    // Rutas para Alianzas
+    Route::group(['prefix' => 'alianzas', 'as' => 'alianzas.'], function () {
+        Route::get('/', [AlianzaController::class, 'index'])->name('index');
+        Route::get('/create', [AlianzaController::class, 'create'])->name('create');
+        Route::post('/store', [AlianzaController::class, 'store'])->name('store');
+        Route::get('/{alianza}/edit', [AlianzaController::class, 'edit'])->name('edit');
+        Route::put('/{alianza}', [AlianzaController::class, 'update'])->name('update');
+        Route::delete('/{alianza}', [AlianzaController::class, 'destroy'])->name('destroy');
+        Route::post('/{alianza}/toggle-status', [AlianzaController::class, 'toggleStatus'])->name('toggle-status');
+    });
 });

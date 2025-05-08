@@ -13,6 +13,7 @@
                 "type": "path",
                 "url": "packages/laraguppy",
                 "reference": "0fc02cb1ea770adf0a81d49ad039109079538f9c"
+                "reference": "0fc02cb1ea770adf0a81d49ad039109079538f9c"
             },
             "require": {
                 "laravel/reverb": "@beta"
@@ -49,6 +50,7 @@
                 "type": "path",
                 "url": "packages/laravel-installer",
                 "reference": "2c7b59951c2a518e67cd89c45bb2839c7116028a"
+                "reference": "2c7b59951c2a518e67cd89c45bb2839c7116028a"
             },
             "type": "library",
             "autoload": {
@@ -80,6 +82,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/laravel-translations",
+                "reference": "c862f96ce747a37bec8d75f3ce22e1dc8e4f5f45"
                 "reference": "c862f96ce747a37bec8d75f3ce22e1dc8e4f5f45"
             },
             "require": {
@@ -175,6 +178,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/scssphp",
+                "reference": "dfdc374085cba61b6f686c2d2adac84f81aa82ce"
                 "reference": "dfdc374085cba61b6f686c2d2adac84f81aa82ce"
             },
             "require": {
@@ -302,16 +306,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.343.4",
+            "version": "3.342.36",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "735a810caf3f48d6da7d4887e2c904ead7ed326e"
+                "reference": "9a0ec6b6d503409ae15e090467d3bd6d723b6c6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/735a810caf3f48d6da7d4887e2c904ead7ed326e",
-                "reference": "735a810caf3f48d6da7d4887e2c904ead7ed326e",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/9a0ec6b6d503409ae15e090467d3bd6d723b6c6a",
+                "reference": "9a0ec6b6d503409ae15e090467d3bd6d723b6c6a",
                 "shasum": ""
             },
             "require": {
@@ -393,9 +397,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.343.4"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.36"
             },
-            "time": "2025-05-05T18:06:12+00:00"
+            "time": "2025-04-28T18:01:39+00:00"
         },
         {
             "name": "based/momentum-modal",
@@ -2621,6 +2625,7 @@
                 "type": "path",
                 "url": "packages/larabuild/optionbuilder",
                 "reference": "8248889e31aa068650be13116241f9caffb4081d"
+                "reference": "8248889e31aa068650be13116241f9caffb4081d"
             },
             "type": "library",
             "extra": {
@@ -2654,6 +2659,7 @@
                 "type": "path",
                 "url": "packages/larabuild/pagebuilder",
                 "reference": "7bb310cd03c57fccd0cc5b610415b9af767de7aa"
+                "reference": "7bb310cd03c57fccd0cc5b610415b9af767de7aa"
             },
             "type": "library",
             "extra": {
@@ -2683,13 +2689,17 @@
         {
             "name": "laravel/framework",
             "version": "v11.44.7",
+            "version": "v11.44.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
                 "reference": "00bc6ac91a6d577bf051c18ddaa638c0d221e1c7"
+                "reference": "00bc6ac91a6d577bf051c18ddaa638c0d221e1c7"
             },
             "dist": {
                 "type": "zip",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/00bc6ac91a6d577bf051c18ddaa638c0d221e1c7",
+                "reference": "00bc6ac91a6d577bf051c18ddaa638c0d221e1c7",
                 "url": "https://api.github.com/repos/laravel/framework/zipball/00bc6ac91a6d577bf051c18ddaa638c0d221e1c7",
                 "reference": "00bc6ac91a6d577bf051c18ddaa638c0d221e1c7",
                 "shasum": ""
@@ -2893,6 +2903,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
+            "time": "2025-04-25T12:40:47+00:00"
             "time": "2025-04-25T12:40:47+00:00"
         },
         {
@@ -7336,13 +7347,17 @@
         {
             "name": "spatie/browsershot",
             "version": "5.0.9",
+            "version": "5.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/browsershot.git",
                 "reference": "667b40b2a283486a7a1fc9208221e0d0471ac3e6"
+                "reference": "667b40b2a283486a7a1fc9208221e0d0471ac3e6"
             },
             "dist": {
                 "type": "zip",
+                "url": "https://api.github.com/repos/spatie/browsershot/zipball/667b40b2a283486a7a1fc9208221e0d0471ac3e6",
+                "reference": "667b40b2a283486a7a1fc9208221e0d0471ac3e6",
                 "url": "https://api.github.com/repos/spatie/browsershot/zipball/667b40b2a283486a7a1fc9208221e0d0471ac3e6",
                 "reference": "667b40b2a283486a7a1fc9208221e0d0471ac3e6",
                 "shasum": ""
@@ -7392,6 +7407,7 @@
             ],
             "support": {
                 "source": "https://github.com/spatie/browsershot/tree/5.0.9"
+                "source": "https://github.com/spatie/browsershot/tree/5.0.9"
             },
             "funding": [
                 {
@@ -7399,6 +7415,7 @@
                     "type": "github"
                 }
             ],
+            "time": "2025-04-28T08:54:51+00:00"
             "time": "2025-04-28T08:54:51+00:00"
         },
         {
@@ -11085,13 +11102,17 @@
         {
             "name": "myclabs/deep-copy",
             "version": "1.13.1",
+            "version": "1.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
                 "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c"
+                "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c"
             },
             "dist": {
                 "type": "zip",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/1720ddd719e16cf0db4eb1c6eca108031636d46c",
+                "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c",
                 "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/1720ddd719e16cf0db4eb1c6eca108031636d46c",
                 "reference": "1720ddd719e16cf0db4eb1c6eca108031636d46c",
                 "shasum": ""
@@ -11133,6 +11154,7 @@
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
                 "source": "https://github.com/myclabs/DeepCopy/tree/1.13.1"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.13.1"
             },
             "funding": [
                 {
@@ -11140,6 +11162,7 @@
                     "type": "tidelift"
                 }
             ],
+            "time": "2025-04-29T12:36:36+00:00"
             "time": "2025-04-29T12:36:36+00:00"
         },
         {

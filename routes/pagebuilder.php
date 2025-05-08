@@ -51,6 +51,13 @@ Route::get('get-pb-section', [PageBuilderController::class, 'getPageSectionHtml'
 
 Route::get('pages/{id}/iframe', [PageBuilderController::class, 'iframe'])->name('pagebuilder.iframe');
 
+// Ruta específica para la página home
+Route::get('/', function (Request $request) {
+    $builder = new PageBuilderController();
+    return $builder->renderPage('/');
+})->name('home');
+
+// Ruta comodín para el resto de páginas
 Route::any('/{any}', function (Request $request) {
     $builder = new PageBuilderController();
     return $builder->renderPage($request->path());

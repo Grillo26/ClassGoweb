@@ -25,3 +25,4 @@ storage/app/google/credentials.json
 /node_modules/
 *.mp4 
 /reemplazos.txt
+/lang/

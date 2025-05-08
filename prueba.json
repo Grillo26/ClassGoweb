@@ -1,0 +1,137 @@
+{
+    "grids": [
+      {
+        "grid": "12x1",
+        "position": "0",
+        "grid_id": "ohlwRGszHM",
+        "data": [
+          [
+            {
+              "id": "2OZJRxycYf",
+              "section_id": "content-banner",
+              "position": "0"
+            }
+          ]
+        ]
+      },
+      {
+        "grid": "12x1",
+        "position": "1",
+        "grid_id": "7yrQ3mH5Ji",
+        "data": [
+          [
+            {
+              "id": "zjCtylOALm",
+              "section_id": "paragraph",
+              "position": "0"
+            },
+            {
+              "id": "37fe5c73ga",
+              "section_id": "paragraph",
+              "position": "1"
+            }
+          ]
+        ]
+      }
+    ],
+    "section_data": {
+      "2OZJRxycYf": {
+        "settings": {
+          "pre_heading": {
+            "value": "Terms and Conditions",
+            "is_array": "0"
+          },
+          "heading": {
+            "value": "Empoderando a los estudiantes en todo el mundo",
+            "is_array": "0"
+          },
+          "paragraph": {
+            "value": "Nos dedicamos a brindar experiencias de tutoría en línea personalizadas que liberen el potencial de cada estudiante.",
+            "is_array": "0"
+          },
+          "student_btn_url": {
+            "value": "",
+            "is_array": "0"
+          },
+          "student_btn_txt": {
+            "value": "",
+            "is_array": "0"
+          },
+          "tutor_btn_url": {
+            "value": "",
+            "is_array": "0"
+          },
+          "tutor_btn_txt": {
+            "value": "",
+            "is_array": "0"
+          }
+        }
+      },
+      "ohlwRGszHM": {
+        "styles": {
+          "content_width": "full_width",
+          "width-height-type": "px",
+          "width": "",
+          "height": "",
+          "min-width": "",
+          "max-width": "",
+          "min-height": "",
+          "max-height": "",
+          "margin-type": "px",
+          "margin-top": "",
+          "margin-right": "",
+          "margin-bottom": "",
+          "margin-left": "",
+          "padding-type": "px",
+          "padding-top": "",
+          "padding-right": "",
+          "padding-bottom": "",
+          "padding-left": "",
+          "z-index": "",
+          "classes": "",
+          "custom_attributes": "",
+          "background-size": "",
+          "background-position": ""
+        }
+      },
+      "zjCtylOALm": {
+        "settings": {
+          "heading": {
+            "value": "Términos y Condiciones",
+            "is_array": "0"
+          },
+          "paragraph": {
+  "value": "<div style='color:#fff !important;'>\r\n<h1>TÉRMINOS Y CONDICIONES DE USO DE ClassGO</h1>\r\n<p><strong>Fecha de última actualización:</strong> 5/5/2025</p>\r\n\r\n<h2>1. INTRODUCCIÓN</h2>\r\n<p>Bienvenido a ClassGo \"la Plataforma\", un servicio administrado por ClassGO S.R.L. Al registrarte o utilizar nuestros servicios, aceptas cumplir legalmente con los presentes Términos y Condiciones \"T & C\". Si no estás de acuerdo, por favor abstente de utilizar la plataforma.</p>\r\n\r\n<h2>2. CUENTAS DE USUARIO</h2>\r\n<h3>2.1 Registro y Verificación</h3>\r\n<p>Todos los usuarios que deseen acceder a los servicios de ClassGo deben completar el proceso de registro proporcionando información personal precisa y actualizada.</p>\r\n<ul>\r\n    <li><strong>Usuarios (Estudiantes):</strong> Nombre completo, correo electrónico, fecha de nacimiento y país de residencia.</li>\r\n    <li>Se debe aceptar expresamente la Política de Privacidad y los presentes Términos.</li>\r\n    <li><strong>Tutores:</strong> Además de los datos mencionados, deberán presentar documentación académica que acredite su idoneidad (título universitario, certificados, especializaciones, etc.).</li>\r\n    <li>ClassGo podrá solicitar entrevistas, validaciones adicionales o referencias para la verificación del perfil.</li>\r\n</ul>\r\n\r\n<h3>2.2 Veracidad y Actualización de Datos</h3>\r\n<p>El usuario es responsable de mantener sus datos personales y académicos actualizados en todo momento. ClassGo se reserva el derecho de suspender cuentas con información incorrecta, desactualizada o fraudulenta.</p>\r\n\r\n<h3>2.3 Seguridad y Responsabilidad de la Cuenta</h3>\r\n<p>Es responsabilidad del usuario mantener la confidencialidad de sus credenciales (correo y contraseña). No se permite compartir cuentas entre personas. El usuario deberá notificar de inmediato cualquier actividad sospechosa o uso no autorizado al correo de soporte. ClassGo no será responsable de accesos no autorizados causados por negligencia del usuario.</p>\r\n\r\n<h3>2.4 Edad Mínima</h3>\r\n<ul>\r\n    <li>Pueden registrarse usuarios mayores de 18 años.</li>\r\n    <li>Menores de edad pueden hacerlo con consentimiento escrito de un padre o tutor, enviado al correo <a href=\"mailto:classgobol@gmail.com\">classgobol@gmail.com</a>, y con supervisión permanente del adulto responsable.</li>\r\n</ul>\r\n\r\n<h3>2.5 Suspensión y Terminación de Cuentas</h3>\r\n<p>ClassGo se reserva el derecho de suspender temporal o permanentemente una cuenta en caso de:</p>\r\n<ul>\r\n    <li>Incumplimiento de los presentes Términos y Condiciones.</li>\r\n    <li>Actividades sospechosas, abusivas o ilegales.</li>\r\n    <li>Reportes reiterados de mala conducta por parte de otros usuarios.</li>\r\n</ul>\r\n<p>La decisión será notificada por correo electrónico y podrá incluir restricciones de acceso, eliminación de contenido o terminación definitiva del perfil.</p>\r\n\r\n<h2>3. POLÍTICAS DE USO</h2>\r\n<h3>3.1 Uso Aceptable de la Plataforma</h3>\r\n<p>El uso de ClassGo debe estar estrictamente orientado a fines educativos. Queda terminantemente prohibido:</p>\r\n<ul>\r\n    <li>Utilizar la plataforma para actividades ilícitas, engañosas o contrarias al orden público.</li>\r\n    <li>Realizar spam, phishing, fraudes, envío masivo de mensajes o actividades similares.</li>\r\n    <li>Usar la cuenta para obtener beneficios económicos externos a ClassGo sin autorización.</li>\r\n    <li>Manipular el sistema con software malicioso, bots, técnicas de scraping o ingeniería inversa.</li>\r\n    <li>Suplantar identidades de personas o instituciones.</li>\r\n</ul>\r\n<p>ClassGo se reserva el derecho de investigar, bloquear o eliminar cualquier cuenta que infrinja esta política.</p>\r\n\r\n<h3>3.2 Interacción entre Usuarios</h3>\r\n<p>Todos los usuarios deben mantener una conducta respetuosa, cordial y profesional. Se prohíbe:</p>\r\n<ul>\r\n    <li>El uso de lenguaje ofensivo, discriminatorio, difamatorio o violento.</li>\r\n    <li>El acoso, intimidación o manipulación psicológica hacia cualquier otro usuario.</li>\r\n    <li>El contacto no deseado fuera de la plataforma con fines personales o comerciales.</li>\r\n</ul>\r\n<p>Los reportes de comportamiento inapropiado serán investigados y pueden derivar en sanciones, suspensión o eliminación de la cuenta.</p>\r\n\r\n<h3>3.3 Uso de Contenido y Propiedad Intelectual</h3>\r\n<p><strong>Imágenes de perfil:</strong> Solo se aceptan archivos JPG o PNG de máximo 5 MB. Se prohíben imágenes con armas, contenido sexualizado o protegidas por derechos sin permiso.</p>\r\n<p><strong>Material educativo:</strong> Los tutores deben subir solo contenido original o bajo licencia de uso (por ejemplo, Creative Commons). Si se utilizan recursos externos, deben citarse correctamente las fuentes.</p>\r\n<p><strong>Derechos de ClassGo:</strong> El diseño, marca, logotipos, software y estructura de la plataforma son propiedad exclusiva de ClassGo.</p>\r\n\r\n<h3>3.4 Licencia de Uso del Contenido Subido por el Usuario</h3>\r\n<p>Al subir contenido a la plataforma, el usuario (ya sea tutor o estudiante) conserva la titularidad y derechos de autor sobre dicho material, pero otorga a ClassGo una licencia no exclusiva, mundial, libre de regalías, transferible y sublicenciable para utilizar dicho contenido con los siguientes fines:</p>\r\n<ul>\r\n    <li>Almacenamiento seguro en los servidores y bases de datos de ClassGo.</li>\r\n    <li>Visualización y reproducción del contenido dentro del entorno educativo digital de la plataforma (incluyendo aplicaciones móviles, sitio web, materiales promocionales internos y recursos para estudiantes).</li>\r\n    <li>Distribución limitada del contenido a otros usuarios registrados (por ejemplo, estudiantes en una sesión, tutores asignados, etc.) en función del propósito educativo del servicio.</li>\r\n    <li>Adaptación técnica del contenido, en caso de que sea necesario modificar el formato para asegurar su compatibilidad técnica con los sistemas de la plataforma (por ejemplo, convertir archivos a otros formatos, optimizar resolución, etc.).</li>\r\n</ul>\r\n\r\n<p>Esta licencia se otorga exclusivamente para fines relacionados con el funcionamiento, promoción y mejora de los servicios educativos ofrecidos por ClassGo. En ningún caso se permitirá a terceros utilizar dicho contenido fuera de la plataforma sin autorización expresa del titular.</p>\r\n\r\n<h2>4. PAGOS, REEMBOLSOS Y REPROGRAMACIONES</h2>\r\n<h3>4.1 Métodos de Pago</h3>\r\n<p>Aceptamos:</p>\r\n<ul>\r\n    <li>Tarjetas de débito/crédito (Visa, Mastercard), PayPal, y [otros especificar: Stripe, Razor Pay, etc.].</li>\r\n</ul>\r\n<p>Cada transacción generará un recibo electrónico.</p>\r\n\r\n<h3>4.2 Política de Reembolsos</h3>\r\n<p>Aplica en los siguientes casos:</p>\r\n<ul>\r\n    <li>Cancelación por parte del tutor.</li>\r\n    <li>Fallos técnicos atribuibles a ClassGo (ej. caída del sistema superior a 15 minutos).</li>\r\n</ul>\r\n<p><strong>Condiciones:</strong></p>\r\n<ul>\r\n    <li>Solicitud dentro de 48 horas naturales posteriores al incidente.</li>\r\n    <li>Procesamiento en un plazo de 48 horas hábiles.</li>\r\n</ul>\r\n\r\n<h2>5. CANCELACIONES Y REPROGRAMACIONES</h2>\r\n<h3>5.1 Cancelaciones por parte del Usuario</h3>\r\n<p>El usuario podrá cancelar o reprogramar una tutoría agendada bajo las siguientes condiciones:</p>\r\n<ul>\r\n    <li><strong>Con más de 24 horas de anticipación:</strong> El usuario podrá cancelar o reprogramar sin penalización. Si corresponde, se podrá solicitar el reembolso total del valor de la sesión o reprogramar sin costo adicional.</li>\r\n    <li><strong>Con menos de 24 horas de anticipación:</strong> La cancelación podrá estar sujeta a una penalización del 50% del valor de la sesión, la cual se aplicará como compensación al tutor por el tiempo reservado.</li>\r\n    <li><strong>Ausencia injustificada del usuario (no show):</strong> Si el usuario no asiste a la sesión sin aviso previo, se considerará como sesión realizada y no se otorgará reembolso. El tutor recibirá el pago correspondiente.</li>\r\n</ul>\r\n\r\n<h3>5.2 Cancelaciones por parte del Tutor</h3>\r\n<p>Los tutores deben cumplir con los horarios establecidos. Solo podrán cancelar por causa justificada, comunicando al estudiante con la mayor anticipación posible.</p>\r\n<ul>\r\n    <li><strong>Cancelación con aviso previo (mínimo 12 horas):</strong> El tutor deberá ofrecer al usuario opciones para reprogramar. No se aplicarán sanciones si es un evento ocasional y debidamente justificado.</li>\r\n    <li><strong>Cancelaciones frecuentes o injustificadas:</strong> Si un tutor realiza más de tres cancelaciones injustificadas en un mes, podrá recibir sanciones progresivas como advertencias, suspensión temporal o eliminación del perfil.</li>\r\n    <li><strong>Ausencia del tutor sin aviso:</strong> Se considerará una falta grave. El estudiante recibirá un reembolso total, y el tutor podrá ser sancionado con suspensión inmediata de la cuenta o expulsión de la plataforma.</li>\r\n</ul>\r\n\r\n<h3>5.3 Reprogramaciones</h3>\r\n<p>Tanto estudiantes como tutores pueden programar una sesión siempre que:</p>\r\n<ul>\r\n    <li>La solicitud se realiza con al menos 24 horas de anticipación.</li>\r\n    <li>Ambas partes llegaron a un acuerdo sobre el nuevo horario.</li>\r\n    <li>En caso de no llegar a un acuerdo, la sesión podrá ser cancelada aplicando la política correspondiente.</li>\r\n</ul>\r\n\r\n<h3>5.4 Resolución de Disputas</h3>\r\n<p>En caso de desacuerdo entre un tutor y un usuario respecto a una cancelación o reprogramación:</p>\r\n<ul>\r\n    <li>Las partes podrán presentar sus argumentos al equipo de soporte de ClassGo.</li>\r\n    <li>ClassGo actuará como mediador e implementará la solución más equitativa para ambas partes.</li>\r\n    <li>La decisión tomada será final, salvo disposición legal en contrario.</li>\r\n</ul>\r\n\r\n<h2>6. RESPONSABILIDADES</h2>\r\n<h3>6.1 Responsabilidades del Tutor</h3>\r\n<p>Los tutores registrados en ClassGo se comprometen a:</p>\r\n<ul>\r\n    <li><strong>Veracidad del perfil profesional:</strong> Ingresar y mantener actualizada la información académica y profesional. Proveer documentación verídica que acredite su formación y experiencia. No suplantar identidades ni presentar credenciales falsificadas.</li>\r\n    <li><strong>Calidad del servicio educativo:</strong> Preparar y brindar tutorías con puntualidad, claridad y estructura. Utilizar recursos pedagógicos adecuados y actualizados. Evitar contenido erróneo, obsoleto o no relevante para el aprendizaje del estudiante.</li>\r\n    <li><strong>Ética profesional y trato respetuoso:</strong> Mantener una conducta profesional durante todas las interacciones. Evitar comentarios ofensivos, discriminatorios, sexistas, racistas o de índole personal. No establecer relaciones personales inapropiadas con los estudiantes.</li>\r\n    <li><strong>Uso del contenido:</strong> Garantizar que el material compartido es de autoría propia o cuenta con licencia de uso. No utilizar recursos de otros tutores sin autorización explícita. Autorizar a ClassGo para mostrar y almacenar el contenido dentro del entorno educativo de la plataforma.</li>\r\n    <li><strong>Confidencialidad:</strong> Respetar la privacidad y datos personales de los estudiantes. No divulgar conversaciones, grabaciones ni información obtenida durante las sesiones sin consentimiento.</li>\r\n    <li><strong>Cumplimiento legal:</strong> Asegurarse de que su actividad como tutor cumple con la normativa educativa y laboral vigente en su país de residencia.</li>\r\n    <li><strong>Responsabilidad ante ausencias o cancelaciones:</strong> Notificar cancelaciones con la mayor antelación posible. Evitar cancelaciones reiteradas o ausencias injustificadas, las cuales pueden derivar en sanciones por parte de la plataforma.</li>\r\n</ul>\r\n\r\n<h3>6.2 Responsabilidades del Estudiante</h3>\r\n<p>Los estudiantes que utilizan ClassGo deben comprometerse a:</p>\r\n<ul>\r\n    <li><strong>Participación activa y puntualidad:</strong> Asistir a las sesiones en el horario acordado. Mantener una actitud participativa, receptiva y orientada al aprendizaje.</li>\r\n    <li><strong>Respeto hacia el tutor y el entorno virtual:</strong> Tratar con respeto a los tutores, evitando cualquier conducta abusiva, ofensiva o disruptiva. No grabar ni compartir sesiones sin autorización previa.</li>\r\n    <li><strong>Uso responsable de la plataforma:</strong> No utilizar ClassGo para fines distintos al aprendizaje (por ejemplo, fines comerciales o personales). No compartir acceso con terceros ni hacer uso indebido de las funcionalidades del sistema.</li>\r\n    <li><strong>Pago oportuno de las sesiones:</strong> Asegurarse de que los pagos se realicen a través de los métodos autorizados y en los plazos establecidos. No realizar reclamaciones indebidas por sesiones recibidas correctamente.</li>\r\n    <li><strong>Evaluación objetiva del tutor:</strong> Calificar de manera justa y constructiva el desempeño de los tutores al finalizar las sesiones, dentro del plazo de 72 horas.</li>\r\n    <li><strong>Protección de datos y privacidad:</strong> No divulgar datos personales de otros usuarios. Cumplir con las políticas de privacidad establecidas por ClassGo.</li>\r\n</ul>\r\n\r\n<h2>7. LIMITACIÓN DE RESPONSABILIDAD</h2>\r\n<p>ClassGo no será responsable por:</p>\r\n<ul>\r\n    <li>Daños indirectos, incluyendo pérdida de oportunidades laborales.</li>\r\n    <li>Conflictos entre usuarios y tutores.</li>\r\n    <li>Problemas técnicos ajenos a la plataforma (ej.: fallos del proveedor de internet del usuario).</li>\r\n</ul>\r\n\r\n<h2>8. MODIFICACIONES A LOS TÉRMINOS</h2>\r\n<p>Cualquier modificación será comunicada con al menos 15 días de anticipación mediante correo electrónico. El uso continuado de la plataforma implica la aceptación de los nuevos términos.</p>\r\n\r\n<h2>9. CONTACTO Y SOPORTE</h2>\r\n<p><strong>Soporte técnico:</strong> <a href=\"mailto:classgobol@gmail.com\">classgobol@gmail.com</a></p>\r\n<p><strong>Reclamos formales:</strong> enviar documentación física a CALLE ANGOSTURA, NRO: 314 BARRIO EL PARI UV: 28 MZA 12, ENTRE LA CALLE EMILIO FINOT Y LA AVENIDA ESCUADRON VELASCO.</p>\r\n\r\n<h2>10. JURISDICCIÓN Y RESOLUCIÓN DE CONFLICTOS</h2>\r\n<p>Este acuerdo se rige por la legislación vigente en el Estado Plurinacional de Bolivia, incluyendo las disposiciones aplicables del Código Civil, la Ley de Protección al Consumidor y demás normas relacionadas con servicios digitales y relaciones contractuales electrónicas.</p>\r\n\r\n<h3>1. Mecanismo preferente: conciliación o arbitraje</h3>\r\n<p>Se intentará resolver la controversia de forma amistosa mediante conciliación voluntaria o arbitraje institucional, de conformidad con lo establecido en la normativa boliviana y bajo los reglamentos del Centro de Conciliación y Arbitraje de la Cámara de Comercio y Servicios de Santa Cruz (CAINCO), u otra entidad reconocida acordada por ambas partes.</p>\r\n<ul>\r\n    <li>El procedimiento será confidencial, rápido y con carácter vinculante.</li>\r\n    <li>La parte interesada deberá iniciar el proceso enviando una solicitud formal al centro correspondiente.</li>\r\n    <li>Ambas partes se comprometen a acatar la decisión emitida por el tribunal arbitral o conciliador.</li>\r\n</ul>\r\n\r\n<h3>2. Instancia judicial subsidiaria</h3>\r\n<p>Si no se logra acuerdo en conciliación o si el arbitraje no puede llevarse a cabo por causas atribuibles a una de las partes o por disposición legal, las partes se someten a la jurisdicción ordinaria de los tribunales competentes de la ciudad de Santa Cruz de la Sierra, renunciando expresamente a cualquier otro fuero o jurisdicción que pudiera corresponderles.</p>\r\n\r\n<h3>3. Renuncia a acción colectiva</h3>\r\n<p>Los usuarios aceptan que cualquier acción legal deberá ser interpuesta de manera individual. No se permite la acumulación de demandas en calidad de acción colectiva o grupal contra ClassGo, salvo que lo exija expresamente una autoridad judicial competente.</p>\r\n\r\n<h3>4. Idioma y legislación aplicable</h3>\r\n<p>Todo procedimiento, ya sea conciliatorio, arbitral o judicial, se desarrollará en idioma español y conforme a las leyes sustantivas y procesales del Estado Plurinacional de Bolivia.</p>\r\n\r\n<h2>11. USO INTERNACIONAL</h2>\r\n<h3>1. Responsabilidad del usuario internacional</h3>\r\n<p>Si accedes o utilizas ClassGo desde fuera de Bolivia, lo haces bajo tu propia iniciativa y responsabilidad. Eres el único responsable de asegurar que el uso de los servicios, contenidos y funciones de la plataforma cumpla con las leyes, normativas y regulaciones locales del país desde el cual accedes. Esto incluye, pero no se limita a, normativas sobre educación en línea, protección de datos, comercio electrónico, propiedad intelectual y tributación digital.</p>\r\n\r\n<h3>2. Limitaciones de disponibilidad de servicios</h3>\r\n<p>Algunos servicios, características o métodos de pago pueden estar restringidos o no disponibles en ciertos territorios debido a:</p>\r\n<ul>\r\n    <li>Restricciones legales locales.</li>\r\n    <li>Normativas de exportación o control de servicios tecnológicos.</li>\r\n    <li>Incompatibilidad técnica con sistemas de pago o redes educativas externas.</li>\r\n    <li>Políticas internas de ClassGo para evitar incumplimientos regulatorios.</li>\r\n</ul>\r\n\r\n<p>En tales casos, ClassGo no será responsable por la imposibilidad de acceso total o parcial a determinadas funciones, siempre que estas restricciones están justificadas por motivos legales o técnicos.</p>\r\n\r\n<h3>3.</h3>\r\n<p>En tales casos, ClassGo no será responsable por la imposibilidad de acceso total o parcial a determinadas funciones, siempre que estas restricciones están justificadas por motivos legales o técnicos.</p>\r\n\r\n<h3>4. Idioma y soporte</h3><p>Toda la interfaz, documentación legal, soporte técnico y comunicaciones oficiales se encuentran disponibles únicamente en idioma español. Los usuarios que accedan desde otros países aceptan utilizar la plataforma bajo esta modalidad lingüística.</p>\r\n\r\n<h3>5. Jurisdicción y disputas internacionales</h3>\r\n<p>A pesar del uso internacional, cualquier disputa relacionada con la plataforma se regirá por la legislación boliviana y se someterá a los mecanismos de resolución de conflictos establecidos en la cláusula 10 de estos Términos y Condiciones.</p>\r\n\r\n<h3>6. Cumplimiento normativo global</h3>\r\n<p>ClassGo se reserva el derecho de restringir, suspender o cancelar cuentas de usuarios que, residiendo en el extranjero, infrinjan leyes locales o pongan en riesgo el cumplimiento normativo de la plataforma. Asimismo, nos reservamos el derecho de no operar en países con los que existan barreras regulatorias insalvables o conflictos legales que afecten la viabilidad del servicio.</p>\r\n</div>",
+  "is_array": "0"
+}
+        }
+      },
+      "7yrQ3mH5Ji": {
+        "styles": {
+          "content_width": "",
+          "width-height-type": "px",
+          "width": "",
+          "height": "",
+          "min-width": "",
+          "max-width": "",
+          "min-height": "",
+          "max-height": "",
+          "margin-type": "px",
+          "margin-top": "",
+          "margin-right": "",
+          "margin-bottom": "",
+          "margin-left": "",
+          "padding-type": "px",
+          "padding-top": "",
+          "padding-right": "",
+          "padding-bottom": "",
+          "padding-left": "",
+          "z-index": "",
+          "classes": "",
+          "custom_attributes": "",
+          "background-size": "",
+          "background-position": ""
+        }
+      }
+    }
+  }
