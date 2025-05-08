@@ -2,171 +2,162 @@
 
 namespace App\Livewire\Pages\Common\ProfileSettings;
 
-use App\Livewire\Forms\Common\ProfileSettings\PersonalDetailsForm;
 use App\Models\Country;
 use App\Models\Language;
-use App\Models\Subject;
 use App\Services\ProfileService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 /**
- * Componente Livewire para la gestión de detalles personales del perfil
- * Maneja la carga y actualización de información personal, incluyendo imágenes y videos
+ * Componente Livewire para la gestión de detalles personales
+ * Maneja la carga y actualización de información del perfil de usuario
  */
 class PersonalDetails extends Component
 {
-    // Trait para manejar la carga de archivos en Livewire
     use WithFileUploads;
 
-    // Propiedades públicas del componente
-    public PersonalDetailsForm $form; // Instancia del formulario de detalles personales
-    public $search = ''; // Término de búsqueda para países
-    public $image; // Archivo de imagen temporal
-    public $isUploading = false; // Estado general de carga
-    public $isUploadingImage = false; // Estado de carga de imagen
-    public $isUploadingVideo = false; // Estado de carga de video
+    // Propiedades del formulario
+    public $first_name = '';
+    public $last_name = '';
+    public $email = '';
+    public $phone_number = '';
+    public $gender = 'male';
+    public $tagline = '';
+    public $description = '';
+    public $country = '';
+    public $state = '';
+    public $city = '';
+    public $address = '';
+    public $lat = '';
+    public $long = '';
+    public $native_language = '';
+    public $user_languages = [];
 
-    // Configuración de archivos permitidos
-    public $allowImgFileExt = []; // Extensiones de imagen permitidas
-    public $allowVideoFileExt = []; // Extensiones de video permitidas
-    public $allowImageSize = ''; // Tamaño máximo de imagen en MB
-    public $allowVideoSize = ''; // Tamaño máximo de video en MB
-    public $googleApiKey = ''; // Clave API de Google para Places
-    public $fileExt = ''; // Extensiones de archivo permitidas
-    public $isLoading = true; // Estado de carga inicial
-    public $imageFileSize = ''; // Tamaño de archivo de imagen
-    public $videoFileSize = ''; // Tamaño de archivo de video
-    public $vedioExt = ''; // Extensiones de video permitidas
+    // Archivos
+    public $image;
+    public $intro_video;
+    public $isUploadingImage = false;
+    public $isUploadingVideo = false;
+    public $imageName = '';
+    public $videoName = '';
 
-    // Datos del perfil
-    public $languages = []; // Lista de idiomas disponibles
-    public $tutorSubjects = []; // Materias del tutor
-    public $countries = null; // Lista de países
-    public $hasStates = false; // Indica si el país seleccionado tiene estados
-    public $introVideo; // Archivo de video de introducción
-    public $isProfilePhoneMendatory = true; // Si el teléfono es obligatorio
-    public $isProfileVideoMendatory = true; // Si el video es obligatorio
-    public $isProfileKeywordsMendatory = true; // Si las palabras clave son obligatorias
-    private ?ProfileService $profileService = null; // Servicio de perfil
-    public $MAX_PROFILE_CHAR = 500; // Máximo de caracteres para el perfil
-    public $activeRoute = false; // Ruta activa actual
+    // Estados
+    public $isLoading = true;
+    public $hasStates = false;
+    public $activeRoute = false;
+
+    // Configuración
+    public $allowImgFileExt = ['jpg', 'png'];
+    public $allowVideoFileExt = ['mp4'];
+    public $maxImageSize = 3; // MB
+    public $maxVideoSize = 20; // MB
+    public $enableGooglePlaces = false;
+
+    private ProfileService $profileService;
 
     /**
-     * Renderiza la vista del componente
-     * @param Request $request
-     * @return \Illuminate\View\View
+     * Inicializa el componente
+     */
+    public function mount(): void
+    {
+        try {
+            $this->isLoading = true;
+            $this->profileService = new ProfileService(Auth::id());
+            $this->loadConfiguration();
+            $this->loadUserData();
+            $this->activeRoute = Route::currentRouteName();
+        } catch (\Exception $e) {
+            Log::error('Error al cargar datos del perfil: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_loading_profile'));
+        } finally {
+            $this->isLoading = false;
+        }
+    }
+
+    /**
+     * Carga la configuración del sistema
+     */
+    private function loadConfiguration(): void
+    {
+        $this->enableGooglePlaces = setting('_api.enable_google_places') == '1';
+        $this->allowImgFileExt = explode(',', setting('_general.allowed_image_extensions') ?? 'jpg,png');
+        $this->allowVideoFileExt = explode(',', setting('_general.allowed_video_extensions') ?? 'mp4');
+        $this->maxImageSize = (int)(setting('_general.max_image_size') ?? 3);
+        $this->maxVideoSize = (int)(setting('_general.max_video_size') ?? 20);
+    }
+
+    /**
+     * Carga los datos del usuario
+     */
+    private function loadUserData(): void
+    {
+        $profile = $this->profileService->getUserProfile();
+        $address = $this->profileService->getUserAddress();
+        $languages = $this->profileService->getUserLanguages();
+
+        // Carga datos básicos
+        $this->first_name = $profile?->first_name ?? '';
+        $this->last_name = $profile?->last_name ?? '';
+        $this->email = Auth::user()?->email;
+        $this->phone_number = $profile?->phone_number ?? '';
+        $this->gender = $profile?->gender ?? 'male';
+        $this->tagline = $profile?->tagline ?? '';
+        $this->description = $profile?->description ?? '';
+        $this->image = $profile?->image ?? '';
+        $this->intro_video = $profile?->intro_video ?? '';
+        $this->native_language = $profile?->native_language ?? '';
+
+        // Carga datos de ubicación
+        $this->country = $address?->country_id ?? '';
+        $this->state = $address?->state_id ?? '';
+        $this->city = $address?->city ?? '';
+        $this->address = $address?->address ?? '';
+        $this->lat = $address?->lat ?? '';
+        $this->long = $address?->long ?? '';
+
+        // Carga idiomas
+        if ($languages instanceof \Illuminate\Support\Collection) {
+            $this->user_languages = $languages->pluck('id')->toArray();
+        } else {
+            $this->user_languages = [];
+        }
+    }
+
+    /**
+     * Renderiza la vista
      */
     #[Layout('layouts.app')]
     public function render(Request $request)
     {
-        // Configuración de Google Places
-        $enableGooglePlaces = setting('_api.enable_google_places') ?? '0';
-        $states = null;
+        try {
+            $states = null;
+            $countries = Country::orderBy('name')->get();
+            $languages = Language::get(['id', 'name'])->pluck('name', 'id');
 
-        // Manejo de búsqueda AJAX para países
-        if ($request->ajax() && $request->has('search')) {
-            $countries = Country::where('name', 'like', '%' . $request->search . '%')
-                ->get()
-                ->map(function($country) {
-                    return [
-                        'id' => $country->id,
-                        'text' => $country->name
-                    ];
-                });
-            return response()->json($countries);
-        }
-
-        // Carga de estados si hay país seleccionado
-        if (!empty($this->form->country)) {
-            $states = $this->profileService->countryStates($this->form->country);
-            if ($states->isNotEmpty()) {
-                $this->hasStates = true;
-                $this->dispatch('initSelect2', target: '#country_state', timeOut: 0);
-            } else {
-                $this->hasStates = false;
+            if (!empty($this->country)) {
+                $states = $this->profileService->countryStates($this->country);
+                $this->hasStates = $states->isNotEmpty();
             }
-        }
 
-        // Carga inicial de países si no hay búsqueda
-        if (!$this->countries) {
-            $this->countries = Country::orderBy('name')->get();
-        }
-
-        return view('livewire.pages.common.profile-settings.personal-details', compact('enableGooglePlaces', 'states'));
-    }
-
-    /**
-     * Busca países por término
-     * @param string $term
-     * @return array
-     */
-    public function searchCountries($term = '')
-    {
-        return Country::where('name', 'like', '%' . $term . '%')
-            ->select('id', 'name as text')
-            ->take(20)
-            ->get()
-            ->toArray();
-    }
-
-    /**
-     * Inicializa el servicio de perfil
-     */
-    public function boot()
-    {
-        $this->profileService = new ProfileService(Auth::user()->id);
-    }
-
-    /**
-     * Carga los datos iniciales y dispara el evento loadPageJs
-     */
-    public function loadData()
-    {
-        $this->isLoading = false;
-        $this->dispatch('loadPageJs');
-    }
-
-    /**
-     * Inicializa el componente con los datos necesarios
-     */
-    public function mount(): void
-    {
-        // Carga de configuraciones
-        $this->isProfilePhoneMendatory = setting('_lernen.profile_phone_number') == 'yes';
-        $this->isProfileVideoMendatory = setting('_lernen.profile_video') == 'yes';
-        $this->isProfileKeywordsMendatory = setting('_lernen.profile_keywords') == 'yes';
-
-        // Carga de datos básicos
-        $this->languages = Language::get(['id', 'name'])?->pluck('name', 'id')?->toArray();
-        $this->tutorSubjects = Subject::get(['id', 'name'])?->pluck('name', 'id')?->toArray();
-        $this->countries = Country::get(['id', 'name']);
-
-        // Carga de datos del perfil
-        $profile = $this->profileService->getUserProfile();
-        $address = $this->profileService->getUserAddress();
-        $socialProfiles = $this->profileService->getSocialProfiles();
-        $languages = $this->profileService->getUserLanguages();
-        $this->activeRoute = Route::currentRouteName();
-
-        // Carga de datos en el formulario
-        $this->form->getInfo($profile);
-        $this->form->setUserAddress($address);
-        $this->form->setSocialProfiles($socialProfiles);
-        $this->form->setUserLanguages($languages);
-        
-        // Configuración de archivos
-        $this->configureFileSettings();
-        
-        // Manejo de errores de sesión
-        if (Session::get('error')) {
-            $this->dispatch('showAlertMessage', type: 'error', message: Session::get('error'));
+            return view('livewire.pages.common.profile-settings.personal-details', [
+                'countries' => $countries,
+                'states' => $states,
+                'languages' => $languages
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error al renderizar vista de perfil: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_loading_view'));
+            return view('livewire.pages.common.profile-settings.personal-details', [
+                'countries' => collect(),
+                'states' => collect(),
+                'languages' => collect()
+            ]);
         }
     }
 
@@ -175,126 +166,74 @@ class PersonalDetails extends Component
      */
     public function updateInfo()
     {
-        $form = $this->form;
-    
-        // Manejo del video de introducción
-        if (!empty($this->introVideo)) {
-            $this->form->setVideo($this->introVideo);
-        }
-    
-        // Validación del formulario
-        $form->validateForm($this->hasStates);
 
-        // Verificación de sitio demo
-        if (isDemoSite()) {
-            $this->dispatch('showAlertMessage', type: 'error', title: __('general.demosite_res_title'), message: __('general.demosite_res_txt'));
-            return;
-        }
-        
-        // Actualización de datos
-        $this->introVideo = null;
-        $data = $form->updateProfileInfo();
-        $address = $form->userAddress();
-          
-        // Guardado de datos
-        $this->profileService->setUserProfile($data);
-        $this->profileService->storeUserLanguages($form->user_languages);
-        $this->profileService->setUserAddress($address);
-        
-        // Manejo de perfiles sociales
-        $socialsProfiles = $form->socialProfiles();
-        if (!empty($socialsProfiles)) {
-            $this->profileService->setSocialProfiles($socialsProfiles);
-        }
-    
-        // Notificaciones de éxito
-        $this->dispatch('profile-img-updated', image: resizedImage($form->image, 36, 36));
-        $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: __('general.success_message'));
-    }
 
-    /**
-     * Maneja la actualización del país en el formulario
-     */
-    public function updatingForm($value, $key)
-    {
-        if ($key == 'country') {
-            $this->form->state = null;
-        }
-    }
-
-    /**
-     * Maneja la actualización del video de introducción
-     */
-    public function updatedIntroVideo()
-    {
+        //dd("llega por aca");
         try {
-            Log::info('Iniciando validación de video');
-            $this->validate([
-                'introVideo' => [
-                    'required',
-                    'file',
-                    'mimes:' . (!empty($this->allowVideoFileExt) ? implode(',', $this->allowVideoFileExt) : 'mp4'),
-                    'max:' . (!empty($this->allowVideoSize) ? $this->allowVideoSize : 20) * 1024
-                ]
-            ]);
+
+
+            dd($this->first_name,"nombre ",
+            $this->last_name,"apellido",
+            $this->phone_number,"numero",
+            $this->gender,"genero",
+            $this->tagline,"tagline",
+            $this->description,"descripcion"
+            ,$this->native_language,"idioma");
             
-            $this->form->setVideo($this->introVideo);
-            $this->dispatch('video-uploaded');
-        } catch (\Exception $e) {
-            Log::error('Error al cargar video: ' . $e->getMessage());
-            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_uploading_video'));
-            $this->introVideo = null;
-        }
-    }
-
-    /**
-     * Elimina archivos multimedia (imagen o video)
-     */
-    public function removeMedia($type)
-    {
-        try {
-            if ($type == 'video') {
-                $this->introVideo = null;
-                $this->form->removeVideo();
-                $this->dispatch('video-removed');
-            } else {
-                $this->form->removePhoto();
-                $this->dispatch('photo-removed');
-            }
-        } catch (\Exception $e) {
-            Log::error('Error al eliminar archivo: ' . $e->getMessage());
-            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_removing_file'));
-        }
-    }
-
-    /**
-     * Maneja la actualización del país
-     */
-    public function updatedFormCountry($value)
-    {
-        $this->form->state = null;
-        Log::info('Country changed, state reset. Country ID: ' . $value);
-    }
-
-    /**
-     * Maneja la actualización de la imagen
-     */
-    public function updatedImage()
-    {
-
-        //dd("imagen  aver ", $this->image);;
-        try {
-            Log::info('Iniciando validación de imagen');
             $this->validate([
-                'image' => 'image|max:' . ($this->allowImageSize * 1024) . '|mimes:' . implode(',', $this->allowImgFileExt)
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'phone_number' => 'nullable|string|max:20',
+                'gender' => 'required|in:male,female,not_specified',
+                'country' => 'required|exists:countries,id',
+                'state' => 'nullable|exists:states,id',
+                'city' => 'required|string|max:255',
+                'address' => 'required|string|max:255',
+                'native_language' => 'required|string|max:255',
+                'user_languages' => 'required|array',
+                'description' => 'required|string|max:500',
             ]);
-            Log::info('Imagen validada correctamente');
-            $this->form->setImage($this->image);
-            $this->dispatch('image-uploaded');
-        } catch (\Exception $e) {
 
-            Log::error('Error al cargar imagen: ' . $e->getMessage());
-            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_uploading_image'));
+            // Actualiza datos del perfil
+            $profileData = [
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'phone_number' => $this->phone_number,
+                'gender' => $this->gender,
+                'tagline' => $this->tagline,
+                'description' => $this->description,
+                'native_language' => $this->native_language,
+            ];
+
+
+            dd("sdadasdas",$profileData);
+
+            // Maneja la imagen si se ha subido una nueva
+            if ($this->image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                $profileData['image'] = $this->image->store('profile_images', 'public');
+            }
+
+            // Maneja el video si se ha subido uno nuevo
+            if ($this->intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                $profileData['intro_video'] = $this->intro_video->store('profile_videos', 'public');
+            }
+
+            // Guarda los datos
+            $this->profileService->setUserProfile($profileData);
+            $this->profileService->setUserAddress([
+                'country_id' => $this->country,
+                'state_id' => $this->state,
+                'city' => $this->city,
+                'address' => $this->address,
+                'lat' => $this->lat,
+                'long' => $this->long,
+            ]);
+            $this->profileService->storeUserLanguages($this->user_languages);
+
+            $this->dispatch('showAlertMessage', type: 'success', message: __('general.success_message'));
+        } catch (\Exception $e) {
+            Log::error('Error al actualizar perfil: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_message'));
         }
     }
 
@@ -303,25 +242,22 @@ class PersonalDetails extends Component
      */
     public function upload($field, $file)
     {
-
-        //dd($field, $file, "llega aca la imagen");
         try {
-            dd("entrando al try");
-
-            if ($field === 'introVideo') {
-                $this->isUploadingVideo = true;
-                $this->introVideo = $file;
-                $this->updatedIntroVideo();
-            } else {
+            if ($field === 'image') {
                 $this->isUploadingImage = true;
-                $this->image = $file;
-               
-                $this->updatedImage();
+                $this->validate([
+                    'image' => 'image|max:' . ($this->maxImageSize * 1024) . '|mimes:' . implode(',', $this->allowImgFileExt)
+                ]);
+                $this->imageName = $file->getClientOriginalName();
+            } else if ($field === 'intro_video') {
+                $this->isUploadingVideo = true;
+                $this->validate([
+                    'intro_video' => 'file|max:' . ($this->maxVideoSize * 1024) . '|mimes:' . implode(',', $this->allowVideoFileExt)
+                ]);
+                $this->videoName = $file->getClientOriginalName();
             }
-            
-            //Log::info('Archivo cargado exitosamente');
         } catch (\Exception $e) {
-            Log::error('Error en upload: ' . $e->getMessage());
+            Log::error('Error al cargar archivo: ' . $e->getMessage());
             $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_uploading_file'));
         } finally {
             $this->isUploadingImage = false;
@@ -330,30 +266,59 @@ class PersonalDetails extends Component
     }
 
     /**
-     * Configura los ajustes de archivos permitidos
+     * Elimina archivos multimedia
      */
-    private function configureFileSettings()
+    public function removeMedia($type)
     {
-        $image_file_ext = setting('_general.allowed_image_extensions');
-        $image_file_size = setting('_general.max_image_size');
-        $video_file_size = setting('_general.max_video_size');
-        $video_file_ext = setting('_general.allowed_video_extensions');
-        
-        Log::info('Configuración de archivos:', [
-            'image_ext' => $image_file_ext,
-            'image_size' => $image_file_size,
-            'video_ext' => $video_file_ext,
-            'video_size' => $video_file_size
-        ]);
+        try {
+            if ($type === 'image') {
+                if ($this->image && !$this->image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                    Storage::disk('public')->delete($this->image);
+                }
+                $this->image = null;
+                $this->imageName = '';
+            } else if ($type === 'video') {
+                if ($this->intro_video && !$this->intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                    Storage::disk('public')->delete($this->intro_video);
+                }
+                $this->intro_video = null;
+                $this->videoName = '';
+            }
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar archivo: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_removing_file'));
+        }
+    }
 
-        $this->fileExt = $image_file_ext;
-        $this->vedioExt = $video_file_ext;
-        $this->imageFileSize = $image_file_size;
-        $this->videoFileSize = $video_file_size;
-        $this->googleApiKey = setting('_api.google_places_api_key');
-        $this->allowImageSize = (int) (!empty($image_file_size) ? $image_file_size : '3');
-        $this->allowImgFileExt = !empty($image_file_ext) ? explode(',', $image_file_ext) : ['jpg', 'png'];
-        $this->allowVideoSize = (int) (!empty($video_file_size) ? $video_file_size : '20');
-        $this->allowVideoFileExt = !empty($video_file_ext) ? explode(',', $video_file_ext) : ['mp4'];
+    /**
+     * Elimina un idioma de la lista de idiomas seleccionados
+     */
+    public function removeLanguage($languageId)
+    {
+        if (($key = array_search($languageId, $this->user_languages)) !== false) {
+            unset($this->user_languages[$key]);
+            $this->user_languages = array_values($this->user_languages); // Reindexar el array
+        }
+    }
+
+    /**
+     * Maneja la actualización del país
+     */
+    public function updatedCountry($value)
+    {
+        $this->state = null;
+        $this->hasStates = false;
+    }
+
+    /**
+     * Busca países por término
+     */
+    public function searchCountries($term = '')
+    {
+        return Country::where('name', 'like', '%' . $term . '%')
+            ->select('id', 'name as text')
+            ->take(20)
+            ->get()
+            ->toArray();
     }
 }
