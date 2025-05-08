@@ -1,38 +1,28 @@
+@php
+use App\Models\Alianza;
+$alianzas = Alianza::where('activo', true)->orderBy('orden')->get();
+@endphp
 
-    @if(!empty(pagesetting('alianzas')))
-        <div class="am-alianzas">
-            <div class="alianzas-wrapper">
-                <h2 class="alianzas-title">Alianzas</h2>
-                <div class="alianzas-carousel">
-                    @foreach(pagesetting('alianzas') as $index => $alianza)
-                        @php
-                            $imgPath = '';
-                            if (!empty($alianza['imagen'])) {
-                                if (is_array($alianza['imagen']) && isset($alianza['imagen'][0]['path'])) {
-                                    $imgPath = $alianza['imagen'][0]['path'];
-                                } elseif (is_array($alianza['imagen']) && isset($alianza['imagen']['path'])) {
-                                    $imgPath = $alianza['imagen']['path'];
-                                } elseif (is_string($alianza['imagen'])) {
-                                    $imgPath = $alianza['imagen'];
-                                }
-                            }
-                        @endphp
-
-                        @if($imgPath)
-                            <div class="alianzas-slide {{ $index == 0 ? 'active' : '' }}">
-                                <a href="{{ $alianza['enlace'] ?? '#' }}" target="_blank">
-                                    <img src="{{ asset('storage/' . $imgPath) }}" alt="{{ $alianza['titulo'] ?? 'Imagen de alianza' }}">
-                                </a>
-                                @if(!empty($alianza['titulo']))
-                                    <h5>{{ $alianza['titulo'] }}</h5>
-                                @endif
-                            </div>
+@if($alianzas->count() > 0)
+    <div class="am-alianzas">
+        <div class="alianzas-wrapper">
+            <h2 class="alianzas-title">Alianzas</h2>
+            <div class="alianzas-carousel">
+                @foreach($alianzas as $index => $alianza)
+                    <div class="alianzas-slide {{ $index == 0 ? 'active' : '' }}">
+                        <a href="{{ $alianza->enlace ?? '#' }}" target="_blank">
+                            <img src="{{ $alianza->imagen_url }}" alt="{{ $alianza->titulo }}">
+                        </a>
+                        @if($alianza->titulo)
+                            <h5>{{ $alianza->titulo }}</h5>
                         @endif
-                    @endforeach
-                </div>
+                    </div>
+                @endforeach
             </div>
         </div>
-    @endif
+    </div>
+@endif
+
 @pushOnce('styles')
 <style>
 .am-alianzas {
