@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             GeneralSeeder::class,
             CustomTutorSeeder::class,
             CustomStudentSeeder::class,
+            LanguageCodeSeeder::class,
         ]);
         
         Schema::enableForeignKeyConstraints();

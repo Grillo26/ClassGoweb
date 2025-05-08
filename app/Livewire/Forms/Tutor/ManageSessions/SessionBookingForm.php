@@ -9,7 +9,6 @@ use Livewire\Form;
 class SessionBookingForm extends Form
 {
     use PrepareForValidation;
-    public $subject_group_id;
     public $date_range;
     public $start_time='';
     public $end_time='';
@@ -19,6 +18,7 @@ class SessionBookingForm extends Form
     public $recurring_days = [];
     public $session_fee;
     public $description;
+    public $subject_group_id;
 
     public function rules(){
         $request = new SessionStoreRequest();

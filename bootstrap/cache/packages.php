@@ -136,6 +136,7 @@
       0 => 'Livewire\\Volt\\VoltServiceProvider',
     ),
   ),
+  
   'mews/purifier' => 
   array (
     'aliases' => 

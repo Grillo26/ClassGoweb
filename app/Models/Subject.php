@@ -31,4 +31,9 @@ class Subject extends Model {
         return $this->belongsTo(SubjectGroup::class, 'subject_group_id');
     }
 
+    public function userSubjects()
+    {
+        return $this->hasMany(UserSubject::class);
+    }
+
 }
