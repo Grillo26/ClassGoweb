@@ -4,10 +4,12 @@ namespace App\Livewire\Pages\Tutor\ManageSessions;
 
 use App\Livewire\Forms\Tutor\ManageSessions\SessionBookingForm;
 use App\Models\Day;
+use App\Models\UserSubjectSlot;
 use App\Services\BookingService;
 use App\Services\SubjectService;
 use App\Services\UserService;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Livewire\Attributes\Layout;
@@ -65,38 +67,34 @@ class MyCalendar extends Component
     }
 
     public function addSession(){
-       
-       
         $validatedData = $this->form->validateData();
-        
-         $validatedData['spaces'] = "1";
-        $validatedData['session_fee'] = "15";
-        $validatedData['break'] = 0;
-        $validatedData['recurring_days'] = "";
-        $validatedData['duration'] = 20;
-      
-    
-        
-        $response = isDemoSite();
-        if( $response ){
-            $this->dispatch('toggleModel', id: 'booking-modal', action: 'hide');
-            $this->dispatch('showAlertMessage', type: 'error', title:  __('general.demosite_res_title') , message: __('general.demosite_res_txt'));
-            return;
+
+        // Procesar el rango de fechas
+        $dates = explode(' to ', $validatedData['date_range']);
+        $startDate = Carbon::parse($dates[0]);
+        $endDate = isset($dates[1]) ? Carbon::parse($dates[1]) : $startDate;
+
+        $period = CarbonPeriod::create($startDate, $endDate);
+
+        // Calcular duración en horas
+        $startTime = Carbon::createFromFormat('H:i', $validatedData['start_time']);
+        $endTime = Carbon::createFromFormat('H:i', $validatedData['end_time']);
+        $durationHours = $endTime->diffInMinutes($startTime) / 60;
+        $duracion = $durationHours . ' horas';
+
+        foreach ($period as $date) {
+            UserSubjectSlot::create([
+                'start_time' => $validatedData['start_time'],
+                'end_time'   => $validatedData['end_time'],
+                'duracion'   => $duracion,
+                'date'       => $date->format('Y-m-d'),
+                'user_id'    => auth()->id(),
+            ]);
         }
 
-        if (!empty($this->template_id)) {
-            $validatedData['template_id'] = $this->template_id;
-        }
-        if(Module::has('subscriptions') && Module::isEnabled('subscriptions') && $this->allowed_for_subscriptions){
-            $validatedData['allowed_for_subscriptions'] = 1;
-        }
-       
-       
-        $sessionsAdded = $this->bookingService->addUserSubjectGroupSessions($validatedData);
-        if($sessionsAdded)
         $this->form->reset();
-        $this->dispatch('toggleModel', id: 'booking-modal', action: 'hide');
-        $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title') , message: __('general.success_message'));
+        $this->dispatch('toggleModel', id: 'new-booking-modal', action: 'hide');
+        $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: __('general.success_message'));
     }
 
     public function updatedForm($value, $key){

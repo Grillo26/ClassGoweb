@@ -10,23 +10,22 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 class UserSubjectSlot extends Model {
     use HasFactory;
 
-    public $timestamps = false;
-
-    public $guarded = [];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'start_time'    => 'datetime: Y-m-d H:i:s',
-        'end_time'      => 'datetime:Y-m-d H:i:s',
-        'meta_data'     => 'array'
+    protected $fillable = [
+        'start_time',
+        'end_time',
+        'duracion',
+        'date',
+        'user_id',
     ];
 
-    public function subjectGroupSubjects() {
-        return $this->belongsTo(UserSubjectGroupSubject::class, 'user_subject_group_subject_id', 'id');
+    protected $casts = [
+        'start_time' => 'string',
+        'end_time' => 'string',
+        'date' => 'date:Y-m-d',
+    ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 
     public function subjects() {

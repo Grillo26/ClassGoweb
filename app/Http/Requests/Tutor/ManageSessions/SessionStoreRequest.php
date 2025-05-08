@@ -12,16 +12,9 @@ class SessionStoreRequest extends FormRequest {
      */
     public function rules() {
         return [
-            'date_range'                    => 'required',
-            'start_time'                    => 'required',
-            'end_time'                      => 'required|after:start_time',
-            'spaces'                        => 'required|integer|min:1',
-            'session_fee'                   => 'nullable|numeric',
-            'duration'                      => 'required|integer|min:1',
-            'break'                         => 'nullable',
-            'recurring_days'                => 'nullable',
-            'description'                   => 'nullable',
-            'subject_group_id'              => 'required|exists:user_subject_groups,id',
+            'date_range'  => 'required',
+            'start_time'  => 'required',
+            'end_time'    => 'required|after:start_time',
         ];
     }
 

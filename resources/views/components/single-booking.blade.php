@@ -73,27 +73,6 @@
                         <strong> {{ formatAmount($booking->slot->session_fee) }}</strong>
                     </li>
                     <li>
-                        <span>{{ __('calendar.total_enrollment') }}</span>
-                        @if ($booking->slot->total_booked > 0 && !empty($booking->slot->students))
-                            <ul class="am-reminder-enrollment-list">
-                                @foreach ($booking->slot->students as $student)
-                                    <li>
-                                        @if (!empty($student->image) && Storage::disk(getStorageDisk())->exists($student->image))
-                                            <img src="{{ resizedImage($student->image, 40, 40) }}" alt="profile-img">
-                                        @else 
-                                            <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 40, 40) }}" alt="profile-img">
-                                        @endif
-                                    </li>
-                                @endforeach
-                                <li>
-                                    <span>{{ __('calendar.booked_students', ['count' => $booking->slot->bookings_count]) }}</span>
-                                </li>
-                            </ul>
-                        @else
-                            --
-                        @endif
-                    </li>
-                    <li>
                         <span>{{ __('general.date') }}</span>
                         <strong>{{ parseToUserTz($booking->slot->start_time)->format(setting('_general.date_format') ?? 'F j, Y') }}</strong>
                     </li>
