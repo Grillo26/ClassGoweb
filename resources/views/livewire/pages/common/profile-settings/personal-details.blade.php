@@ -73,9 +73,9 @@
                     <select id="gender"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                         wire:model="gender">
-                        <option value="male">{{ __('profile.male') }}</option>
-                        <option value="female">{{ __('profile.female') }}</option>
-                        <option value="not_specified">{{ __('profile.not_specified') }}</option>
+                        <option value="masculino">{{ __('profile.male') }}</option>
+                        <option value="femenino">{{ __('profile.female') }}</option>
+                        <option value="no_especificado">{{ __('profile.not_specified') }}</option>
                     </select>
                     @error('gender') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
@@ -223,7 +223,7 @@
 
                                     @if($image)
                                     <button type="button"
-                                        class="px-5 py-2.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150"
+                                        style="margin:5px; background-color:red; color:white; border-radius:5px;padding:5px;"
                                         wire:click="removeMedia('image')">
                                         {{ __('profile.remove') }}
                                     </button>

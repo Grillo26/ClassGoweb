@@ -22,6 +22,8 @@ class PersonalDetails extends Component
 {
     use WithFileUploads;
 
+    private ?ProfileService $profileService = null;
+
     // Propiedades del formulario
     public $first_name = '';
     public $last_name = '';
@@ -41,7 +43,7 @@ class PersonalDetails extends Component
     public $selected_languages = [];
 
     // Add this property to your PersonalDetails class
-public $selected_language = '';
+    public $selected_language = '';
 
     // Archivos
     public $image;
@@ -63,8 +65,6 @@ public $selected_language = '';
     public $maxVideoSize = 20; // MB
     public $enableGooglePlaces = false;
 
-    private ProfileService $profileService;
-
     /**
      * Inicializa el componente
      */
@@ -81,6 +81,16 @@ public $selected_language = '';
             $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_loading_profile'));
         } finally {
             $this->isLoading = false;
+        }
+    }
+
+    /**
+     * Verifica si el servicio está inicializado
+     */
+    private function ensureProfileService(): void
+    {
+        if ($this->profileService === null) {
+            $this->profileService = new ProfileService(Auth::id());
         }
     }
 
@@ -170,21 +180,11 @@ public $selected_language = '';
      */
     public function updateInfo()
     {
-
-         dd($this->first_name,"nombre ",
-            $this->last_name,"apellido",
-            $this->phone_number,"numero",
-            $this->gender,"genero",
-            $this->tagline,"tagline",
-            $this->description,"descripcion"
-            ,$this->native_language,"idioma",
-            $this->user_languages,"idiomas"
-        );
-
-
         try {
+            $this->ensureProfileService();
+
             // Validación temporal sin los campos de ubicación
-             $this->validate([
+            $this->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'phone_number' => 'nullable|string|max:20',
@@ -218,19 +218,18 @@ public $selected_language = '';
             // Guarda los datos
             $this->profileService->setUserProfile($profileData);
             
-            // Comentamos temporalmente la actualización de la dirección
-            /*
-            $this->profileService->setUserAddress([
-                'country_id' => $this->country,
-                'state_id' => $this->state,
-                'city' => $this->city,
-                'address' => $this->address,
-                'lat' => $this->lat,
-                'long' => $this->long,
-            ]);
-            */
+            // Procesar los idiomas
+            $languageIds = [];
+            foreach ($this->user_languages as $langId) {
+                // Buscar el idioma por nombre en el modelo Language
+                $language = \App\Models\Language::where('name', $langId)->first();
+                if ($language) {
+                    $languageIds[] = $language->id;
+                }
+            }
             
-            $this->profileService->storeUserLanguages($this->user_languages);
+            // Guardar los IDs de idiomas procesados
+            $this->profileService->storeUserLanguages($languageIds);
 
             $this->dispatch('showAlertMessage', type: 'success', message: __('general.success_message'));
         } catch (\Exception $e) {

@@ -89,7 +89,7 @@ return [
     'max' => 'Máximo',
     'upload_image' => 'Subir imagen',
     'other_languages' => 'Otros idiomas',
-
+    'remove' => 'Eliminar',
     
     
 ];
