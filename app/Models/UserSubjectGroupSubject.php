@@ -35,12 +35,8 @@ class UserSubjectGroupSubject extends Model {
         return $this->belongsTo(UserSubjectGroup::class, 'user_subject_group_id');
     }
 
-    public function slots(): HasMany {
-        return $this->hasMany(UserSubjectSlot::class, 'user_subject_group_subject_id');
-    }
-
     public function bookings(): HasManyThrough {
-        return $this->hasManyThrough(SlotBooking::class, UserSubjectSlot::class, 'user_subject_group_subject_id', 'user_subject_slot_id');
+        return $this->hasManyThrough(SlotBooking::class, UserSubjectSlot::class, 'id', 'user_subject_slot_id');
     }
 
     public function coupons(): MorphMany|null {

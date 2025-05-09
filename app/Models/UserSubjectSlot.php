@@ -28,10 +28,6 @@ class UserSubjectSlot extends Model {
         return $this->belongsTo(User::class);
     }
 
-    public function subjects() {
-        return $this->belongsToMany(Subject::class, 'user_subject_group_subjects', 'subject_id', 'id');
-    }
-
     public function bookings(): HasMany{
         return $this->hasMany(SlotBooking::class, 'user_subject_slot_id');
     }

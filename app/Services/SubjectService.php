@@ -56,13 +56,13 @@ class SubjectService
                 $query->whereUserId($this->user->id);
             });
         } elseif ($this->user->role === 'student') {
-            $query->whereHas('slots', function ($query) {
-                $query->select('id', 'user_subject_group_subject_id');
-                $query->whereHas('bookings', function ($query) {
-                    $query->select('id');
-                    $query->whereStudentId($this->user->id);
-                });
-            });
+            // $query->whereHas('slots', function ($query) {
+            //     $query->select('id');
+            //     $query->whereHas('bookings', function ($query) {
+            //         $query->select('id');
+            //         $query->whereStudentId($this->user->id);
+            //     });
+            // });
         }
 
         $subjects = $query->with(['group:subject_groups.id,name', 'subject:id,name'])->get()
@@ -310,7 +310,7 @@ class SubjectService
         if ($group) {
             $groupSubject = $group->userSubjects()
                 ->whereId($userSubjectId)
-                ->whereDoesntHave('slots', fn($slot) => $slot->select('id', 'user_subject_group_subject_id'));
+                ->whereDoesntHave('slots', fn($slot) => $slot->select('id'));
             if ($groupSubject) {
                 return $groupSubject->delete();
             }

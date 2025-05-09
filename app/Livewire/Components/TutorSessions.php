@@ -98,9 +98,6 @@ class TutorSessions extends Component
                     'tutor_id' => $this->user->id,
                     'tutor_name' => $this->user?->profile?->full_name,
                     'session_time' => parseToUserTz($slot->start_time, $this->timezone)->format('h:i a').' - '.parseToUserTz($slot->end_time, $this->timezone)->format('h:i a'),
-                    'subject_group' => $slot->subjectGroupSubjects?->userSubjectGroup?->group?->name,
-                    'subject' => $slot->subjectGroupSubjects?->subject?->name,
-                    'image' => $slot->subjectGroupSubjects?->image,
                     'currency_symbol' => $this->currency_symbol,
                     'price' => number_format($slot->session_fee, 2),
                 ];
@@ -121,10 +118,7 @@ class TutorSessions extends Component
                    $this->dispatch('scrollToTop');
 
                 if (\Nwidart\Modules\Facades\Module::has('kupondeal') && \Nwidart\Modules\Facades\Module::isEnabled('kupondeal')) {
-                    $response = \Modules\KuponDeal\Facades\KuponDeal::applyCouponIfAvailable($slot->subjectGroupSubjects->id, UserSubjectGroupSubject::class);
-                    if($response['status'] == 'success'){
-                        $this->dispatch('cart-updated', cart_data: Cart::content(), discount: formatAmount(Cart::discount(), true), total: formatAmount(Cart::total(), true), subTotal: formatAmount(Cart::subtotal(), true), toggle_cart: 'open');
-                    }
+                    // $response = \Modules\KuponDeal\Facades\KuponDeal::applyCouponIfAvailable($slot->subjectGroupSubjects->id, UserSubjectGroupSubject::class);
                 } else {
                     $this->dispatch('cart-updated', cart_data: Cart::content(), total: formatAmount(Cart::total(), true), subTotal: formatAmount(Cart::subtotal(), true), toggle_cart: 'open');
                 }

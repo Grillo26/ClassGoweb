@@ -72,42 +72,42 @@ class BookingService {
         return $myData;
     }
 
-    public function getSlotDetail($id, $relations = true){
-        return UserSubjectSlot::when(!empty($relations), function($relations) {
-                $relations->with(['subjectGroupSubjects' => function ($query) {
-                    $query->select('id', 'user_subject_group_id', 'subject_id', 'hour_rate', 'image', );
-                    $query->withWhereHas('userSubjectGroup', function ($subjectGroup) {
-                        $subjectGroup->with('group:id,name');
-                        $query->with('subject:id,name');
-                    });
-                }]);
-            })->find($id);
-    }
+    // public function getSlotDetail($id, $relations = true){
+    //     return UserSubjectSlot::when(!empty($relations), function($relations) {
+    //             $relations->with(['subjectGroupSubjects' => function ($query) {
+    //                 $query->select('id', 'user_subject_group_id', 'subject_id', 'hour_rate', 'image', );
+    //                 $query->withWhereHas('userSubjectGroup', function ($subjectGroup) {
+    //                     $subjectGroup->with('group:id,name');
+    //                     $query->with('subject:id,name');
+    //                 });
+    //             }]);
+    //         })->find($id);
+    // }
 
     public function getSessionSlots() {
         $userId = $this->user->id;
         $myData = array();
-        $slots = UserSubjectSlot::with(['subjectGroupSubjects' => function ($query) use ($userId) {
-            $query->withWhereHas('userSubjectGroup', function ($subjectGroup) use ($userId) {
-                $subjectGroup->where('user_id', $userId);
-            });
-            $query->with('subject');
-        }])->get();
-        foreach ($slots as $slot) {
-            $subject = $slot->subjectGroupSubjects?->subject?->name;
-            $date = parseToUserTz($slot->date)->format('Y-m-d');
-            if (array_key_exists($date, $myData)) {
-                $myData[$date]['slots']++;
-            } else {
-                $myData[$date]['slots'] = 1;
-                $myData[$date]['subjects'] = [];
-            }
-            if (array_key_exists($subject, $myData[$date]['subjects'])) {
-                $myData[$date]['subjects'][$subject]++;
-            } else {
-                $myData[$date]['subjects'][$subject] = 1;
-            }
-        }
+        // $slots = UserSubjectSlot::with(['subjectGroupSubjects' => function ($query) use ($userId) {
+        //     $query->withWhereHas('userSubjectGroup', function ($subjectGroup) use ($userId) {
+        //         $subjectGroup->where('user_id', $userId);
+        //     });
+        //     $query->with('subject');
+        // }])->get();
+        // foreach ($slots as $slot) {
+        //     $subject = $slot->subjectGroupSubjects?->subject?->name;
+        //     $date = parseToUserTz($slot->date)->format('Y-m-d');
+        //     if (array_key_exists($date, $myData)) {
+        //         $myData[$date]['slots']++;
+        //     } else {
+        //         $myData[$date]['slots'] = 1;
+        //         $myData[$date]['subjects'] = [];
+        //     }
+        //     if (array_key_exists($subject, $myData[$date]['subjects'])) {
+        //         $myData[$date]['subjects'][$subject]++;
+        //     } else {
+        //         $myData[$date]['subjects'][$subject] = 1;
+        //     }
+        // }
         return $myData;
     }
 
@@ -117,17 +117,9 @@ class BookingService {
 
     public function getUserSubjectSlots($date = null) {
         $slotsData = array();
-        $slots = UserSubjectSlot::select('id','user_subject_group_subject_id','start_time','end_time','duracion','date','user_id')
+        $slots = UserSubjectSlot::select('id','start_time','end_time','duracion','date','user_id')
                     ->withCount('bookings')
                     ->with('students', fn($query) => $query->select('profiles.id','profiles.user_id', 'profiles.image')->limit(5))
-                    ->withWhereHas('subjectGroupSubjects' , function ($query) {
-                        $query->select('id', 'user_subject_group_id', 'subject_id', 'hour_rate', 'image');
-                        $query->withWhereHas('userSubjectGroup', function ($subjectGroup) {
-                            $subjectGroup->with('group:id,name');
-                            $subjectGroup->select('id','user_id','subject_group_id')->where('user_id', $this->user->id);
-                        });
-                        $query->with('subject:id,name');
-                    })
                     ->when($date, function ($slots) use ($date) {
                         $slots->where('start_time', '>=', $date['start_date']);
                         $slots->where('end_time', '<=', $date['end_date']);
@@ -136,17 +128,18 @@ class BookingService {
                     ->get();
         if ($slots->isNotEmpty()) {
             foreach ($slots as $item) {
-                $group = $item->subjectGroupSubjects?->userSubjectGroup?->group?->name;
-                $subject  = $item?->subjectGroupSubjects?->subject;
-                $slotsData[$group][$subject?->name]['slots'][] = $item;
-                $slotsData[$group][$subject?->name]['info'] = [
-                    'user_subject_id'       => $item?->subjectGroupSubjects?->id,
-                    'user_subject_group_id' => $item?->subjectGroupSubjects?->user_subject_group_id,
-                    'subject_id'            => $item?->subjectGroupSubjects?->subject_id,
-                    'subject'               => $subject?->name,
-                    'hour_rate'             => $item?->subjectGroupSubjects?->hour_rate,
-                    'image'                 => $item?->subjectGroupSubjects?->image,
-                ];
+                // $group = $item->subjectGroupSubjects?->userSubjectGroup?->group?->name;
+                // $subject  = $item?->subjectGroupSubjects?->subject;
+                // $slotsData[$group][$subject?->name]['slots'][] = $item;
+                // $slotsData[$group][$subject?->name]['info'] = [
+                //     'user_subject_id'       => $item?->subjectGroupSubjects?->id,
+                //     'user_subject_group_id' => $item?->subjectGroupSubjects?->user_subject_group_id,
+                //     'subject_id'            => $item?->subjectGroupSubjects?->subject_id,
+                //     'subject'               => $subject?->name,
+                //     'hour_rate'             => $item?->subjectGroupSubjects?->hour_rate,
+                //     'image'                 => $item?->subjectGroupSubjects?->image,
+                // ];
+                // Puedes agregar aquí la lógica que necesites solo con los campos existentes
             }
         }
         return $slotsData;
@@ -160,13 +153,7 @@ class BookingService {
             ->withExists('dispute')
             ->withWhereHas('slot', function ($slot) use ($date, $filters) {
                 $slot->withCount('bookings')
-                    ->with('students', fn($query) => $query->select('profiles.id','profiles.user_id', 'profiles.image','profiles.first_name','profiles.last_name')->limit(5))
-                    ->withWhereHas('subjectGroupSubjects', function ($query) use ($filters) {
-                        $query->with('subject:subjects.id,subjects.name','group:subject_groups.id,subject_groups.name');
-                        if (!empty($filters['subject_group_ids'])) {
-                            $query->whereIn('id', $filters['subject_group_ids']);
-                        }
-                    });
+                    ->with('students', fn($query) => $query->select('profiles.id','profiles.user_id', 'profiles.image','profiles.first_name','profiles.last_name')->limit(5));
                 if (!empty($filters['type']) && $filters['type'] == 'one') {
                     $slot->where('duracion', 1);
                 }
@@ -185,12 +172,6 @@ class BookingService {
                                                  ->orWhere('profiles.last_name', 'like', "%{$filters['keyword']}%")
                                                  ->orWhereRaw("CONCAT(profiles.first_name, ' ', profiles.last_name) LIKE ?", ["%{$filters['keyword']}%"]);
                             });
-                        })
-                        ->orWhereHas('subjectGroupSubjects.subject', function ($subjectQuery) use ($filters) {
-                            $subjectQuery->where('name', 'like', "%{$filters['keyword']}%");
-                        })
-                        ->orWhereHas('subjectGroupSubjects.group', function ($userSubjectGroupQuery) use ($filters) {
-                            $userSubjectGroupQuery->where('subject_groups.name', 'like', "%{$filters['keyword']}%");
                         });
                     });
                 }
@@ -231,10 +212,7 @@ class BookingService {
         return SlotBooking::select('id', 'tutor_id', 'student_id', 'user_subject_slot_id', 'session_fee', 'start_time', 'end_time', 'status', 'meta_data')
                 ->with('tutor:profiles.id,profiles.user_id,first_name,last_name,image')
                 ->withWhereHas('slot', function ($slot) {
-                    $slot->withCount('bookings')
-                        ->withWhereHas('subjectGroupSubjects', function ($query) {
-                            $query->with('subject:subjects.id,subjects.name','group:subject_groups.id,subject_groups.name');
-                        });
+                    $slot->withCount('bookings');
                 })
                 ->when($this->user->role == 'tutor', fn($query) => $query->whereTutorId($this->user->id))
                 ->when($this->user->role == 'student', fn($query) => $query->whereStudentId($this->user->id))
@@ -273,7 +251,7 @@ class BookingService {
             $slots['end_date'] = $slots['start_date'];
 
         $period = CarbonPeriod::create(parseToUTC($slots['start_date']. " " . $slots['start_time']), parseToUTC($slots['end_date']. " " . $slots['end_time']));
-        $dbSlots = UserSubjectGroupSubject::select('id','user_subject_group_id')->find($slots['subject_group_id'])->slots()->select('id', 'user_subject_group_subject_id');
+        $dbSlots = UserSubjectGroupSubject::select('id','user_subject_group_id')->find($slots['subject_group_id'])->slots()->select('id');
         foreach ($period as $date) {
             if (!empty($slots['recurring_days']) && !in_array($date->format('l'), (array) $slots['recurring_days'])) {
                 continue;
@@ -339,7 +317,7 @@ class BookingService {
         if ($startTime->isPast()) {
             return false;
         }
-        $dbSlots   = UserSubjectGroupSubject::select('id','user_subject_group_id')->find($slotData['subject_group_id'])->slots()->select('id', 'user_subject_group_subject_id');
+        $dbSlots   = UserSubjectGroupSubject::select('id','user_subject_group_id')->find($slotData['subject_group_id'])->slots()->select('id');
         $slotExists = $dbSlots->where(function ($query) use ($startTime, $endTime) {
             $query->where(function ($query) use ($startTime) {
                 $query->where('start_time', '<=', $startTime)
@@ -439,7 +417,7 @@ class BookingService {
             }
             return false;
         } catch (Exception $ex) {
-            Log::info($ex);
+            // Log::info($ex);
             DB::statement('SET FOREIGN_KEY_CHECKS=1');
             DB::rollBack();
             return false;
@@ -639,7 +617,7 @@ class BookingService {
 
     public function createMeetingLink($booking) {
         if (empty($booking->slot['meta_data']['meeting_link'])) {
-             \Log::info("Este es el contenido de bookings", ['booking' => $booking]);
+            // \Log::info("Este es el contenido de bookings", ['booking' => $booking]);
             $meeingLink = $this->createSessionMeetingLink($booking);
         }
 

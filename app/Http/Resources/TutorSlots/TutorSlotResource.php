@@ -54,16 +54,16 @@ class TutorSlotResource extends JsonResource
             'type'                              => $this->whenHas('type'),
             'bookings_count'                    => $this->whenHas('bookings_count'),
             'description'                       => $this->whenHas('description'),
-            'image'                             => $this->when($this->subjectGroupSubjects ,
-                 fn () => !empty($this->subjectGroupSubjects->image) ? url(Storage::url($this->subjectGroupSubjects->image)) : url(Storage::url('placeholder.png'))),
-            'subject'                           => $this->when(
-                $this->subjectGroupSubjects && $this->subjectGroupSubjects->subject,
-                fn () => $this->subjectGroupSubjects->subject
-            ),
-            'group'                             => $this->when(
-                $this->subjectGroupSubjects && $this->subjectGroupSubjects->userSubjectGroup && $this->subjectGroupSubjects->userSubjectGroup->group,
-                fn () => $this->subjectGroupSubjects->userSubjectGroup->group
-            ),
+            // 'image'                             => $this->when($this->subjectGroupSubjects ,
+            //      fn () => !empty($this->subjectGroupSubjects->image) ? url(Storage::url($this->subjectGroupSubjects->image)) : url(Storage::url('placeholder.png'))),
+            // 'subject'                           => $this->when(
+            //     $this->subjectGroupSubjects && $this->subjectGroupSubjects->subject,
+            //     fn () => $this->subjectGroupSubjects->subject
+            // ),
+            // 'group'                             => $this->when(
+            //     $this->subjectGroupSubjects && $this->subjectGroupSubjects->userSubjectGroup && $this->subjectGroupSubjects->userSubjectGroup->group,
+            //     fn () => $this->subjectGroupSubjects->userSubjectGroup->group
+            // ),
 
         ];
         

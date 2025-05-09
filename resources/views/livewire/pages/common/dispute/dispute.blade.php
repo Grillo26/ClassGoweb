@@ -53,21 +53,10 @@
                                     <td data-label="{{ __('dispute.session' )}}">
                                         <div class="am-list-wrap">
                                             <figure class="am-img-rounded">
-                                                @if (!empty($dispute?->booking?->slot?->subjectGroupSubjects?->image) && Storage::disk('public')->exists($dispute?->booking?->slot?->subjectGroupSubjects?->image))
-                                                <img src="{{ resizedImage($dispute?->booking?->slot?->subjectGroupSubjects?->image,34,34) }}" alt="{{$dispute?->booking?->slot?->subjectGroupSubjects?->image}}" />
-                                                @else
-                                                    <img src="{{ resizedImage('placeholder.png',34,34) }}" alt="image" />
-                                                @endif
+                                                {{-- @if (!empty($dispute?->booking?->slot?->subjectGroupSubjects?->image) && Storage::disk('public')->exists($dispute?->booking?->slot?->subjectGroupSubjects?->image)) --}}
                                             </figure>
-                                            <span>{{ $dispute?->booking?->slot?->subjectGroupSubjects?->subject?->name  }}
-                                                <small>{{ $dispute?->booking?->slot?->subjectGroupSubjects?->group?->name }} 
-                                                    @if(setting('_lernen.time_format') == '12') 
-                                                        {{ \Carbon\Carbon::parse($dispute?->booking?->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($dispute?->booking?->end_time)->format('h:i A') }} 
-                                                    @else 
-                                                        {{ \Carbon\Carbon::parse($dispute?->booking?->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($dispute?->booking?->end_time)->format('H:i') }} 
-                                                    @endif 
-                                                </small>
-                                            </span>
+                                            {{-- <span>{{ $dispute?->booking?->slot?->subjectGroupSubjects?->subject?->name  }} --}}
+                                            {{-- <small>{{ $dispute?->booking?->slot?->subjectGroupSubjects?->group?->name }} --}}
                                         </div>
                                     </td>
                                     @role('student')
