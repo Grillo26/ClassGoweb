@@ -122,7 +122,7 @@ class PersonalDetails extends Component
         $this->user_languages = $userLanguages;
         
         // Debug para ver los idiomas del usuario
-        /* dd([
+      /*   dd([
             'user_id' => Auth::id(),
             'user_languages' => $this->user_languages
         ]);
