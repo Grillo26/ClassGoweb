@@ -33,27 +33,18 @@ class BookingService {
 
     public function getAvailableSlots($subjectGroupIds, $date) {
         $myData = array();
-        $slots = UserSubjectSlot::select('id','start_time','spaces','total_booked')
-            ->whereHas('subjectGroupSubjects', function($groupSubjects) use($subjectGroupIds) {
-                $groupSubjects->select('id','user_subject_group_id');
-                $groupSubjects->whereHas('userSubjectGroup', fn($query)=>$query->select('id','user_id')->whereUserId($this->user->id));
-                if ($subjectGroupIds) {
-                    $groupSubjects->whereIn('id',$subjectGroupIds);
-                }
-            })
-            ->where('start_time', '>=', $date->copy()->firstOfMonth()->toDateString())
-            ->where('end_time', '<=', $date->copy()->lastOfMonth()->toDateString())
+        $slots = UserSubjectSlot::select('id','start_time','end_time','duracion','date','user_id')
+            ->where('user_id', $this->user->id)
+            ->where('date', '>=', $date->copy()->firstOfMonth()->toDateString())
+            ->where('date', '<=', $date->copy()->lastOfMonth()->toDateString())
             ->orderBy('start_time')->get();
         if ($slots->isNotEmpty()) {
             foreach ($slots as $slot) {
-                $date = parseToUserTz($slot->start_time)->toDateString();
-                if (array_key_exists($date, $myData)) {
-                    $myData[$date]['all_slots'] += $slot->spaces;
-                    $myData[$date]['booked_slots'] += $slot->total_booked;
-                } else {
-                    $myData[$date]['all_slots'] = $slot->spaces;
-                    $myData[$date]['booked_slots'] = $slot->total_booked;
+                $slotDate = is_object($slot->date) ? $slot->date->format('Y-m-d') : $slot->date;
+                if (!isset($myData[$slotDate])) {
+                    $myData[$slotDate] = [];
                 }
+                $myData[$slotDate][] = $slot;
             }
         }
         return $myData;
@@ -61,52 +52,21 @@ class BookingService {
 
     public function getTutorAvailableSlots($userId, $userTimeZone, $date, $filter = []) {
         $myData = array();
-        $slots = UserSubjectSlot::withWhereHas('subjectGroupSubjects' , function ($query) use ($userId, $filter) {
-            $query->select('id', 'user_subject_group_id', 'subject_id', 'hour_rate', 'image');
-            $query->withWhereHas('userSubjectGroup', function ($subjectGroup) use ($userId, $filter) {
-                $subjectGroup->with('group:id,name');
-                $subjectGroup->select('id','user_id','subject_group_id')->where('user_id', $userId);
-            });
-
-            if (!empty($filter['subject_group_ids'])) {
-                $query->whereIn('id', $filter['subject_group_ids']);
-            }
-
-            $query->with('subject:id,name');
-            if (\Nwidart\Modules\Facades\Module::has('kupondeal') && \Nwidart\Modules\Facades\Module::isEnabled('kupondeal')) {
-                $query->with('coupons', fn($query) => $query->select('id', 'couponable_id', 'couponable_type', 'code', 'discount_type', 'discount_value')
-                    ->where('status', \Modules\KuponDeal\Casts\StatusCast::$statuses['active'])->where('expiry_date', '>=', now())
-                    ->where('auto_apply', 1)
-                    ->oldest()
-                    ->limit(1)
-                );
-            }
-        });
-
-        if (auth()->check() && auth()->user()->role == 'student') {
-            $slots->with(['bookings' => fn($booking) => $booking->select('id','user_subject_slot_id')->where('student_id', auth()->user()->id)]);
-        }
-
-        if( !empty($filter['type']) && $filter['type'] != '*' ){
-            if($filter['type'] == 'one'){
-                $slots = $slots->where('spaces', '=', 1);
-            } else {
-                $slots = $slots->where('spaces', '>', 1);
-            }
-        }
-
-        $slots = $slots->when($date, function ($slots) use ($date) {
-            $slots->where('start_time', '>=', $date['start_date']);
-            $slots->where('end_time', '<=', $date['end_date']);
-        })->orderBy('start_time', 'asc')->get();
+        $slots = UserSubjectSlot::select('id','start_time','end_time','duracion','date','user_id')
+            ->where('user_id', $userId)
+            ->when($date, function ($slots) use ($date) {
+                $slots->where('date', '>=', $date['start_date']);
+                $slots->where('date', '<=', $date['end_date']);
+            })
+            ->orderBy('start_time', 'asc')->get();
 
         if ($slots->isNotEmpty()) {
             foreach ($slots as $slot) {
-                $start_time = Carbon::parse($slot->start_time, $userTimeZone);
-                if($start_time->isPast()){
-                    continue;
+                $slotDate = is_object($slot->date) ? $slot->date->format('Y-m-d') : $slot->date;
+                if (!isset($myData[$slotDate])) {
+                    $myData[$slotDate] = [];
                 }
-                $myData[$start_time->toDateString()][] = $slot;
+                $myData[$slotDate][] = $slot;
             }
         }
         return $myData;
@@ -118,9 +78,8 @@ class BookingService {
                     $query->select('id', 'user_subject_group_id', 'subject_id', 'hour_rate', 'image', );
                     $query->withWhereHas('userSubjectGroup', function ($subjectGroup) {
                         $subjectGroup->with('group:id,name');
-                        $subjectGroup->select('id','user_id','subject_group_id');
+                        $query->with('subject:id,name');
                     });
-                    $query->with('subject:id,name');
                 }]);
             })->find($id);
     }
@@ -158,7 +117,7 @@ class BookingService {
 
     public function getUserSubjectSlots($date = null) {
         $slotsData = array();
-        $slots = UserSubjectSlot::select('id','user_subject_group_subject_id','start_time','end_time','spaces','session_fee','total_booked','description','meta_data')
+        $slots = UserSubjectSlot::select('id','user_subject_group_subject_id','start_time','end_time','duracion','date','user_id')
                     ->withCount('bookings')
                     ->with('students', fn($query) => $query->select('profiles.id','profiles.user_id', 'profiles.image')->limit(5))
                     ->withWhereHas('subjectGroupSubjects' , function ($query) {
@@ -209,10 +168,10 @@ class BookingService {
                         }
                     });
                 if (!empty($filters['type']) && $filters['type'] == 'one') {
-                    $slot->where('spaces', 1);
+                    $slot->where('duracion', 1);
                 }
                 if (!empty($filters['type']) && $filters['type'] == 'group') {
-                    $slot->where('spaces', '>', 1);
+                    $slot->where('duracion', '>', 1);
                 }
                 if ($this->user->role == 'tutor') {
                     $slot->where('start_time', '>=', $date['start_date']);
@@ -360,8 +319,7 @@ class BookingService {
                 $newSlots[] =[
                     'start_time'                    => $startTime,
                     'end_time'                      => $endTime,
-                    'spaces'                        => $slots['spaces'],
-                    'duration'                      => $slots['duration'],
+                    'duracion'                      => $slots['duration'],
                     'session_fee'                   => $slots['session_fee'],
                     'description'                   => $slots['description'],
                     'meta_data'                     => $metaData
@@ -401,8 +359,7 @@ class BookingService {
             return $dbSlots->create([
                 'start_time'                    => $startTime,
                 'end_time'                      => $endTime,
-                'spaces'                        => $slotData['spaces'],
-                'duration'                      => $startTime->diffInMinutes($endTime),
+                'duracion'                      => $startTime->diffInMinutes($endTime),
                 'session_fee'                   => $slotData['session_fee'],
                 'description'                   => $slotData['description'],
                 'total_booked'                  => $slotData['total_booked'] ?? 0,
@@ -423,7 +380,7 @@ class BookingService {
                 $slotInfo = $this->addSessionSlot(parseToUTC($sessionData['date']), [
                     'start_time'         => $sessionData['start_time'],
                     'end_time'           => $sessionData['end_time'],
-                    'spaces'             => $slot->spaces,
+                    'duracion'           => $slot->duracion,
                     'session_fee'        => $slot->session_fee,
                     'description'        => $sessionData['description'],
                     'subject_group_id'   => $sessionData['subject_group_id'],
@@ -500,7 +457,7 @@ class BookingService {
     public function updateSessionSlotById($slotId, $updatedData) {
         $slot = $this->getUserSessionSlot($slotId);
         if ($slot) {
-            $updatedArray = Arr::only($updatedData, ['session_fee','spaces','description']);
+            $updatedArray = Arr::only($updatedData, ['session_fee','duracion','description']);
             $updatedArray['meta_data'] = $slot->meta_data;
             $updatedArray['meta_data']['meeting_link'] = $updatedData['meeting_link'];
             if(Module::has('subscriptions') && Module::isEnabled('subscriptions')){
@@ -615,8 +572,6 @@ class BookingService {
         return [
             'userName'          => $booking->student->full_name,
             'tutorName'         => $booking->tutor->full_name,
-            // 'previous_date'     => Carbon::parse($booking->start_time, $studentTz)->format('F d, Y'),
-            // 'previous_time'     => Carbon::parse($booking->start_time, $studentTz)->format('h:i a') . " - " . Carbon::parse($booking->end_time, $studentTz)->format('h:i a'),
             'newSessionDate'    => $this->getBookingTime($booking, 'booker'),
             'reason'            => $booking->slot->metadata['reason'] ?? '',
             'viewDetailLink'    => route('student.reschedule-session', ['id' => $booking->id])

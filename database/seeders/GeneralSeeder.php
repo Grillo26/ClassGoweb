@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use App\Imports\SubjectsJsonImport;
+use Illuminate\Support\Facades\DB;
 
 class GeneralSeeder extends Seeder
 {
@@ -42,6 +43,28 @@ class GeneralSeeder extends Seeder
         // Crear archivos de placeholder
         Storage::disk(getStorageDisk())->putFileAs('', public_path('demo-content/placeholders/placeholder.png'), 'placeholder.png');
         Storage::disk(getStorageDisk())->putFileAs('', public_path('demo-content/placeholders/placeholder-land.png'), 'placeholder-land.png');
+
+        // Cargar pagebuilder.json
+        if (file_exists(base_path('pagebuilder.json'))) {
+            $pagebuilderData = json_decode(file_get_contents(base_path('pagebuilder.json')), true);
+            foreach ($pagebuilderData as $item) {
+                DB::table('pagebuilder__pages')->updateOrInsert(
+                    [
+                        'id' => $item['id'] ?? null,
+                    ],
+                    [
+                        'name' => $item['name'] ?? null,
+                        'title' => $item['title'] ?? null,
+                        'description' => $item['description'] ?? null,
+                        'slug' => $item['slug'] ?? null,
+                        'settings' => isset($item['settings']) ? json_encode($item['settings']) : null,
+                        'status' => $item['status'] ?? 1,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]
+                );
+            }
+        }
     }
 }
 

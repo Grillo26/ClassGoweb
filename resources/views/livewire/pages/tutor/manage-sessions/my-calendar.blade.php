@@ -71,15 +71,13 @@
                                                 <select id="filter_subject_group" data-componentid="@this" class="am-select2" data-class="subject-dropdown-select2" data-format="custom" data-searchable="true" data-wiremodel="subjectGroupIds" data-placeholder="{{ __('calendar.subject_placeholder') }}" multiple>
                                                     <option label="{{ __('calendar.subject_placeholder') }}"></option>
                                                     @foreach ($subjectGroups as $sbjGroup)
-                                                        @if ($sbjGroup->subjects->isEmpty())
+                                                        @if ($sbjGroup->subjects->isEmpty() || !$sbjGroup->group)
                                                             @continue
                                                         @endif
                                                         <optgroup label="{{ $sbjGroup->group->name }}">
-                                                            @if ($sbjGroup->subjects)
-                                                                @foreach ($sbjGroup->subjects as $sbj)
-                                                                    <option value="{{ $sbj->pivot->id }}" data-price="{{ formatAmount($sbj->pivot->hour_rate) }}">{{ $sbj->name }}</option>
-                                                                @endforeach
-                                                            @endif
+                                                            @foreach ($sbjGroup->subjects as $sbj)
+                                                                <option value="{{ $sbj->pivot->id }}" data-price="{{ formatAmount($sbj->pivot->hour_rate) }}">{{ $sbj->name }}</option>
+                                                            @endforeach
                                                         </optgroup>
                                                     @endforeach
                                                 </select>
@@ -129,8 +127,7 @@
                                                     href="#"
                                                     x-on:click="$wire.dispatch('toggleModel', {id:'booking-modal',action:'show'})"
                                                 @else
-                                                    href="{{ route('tutor.bookings.session-detail', ['date' => parseToUserTz($startOfCalendar)->toDateString()]) }}"
-                                                    wire:navigate.remove
+                                                    href="#"
                                                 @endif
                                                 @class([
                                                     'am-full-calander-days',
@@ -140,20 +137,11 @@
                                                 ])
                                             >
                                             @if(!empty($availableSlots[parseToUserTz($startOfCalendar)->toDateString()]))
-                                                @php
-                                                    $availableSeats = $availableSlots[parseToUserTz($startOfCalendar)->toDateString()]['all_slots'] - $availableSlots[parseToUserTz($startOfCalendar)->toDateString()]['booked_slots'];
-                                                    $percentage = round(($availableSeats / $availableSlots[parseToUserTz($startOfCalendar)->toDateString()]['all_slots'] * 100), 2);
-                                                @endphp
                                                 <div class="am-slots-count">
-                                                    <em> <strong>{{ $availableSeats  }}</strong>/ {{ $availableSlots[parseToUserTz($startOfCalendar)->toDateString()]['all_slots'] }} {{ __('calendar.spaces_left') }}</em>
-                                                    <progress class="am-progress" value="{{ $percentage }}" max="100"></progress>
+                                                    <em><strong>{{ count($availableSlots[parseToUserTz($startOfCalendar)->toDateString()]) }}</strong> sesiones</em>
                                                 </div>
                                                 <span class="am-custom-tooltip">
                                                     {{ parseToUserTz($startOfCalendar)->format('j') }}
-                                                    <div class="am-slots-count am-tooltip-text">
-                                                        <em> <strong>{{ $availableSeats  }}</strong>/ {{ $availableSlots[parseToUserTz($startOfCalendar)->toDateString()]['all_slots'] }} {{ __('calendar.left') }}</em>
-                                                        <progress class="am-progress" value="{{ $percentage }}" max="100"></progress>
-                                                    </div>
                                                 </span>
                                             @else
                                                 <span class="am-custom-tooltip">
@@ -209,19 +197,13 @@
 
                                     
 
-                                    <!-- Campo de Descripción -->
-                                    <div class="col-md-12 mb-3">
-                                        <label for="description" class="form-label">{{ __('calendar.session_description') }}</label>
-                                        <textarea id="description" class="form-control" wire:model="form.description" rows="4" placeholder="{{ __('calendar.add_session_description') }}"></textarea>
-                                        <x-input-error field_name="form.description" />
-                                    </div>
+                                   
 
                                    
                                 </div>
 
                                 <!-- Botones de Acción -->
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('general.close') }}</button>
                                     <button type="submit" class="btn btn-primary" wire:loading.class="btn-loading">
                                         {{ __('general.save_update') }}
                                     </button>
