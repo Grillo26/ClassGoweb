@@ -60,9 +60,9 @@ class PersonalDetails extends Component
 
     // Configuración
     public $allowImgFileExt = ['jpg', 'png'];
-    public $allowVideoFileExt = ['mp4'];
+    public $allowVideoFileExt = ['mp4', 'mov', 'avi', 'wmv', 'm4v'];
     public $maxImageSize = 3; // MB
-    public $maxVideoSize = 20; // MB
+    public $maxVideoSize = 500; // MB
     public $enableGooglePlaces = false;
 
     /**
@@ -113,8 +113,20 @@ class PersonalDetails extends Component
     {
         $profile = $this->profileService->getUserProfile();
         $address = $this->profileService->getUserAddress();
-        $languages = $this->profileService->getUserLanguages();
-
+        
+        // Consulta directa a user_languages para el usuario actual
+        $userLanguages = \App\Models\UserLanguage::where('user_id', Auth::id())
+            ->pluck('language_id')
+            ->toArray();
+            
+        $this->user_languages = $userLanguages;
+        
+        // Debug para ver los idiomas del usuario
+        /* dd([
+            'user_id' => Auth::id(),
+            'user_languages' => $this->user_languages
+        ]);
+ */
         // Carga datos básicos
         $this->first_name = $profile?->first_name ?? '';
         $this->last_name = $profile?->last_name ?? '';
@@ -134,13 +146,6 @@ class PersonalDetails extends Component
         $this->address = $address?->address ?? '';
         $this->lat = $address?->lat ?? '';
         $this->long = $address?->long ?? '';
-
-        // Carga idiomas
-        if ($languages instanceof \Illuminate\Support\Collection) {
-            $this->user_languages = $languages->pluck('id')->toArray();
-        } else {
-            $this->user_languages = [];
-        }
     }
 
     /**
@@ -153,6 +158,21 @@ class PersonalDetails extends Component
             $states = null;
             $countries = Country::orderBy('name')->get();
             $languages = Language::get(['id', 'name'])->pluck('name', 'id');
+
+            // Debug temporal - Descomenta esta línea para ver los datos en el navegador
+            // dd([
+            //     'languages' => $languages->toArray(),
+            //     'user_languages' => $this->user_languages,
+            //     'profile' => $this->profileService->getUserProfile(),
+            //     'user_languages_from_service' => $this->profileService->getUserLanguages()
+            // ]);
+
+            // Debug: Ver los idiomas en el render
+            /* Log::info('Idiomas en render:', [
+                'languages' => $languages->toArray(),
+                'user_languages' => $this->user_languages
+            ]);
+            dd($this->user_languages,"user_languages"); */
 
             if (!empty($this->country)) {
                 $states = $this->profileService->countryStates($this->country);
@@ -239,16 +259,27 @@ class PersonalDetails extends Component
             if ($field === 'image') {
                 $this->isUploadingImage = true;
                 $this->validate([
-                    'image' => 'image|max:' . ($this->maxImageSize * 10240) . '|mimes:' . implode(',', $this->allowImgFileExt)
+                    'image' => 'image|max:' . ($this->maxImageSize * 1024) . '|mimes:' . implode(',', $this->allowImgFileExt)
+                ], [
+                    'image.image' => 'El archivo debe ser una imagen válida.',
+                    'image.max' => 'La imagen no debe superar ' . $this->maxImageSize . 'MB.',
+                    'image.mimes' => 'La imagen debe ser de tipo: ' . implode(', ', $this->allowImgFileExt)
                 ]);
                 $this->imageName = $file->getClientOriginalName();
             } else if ($field === 'intro_video') {
                 $this->isUploadingVideo = true;
                 $this->validate([
-                    'intro_video' => 'file|max:' . ($this->maxVideoSize * 10240) . '|mimes:' . implode(',', $this->allowVideoFileExt)
+                    'intro_video' => 'file|max:' . ($this->maxVideoSize * 1024) . '|mimes:' . implode(',', $this->allowVideoFileExt)
+                ], [
+                    'intro_video.file' => 'El archivo debe ser un video válido.',
+                    'intro_video.max' => 'El video no debe superar ' . $this->maxVideoSize . 'MB.',
+                    'intro_video.mimes' => 'El video debe ser de tipo: ' . implode(', ', $this->allowVideoFileExt)
                 ]);
                 $this->videoName = $file->getClientOriginalName();
             }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Error de validación al cargar archivo: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', message: $e->validator->errors()->first());
         } catch (\Exception $e) {
             Log::error('Error al cargar archivo: ' . $e->getMessage());
             $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_uploading_file'));
@@ -286,11 +317,17 @@ class PersonalDetails extends Component
     /**
      * Elimina un idioma de la lista de idiomas seleccionados
      */
-    public function removeLanguage($languageName)
+    public function removeLanguage($languageId)
     {
-        if (($key = array_search($languageName, $this->user_languages)) !== false) {
-            unset($this->user_languages[$key]);
-            $this->user_languages = array_values($this->user_languages); // Reindexar el array
+        try {
+            if (($key = array_search($languageId, $this->user_languages)) !== false) {
+                unset($this->user_languages[$key]);
+                $this->user_languages = array_values($this->user_languages); // Reindexar el array
+                Log::info('Idioma eliminado:', ['language_id' => $languageId, 'remaining_languages' => $this->user_languages]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar idioma: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_removing_language'));
         }
     }
 

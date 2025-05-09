@@ -158,18 +158,24 @@
                     </div>
 
                     <div class="d-flex flex-wrap gap-2 mt-3">
-                        @foreach($user_languages as $langId)
-                        @if(isset($languages[$langId]))
-                        <div class="badge bg-primary p-2 d-flex align-items-center" style="font-size: 0.9rem;">
-                            <span class="text-white">{{ $languages[$langId] }}</span>
-                            <button type="button"
-                                class="btn-close btn-close-white ms-2"
-                                style="font-size: 0.7rem;"
-                                wire:click="removeLanguage({{ $langId }})">
-                            </button>
-                        </div>
+                        @if(count($user_languages) > 0)
+                            @foreach($user_languages as $langId)
+                                @if(isset($languages[$langId]))
+                                    <div class="badge bg-primary p-2 d-flex align-items-center" style="font-size: 0.9rem;">
+                                        <span class="text-white">{{ $languages[$langId] }}</span>
+                                        <button type="button"
+                                            class="btn-close btn-close-white ms-2"
+                                            style="font-size: 0.7rem;"
+                                            wire:click="removeLanguage({{ $langId }})">
+                                        </button>
+                                    </div>
+                                @endif
+                            @endforeach
+                        @else
+                            <div class="text-white-50">
+                                {{ __('profile.no_languages_selected') }}
+                            </div>
                         @endif
-                        @endforeach
                     </div>
                     @error('user_languages') 
                         <div class="invalid-feedback d-block">
