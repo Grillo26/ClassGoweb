@@ -94,9 +94,9 @@
 
                 <!-- Sección de Descripción -->
                 <div >
-                    <x-input-label for="introduction" class="am-important" :value="__('profile.description')" />
+                    <x-input-label for="introduction" style="color:white;" :value="__('profile.description')" />
                     <div class="am-editor-wrapper">
-                        <textarea wire:model="description" class="form-control" placeholder="{{ __('profile.description_placeholder') }}"></textarea>
+                        <textarea wire:model="description" class="form-control" placeholder="{{ __('profile.description') }}"></textarea>
                         <x-input-error field_name="description" />
                     </div>
                 </div>
@@ -125,7 +125,7 @@
                 <!-- Otros idiomas -->
                 <div>
                     <label for="languages" class="form-label text-white mb-3">
-                        {{ __('profile.other_languages') }} <span class="text-danger">*</span>
+                        {{ __('profile.other_languages') }} <span class="text-danger"></span>
                     </label>
                     <div class="mb-3">
                         <div class="dropdown">
@@ -152,9 +152,9 @@
                                 @endforeach
                             </ul>
                         </div>
-                        <div class="form-text text-white-50 mt-2">
+                        <!-- <div class="form-text text-white-50 mt-2">
                             {{ __('profile.select_multiple') }}
-                        </div>
+                        </div> -->
                     </div>
 
                     <div class="d-flex flex-wrap gap-2 mt-3">

@@ -11,7 +11,7 @@
                         <li class="active"><span>{{ __('sidebar.find_tutor') }}</span></li>
                     </ol>
                     <div class="am-searchhead_title">
-                        <h1 class="title1">{{ __('sidebar.discover_tutor_text1') }}</h1>
+                        <h1 class="title1">{{ __('sidebar.discover_tutor_text1') }} </h1>
                         <h1 class="title2">{{ __('sidebar.discover_tutor_text2') }}</h1>
                         <p>{{ __('sidebar.discover_tutor_desc') }}</p>
                     </div>
