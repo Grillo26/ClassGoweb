@@ -112,7 +112,7 @@
                         {{ __('profile.native_language') }} <span class="text-red-500"></span>
                     </label>
                     <select id="native_language"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                        class="choices-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
                         wire:model="native_language">
                         <option value="">seleccione un idioma</option>
                         @foreach($languages as $id => $name)
@@ -341,3 +341,31 @@
     </div>
     @endif
 </div>
+
+
+@push('scripts')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script>
+    document.addEventListener('livewire:load', function () {
+        const choices = new Choices('#native_language', {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Buscar idioma...',
+            placeholder: true,
+            placeholderValue: 'seleccione un idioma',
+            searchResultLimit: 10,
+            noResultsText: 'No se encontraron resultados',
+            itemSelectText: 'Presione para seleccionar',
+            loadingText: 'Cargando...',
+            noChoicesText: 'No hay opciones disponibles',
+            searchPlaceholderValue: 'Buscar...',
+            shouldSort: false
+        });
+
+        // Actualizar el valor en Livewire cuando cambie la selección
+        document.getElementById('native_language').addEventListener('change', function(e) {
+            Livewire.emit('nativeLanguageUpdated', e.target.value);
+        });
+    });
+</script>
+@endpush

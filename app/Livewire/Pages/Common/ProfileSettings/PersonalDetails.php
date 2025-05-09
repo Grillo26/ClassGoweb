@@ -184,7 +184,7 @@ class PersonalDetails extends Component
             $this->ensureProfileService();
 
             // Validación temporal sin los campos de ubicación
-            $this->validate([
+            /* $this->validate([
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'phone_number' => 'nullable|string|max:20',
@@ -192,7 +192,7 @@ class PersonalDetails extends Component
                 'native_language' => 'required|string|max:255',
                 'user_languages' => 'required|array',
                 'description' => 'required|string|max:500',
-            ]); 
+            ]); */ 
 
             // Actualiza datos del perfil
             $profileData = [
@@ -207,29 +207,21 @@ class PersonalDetails extends Component
 
             // Maneja la imagen si se ha subido una nueva
             if ($this->image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                $profileData['image'] = $this->image->store('profile_images', 'public');
+                $path = $this->image->store('profile_images', 'public');
+                $profileData['image'] = $path;
             }
 
             // Maneja el video si se ha subido uno nuevo
             if ($this->intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                $profileData['intro_video'] = $this->intro_video->store('profile_videos', 'public');
+                $path = $this->intro_video->storeAs('storage/profile_videos', $this->intro_video->getClientOriginalName(), 'public_path');
+                $profileData['intro_video'] = $path;
             }
-
+            
             // Guarda los datos
             $this->profileService->setUserProfile($profileData);
             
-            // Procesar los idiomas
-            $languageIds = [];
-            foreach ($this->user_languages as $langId) {
-                // Buscar el idioma por nombre en el modelo Language
-                $language = \App\Models\Language::where('name', $langId)->first();
-                if ($language) {
-                    $languageIds[] = $language->id;
-                }
-            }
-            
-            // Guardar los IDs de idiomas procesados
-            $this->profileService->storeUserLanguages($languageIds);
+            // Guardar los IDs de idiomas directamente
+            $this->profileService->storeUserLanguages($this->user_languages);
 
             $this->dispatch('showAlertMessage', type: 'success', message: __('general.success_message'));
         } catch (\Exception $e) {
@@ -247,13 +239,13 @@ class PersonalDetails extends Component
             if ($field === 'image') {
                 $this->isUploadingImage = true;
                 $this->validate([
-                    'image' => 'image|max:' . ($this->maxImageSize * 1024) . '|mimes:' . implode(',', $this->allowImgFileExt)
+                    'image' => 'image|max:' . ($this->maxImageSize * 10240) . '|mimes:' . implode(',', $this->allowImgFileExt)
                 ]);
                 $this->imageName = $file->getClientOriginalName();
             } else if ($field === 'intro_video') {
                 $this->isUploadingVideo = true;
                 $this->validate([
-                    'intro_video' => 'file|max:' . ($this->maxVideoSize * 1024) . '|mimes:' . implode(',', $this->allowVideoFileExt)
+                    'intro_video' => 'file|max:' . ($this->maxVideoSize * 10240) . '|mimes:' . implode(',', $this->allowVideoFileExt)
                 ]);
                 $this->videoName = $file->getClientOriginalName();
             }
