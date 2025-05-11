@@ -113,7 +113,7 @@
                                             <optgroup label="{{ $group['group_name'] }}">
                                                 @foreach ($group['subjects'] as $subject)
                                                 <option value="{{ $subject['id'] }}"
-                                                    data-price="{{ formatAmount($subject['hour_rate']) }}">
+                                                    data-price="{{ isset($subject['hour_rate']) ? formatAmount($subject['hour_rate']) : '' }}">
                                                     {{ $subject['subject_name'] }}
                                                 </option>
                                                 @endforeach
