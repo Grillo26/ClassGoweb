@@ -76,7 +76,7 @@
                                                         @endif
                                                         <optgroup label="{{ $sbjGroup->group->name }}">
                                                             @foreach ($sbjGroup->subjects as $sbj)
-                                                                <option value="{{ $sbj->pivot->id }}" data-price="{{ formatAmount($sbj->pivot->hour_rate) }}">{{ $sbj->name }}</option>
+                                                                <option value="{{ $sbj->pivot->id }}">{{ $sbj->name }}</option>
                                                             @endforeach
                                                         </optgroup>
                                                     @endforeach

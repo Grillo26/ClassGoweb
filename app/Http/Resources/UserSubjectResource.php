@@ -28,7 +28,6 @@ class UserSubjectResource extends JsonResource
             'laravel_through_key'       => $this->whenHas('laravel_through_key'),
             'sort_order'                => $this->whenHas('sort_order'),
             'subject'                   => new SubjectResource($this->whenLoaded('subject')),
-            'slots'                     => UserSlotResource::collection($this->whenLoaded('slots')),
             'group'                     => $this->whenLoaded('userSubjectGroup', function () {
                 return new SubjectGroupResource($this->userSubjectGroup->group);
             }),

@@ -9,7 +9,6 @@ use App\Jobs\SendNotificationJob;
 use App\Models\OrderItem;
 use App\Models\SlotBooking;
 use App\Models\User;
-use App\Models\UserSubjectGroupSubject;
 use App\Models\UserSubjectSlot;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -111,12 +110,8 @@ class BookingService {
         return $myData;
     }
 
-    public function getUserSubjectGroupSubjects($userSubjectGroupId): Collection {
-        return $this->user->subjects()->whereUserSubjectGroupId($userSubjectGroupId)->get();
-    }
-
     public function getUserSubjectSlots($date = null) {
-        $slotsData = array();
+        $slotsData = [];
         $slots = UserSubjectSlot::select('id','start_time','end_time','duracion','date','user_id')
                     ->withCount('bookings')
                     ->with('students', fn($query) => $query->select('profiles.id','profiles.user_id', 'profiles.image')->limit(5))
@@ -126,21 +121,18 @@ class BookingService {
                     })
                     ->orderBy('start_time')
                     ->get();
-        if ($slots->isNotEmpty()) {
-            foreach ($slots as $item) {
-                // $group = $item->subjectGroupSubjects?->userSubjectGroup?->group?->name;
-                // $subject  = $item?->subjectGroupSubjects?->subject;
-                // $slotsData[$group][$subject?->name]['slots'][] = $item;
-                // $slotsData[$group][$subject?->name]['info'] = [
-                //     'user_subject_id'       => $item?->subjectGroupSubjects?->id,
-                //     'user_subject_group_id' => $item?->subjectGroupSubjects?->user_subject_group_id,
-                //     'subject_id'            => $item?->subjectGroupSubjects?->subject_id,
-                //     'subject'               => $subject?->name,
-                //     'hour_rate'             => $item?->subjectGroupSubjects?->hour_rate,
-                //     'image'                 => $item?->subjectGroupSubjects?->image,
-                // ];
-                // Puedes agregar aquí la lógica que necesites solo con los campos existentes
-            }
+        // Retornar los slots como un array plano, sin agrupar ni info extra
+        foreach ($slots as $slot) {
+            $slotsData[] = [
+                'id' => $slot->id,
+                'start_time' => $slot->start_time,
+                'end_time' => $slot->end_time,
+                'duracion' => $slot->duracion,
+                'date' => $slot->date,
+                'user_id' => $slot->user_id,
+                'bookings_count' => $slot->bookings_count,
+                'students' => $slot->students,
+            ];
         }
         return $slotsData;
     }
@@ -233,14 +225,6 @@ class BookingService {
         return false;
     }
 
-    public function getGroupSubjectName($id): UserSubjectGroupSubject {
-        return UserSubjectGroupSubject::select('id', 'user_subject_group_id', 'subject_id')->whereId($id)->with(['subject' => function ($subject) {
-            $subject->select('id', 'name');
-        }, 'userSubjectGroup.group' => function ($group) {
-            $group->select('id', 'name');
-        }])->first();
-    }
-
     public function addUserSubjectGroupSessions($slots = array()) {
         $dates = explode(" to ", $slots['date_range']);
         if (!empty($dates[0]))
@@ -251,16 +235,15 @@ class BookingService {
             $slots['end_date'] = $slots['start_date'];
 
         $period = CarbonPeriod::create(parseToUTC($slots['start_date']. " " . $slots['start_time']), parseToUTC($slots['end_date']. " " . $slots['end_time']));
-        $dbSlots = UserSubjectGroupSubject::select('id','user_subject_group_id')->find($slots['subject_group_id'])->slots()->select('id');
         foreach ($period as $date) {
             if (!empty($slots['recurring_days']) && !in_array($date->format('l'), (array) $slots['recurring_days'])) {
                 continue;
             }
-            $this->addTimeSlots($date, $slots, $dbSlots);
+            $this->addTimeSlots($date, $slots);
         }
     }
 
-    public function addTimeSlots($date, $slots, $dbSlots) {
+    public function addTimeSlots($date, $slots) {
         $startTime = $endTime = $date;
         $daySlotDuration = Carbon::parse($slots['start_time'])->diffInMinutes(Carbon::parse($slots['end_time']));
         $slots['end_time'] = $date->copy()->addMinutes($daySlotDuration);
@@ -273,20 +256,21 @@ class BookingService {
             }
             $endTime    = $startTime->copy()->addMinutes((int) $slots['duration']);
 
-            $slotExists = $dbSlots->where(function ($query) use ($startTime, $endTime) {
-                $query->where(function ($query) use ($startTime, $endTime) {
-                    $query->where('start_time', '<=', $startTime)
-                          ->where('end_time', '>=', $startTime);
-                })
-                ->orWhere(function ($query) use ($startTime, $endTime) {
-                    $query->where('start_time', '<=', $endTime)
-                          ->where('end_time', '>=', $endTime);
-                })
-                ->orWhere(function ($query) use ($startTime, $endTime) {
-                    $query->where('start_time', '>=', $startTime)
-                          ->where('end_time', '<=', $endTime);
-                });
-            })->exists();
+            $slotExists = UserSubjectSlot::where('user_id', $this->user->id)
+                ->where(function ($query) use ($startTime, $endTime) {
+                    $query->where(function ($query) use ($startTime, $endTime) {
+                        $query->where('start_time', '<=', $startTime)
+                              ->where('end_time', '>=', $startTime);
+                    })
+                    ->orWhere(function ($query) use ($startTime, $endTime) {
+                        $query->where('start_time', '<=', $endTime)
+                              ->where('end_time', '>=', $endTime);
+                    })
+                    ->orWhere(function ($query) use ($startTime, $endTime) {
+                        $query->where('start_time', '>=', $startTime)
+                              ->where('end_time', '<=', $endTime);
+                    });
+                })->exists();
 
             $metaData = !empty($slots['template_id']) ? ['template_id' => $slots['template_id']] : null;
             if(Module::has('subscriptions') && Module::isEnabled('subscriptions') && !empty($slots['allowed_for_subscriptions'])){
@@ -295,18 +279,19 @@ class BookingService {
 
             if (!$slotExists) {
                 $newSlots[] =[
-                    'start_time'                    => $startTime,
-                    'end_time'                      => $endTime,
-                    'duracion'                      => $slots['duration'],
-                    'session_fee'                   => $slots['session_fee'],
-                    'description'                   => $slots['description'],
-                    'meta_data'                     => $metaData
+                    'start_time'    => $startTime,
+                    'end_time'      => $endTime,
+                    'duracion'      => $slots['duration'],
+                    'session_fee'   => $slots['session_fee'],
+                    'description'   => $slots['description'],
+                    'user_id'       => $this->user->id,
+                    'meta_data'     => $metaData
                 ];
             }
         }
 
         if (!empty($newSlots)) {
-            $dbSlots->createMany($newSlots);
+            UserSubjectSlot::insert($newSlots);
         }
     }
 
@@ -317,31 +302,32 @@ class BookingService {
         if ($startTime->isPast()) {
             return false;
         }
-        $dbSlots   = UserSubjectGroupSubject::select('id','user_subject_group_id')->find($slotData['subject_group_id'])->slots()->select('id');
-        $slotExists = $dbSlots->where(function ($query) use ($startTime, $endTime) {
-            $query->where(function ($query) use ($startTime) {
-                $query->where('start_time', '<=', $startTime)
-                      ->where('end_time', '>=', $startTime);
-            })
-            ->orWhere(function ($query) use ($endTime) {
-                $query->where('start_time', '<=', $endTime)
-                      ->where('end_time', '>=', $endTime);
-            })
-            ->orWhere(function ($query) use ($startTime, $endTime) {
-                $query->where('start_time', '>=', $startTime)
-                      ->where('end_time', '<=', $endTime);
-            });
-        })->exists();
+        $slotExists = UserSubjectSlot::where('user_id', $this->user->id)
+            ->where(function ($query) use ($startTime, $endTime) {
+                $query->where(function ($query) use ($startTime) {
+                    $query->where('start_time', '<=', $startTime)
+                          ->where('end_time', '>=', $startTime);
+                })
+                ->orWhere(function ($query) use ($endTime) {
+                    $query->where('start_time', '<=', $endTime)
+                          ->where('end_time', '>=', $endTime);
+                })
+                ->orWhere(function ($query) use ($startTime, $endTime) {
+                    $query->where('start_time', '>=', $startTime)
+                          ->where('end_time', '<=', $endTime);
+                });
+            })->exists();
 
         if (!$slotExists) {
-            return $dbSlots->create([
-                'start_time'                    => $startTime,
-                'end_time'                      => $endTime,
-                'duracion'                      => $startTime->diffInMinutes($endTime),
-                'session_fee'                   => $slotData['session_fee'],
-                'description'                   => $slotData['description'],
-                'total_booked'                  => $slotData['total_booked'] ?? 0,
-                'meta_data'                     => $slotData['meta_data'] ?? []
+            return UserSubjectSlot::create([
+                'start_time'    => $startTime,
+                'end_time'      => $endTime,
+                'duracion'      => $startTime->diffInMinutes($endTime),
+                'session_fee'   => $slotData['session_fee'],
+                'description'   => $slotData['description'],
+                'user_id'       => $this->user->id,
+                'total_booked'  => $slotData['total_booked'] ?? 0,
+                'meta_data'     => $slotData['meta_data'] ?? []
             ]);
         }
         return false;
@@ -541,9 +527,9 @@ class BookingService {
 
     protected function getUserSessionSlot($id, $relations = []) {
         return UserSubjectSlot::when(!empty($relations), fn($query) => $query->with($relations))
-                ->whereHas('subjectGroupSubjects', fn($query) => $query->select('id')
-                ->whereHas('userSubjectGroup', fn($query) => $query->select('id')
-                ->whereUserId($this->user->id)))->whereKey($id)->first();
+                ->where('user_id', $this->user->id)
+                ->whereKey($id)
+                ->first();
     }
 
     protected function getRescheduleEmailData($booking) {

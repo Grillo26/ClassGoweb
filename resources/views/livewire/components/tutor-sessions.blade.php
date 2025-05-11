@@ -186,9 +186,6 @@
                                                         @if(!empty($slots))
                                                             @foreach ($slots as $index => $slot)
                                                                 @php
-                                                                    {{-- $subject = $slot?->subjectGroupSubjects?->subject?->name; --}}
-                                                                    {{-- $group = $slot?->subjectGroupSubjects?->userSubjectGroup?->group?->name ?? ''; --}}
-                                                                    {{-- $coupon = $slot?->subjectGroupSubjects?->coupons?->first(); --}}
                                                                     $total_spaces = $slot->spaces ?? 0;
                                                                     $total_booked = $slot->total_booked ?? 0;
                                                                     $available_slot = $total_spaces - $total_booked;
@@ -261,9 +258,6 @@
 
                                                 @foreach ($slots as $index => $slot)
                                                     @php
-                                                        {{-- $subject = $slot?->subjectGroupSubjects?->subject?->name; --}}
-                                                        {{-- $group = $slot?->subjectGroupSubjects?->userSubjectGroup?->group?->name ?? ''; --}}
-                                                        {{-- $coupon = $slot?->subjectGroupSubjects?->coupons?->first(); --}}
                                                         $total_spaces = $slot->spaces ?? 0;
                                                         $total_booked = $slot->total_booked ?? 0;
                                                         $available_slot = $total_spaces - $total_booked;
