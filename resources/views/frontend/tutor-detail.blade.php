@@ -118,9 +118,9 @@
                                         
                                                 @foreach ($tutor?->subjects as $index => $sub)
                                                     @if ($index < 2) 
-                                                        <li><span>{{ $sub->subject?->name }}</span></li>
+                                                        <li><span>{{ $sub->name }}</span></li>
                                                     @else
-                                                        <li x-show="open"><span>{{ $sub->subject?->name }}</span></li>
+                                                        <li x-show="open"><span>{{ $sub->name }}</span></li>
                                                     @endif
                                                 @endforeach
                                         

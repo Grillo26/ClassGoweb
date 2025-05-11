@@ -103,7 +103,7 @@ class SubjectService
      */
     public function getSubjects($userId, $groupId = null)
     {
-        $query = UserSubject::select('id', 'user_id', 'subject_id');
+        $query = UserSubject::select('id', 'user_id', 'subject_id')->where('user_id', $userId)->with('subject');
         if ($groupId) {
             $query->whereHas('subject', function($q) use ($groupId) {
                 $q->where('subject_group_id', $groupId);

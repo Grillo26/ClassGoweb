@@ -54,8 +54,9 @@
                                     data-placeholder="{{ __('subject.choose_subject_label') }}">
                                     <option> </option>
                                     @foreach ($subjects as $subject)
-                                    <option value="{{ $subject->id }}" {{ in_array($subject->id, $filters['subject_id'] ??
-                                        []) ? 'selected' : '' }}>{{ $subject?->name }}</option>
+                                        @if($subject->subject)
+                                            <option value="{{ $subject->subject_id }}" {{ in_array($subject->subject_id, $filters['subject_id'] ?? []) ? 'selected' : '' }}>{{ $subject->subject->name }}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                             </span>
