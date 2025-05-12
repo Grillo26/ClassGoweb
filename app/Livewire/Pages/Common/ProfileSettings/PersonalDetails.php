@@ -114,6 +114,12 @@ class PersonalDetails extends Component
         $profile = $this->profileService->getUserProfile();
         $address = $this->profileService->getUserAddress();
         
+        // Debug para ver los datos del perfil
+        Log::info('Datos del perfil cargados:', [
+            'profile' => $profile,
+            'image' => $profile?->image ?? 'no image'
+        ]);
+        
         // Consulta directa a user_languages para el usuario actual
         $userLanguages = \App\Models\UserLanguage::where('user_id', Auth::id())
             ->pluck('language_id')
@@ -121,12 +127,6 @@ class PersonalDetails extends Component
             
         $this->user_languages = $userLanguages;
         
-        // Debug para ver los idiomas del usuario
-      /*   dd([
-            'user_id' => Auth::id(),
-            'user_languages' => $this->user_languages
-        ]);
- */
         // Carga datos básicos
         $this->first_name = $profile?->first_name ?? '';
         $this->last_name = $profile?->last_name ?? '';
@@ -136,6 +136,14 @@ class PersonalDetails extends Component
         $this->tagline = $profile?->tagline ?? '';
         $this->description = $profile?->description ?? '';
         $this->image = $profile?->image ?? '';
+        
+        // Debug para ver la ruta de la imagen
+        Log::info('Ruta de la imagen cargada:', [
+            'image_path' => $this->image,
+            'full_path' => $this->image ? str_replace('\\', '/', storage_path('app/public/' . $this->image)) : 'no path',
+            'exists' => $this->image ? file_exists(storage_path('app/public/' . $this->image)) : false
+        ]);
+        
         $this->intro_video = $profile?->intro_video ?? '';
         $this->native_language = $profile?->native_language ?? '';
 
@@ -225,17 +233,28 @@ class PersonalDetails extends Component
                 'native_language' => $this->native_language,
             ];
 
-            // Maneja la imagen si se ha subido una nueva
             if ($this->image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                $path = $this->image->store('profile_images', 'public');
-                $profileData['image'] = $path;
+                // Guardar en storage/app/public/profile_images
+                $filename = time() . '_' . $this->image->getClientOriginalName();
+                $this->image->storeAs('public/profile_images', $filename);
+                $profileData['image'] = 'profile_images/' . $filename;
+                
+                // Debug para ver el guardado de la imagen
+                Log::info('Imagen guardada:', [
+                    'filename' => $filename,
+                    'path' => $profileData['image'],
+                    'full_path' => str_replace('\\', '/', storage_path('app/public/' . $profileData['image'])),
+                    'exists' => file_exists(storage_path('app/public/' . $profileData['image']))
+                ]);
             }
-
-            // Maneja el video si se ha subido uno nuevo
+            
             if ($this->intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                $path = $this->intro_video->storeAs('storage/profile_videos', $this->intro_video->getClientOriginalName(), 'public_path');
-                $profileData['intro_video'] = $path;
+                // Guardar en storage/app/public/profile_videos
+                $filename = time() . '_' . $this->intro_video->getClientOriginalName();
+                $this->intro_video->storeAs('public/profile_videos', $filename);
+                $profileData['intro_video'] = 'profile_videos/' . $filename;
             }
+            
             
             // Guarda los datos
             $this->profileService->setUserProfile($profileData);
