@@ -88,9 +88,9 @@ class DisputeService {
         }])
         ->with(['booking' => function($query) {
             $query->with(['slot' => function($subQuery) {
-                $subQuery->with(['subjectGroupSubjects' => function($subSubQuery) {
-                    $subSubQuery->with('subject', 'group');
-                }]);
+                // $subQuery->with(['subjectGroupSubjects' => function($subSubQuery) {
+                //     $subSubQuery->with('subject', 'group');
+                // }]);
             }]);
         }])
         ->when($keyword, function($query) use ($keyword) {
@@ -119,9 +119,9 @@ class DisputeService {
         }])
         ->with(['booking' => function($query) {
             $query->with(['slot' => function($subQuery) {
-                $subQuery->with(['subjectGroupSubjects' => function($subSubQuery) {
-                    $subSubQuery->with('subject', 'group');
-                }]);
+                // $subQuery->with(['subjectGroupSubjects' => function($subSubQuery) {
+                //     $subSubQuery->with('subject', 'group');
+                // }]);
             }]);
         }])
         ->when($keyword, function($query) use ($keyword) {
@@ -151,9 +151,9 @@ class DisputeService {
         }])
         ->with(['booking' => function($query) {
             $query->with(['slot' => function($subQuery) {
-                $subQuery->with(['subjectGroupSubjects' => function($subSubQuery) {
-                    $subSubQuery->with('subject', 'group');
-                }]);
+                // $subQuery->with(['subjectGroupSubjects' => function($subSubQuery) {
+                //     $subSubQuery->with('subject', 'group');
+                // }]);
             }]);
         }])
         ->when($keyword, function($query) use ($keyword) {
@@ -185,9 +185,9 @@ class DisputeService {
         }])
         ->with(['booking' => function($query) {
             $query->with(['slot' => function($subQuery) {
-                $subQuery->with(['subjectGroupSubjects' => function($subSubQuery) {
-                    $subSubQuery->with('subject', 'group');
-                }]);
+                // $subQuery->with(['subjectGroupSubjects' => function($subSubQuery) {
+                //     $subSubQuery->with('subject', 'group');
+                // }]);
             }]);
         }])
         ->first();

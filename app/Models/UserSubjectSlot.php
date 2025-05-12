@@ -16,28 +16,28 @@ class UserSubjectSlot extends Model {
         'duracion',
         'date',
         'user_id',
+        'session_fee',
+        'description',
+        'total_booked',
+        'meta_data'
     ];
 
     protected $casts = [
-        'start_time' => 'string',
-        'end_time' => 'string',
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
         'date' => 'date:Y-m-d',
+        'meta_data' => 'array'
     ];
 
     public function user() {
         return $this->belongsTo(User::class);
     }
 
-    public function subjects() {
-        return $this->belongsToMany(Subject::class, 'user_subject_group_subjects', 'subject_id', 'id');
-    }
-
-    public function bookings(): HasMany{
+    public function bookings(): HasMany {
         return $this->hasMany(SlotBooking::class, 'user_subject_slot_id');
     }
 
-    public function students(): HasManyThrough{
+    public function students(): HasManyThrough {
         return $this->hasManyThrough(Profile::class, SlotBooking::class, 'user_subject_slot_id', 'user_id', 'id', 'student_id');
     }
-    
 }

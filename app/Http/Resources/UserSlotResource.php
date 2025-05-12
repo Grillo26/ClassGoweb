@@ -17,7 +17,7 @@ class   UserSlotResource extends JsonResource
     {
         return [
             'id'                                => $this->whenHas('id'),
-            'user_subject_group_subject_id'     => $this->whenHas('user_subject_group_subject_id'),
+            // 'user_subject_group_subject_id'     => $this->whenHas('user_subject_group_subject_id'),
             'date'                              => $this->whenHas('start_time', function ($start_time) {
                 return parseToUserTz($start_time)->format(!empty(setting('_general.date_format')) ? setting('_general.date_format') : 'F j, Y');
             }),
@@ -46,7 +46,6 @@ class   UserSlotResource extends JsonResource
             'description'                       => $this->whenHas('description'),
             'meta_data'                         => $this->whenHas('meta_data'),
             'bookings_count'                    => $this->whenHas('bookings_count'),
-            'subjectGroupSubjects'              => new UserSubjectResource($this->whenLoaded('subjectGroupSubjects')),
             'bookings'                          => SlotBookingResource::collection($this->whenLoaded('bookings')),
             'students'                          => ProfileResource::collection($this->whenLoaded('students')),
         ];

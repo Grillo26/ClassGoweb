@@ -53,37 +53,32 @@ class CartController extends Controller
 
         $bookingService = new BookingService($user);
         $cartService = new CartService();
-        $slot =  $bookingService->getSlotDetail($request->id);
-
-        if(!empty($slot)){
-            if( $slot->total_booked < $slot->spaces) {
-                $bookedSlot = $bookingService->reservedBookingSlot($slot, $user);
-                $data = [
-                    'id' => $bookedSlot->id,
-                    'slot_id' => $slot->id,
-                    'tutor_id' => $user->id,
-                    'tutor_name' => $user?->profile?->full_name,
-                    'session_time' => parseToUserTz($slot->start_time, $timezone)->format('h:i a').' - '.parseToUserTz($slot->end_time, $timezone)->format('h:i a'),
-                    'subject_group' => $slot->subjectGroupSubjects?->userSubjectGroup?->group?->name,
-                    'subject' => $slot->subjectGroupSubjects?->subject?->name,
-                    'image' => $slot->subjectGroupSubjects?->image,
-                    'currency_symbol' => $currency_symbol,
-                    'price' => number_format($slot->session_fee, 2),
-                ];
-
-                $cartItem      = $cartService->add($data['id'], SlotBooking::class , $data['subject'], 1, $slot->session_fee,$data);
-                $total         = $cartService->total();
-                $subtotal      = $cartService->subtotal();
-                return $this->success(data: [
-                    'cartItem'  => new CartResource($cartItem),
-                    'total'     => $total,
-                    'subtotal'  => $subtotal
-                ], message: __('api.cart_items_fetched_successfully'));
-            } else {
-                return $this->error(message: __('api.not_available_slot'));
-            }
-        }
-        return $this->error(message: __('api.slot_not_found'));
+        // $slot =  $bookingService->getSlotDetail($request->id);
+        // if(!empty($slot)){
+        //     if( $slot->total_booked < $slot->spaces) {
+        //         $bookedSlot = $bookingService->reservedBookingSlot($slot, $user);
+        //         $data = [
+        //             'id' => $bookedSlot->id,
+        //             'slot_id' => $slot->id,
+        //             'tutor_id' => $user->id,
+        //             'tutor_name' => $user?->profile?->full_name,
+        //             'session_time' => parseToUserTz($slot->start_time, $timezone)->format('h:i a').' - '.parseToUserTz($slot->end_time, $timezone)->format('h:i a'),
+        //             'currency_symbol' => $currency_symbol,
+        //             'price' => number_format($slot->session_fee, 2),
+        //         ];
+        //         $cartItem      = $cartService->add($data['id'], SlotBooking::class , $data['subject'], 1, $slot->session_fee,$data);
+        //         $total         = $cartService->total();
+        //         $subtotal      = $cartService->subtotal();
+        //         return $this->success(data: [
+        //             'cartItem'  => new CartResource($cartItem),
+        //             'total'     => $total,
+        //             'subtotal'  => $subtotal
+        //         ], message: __('api.cart_items_fetched_successfully'));
+        //     } else {
+        //         return $this->error(message: __('api.not_available_slot'));
+        //     }
+        // }
+        return $this->error(message: 'Funcionalidad temporalmente deshabilitada por mantenimiento.');
     }
 
     public function destroy($id)

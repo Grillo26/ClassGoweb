@@ -61,11 +61,13 @@
                                                 <div class="am-list-wrap">
                                                     <figure class="am-img-rounded">
                                                         @if (!empty($dispute?->booking?->slot?->subjectGroupSubjects?->image) && Storage::disk('public')->exists($dispute?->booking?->slot?->subjectGroupSubjects?->image))
-                                                        <img src="{{ resizedImage($dispute?->booking?->slot?->subjectGroupSubjects?->image,34,34) }}" alt="{{$dispute?->booking?->slot?->subjectGroupSubjects?->image}}" />
+                                                        {{-- <img src="{{ resizedImage($dispute?->booking?->slot?->subjectGroupSubjects?->image,34,34) }}" alt="{{$dispute?->booking?->slot?->subjectGroupSubjects?->image}}" /> --}}
                                                         @else 
                                                             <img src="{{ setting('_general.default_avatar_for_user') ? asset('storage/' . setting('_general.default_avatar_for_user')[0]['path']) : resizedImage('placeholder.png',34,34) }}" alt="{{ $dispute?->booking?->slot?->subjectGroupSubjects?->image }}" />
                                                         @endif
                                                     </figure>
+                                                    {{-- <span>{{ $dispute?->booking?->slot?->subjectGroupSubjects?->subject?->name  }} --}}
+                                                    {{-- <small>{{ $dispute?->booking?->slot?->subjectGroupSubjects?->group?->name }} --}}
                                                     <span>{{ $dispute?->booking?->slot?->subjectGroupSubjects?->subject?->name  }}<br>
                                                         <small>{{ $dispute?->booking?->slot?->subjectGroupSubjects?->group?->name }} 
                                                             @if(setting('_lernen.time_format') == '12') 

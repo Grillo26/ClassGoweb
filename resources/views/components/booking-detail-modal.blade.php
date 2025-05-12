@@ -6,12 +6,12 @@
                 <div class="am-session-detail_content">
                     <span>
                         <i class="am-icon-book-1"></i>
-                        <span>{{ $currentBooking?->slot?->subjectGroupSubjects?->group?->name }}</span>
+                        {{-- <span>{{ $currentBooking?->slot?->subjectGroupSubjects?->group?->name }}</span> --}}
                     </span>
                     <div class="am-closepopup" data-bs-dismiss="modal">
                         <i class="am-icon-multiply-01"></i>
                     </div>
-                    <h4>{{ $currentBooking?->slot?->subjectGroupSubjects?->subject?->name }}</h4>
+                    {{-- <h4>{{ $currentBooking?->slot?->subjectGroupSubjects?->subject?->name }}</h4> --}}
                 </div>
                 <ul class="am-session-duration">
                     <li>
@@ -163,11 +163,8 @@
             </div>
             <div class="am-session-detail-modal_body">
                 <figure>
-                    @if(!empty($currentBooking?->slot?->subjectGroupSubjects?->image) && Storage::disk(getStorageDisk())->exists($currentBooking?->slot?->subjectGroupSubjects?->image))
-                        <img src="{{ resizedImage($currentBooking?->slot?->subjectGroupSubjects?->image, 700, 360) }}" alt="{{ $currentBooking?->slot?->subjectGroupSubjects?->subject?->name }}">
-                    @else
-                        <img src="{{ resizedImage('placeholder-land.png', 700, 360) }}" alt="{{ $currentBooking?->slot?->subjectGroupSubjects?->subject?->name }}">
-                    @endif
+                    {{-- @if(!empty($currentBooking?->slot?->subjectGroupSubjects?->image) && Storage::disk(getStorageDisk())->exists($currentBooking?->slot?->subjectGroupSubjects?->image)) --}}
+                    {{-- <img src="{{ resizedImage($currentBooking?->slot?->subjectGroupSubjects?->image, 700, 360) }}" alt="{{ $currentBooking?->slot?->subjectGroupSubjects?->subject?->name }}"> --}}
                 </figure>
                 <div class="am-session-content">
                     {!! $currentBooking?->slot?->description !!}

@@ -16,7 +16,9 @@ class SearchController extends Controller
     {
         $service  = new SubjectService(Auth::user());
         $subjectGroups = $service->getSubjectGroups();
-      $subjects = $service->getSubjects()->sortBy('name')->values();
+        $subjects = $service->getSubjects(Auth::id())->filter(function($item) {
+            return $item->subject !== null;
+        })->sortBy(fn($item) => $item->subject->name)->values();
         $helpContent = setting('_tutor');
         $countries = [];
         $languages = (new SiteService)->getLanguages();
@@ -61,7 +63,7 @@ class SearchController extends Controller
             $pageTitle = $tutor->profile?->full_name;
             $pageDescription = $tutor->profile?->description;
             $metaImage = $tutor->profile?->image;
-            $pageKeywords = $tutor->subjects?->pluck('subject.name')->implode(', ') ? $tutor->subjects?->pluck('subject.name')->implode(', ') : $tutor->profile?->keywords;
+            $pageKeywords = $tutor->userSubjects?->pluck('subject.name')->implode(', ') ? $tutor->userSubjects?->pluck('subject.name')->implode(', ') : $tutor->profile?->keywords;
             return view('frontend.tutor-detail', compact('tutor','reviews', 'isFavourite','totalSlots','courses','pageTitle','pageDescription','pageKeywords','metaImage'));
         }
         abort('404'); 

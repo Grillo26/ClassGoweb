@@ -6,7 +6,6 @@ use App\Models\Subject;
 use App\Models\SubjectGroup;
 use App\Models\UserSubject;
 use App\Models\UserSubjectGroup;
-use App\Models\UserSubjectGroupSubject;
 
 use Illuminate\Database\Eloquent\Collection;
 
@@ -48,33 +47,31 @@ class SubjectService
      */
     public function getSubjectsByUserRole()
     {
-        $query = UserSubjectGroupSubject::select('id', 'user_subject_group_id', 'subject_id', 'hour_rate');
+        $query = UserSubject::select('id', 'user_id', 'subject_id');
 
         if ($this->user->role === 'tutor') {
-            $query->whereHas('userSubjectGroup', function ($query) {
-                $query->select('id');
-                $query->whereUserId($this->user->id);
-            });
+            $query->where('user_id', $this->user->id);
         } elseif ($this->user->role === 'student') {
-            $query->whereHas('slots', function ($query) {
-                $query->select('id', 'user_subject_group_subject_id');
-                $query->whereHas('bookings', function ($query) {
-                    $query->select('id');
-                    $query->whereStudentId($this->user->id);
-                });
-            });
+            // $query->whereHas('slots', function ($query) {
+            //     $query->select('id');
+            //     $query->whereHas('bookings', function ($query) {
+            //         $query->select('id');
+            //         $query->whereStudentId($this->user->id);
+            //     });
+            // });
         }
 
-        $subjects = $query->with(['group:subject_groups.id,name', 'subject:id,name'])->get()
-            ->groupBy('user_subject_group_id')
+        $subjects = $query->with(['subject' => function($q) {
+            $q->select('id', 'name', 'subject_group_id');
+        }])->get()
+            ->groupBy('subject.subject_group_id')
             ->map(function ($group) {
                 return [
-                    'group_name' => $group->first()->group ? $group->first()->group->name : null,
+                    'group_name' => $group->first()->subject->group ? $group->first()->subject->group->name : null,
                     'subjects' => $group->map(function ($item) {
                         return [
                             'id'           => $item->id,
                             'subject_name' => $item->subject ? $item->subject->name : null,
-                            'hour_rate'    => $item->hour_rate,
                         ];
                     })
                 ];
@@ -104,9 +101,15 @@ class SubjectService
      * 
      * @return Collection
      */
-    public function getSubjects()
+    public function getSubjects($userId, $groupId = null)
     {
-        return Subject::select('id', 'name', 'subject_group_id')->get();
+        $query = UserSubject::select('id', 'user_id', 'subject_id')->where('user_id', $userId)->with('subject');
+        if ($groupId) {
+            $query->whereHas('subject', function($q) use ($groupId) {
+                $q->where('subject_group_id', $groupId);
+            });
+        }
+        return $query->get();
     }
 
 
@@ -188,23 +191,18 @@ class SubjectService
         $groups = $this->user->groups()->get();
 
         $data = [];
-        foreach ($groups as $group) {
-            if (in_array($group->subject_group_id, $groupIds)) {
-                unset($groupIds[array_search($group->subject_group_id, $groupIds)]);
+        foreach ($groupIds as $group) {
+            $groupModel = $groups->firstWhere('id', $group['id']);
+            if ($groupModel) {
+                $groupModel->update($group);
+                $data[] = $groupModel;
             } else {
-                $isDeleted = $this->deleteUserSubjectGroup($group->id);
-                if (!$isDeleted) {
-                    unset($groupIds[array_search($group->subject_group_id, $groupIds)]);
-                }
+                $data[] = $this->user->groups()->create($group);
             }
         }
-        foreach ($groupIds as $id) {
-            $data[] = [
-                'user_id' => $this->user->id,
-                'subject_group_id' => $id
-            ];
-        }
-        return $this->user->groups()->createMany($data);
+
+        $groupIds = $data;
+        return $data;
     }
 
     /**
@@ -227,9 +225,8 @@ class SubjectService
     public function setUserSubjectGroup($subjectGroup): void
     {
         if ($subjectGroup) {
-            $group = $this->user->groups()->firstOrCreate(['subject_group_id' => $subjectGroup['subject_group_id']]);
             foreach ($subjectGroup['subject_id'] as $subj) {
-                UserSubjectGroupSubject::updateOrCreate(['user_subject_group_id' => $group->id, 'subject_id' => $subj]);
+                UserSubject::updateOrCreate(['user_id' => $this->user->id, 'subject_id' => $subj]);
             }
         }
     }
@@ -244,40 +241,28 @@ class SubjectService
     public function getUserSubjectGroup($subjectGroupId)
     {
         $returnData = array();
-        $groupSubjects =  $this->user->groups()->whereSubjectGroupId($subjectGroupId)->get()->first();
-        $returnData['subject_group_id'] = $subjectGroupId;
-        $returnData['group'] = $groupSubjects->group->name;
-        foreach ($groupSubjects->subjects as $subject) {
-            $returnData['subject_id'][] = $subject->id;
+        $groupSubjects = $this->user->groups()->whereSubjectGroupId($subjectGroupId)->first();
+        if ($groupSubjects) {
+            $returnData['subject_group_id'] = $subjectGroupId;
+            $returnData['group'] = $groupSubjects->group->name;
+            $subjects = UserSubject::where('user_id', $this->user->id)
+                ->whereHas('subject', function($q) use ($subjectGroupId) {
+                    $q->where('subject_group_id', $subjectGroupId);
+                })->get();
+            $returnData['subject_id'] = $subjects->pluck('subject_id')->toArray();
         }
         return $returnData;
-    }
-
-    /**
-     * obtener las materias del grupo
-     * 
-     * @param int $groupId
-     * @return array
-     */
-
-    public function getUserGroupSubjects($groupId)
-    {
-        $group = $this->user->groups()->whereId($groupId)->first();
-        if ($group) {
-            return $group?->subjects()?->get()?->pluck('name', 'id')?->toArray() ?? [];
-        }
-        return [];
     }
 
     /**
      * obtener la materia del grupo
      * 
      * @param int $pivotId
-     * @return UserSubjectGroupSubject
+     * @return UserSubject
      */
-    public function getUserGroupSubject($pivotId): UserSubjectGroupSubject
+    public function getUserGroupSubject($pivotId): UserSubject
     {
-        return UserSubjectGroupSubject::whereId($pivotId)->get()->first();
+        return UserSubject::whereId($pivotId)->first();
     }
 
 
@@ -288,13 +273,19 @@ class SubjectService
      * @param array $subject
      * @return UserSubjectGroupSubject
      */
-    public function setUserSubject($id, $subject): UserSubjectGroupSubject
+    public function setUserSubject($id, $subject)
     {
-        $group = $this->user?->groups()?->whereId($subject['user_subject_group_id'])->first();
-        if ($group) {
-            return $group->userSubjects()?->updateOrCreate(['id' => $id], $subject);
+        // Buscar el registro de UserSubject por id y user_id
+        $userSubject = UserSubject::where('id', $id)
+            ->where('user_id', $this->user->id)
+            ->first();
+
+        if ($userSubject) {
+            $userSubject->update($subject);
+            return $userSubject;
+        } else {
+            return UserSubject::create(array_merge($subject, ['user_id' => $this->user->id]));
         }
-        return null;
     }
 
     /**
@@ -306,14 +297,13 @@ class SubjectService
      */
     public function deteletSubject($userGroupId, $userSubjectId)
     {
-        $group = $this->user->groups()?->whereId($userGroupId)->first();
-        if ($group) {
-            $groupSubject = $group->userSubjects()
-                ->whereId($userSubjectId)
-                ->whereDoesntHave('slots', fn($slot) => $slot->select('id', 'user_subject_group_subject_id'));
-            if ($groupSubject) {
-                return $groupSubject->delete();
-            }
+        // Eliminar el UserSubject por id y user_id
+        $userSubject = UserSubject::where('id', $userSubjectId)
+            ->where('user_id', $this->user->id)
+            ->first();
+
+        if ($userSubject) {
+            return $userSubject->delete();
         }
         return null;
     }
@@ -328,7 +318,7 @@ class SubjectService
     {
         foreach ($subjectList as $group) {
             foreach ($group['items'] as $subject) {
-                UserSubjectGroupSubject::find($subject['value'])->update(['sort_order' => $subject['order']]);
+                UserSubject::find($subject['value'])->update(['sort_order' => $subject['order']]);
             }
         }
     }
@@ -353,7 +343,7 @@ class SubjectService
      */
     public function deleteSubject($pivotId): void
     {
-        UserSubjectGroupSubject::whereId($pivotId)->delete();
+        UserSubject::whereId($pivotId)->delete();
     }
 
     /**
@@ -364,14 +354,44 @@ class SubjectService
      */
     public function deleteUserSubjectGroup($groupId): bool
     {
-        $group = $this->user->groups()->whereId($groupId)
-            ->whereDoesntHave('userSubjects.slots')
-            ->first();
+        // Eliminar todos los UserSubject del grupo para este usuario
+        $userSubjects = UserSubject::where('user_id', $this->user->id)
+            ->whereHas('subject', function($q) use ($groupId) {
+                $q->where('subject_group_id', $groupId);
+            })->get();
+
+        foreach ($userSubjects as $userSubject) {
+            $userSubject->delete();
+        }
+
+        // Eliminar el grupo de usuario
+        $group = $this->user->groups()->whereId($groupId)->first();
         if ($group) {
-            $group->userSubjects()->delete();
             $group->delete();
             return true;
         }
         return false;
+    }
+
+    public function setSubjectGroupSubjects($groupId, $subjects)
+    {
+        $group = $this->user->groups()->whereId($groupId)->first();
+        if ($group) {
+            foreach ($subjects as $subj) {
+                UserSubject::updateOrCreate(['user_id' => $this->user->id, 'subject_id' => $subj]);
+            }
+        }
+    }
+
+    public function setSubjectGroupSubjectsOrder($subjects)
+    {
+        foreach ($subjects as $subject) {
+            UserSubject::find($subject['value'])->update(['sort_order' => $subject['order']]);
+        }
+    }
+
+    public function deleteSubjectGroupSubject($pivotId)
+    {
+        UserSubject::whereId($pivotId)->delete();
     }
 }

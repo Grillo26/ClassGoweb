@@ -100,11 +100,6 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
         return $this->hasMany(UserSubjectGroup::class)->orderBy('sort_order');
     }
 
-    public function subjects(): HasManyThrough
-    {
-        return $this->hasManyThrough(UserSubjectGroupSubject::class, UserSubjectGroup::class);
-    }
-
     public function reviews(): HasMany
     {
         return $this->hasMany(Rating::class, 'tutor_id');
@@ -278,5 +273,78 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     public function userSubjects(): HasMany
     {
         return $this->hasMany(UserSubject::class);
+    }
+
+    public function getUserGroupSubjects($groupId)
+    {
+        // Buscar los user_subjects que pertenezcan a este grupo
+        $subjects = UserSubject::where('user_id', $this->user->id)
+            ->whereHas('subject', function($q) use ($groupId) {
+                $q->where('subject_group_id', $groupId);
+            })
+            ->with('subject')
+            ->get();
+
+        // Retornar un array id => nombre
+        return $subjects->pluck('subject.name', 'subject.id')->toArray();
+    }
+
+    public function setUserSubject($id, $subject)
+    {
+        // Buscar el registro de UserSubject por id y user_id
+        $userSubject = UserSubject::where('id', $id)
+            ->where('user_id', $this->user->id)
+            ->first();
+
+        if ($userSubject) {
+            $userSubject->update($subject);
+            return $userSubject;
+        } else {
+            return UserSubject::create(array_merge($subject, ['user_id' => $this->user->id]));
+        }
+    }
+
+    public function deteletSubject($userGroupId, $userSubjectId)
+    {
+        // Eliminar el UserSubject por id y user_id
+        $userSubject = UserSubject::where('id', $userSubjectId)
+            ->where('user_id', $this->user->id)
+            ->first();
+
+        if ($userSubject) {
+            return $userSubject->delete();
+        }
+        return null;
+    }
+
+    public function deleteUserSubjectGroup($groupId): bool
+    {
+        // Eliminar todos los UserSubject del grupo para este usuario
+        $userSubjects = UserSubject::where('user_id', $this->user->id)
+            ->whereHas('subject', function($q) use ($groupId) {
+                $q->where('subject_group_id', $groupId);
+            })->get();
+
+        foreach ($userSubjects as $userSubject) {
+            $userSubject->delete();
+        }
+
+        // Eliminar el grupo de usuario
+        $group = $this->user->groups()->whereId($groupId)->first();
+        if ($group) {
+            $group->delete();
+            return true;
+        }
+        return false;
+    }
+
+    public function subjects()
+    {
+        return $this->belongsToMany(
+            \App\Models\Subject::class,
+            'user_subject',
+            'user_id',
+            'subject_id'
+        );
     }
 }

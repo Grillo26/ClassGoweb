@@ -116,7 +116,7 @@
                                         </li>
                                         <li>
                                             <div class="am-tutorsearch_info_icon"><i class="am-icon-menu-2"></i></div>
-                                            <span>{{$tutor->subjects->sum('sessions')}} <em>{{ $tutor->subjects->sum('sessions') == 1 ? __('tutor.session') : __('tutor.sessions') }}</em></span>
+                                            <span>{{ $tutor->subjects->count() }} <em>{{ $tutor->subjects->count() == 1 ? __('tutor.session') : __('tutor.sessions') }}</em></span>
                                         </li>
                                         <li>
                                             <div class="am-tutorsearch_info_icon"><i class="am-icon-language-1"></i></div>
@@ -213,7 +213,7 @@
                                         </li>
                                         <li>
                                             <div class="am-tutorsearch_info_icon"><i class="am-icon-menu-2"></i></div>
-                                            <span>{{$tutor->subjects->sum('sessions')}} <em>{{ $tutor->subjects->sum('sessions') == 1 ? __('tutor.session') : __('tutor.sessions') }}</em></span>
+                                            <span>{{ $tutor->subjects->count() }} <em>{{ $tutor->subjects->count() == 1 ? __('tutor.session') : __('tutor.sessions') }}</em></span>
                                         </li>
                                         <li>
                                             <div class="am-tutorsearch_info_icon"><i class="am-icon-language-1"></i></div>

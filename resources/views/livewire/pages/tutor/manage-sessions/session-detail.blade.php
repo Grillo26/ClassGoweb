@@ -42,220 +42,31 @@
             @empty($sessionDetail)
                 <x-no-record :image="asset('images/session.png')" :title="__('calendar.no_sessions')" :description="__('calendar.no_session_desc')" />
             @endif
-            @if(!empty($sessionDetail) && count($sessionDetail) > 1)
-                <ul class="am-session-slots am-schooling-tabs" role="tablist">
-                    @foreach ($sessionDetail as $subjGroup => $detail)
-                        <li>
-                            <button @class(['active'=>$loop->first]) id="{{ \Str::slug($subjGroup) }}-btn" data-bs-toggle="tab" data-bs-target="#{{ \Str::slug($subjGroup) }}Tab" aria-selected="true">{{ $subjGroup }}</button>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
             @if(!empty($sessionDetail))
-                @foreach ($sessionDetail as $subjGroup => $sbjGroups)
-                    <div class="tab-content">
-                        <div @class(['tab-pane','fade','show' => $loop->first, 'active' => $loop->first]) id="{{ \Str::slug($subjGroup) }}Tab">
-                            <div class="am-calendar-content am-timecoursewrap">
-                                <div class="am-subjects-content">
-                                    <h5>
-                                        @if(count($sessionDetail) > 1)
-                                            {{ __('calendar.all_subjects') }}
-                                        @else
-                                            {{ __('calendar.subjects_of_group',[ 'group' => array_key_first($sessionDetail) ]) }}
-                                        @endif
-                                    </h5>
-                                    <ul class="am-subjects-list" id="nav-tab" role="tablist">
-                                        @foreach ($sbjGroups as $subject)
-                                            @php
-                                                $slotsLeft = 0;
-                                                $sessionInfo = [
-                                                    'subject' => $subject['info']['subject'],
-                                                    'date'    => parseToUserTz($date->copy())->format('F d, Y'),
-                                                ];
-
-                                                if (!empty($subject['info']['image']) && Storage::disk(getStorageDisk())->exists($subject['info']['image'])) {
-                                                    $sessionInfo['image'] = resizedImage($subject['info']['image'], 40,40);
-                                                } else {
-                                                    $sessionInfo['image'] = resizedImage('placeholder.png', 40,40);
-                                                }
-
-                                                foreach ($subject['slots'] as $slot) {
-                                                    $slotsLeft += $slot->spaces - $slot->total_booked;
-                                                }
-
-                                            @endphp
-                                            <li @class(['active' => $loop->first]) id="{{ \Str::slug($subject['info']['subject']) . '-' . \Str::slug($subjGroup) }}-btn" data-bs-toggle="tab" data-bs-target="#{{ \Str::slug($subject['info']['subject']) . '-' . \Str::slug($subjGroup) }}-tab" role="tab" aria-controls="{{ \Str::slug($subject['info']['subject']) . '-' . \Str::slug($subjGroup) }}-tab" aria-selected="false">
-                                                <img src="{{ $sessionInfo['image'] }}" alt="{{ $subject['info']['subject'] }}" />
-                                                <div class="am-subjects-description">
-                                                    <h6>
-                                                        {{ $subject['info']['subject'] }}
-                                                    </h6>
-                                                    <span>
-                                                        {{ __('calendar.no_slots_left', ['count' => $slotsLeft]) }}
-                                                    </span>
-                                                </div>
-                                                <span @click="sessionInfo = @js($sessionInfo);
-                                                        userSubjectGroupId      = @js($subject['info']['user_subject_id']);
-                                                        sessionData.action      = 'add';
-                                                        sessionData.session_fee = @js($subject['info']['hour_rate']);
-                                                        sessionData.allowed_for_subscriptions = 0;
-                                                        sessionData.template_id = '';
-
-                                                        $nextTick(() => {
-                                                            $wire.dispatch('toggleModel' ,{ id: 'edit-session', action:'show'});
-                                                            $wire.dispatch('initSelect2', {target:'.am-select2'});
-                                                            $wire.dispatch('initSummerNote', {target: '#edit-session-desc', wiremodel: 'form.description', conetent: '', componentId: @this});
-                                                        })
-                                                    ">
-                                                    <i class="am-icon-plus-02"></i>
-                                                </span>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                                <div class="am-session-table am-payouthistory tab-content">
-                                    @foreach ($sbjGroups as $subject)
-                                    <div @class(['am-sessionstable','tab-pane','fade','show' => $loop->first, 'active' => $loop->first]) id="{{ \Str::slug($subject['info']['subject']) . '-' . \Str::slug($subjGroup) }}-tab" role="tabpanel" aria-labelledby="{{ \Str::slug($subject['info']['subject']) . '-' . \Str::slug($subjGroup) }}-btn"  tabindex="0">
-                                        <table class="am-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>{{ __('calendar.time') }}</th>
-                                                    <th>{{ __('calendar.type') }}</th>
-                                                    <th>{{ __('calendar.total_enrollment') }}</th>
-                                                    <th>{{ __('calendar.session_fee') }}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($subject['slots'] as $slot)
-                                                <tr @class(['am-session-completed' => parseToUTC($slot->start_time)->isPast()])>
-                                                    <td data-label="Time">
-                                                        @if(setting('_lernen.time_format') == '12')
-                                                            {{ parseToUserTz($slot->start_time)->format('h:i a') }} -
-                                                            {{ parseToUserTz($slot->end_time)->format('h:i a') }}
-                                                        @else
-                                                            {{ parseToUserTz($slot->start_time)->format('H:i') }} -
-                                                            {{ parseToUserTz($slot->end_time)->format('H:i') }}
-                                                        @endif
-                                                    </td>
-                                                    <td data-label="Type">
-                                                        <span @class(['am-selection-tag', 'am-tag-puple' => $slot->spaces == 1])>
-                                                            {{ $slot->spaces > 1 ? __('calendar.group') : __('calendar.one') }}
-                                                        </span>
-                                                    </td>
-                                                    <td data-label="Total Enrolment">
-                                                        @if ($slot->total_booked > 0 && !empty($slot->students))
-                                                            <div class="am-students-profile">
-                                                                <ul>
-                                                                    @foreach ($slot->students as $student)
-                                                                        <li>
-                                                                            @if (!empty($student->image) && Storage::disk(getStorageDisk())->exists($student->image))
-                                                                                <img src="{{ resizedImage($student->image, 40, 40) }}" alt="profile-img">
-                                                                            @else
-                                                                                <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 40, 40) }}" alt="profile-img">
-                                                                            @endif
-                                                                        </li>
-                                                                    @endforeach
-                                                                </ul>
-                                                                <span>{{ __('calendar.booked_students', ['count' => $slot->bookings_count]) }}</span>
-                                                            </div>
-                                                        @else
-                                                            --
-                                                        @endif
-                                                    </td>
-                                                    <td data-label="Session Fare">
-                                                        <div class="am-session-fare">
-                                                            {{ formatAmount($slot->session_fee ?? 0) }}
-                                                            @if(\Carbon\Carbon::parse($slot->start_time)->isFuture())
-                                                                <div class="am-itemdropdown">
-                                                                    <a href="#" id="am-itemdropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                        <i class="am-icon-ellipsis-horizontal-02"></i>
-                                                                    </a>
-                                                                    <ul class="am-itemdropdown_list dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                                        <li>
-                                                                            @php
-                                                                                if(setting('_lernen.time_format') == '12') {
-                                                                                    $sessionInfo = [
-                                                                                        'subject' => $subject['info']['subject'],
-                                                                                        'date'    => parseToUserTz($date->copy())->format('F d, Y'),
-                                                                                        'start_time' => parseToUserTz($slot->start_time)->format('h:i a'),
-                                                                                        'end_time' => parseToUserTz($slot->end_time)->format('h:i a'),
-                                                                                    ];
-                                                                                } else {
-                                                                                    $sessionInfo = [
-                                                                                        'subject' => $subject['info']['subject'],
-                                                                                        'date'    => parseToUserTz($date->copy())->format('F d, Y'),
-                                                                                        'start_time' => parseToUserTz($slot->start_time)->format('H:i'),
-                                                                                        'end_time' => parseToUserTz($slot->end_time)->format('H:i'),
-                                                                                    ];
-                                                                                }   
-                                                                                if (!empty($subject['info']['image']) && Storage::disk(getStorageDisk())->exists($subject['info']['image'])) {
-                                                                                    $sessionInfo['image'] = resizedImage($subject['info']['image'], 40,40);
-                                                                                } else {
-                                                                                    $sessionInfo['image'] = resizedImage('placeholder.png', 40,40);
-                                                                                }
-
-                                                                            @endphp
-                                                                            <a href="#" @click=" sessionInfo = @js($sessionInfo);
-                                                                                                slotId                    = @js($slot->id);
-                                                                                                sessionData.spaces        = @js($slot->spaces);
-                                                                                                sessionData.session_fee   = @js($slot->session_fee);
-                                                                                                sessionData.description   = @js($slot->description);
-                                                                                                sessionData.meeting_link  = @js($slot->meta_data['meeting_link'] ?? '');
-                                                                                                totalBooking              = @js($slot->total_booked);
-                                                                                                sessionData.action        = 'edit';
-                                                                                                sessionData.allowed_for_subscriptions = @js($slot->meta_data['allowed_for_subscriptions'] ?? 0);
-                                                                                                sessionData.template_id = @js($slot->meta_data['template_id'] ?? '');
-                                                                                                $nextTick(() => {
-                                                                                                    $wire.dispatch('toggleModel' ,{ id: 'edit-session', action:'show', description:  sessionData.description});
-                                                                                                    $wire.dispatch('initSummerNote', {target: '#edit-session-desc', wiremodel: 'form.description', conetent: @js($slot->description), componentId: @this});
-                                                                                                })
-                                                                                                    $nextTick(() => {
-                                                                                                    $wire.dispatch('initSelect2', {target:'.am-select2'});
-                                                                                                })
-                                                                                            ">
-                                                                                <i class="am-icon-pencil-02"></i>
-                                                                                {{ __('general.edit') }}
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            <a href="#" wire:key="{{ time() }}"
-                                                                                @if($slot->total_booked > 0)
-                                                                                    @click=" totalBooking               = @js($slot->total_booked);
-                                                                                            sessionInfo                 = @js($sessionInfo);
-                                                                                            slotId                      = @js($slot->id);
-                                                                                            rescheduleData.description  = @js($slot->description);
-                                                                                            userSubjectGroupId          = @js($subject['info']['user_subject_id']);
-                                                                                            $nextTick(() => {
-                                                                                                $wire.dispatch('toggleModel', { id : 'attention-popup', action : 'show' });
-                                                                                                $wire.dispatch('initSummerNote', {target: '#session-desc', wiremodel: 'rescheduleForm.description', conetent: @js($slot->description), componentId: @this});
-                                                                                            })
-                                                                                    "
-                                                                                @else
-                                                                                    @click="$wire.dispatch('showConfirm', { id : @js($slot->id), action : 'delete-slot' })"
-                                                                                @endif
-                                                                                >
-                                                                                <i class="am-icon-trash-02"></i>
-                                                                                {{ __('general.delete') }}
-                                                                            </a>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            @else
-                                                                <span> {{ __('calendar.ended') }} </span>
-                                                            @endif
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="all-slots-tab">
+                        <table class="am-table">
+                            <thead>
+                                <tr>
+                                    <th>{{ __('calendar.time') }}</th>
+                                    <th>{{ __('calendar.type') }}</th>
+                                    <th>{{ __('calendar.total_enrollment') }}</th>
+                                    <th>{{ __('calendar.session_fee') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($sessionDetail as $slot)
+                                    <tr>
+                                        <td>{{ $slot['start_time'] }} - {{ $slot['end_time'] }}</td>
+                                        <td>{{ $slot['duracion'] }}</td>
+                                        <td>{{ $slot['bookings_count'] ?? 0 }}</td>
+                                        <td>-</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                @endforeach
+                </div>
             @endif
             <!-- Attention popup -->
             <div class="modal fade am-attentionpopup" id="attention-popup" data-bs-backdrop="static">

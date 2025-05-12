@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\UserSubjectSlot;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class SiteService {
 
@@ -22,18 +23,14 @@ public function getTutors($data = array()) {
         $instructors = User::select('users.*')
             ->whereHas('roles', fn($query) => $query->whereName('tutor'));
 
-        $instructors->with(['subjects' => function ($query) {
-            $query->withCount(['slots as sessions' => fn($query) => $query->where('end_time', '>=', now())]);
-            $query->with('subject:id,name');
-        }, 'languages:id,name', 'address.country', 'profile']);
+        $instructors->with(['subjects', 'languages:id,name', 'address.country', 'profile']);
 
         $instructors->withWhereHas('profile', function ($query) {
             $query->select('id', 'verified_at', 'user_id', 'first_name', 'last_name', 'image', 'gender', 'tagline', 'description', 'slug', 'intro_video');
         });
 
         // Agregar conteos y promedios básicos
-        $instructors->withMin('subjects as min_price', 'hour_rate')
-            ->withAvg('reviews as avg_rating', 'rating')
+        $instructors->withAvg('reviews as avg_rating', 'rating')
             ->withCount('reviews as total_reviews')
             ->withCount(['bookingSlots as active_students' => function($query){
                 $query->whereStatus('active');
@@ -88,10 +85,10 @@ public function getTutors($data = array()) {
     public function getRecommendedTutors($filters = [])
     {
         $tutors = User::select('id')->role('tutor');
-        $tutors->with(['subjects' => function ($query) {
-            $query->withCount(['slots as sessions' => fn($query) => $query->where('end_time', '>=', now())]);
-            $query->with('subject:id,name');
-        }, 'languages:id,name']);
+        // $tutors->with(['subjects' => function ($query) {
+        //     $query->withCount(['slots as sessions' => fn($query) => $query->where('end_time', '>=', now())]);
+        //     $query->with('subject:id,name');
+        // }, 'languages:id,name']);
 
         $tutors->with(['address' => function ($query) {
             $query->select('id','addressable_id','addressable_type','country_id')
@@ -100,8 +97,7 @@ public function getTutors($data = array()) {
             }]);
         }]);
 
-        $tutors->withMin('subjects as min_price', 'hour_rate')
-        ->withAvg('reviews as avg_rating', 'rating')
+        $tutors->withAvg('reviews as avg_rating', 'rating')
         ->withCount('reviews as total_reviews')
         ->withCount(['bookingSlots as active_students' => function($query){
             $query->whereStatus('active');
@@ -138,13 +134,10 @@ public function getTutors($data = array()) {
         $isNotAdmin  = !auth()?->user()?->hasRole('admin') ?? true;
         return User::with([
             'languages:id,name',
-            'subjects.subject:id,name',
+            'userSubjects.subject',
         ])
         ->when(\Nwidart\Modules\Facades\Module::has('starup') && \Nwidart\Modules\Facades\Module::isEnabled('starup'), function ($query) {
             $query->with('badges:id,name,image');
-        })
-        ->with('subjects', function ($query) {
-            $query->withCount(['slots as sessions' => fn($query) => $query->where('end_time', '>=', now())]);
         })
         ->with(['address' => function ($query) {
             $query->select('id','addressable_id','addressable_type','country_id')
@@ -152,7 +145,6 @@ public function getTutors($data = array()) {
                       $countryQuery->select('id', 'name', 'short_code');
             }]);
         }])
-        ->withMin('subjects as min_price', 'hour_rate')
         ->withWhereHas('profile', function ($query) use ($slug,$isNotAdmin) {
             if ($isNotAdmin) {
                 $query->whereNotNull('verified_at');
@@ -192,7 +184,10 @@ public function getTutors($data = array()) {
             ->withAvg('reviews as avg_rating', 'rating')
             ->withCount('reviews as total_reviews')
             ->where('id', '<>', $user->id)
-            ->withMin('subjects as min_price', 'hour_rate')->withMax('subjects as max_price', 'hour_rate')->role('instructor')->limit(3)->get();
+            ->withCount(['bookingSlots as active_students' => function($query){
+                $query->whereStatus('active');
+            }])
+            ->role('instructor')->limit(3)->get();
     }
 
     public function getUserReviews($userId) {
@@ -261,7 +256,7 @@ public function getTutors($data = array()) {
             },
             'languages',
             'educations',
-            'subjects.subject',
+            'subjects',
         ];
 
         if (Auth::check()) {
@@ -274,7 +269,7 @@ public function getTutors($data = array()) {
             $query->whereNotNull('verified_at');
         })
         ->with($withRelations)
-        ->withMin('subjects as min_price', 'hour_rate')
+        // ->withMin('subjects as min_price', 'hour_rate')
         ->whereHas('subjects', function ($query) use ($userSubjects) {
             $query->whereIn('subject_id', $userSubjects);
         })
@@ -299,11 +294,10 @@ public function getTutors($data = array()) {
                                 $query->with('state', 'country');
                             },
                             'educations',
-                            'subjects.subject',
+                            'subjects',
                         ])->withCount(['bookingSlots as active_students' => function($query){
                             $query->whereStatus('active');
                         }])
-                        ->withMin('subjects as min_price', 'hour_rate')
                         ->withAvg('reviews as avg_rating', 'rating')
                         ->withCount('reviews as total_reviews')
                         // ->take(10)

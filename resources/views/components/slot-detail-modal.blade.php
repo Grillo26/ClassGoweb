@@ -10,12 +10,10 @@
                 <div class="am-session-detail_content">
                     <span>
                         <i class="am-icon-book-1"></i>
-                        <span>{{ $currentSlot?->subjectGroupSubjects?->userSubjectGroup?->group?->name }}</span>
                     </span>
                     <i class="am-closepopup" data-bs-dismiss="modal">
                         <i class="am-icon-multiply-01"></i>
                     </i>
-                    <h4>{{ $currentSlot?->subjectGroupSubjects?->subject?->name }}</h4>
                 </div>
                 <ul class="am-session-duration">
                     <li>
@@ -102,11 +100,10 @@
                 @endrole
             </div>
             <div class="am-session-detail-modal_body">
-                @if(!empty($currentSlot?->subjectGroupSubjects?->image) && Storage::disk(getStorageDisk())->exists($currentSlot?->subjectGroupSubjects?->image))
-                <figure>
+                {{-- @if(!empty($currentSlot?->subjectGroupSubjects?->image) && Storage::disk(getStorageDisk())->exists($currentSlot?->subjectGroupSubjects?->image)) --}}
+                {{-- <figure>
                     <img src="{{ resizedImage($currentSlot?->subjectGroupSubjects?->image, 700, 360) }}" alt="{{ $currentSlot?->subjectGroupSubjects?->subject?->name }}">
-                </figure>
-                @endif
+                </figure> --}}
                 <div class="am-session-content">
                     {!! $currentSlot?->description !!}
                 </div>

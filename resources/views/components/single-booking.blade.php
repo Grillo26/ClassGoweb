@@ -1,7 +1,6 @@
 @if(!empty($booking))
     @php
-        $subject = $booking->slot->subjectGroupSubjects?->subject?->name;
-        $tooltipClass   = Arr::random(['warning', 'pending', 'ready', 'success'])
+        $tooltipClass = Arr::random(['warning', 'pending', 'ready', 'success'])
     @endphp
     <div @class([
         'am-reminder-tooltip',
@@ -10,11 +9,7 @@
         ])>
         <div class="am-reminder-tooltip_title am-titleblur">
             <figure>
-                @if (!empty($booking->slot->subjectGroupSubjects?->image) && Storage::disk(getStorageDisk())->exists($booking->slot->subjectGroupSubjects?->image))
-                    <img src="{{ resizedImage($booking->slot->subjectGroupSubjects?->image, 40, 40) }}" alt="{{ $subject }}">
-                @else 
-                    <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 40, 40) }}" alt="{{ $subject }}">
-                @endif
+                <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 40, 40) }}" alt="Subject">
             </figure>
             <h2>
                 {{ $subject }}

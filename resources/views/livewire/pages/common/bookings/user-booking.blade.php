@@ -113,7 +113,7 @@
                                             <optgroup label="{{ $group['group_name'] }}">
                                                 @foreach ($group['subjects'] as $subject)
                                                 <option value="{{ $subject['id'] }}"
-                                                    data-price="{{ formatAmount($subject['hour_rate']) }}">
+                                                    data-price="{{ isset($subject['hour_rate']) ? formatAmount($subject['hour_rate']) : '' }}">
                                                     {{ $subject['subject_name'] }}
                                                 </option>
                                                 @endforeach
@@ -284,7 +284,7 @@
                                         <ul class="am-monthly-session-lsit">
                                             @foreach ($upcomingBookings[$startOfCalendar->toDateString()] as $index => $booking)
                                             @php
-                                            $subject = $booking->slot->subjectGroupSubjects?->subject?->name;
+                                            // $subject = $booking->slot->subjectGroupSubjects?->subject?->name;
                                             $tooltipClass = Arr::random(['warning', 'pending', 'ready', 'success'])
                                             @endphp
                                             <li @class([ "am-$tooltipClass-tooltip"=>
@@ -298,8 +298,9 @@
                                                 <div class="am-titleblur">
                                                     <div class="am-session-monthly-tooltip">
                                                         <strong wire:loading.class="am-btn_disable"
-                                                            wire:click="showBookingDetail({{ $booking->id }})">{{
-                                                            $subject }}</strong>
+                                                            wire:click="showBookingDetail({{ $booking->id }})">
+                                                            {{-- $subject --}}
+                                                        </strong>
                                                         @if(parseToUserTz($booking->slot->start_time)->isFuture())
                                                         <span>
                                                             <i class="am-icon-time"></i>
