@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'title' => 'Administrar sesiones',
-    'add_session' => 'Agregar detalles de la sesión',
+    'title' => 'Administrar tiempo disponible',
+    'add_session' => 'Agregar detalles de tiempo disponible',
     'add_title' => 'Añadir descripción de reserva',
     'subject_group' => 'Grupo de materias',
     'subject_group_placeholder' => 'Seleccionar grupo de materias',
@@ -70,7 +70,7 @@ return [
     'type' => 'Tipo',
     'booked' => '(Reservado)',
     'available' => '(Disponible)',
-    'add_new_session' => 'Agregar nueva sesión',
+    'add_new_session' => 'Agregar nueva tiempo disponible',
     'per_session' => 'Por sesión',
     'available_slots' => 'Espacios disponibles',
     'add_slot' => 'Agregar nueva ranura para',

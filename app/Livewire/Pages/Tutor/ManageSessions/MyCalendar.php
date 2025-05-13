@@ -96,6 +96,21 @@ class MyCalendar extends Component
             $duracion = $durationHours . ' horas';
 
             foreach ($period as $date) {
+                // Validar solapamiento
+                $overlap = UserSubjectSlot::where('user_id', Auth::id())
+                    ->where('date', $date->format('Y-m-d'))
+                    ->where(function($query) use ($validatedData) {
+                        $query->where(function($q) use ($validatedData) {
+                            $q->where('start_time', '<', $validatedData['end_time'])
+                              ->where('end_time', '>', $validatedData['start_time']);
+                        });
+                    })
+                    ->exists();
+                if ($overlap) {
+                    $this->dispatch('toggleModel', id: 'new-booking-modal', action: 'hide');
+                    $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: 'Ya existe una reserva en ese rango de horas para el día ' . $date->format('Y-m-d'));
+                    return;
+                }
                 UserSubjectSlot::create([
                     'start_time' => $validatedData['start_time'],
                     'end_time'   => $validatedData['end_time'],
