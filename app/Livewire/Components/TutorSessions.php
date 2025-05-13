@@ -17,9 +17,16 @@ use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Nwidart\Modules\Facades\Module;
+use App\Models\UserSubjectSlot;
+use Illuminate\Support\Facades\Storage;
+use Livewire\WithFileUploads;
+use App\Models\PaymentSlotBooking;
+use Faker\Provider\ar_EG\Payment;
 
 class TutorSessions extends Component
 {
+    use WithFileUploads;
+
     public $currentDate, $startOfWeek, $timezone;
     public $activeId;
     public $disablePrevious, $showCurrent = false, $isCurrent = false;
@@ -33,11 +40,19 @@ class TutorSessions extends Component
     public $user;
     public $currentSlot = null;
     public $cartItems = [];
+    public $showConfirmationDiv = false;
+    public $selectedSlotId = null;
+    public $imagePreview = null; // Imagen cargada desde el backend
+    public $uploadedImage = null; // Imagen subida por el usuario
+    public $uploadedImagePreview = null; // Previsualización de la imagen subida por el usuario
     public $selectedDate = null;
     private $bookingService, $subjectService;
 
     public RequestSessionForm $requestSessionForm;
 
+    /**
+     * Renderiza la vista del componente y carga los slots disponibles.
+     */
     public function render()
     {
         if(!empty($this->timezone) && !empty($this->pageLoaded)){
@@ -48,18 +63,29 @@ class TutorSessions extends Component
         return view('livewire.components.tutor-sessions');
     }
 
+    /**
+     * Inicializa la página configurando la fecha actual y el rango de fechas.
+     */
     public function loadPage() {
         $this->currentDate = Carbon::now($this->timezone);
         $this->getRange();
         $this->pageLoaded = true;
     }
 
+    /**
+     * Inicializa los servicios necesarios al cargar el componente.
+     */
     public function boot()
     {
         $this->bookingService = new BookingService($this->user);
 
     }
 
+    /**
+     * Configura las propiedades iniciales del componente al montarlo.
+     *
+     * @param User $user El usuario actual.
+     */
     public function mount($user)
     {
         $this->user = $user;
@@ -81,17 +107,29 @@ class TutorSessions extends Component
         }
     }
 
+    /**
+     * Muestra los detalles de un slot específico en un modal.
+     *
+     * @param int $id ID del slot.
+     */
     public function showSlotDetail($id) {
         $this->currentSlot =  $this->bookingService->getSlotDetail($id);
         $this->dispatch('toggleModel', id: 'slot-detail', action: 'show');
     }
 
+    /**
+     * Reserva un slot para el usuario actual.
+     *
+     * @param int $id ID del slot a reservar.
+     */
+
+     
     public function bookSession($id)
     {
-        $slot =  $this->bookingService->getSlotDetail($id);
+        $slot = $this->bookingService->getSlotDetail($id);
         if(!empty($slot)){
             if( $slot->total_booked < $slot->spaces) {
-                $bookedSlot = $this->bookingService->reservedBookingSlot($slot, $this->user);
+                $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->user);
                 $data = [
                     'id' => $bookedSlot->id,
                     'slot_id' => $slot->id,
@@ -109,13 +147,12 @@ class TutorSessions extends Component
                 Cart::add(
                     cartableId: $data['id'], 
                     cartableType: SlotBooking::class, 
-                    name: $data['subject'], 
+                    name: $data['tutor_name'], 
                     qty: 1, 
                     price: $slot->session_fee, 
                     options: $data
                 );
-                    // Emitir evento para hacer scroll arriba
-                   $this->dispatch('scrollToTop');
+                $this->dispatch('scrollToTop');
 
                 if (\Nwidart\Modules\Facades\Module::has('kupondeal') && \Nwidart\Modules\Facades\Module::isEnabled('kupondeal')) {
                     // $response = \Modules\KuponDeal\Facades\KuponDeal::applyCouponIfAvailable($slot->subjectGroupSubjects->id, UserSubjectGroupSubject::class);
@@ -129,10 +166,14 @@ class TutorSessions extends Component
             } else {
                 $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title') , message: __('tutor.not_available_slot'));
             }
-
         }
     }
 
+    /**
+     * Elimina un elemento del carrito y libera el slot reservado.
+     *
+     * @param array $params Parámetros del elemento a eliminar.
+     */
     #[On('remove-cart')]
     public function removeCartItem($params)
     {
@@ -146,6 +187,11 @@ class TutorSessions extends Component
         }
     }
 
+    /**
+     * Salta a una fecha específica en el calendario.
+     *
+     * @param string|null $date Fecha a la que se desea saltar.
+     */
     public function jumpToDate($date=null) {
         if (!empty($date)) {
             $format = 'Y-m-d';
@@ -156,6 +202,90 @@ class TutorSessions extends Component
         $this->getRange();
     }
 
+
+
+    /**
+     * Método para alternar la visibilidad del modal y cargar la imagen desde el backend.
+     */
+    public function toggleConfirmationDiv($slotId)
+    {
+        $this->selectedSlotId = $slotId;
+        $this->showConfirmationDiv = !$this->showConfirmationDiv;
+
+        if ($this->showConfirmationDiv) {
+            // Cargar la imagen desde el almacenamiento
+            $this->imagePreview = Storage::url('qr/0pKnkQyx3ejW4Z05yapJeGtUQQ2DHlZVioLNEyLy.png'); // Ruta relativa dentro de storage/app/public
+        } else {
+            $this->resetImageFields();
+        }
+    }
+
+    /**
+     * Método para manejar la subida de imágenes.
+     */
+    public function updatedUploadedImage()
+    {
+        $this->validate([
+            'uploadedImage' => 'image|max:2048', // Máximo 2MB
+        ]);
+
+        // Generar una URL temporal para previsualizar la imagen subida
+        $this->uploadedImagePreview = $this->uploadedImage->temporaryUrl();
+    }
+
+    /**
+     * Método para resetear las variables relacionadas con las imágenes.
+     */
+    public function resetImageFields()
+    {
+        $this->imagePreview = null;
+        $this->uploadedImage = null;
+        $this->uploadedImagePreview = null;
+    }
+
+    /**
+     * Método para confirmar la reserva del estudiante.
+     */
+    public function estudianteReserva($slotId)
+    {
+        if (!$this->uploadedImage) {
+            $this->dispatch('showAlertMessage', type: 'error', message: 'Por favor, sube una imagen antes de continuar.');
+            return;
+        }
+
+        // Guardar la imagen en el almacenamiento
+        $path = $this->uploadedImage->store('uploads/bookings', 'public');
+
+        // Lógica para reservar el slot
+        $slot = UserSubjectSlot::find($slotId);
+        if ($slot) {
+            $this->bookingService->reservarSlotBoooking($slot);
+
+            // Guardar la ruta de la imagen en la base de datos si es necesario
+            $slot->update(['image_path' => $path]);
+            PaymentSlotBooking::create([
+                'image_url' => $path,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);   
+
+            $this->dispatch('showAlertMessage', type: 'success', message: 'Reserva confirmada con éxito.');
+        } else {
+            $this->dispatch('showAlertMessage', type: 'error', message: 'El slot no está disponible.');
+        }
+
+        $this->resetImageFields();
+        $this->showConfirmationDiv = false;
+
+           // Emitir un evento para cerrar el modal
+    $this->dispatch('toggleModel', id: 'confirmationModal', action: 'hide');
+        // Emitir un evento para cerrar el modal
+        //$this->dispatchBrowserEvent('close-modal', ['id' => 'confirmationModal']);
+    }
+
+    /**
+     * Avanza al siguiente rango de fechas en el calendario.
+     */
     public function nextBookings() {
         $this->currentDate->setTimezone($this->timezone);
         $this->currentDate->addWeek();
@@ -163,6 +293,9 @@ class TutorSessions extends Component
         $this->getRange();
     }
 
+    /**
+     * Retrocede al rango de fechas anterior en el calendario.
+     */
     public function previousBookings() {
         $this->currentDate->setTimezone($this->timezone);
         $this->currentDate->subWeek();
@@ -170,6 +303,9 @@ class TutorSessions extends Component
         $this->getRange();
     }
 
+    /**
+     * Calcula el rango de fechas actual basado en la semana seleccionada.
+     */
     protected function getRange(){
         $start = $end = null;
         $this->disablePrevious = $this->isCurrent = false;
@@ -187,12 +323,22 @@ class TutorSessions extends Component
         $this->selectedDate = $this->currentDate->copy()->toDateString();
     }
 
+    /**
+     * Devuelve el formato de fecha para el rango actual.
+     *
+     * @return string Formato de fecha.
+     */
     protected function getDateFormat() {
         $start = $this->currentDate->copy()->startOfWeek($this->startOfWeek);
         $end = $this->currentDate->copy()->endOfWeek(getEndOfWeek($this->startOfWeek));
         return $start->format('F') . " ". $start->format('d') . " - " . $end->format('F') . " ". $end->format('d') . " " . $end->format('Y');
     }
 
+    /**
+     * Establece la zona horaria predeterminada si no está configurada.
+     *
+     * @param string $timezone Zona horaria.
+     */
     public function setDefaultTimezone($timezone)
     {
         if(empty($this->timezone)){
@@ -200,6 +346,11 @@ class TutorSessions extends Component
         }
     }
 
+    /**
+     * Actualiza la zona horaria y limpia el carrito.
+     *
+     * @param string $value Nueva zona horaria.
+     */
     public function updatedTimezone($value)
     {
         Cart::clear();
@@ -212,11 +363,19 @@ class TutorSessions extends Component
         $this->currentDate = Carbon::now($value);
     }
 
+    /**
+     * Muestra los slots disponibles para una fecha específica.
+     *
+     * @param string $date Fecha seleccionada.
+     */
     public function showSlotsForDate($date)
     {
         $this->selectedDate = $date;
     }
 
+    /**
+     * Abre un modal para solicitar una sesión.
+     */
     public function openModel(){
         if(Auth::check()){
             if(Auth::user()->role == 'student'){
@@ -230,6 +389,9 @@ class TutorSessions extends Component
         }
     }
 
+    /**
+     * Envía una solicitud de sesión al tutor.
+     */
     public function sendRequestSession(){
         $this->requestSessionForm->validateData();
         $response = isDemoSite();
@@ -253,4 +415,18 @@ class TutorSessions extends Component
         $this->requestSessionForm->reset();
     }
 
+
+    public function resetImagePreview()
+{
+    $this->imagePreview = Storage::url('qr/imagen.png'); // Vuelve a cargar la imagen
+}
+
+    /**
+     * Método para alternar la visibilidad del div de confirmación.
+     */
+    /* public function toggleConfirmationDiv($slotId)
+    {
+        $this->activeId = $this->activeId === $slotId ? null : $slotId;
+    }
+ */
 }

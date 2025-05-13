@@ -170,44 +170,45 @@
                             <thead>
                                 <tr>
                                     <th>{{ __('calendar.time') }}</th>
-                                    <th>{{ parseToUserTz($currentDate)->format('F j, Y \\G\\M\\T P') }}</th>
+                                    <th>{{ parseToUserTz($currentDate)->format('F j, Y \G\M\T P') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @php
-                                $startTime = \Carbon\Carbon::createFromTime(0, 0, 0);
-                                $endTime = \Carbon\Carbon::createFromTime(23, 59, 0);
+                                    $startTime = \Carbon\Carbon::createFromTime(0, 0, 0);
+                                    $endTime = \Carbon\Carbon::createFromTime(23, 59, 0);
                                 @endphp
-                                @while ($startTime <= $endTime) <tr>
-                                    @if(setting('_lernen.time_format') == '12')
-                                        <td>{{ $startTime->format('h:i a') }}</td>
-                                    @else
-                                        <td>{{ $startTime->format('H:i') }}</td>
-                                    @endif
-                                    @if (isset($upcomingBookings[$startTime->format('h:i a')]) || isset($upcomingBookings[$startTime->format('H:i')]))
-                                    <td>
-                                        @foreach ($upcomingBookings[$startTime->format('h:i a')] as $subject => $booking)
-                                        <div
-                                            style="position: relative; top: {{ calculatePercentageOfHour($booking->slot->start_time) }}px;@if(!$loop->first)left: 380px;@endif">
-                                            <x-single-booking :booking="$booking" :disputeReason="$disputeReason" :description="$description" :selectedReason="$selectedReason"/>
-                                        </div>
-                                        @endforeach
-                                    </td>
-                                    @else
-                                    <td></td>
-                                    @endif
-                                    </tr>
+                                @while ($startTime <= $endTime)
                                     <tr>
-                                        <td></td>
-                                        <td></td>
+                                        <td>{{ $startTime->format(setting('_lernen.time_format') == '12' ? 'h:i A' : 'H:i') }}</td>
+                                        <td>
+                                            @if(isset($bookings))
+                                                @foreach ($bookings as $booking)
+                                                    @if (\Carbon\Carbon::parse($booking['start'])->toDateString() == $currentDate->toDateString() && \Carbon\Carbon::parse($booking['start'])->format('H:i') == $startTime->format('H:i'))
+                                                        <div class="booking-item" style="background-color: {{ $booking['color'] }};">
+                                                            {{ $booking['title'] }}
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                        </td>
                                     </tr>
                                     @php
-                                    $startTime->addHour();
+                                        $startTime->addMinutes(30);
                                     @endphp
-                                    @endwhile
+                                @endwhile
                             </tbody>
                         </table>
                     </div>
+
+                    <style>
+                        .booking-item {
+                            padding: 5px;
+                            margin-bottom: 5px;
+                            border-radius: 4px;
+                            color: #fff;
+                        }
+                    </style>
                     @elseif($showBy == 'weekly')
                     <div class="tab-pane fade show active" id="weeklytab">
                         <table class="am-booking-weekly-clander">
@@ -370,6 +371,11 @@
                 </div>
             </div>
         </div>
+
+
+
+
+        
         <!-- session detail modal v2 -->
         <div class="modal fade am-review-popup" id="review-modal" aria-hidden="true" wire:ignore.self>
             <div class="modal-dialog modal-lg modal-dialog-centered">
