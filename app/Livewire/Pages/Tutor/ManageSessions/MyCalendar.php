@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Nwidart\Modules\Facades\Module;
+use Illuminate\Support\Facades\Log;
 
 class MyCalendar extends Component
 {
@@ -31,6 +32,9 @@ class MyCalendar extends Component
     public $templates = [];
     public $template_id = '';
     public $allowed_for_subscriptions = 0;
+    public $editableSlotId;
+    protected $listeners = ['loadSlotForEdit'];
+
     public function boot() {
         $this->bookingService = new BookingService(Auth::user());
         $this->subjectService  = new SubjectService(Auth::user());
@@ -41,9 +45,9 @@ class MyCalendar extends Component
         $this->subjectGroups = $this->subjectService->getUserSubjectGroups(['subjects:id,name','group:id,name']);
         $this->startOfWeek = (int) (setting('_lernen.start_of_week') ?? Carbon::SUNDAY); 
         $this->days = Day::get();
-        if(\Nwidart\Modules\Facades\Module::has('upcertify') && \Nwidart\Modules\Facades\Module::isEnabled('upcertify')){
-            $this->templates = get_templates();
-        }
+        // if(\Nwidart\Modules\Facades\Module::has('upcertify') && \Nwidart\Modules\Facades\Module::isEnabled('upcertify')){
+        //     $this->templates = get_templates();
+        // }
     }
 
     #[Layout('layouts.app')]
@@ -63,38 +67,59 @@ class MyCalendar extends Component
     public function addSessionForm(){
         $this->form->reset();
         $this->form->resetErrorBag();
-        $this->dispatch('toggleModel', id:'booking-modal', action:'show');
+        $this->dispatch('toggleModel', id:'new-booking-modal', action:'show');
     }
 
     public function addSession(){
-        $validatedData = $this->form->validateData();
+        try {
+            $validatedData = $this->form->validateData();
 
-        // Procesar el rango de fechas
-        $dates = explode(' to ', $validatedData['date_range']);
-        $startDate = Carbon::parse($dates[0]);
-        $endDate = isset($dates[1]) ? Carbon::parse($dates[1]) : $startDate;
+            // Validación: la hora de fin no puede ser menor o igual que la de inicio
+            if (strtotime($validatedData['end_time']) <= strtotime($validatedData['start_time'])) {
+                $this->addError('form.end_time', 'La hora de fin debe ser mayor que la hora de inicio.');
+                $this->dispatch('toggleModel', id: 'new-booking-modal', action: 'hide');
+                $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: 'La hora de fin debe ser mayor que la hora de inicio.');
+                return;
+            }
 
-        $period = CarbonPeriod::create($startDate, $endDate);
+            // Procesar el rango de fechas
+            $dates = explode(' to ', $validatedData['date_range']);
+            $startDate = Carbon::parse($dates[0]);
+            $endDate = isset($dates[1]) ? Carbon::parse($dates[1]) : $startDate;
 
-        // Calcular duración en horas
-        $startTime = Carbon::createFromFormat('H:i', $validatedData['start_time']);
-        $endTime = Carbon::createFromFormat('H:i', $validatedData['end_time']);
-        $durationHours = $endTime->diffInMinutes($startTime) / 60;
-        $duracion = $durationHours . ' horas';
+            $period = CarbonPeriod::create($startDate, $endDate);
 
-        foreach ($period as $date) {
-            UserSubjectSlot::create([
-                'start_time' => $validatedData['start_time'],
-                'end_time'   => $validatedData['end_time'],
-                'duracion'   => $duracion,
-                'date'       => $date->format('Y-m-d'),
-                'user_id'    => auth()->id(),
-            ]);
+            // Calcular duración en horas
+            $startTime = Carbon::createFromFormat('H:i', $validatedData['start_time']);
+            $endTime = Carbon::createFromFormat('H:i', $validatedData['end_time']);
+            $durationHours = $endTime->diffInMinutes($startTime) / 60;
+            $duracion = $durationHours . ' horas';
+
+            foreach ($period as $date) {
+                UserSubjectSlot::create([
+                    'start_time' => $validatedData['start_time'],
+                    'end_time'   => $validatedData['end_time'],
+                    'duracion'   => $duracion,
+                    'date'       => $date->format('Y-m-d'),
+                    'user_id'    => Auth::id(),
+                ]);
+            }
+
+            $this->form->reset();
+            $this->dispatch('toggleModel', id: 'new-booking-modal', action: 'hide');
+            $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: __('general.success_message'));
+        } catch (\Exception $e) {
+            $this->dispatch('toggleModel', id: 'new-booking-modal', action: 'hide');
+            // Si es una excepción de validación, mostrar el campo y el mensaje
+            if ($e instanceof \Illuminate\Validation\ValidationException) {
+                $errors = $e->validator->errors()->toArray();
+                $firstField = array_key_first($errors);
+                $firstMsg = $errors[$firstField][0] ?? 'Error de validación.';
+                $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: ucfirst(str_replace('form.', '', $firstField)) . ': ' . $firstMsg);
+            } else {
+                $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: $e->getMessage());
+            }
         }
-
-        $this->form->reset();
-        $this->dispatch('toggleModel', id: 'new-booking-modal', action: 'hide');
-        $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: __('general.success_message'));
     }
 
     public function updatedForm($value, $key){
@@ -140,5 +165,54 @@ class MyCalendar extends Component
         $this->currentYear = $date->format('Y');
         $this->startOfCalendar = $date->copy()->firstOfMonth()->startOfWeek($this->startOfWeek);
         $this->endOfCalendar = $date->copy()->lastOfMonth()->endOfWeek(getEndOfWeek($this->startOfWeek));
+    }
+
+    public function loadSlotForEdit($slotId)
+    {
+        $slot = UserSubjectSlot::findOrFail($slotId);
+        $this->editableSlotId = $slot->id;
+        $this->form->date = $slot->date instanceof \DateTimeInterface ? $slot->date->format('Y-m-d') : substr($slot->date, 0, 10);
+        $this->form->start_time = $slot->start_time instanceof \DateTimeInterface ? $slot->start_time->format('H:i') : $slot->start_time;
+        $this->form->end_time = $slot->end_time instanceof \DateTimeInterface ? $slot->end_time->format('H:i') : $slot->end_time;
+       
+        $this->form->meeting_link = $slot->meta_data['meeting_link'] ?? '';
+        $this->form->action = 'edit';
+        $this->dispatch('toggleModel', id: 'edit-session', action: 'show');
+    }
+
+    public function editSession()
+    {
+        try {
+            $validatedData = $this->form->validateData();
+            $slot = UserSubjectSlot::findOrFail($this->editableSlotId);
+            $slot->start_time = $validatedData['start_time'];
+            $slot->end_time = $validatedData['end_time'];
+            $slot->save();
+            $this->dispatch('toggleModel', id: 'edit-session', action: 'hide');
+            $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: __('general.updated_msg'));
+        } catch (\Exception $e) {
+            $this->dispatch('toggleModel', id: 'edit-session', action: 'hide');
+            if ($e instanceof \Illuminate\Validation\ValidationException) {
+                $errors = $e->validator->errors()->toArray();
+                $firstField = array_key_first($errors);
+                $firstMsg = $errors[$firstField][0] ?? 'Error de validación.';
+                $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: ucfirst(str_replace('form.', '', $firstField)) . ': ' . $firstMsg);
+            } else {
+                $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: $e->getMessage());
+            }
+        }
+    }
+
+    public function deleteSession()
+    {
+        try {
+            $slot = UserSubjectSlot::findOrFail($this->editableSlotId);
+            $slot->delete();
+            $this->dispatch('toggleModel', id: 'edit-session', action: 'hide');
+            $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: 'Reserva eliminada correctamente.');
+        } catch (\Exception $e) {
+            $this->dispatch('toggleModel', id: 'edit-session', action: 'hide');
+            $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: $e->getMessage());
+        }
     }
 }

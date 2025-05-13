@@ -9,7 +9,7 @@ use Livewire\Form;
 class SessionBookingForm extends Form
 {
     use PrepareForValidation;
-    public $date_range;
+    public $date_range = '';
     public $start_time='';
     public $end_time='';
     public $duration;
@@ -19,10 +19,20 @@ class SessionBookingForm extends Form
     public $session_fee;
     public $description;
     public $subject_group_id;
+    public $meeting_link = '';
+    public $action = '';
+    public $date = '';
 
     public function rules(){
-        $request = new SessionStoreRequest();
-        return $request->rules();
+        return [
+            'date_range' => $this->action === 'edit' ? 'nullable|string' : 'required|string',
+            'date' => 'required|date',
+            'start_time' => 'required',
+            'end_time' => 'required',
+            'session_fee' => 'nullable|numeric',
+            'description' => 'nullable|string',
+            'spaces' => 'nullable|integer|min:1',
+        ];
     }
 
     public function messages() {
@@ -37,5 +47,13 @@ class SessionBookingForm extends Form
     public function validateData() {
         $this->beforeValidation();
         return $this->validate();
+    }
+
+    public function beforeValidation()
+    {
+        if (empty($this->date) && !empty($this->date_range)) {
+            $dates = explode(' to ', $this->date_range);
+            $this->date = $dates[0]; // Toma la primera fecha del rango para la validación
+        }
     }
 }
