@@ -2,216 +2,408 @@
 
 namespace App\Livewire\Pages\Common\ProfileSettings;
 
-use App\Livewire\Forms\Common\ProfileSettings\PersonalDetailsForm;
 use App\Models\Country;
 use App\Models\Language;
-use App\Models\Subject;
 use App\Services\ProfileService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
+/**
+ * Componente Livewire para la gestión de detalles personales
+ * Maneja la carga y actualización de información del perfil de usuario
+ */
 class PersonalDetails extends Component
 {
     use WithFileUploads;
 
-    public PersonalDetailsForm $form;
-    public $search = '';
-
-    public $allowImgFileExt = [];
-    public $allowVideoFileExt = [];
-    public $allowImageSize  = '';
-    public $allowVideoSize = '';
-    public $googleApiKey = '';
-    public $fileExt = '';
-    public $isLoading = true;
-    public $imageFileSize = '';
-    public $videoFileSize = '';
-    public $vedioExt = '';
-    public $languages = [];
-    public $tutorSubjects = [];
-    public $countries = null;
-    public $hasStates = false;
-    public $introVideo;
-    public $isProfilePhoneMendatory = true;
-    public $isProfileVideoMendatory = true;
-    public $isProfileKeywordsMendatory = true;
     private ?ProfileService $profileService = null;
-    public $MAX_PROFILE_CHAR = 500;
+
+    // Propiedades del formulario
+    public $first_name = '';
+    public $last_name = '';
+    public $email = '';
+    public $phone_number = '';
+    public $gender = 'male';
+    public $tagline = '';
+    public $description = '';
+    public $country = '';
+    public $state = '';
+    public $city = '';
+    public $address = '';
+    public $lat = '';
+    public $long = '';
+    public $native_language = '';
+    public $user_languages = [];
+    public $selected_languages = [];
+
+    // Add this property to your PersonalDetails class
+    public $selected_language = '';
+
+    // Archivos
+    public $image;
+    public $intro_video;
+    public $isUploadingImage = false;
+    public $isUploadingVideo = false;
+    public $imageName = '';
+    public $videoName = '';
+
+    // Estados
+    public $isLoading = true;
+    public $hasStates = false;
     public $activeRoute = false;
 
+    // Configuración
+    public $allowImgFileExt = ['jpg', 'png'];
+    public $allowVideoFileExt = ['mp4', 'mov', 'avi', 'wmv', 'm4v'];
+    public $maxImageSize = 3; // MB
+    public $maxVideoSize = 500; // MB
+    public $enableGooglePlaces = false;
+
+    /**
+     * Inicializa el componente
+     */
+    public function mount(): void
+    {
+        try {
+            $this->isLoading = true;
+            $this->profileService = new ProfileService(Auth::id());
+            $this->loadConfiguration();
+            $this->loadUserData();
+            $this->activeRoute = Route::currentRouteName();
+        } catch (\Exception $e) {
+            Log::error('Error al cargar datos del perfil: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_loading_profile'));
+        } finally {
+            $this->isLoading = false;
+        }
+    }
+
+    /**
+     * Verifica si el servicio está inicializado
+     */
+    private function ensureProfileService(): void
+    {
+        if ($this->profileService === null) {
+            $this->profileService = new ProfileService(Auth::id());
+        }
+    }
+
+    /**
+     * Carga la configuración del sistema
+     */
+    private function loadConfiguration(): void
+    {
+        $this->enableGooglePlaces = setting('_api.enable_google_places') == '1';
+        $this->allowImgFileExt = explode(',', setting('_general.allowed_image_extensions') ?? 'jpg,png');
+        $this->allowVideoFileExt = explode(',', setting('_general.allowed_video_extensions') ?? 'mp4');
+        $this->maxImageSize = (int)(setting('_general.max_image_size') ?? 3);
+        $this->maxVideoSize = (int)(setting('_general.max_video_size') ?? 20);
+    }
+
+    /**
+     * Carga los datos del usuario
+     */
+    private function loadUserData(): void
+    {
+        $profile = $this->profileService->getUserProfile();
+        $address = $this->profileService->getUserAddress();
+        
+        // Debug para ver los datos del perfil
+        Log::info('Datos del perfil cargados:', [
+            'profile' => $profile,
+            'image' => $profile?->image ?? 'no image'
+        ]);
+        
+        // Consulta directa a user_languages para el usuario actual
+        $userLanguages = \App\Models\UserLanguage::where('user_id', Auth::id())
+            ->pluck('language_id')
+            ->toArray();
+            
+        $this->user_languages = $userLanguages;
+        
+        // Carga datos básicos
+        $this->first_name = $profile?->first_name ?? '';
+        $this->last_name = $profile?->last_name ?? '';
+        $this->email = Auth::user()?->email;
+        $this->phone_number = $profile?->phone_number ?? '';
+        $this->gender = $profile?->gender ?? 'male';
+        $this->tagline = $profile?->tagline ?? '';
+        $this->description = $profile?->description ?? '';
+        $this->image = $profile?->image ?? '';
+        
+        // Debug para ver la ruta de la imagen
+        Log::info('Ruta de la imagen cargada:', [
+            'image_path' => $this->image,
+            'full_path' => $this->image ? str_replace('\\', '/', storage_path('app/public/' . $this->image)) : 'no path',
+            'exists' => $this->image ? file_exists(storage_path('app/public/' . $this->image)) : false
+        ]);
+        
+        $this->intro_video = $profile?->intro_video ?? '';
+        $this->native_language = $profile?->native_language ?? '';
+
+        // Carga datos de ubicación
+        $this->country = $address?->country_id ?? '';
+        $this->state = $address?->state_id ?? '';
+        $this->city = $address?->city ?? '';
+        $this->address = $address?->address ?? '';
+        $this->lat = $address?->lat ?? '';
+        $this->long = $address?->long ?? '';
+    }
+
+    /**
+     * Renderiza la vista
+     */
     #[Layout('layouts.app')]
     public function render(Request $request)
     {
-        $enableGooglePlaces = setting('_api.enable_google_places') ?? '0';
-        $states = null;
+        try {
+            $states = null;
+            $countries = Country::orderBy('name')->get();
+            $languages = Language::get(['id', 'name'])->pluck('name', 'id');
 
-        // Si es una solicitud AJAX de Select2, devolver los resultados filtrados
-        if ($request->ajax() && $request->has('search')) {
-            $countries = Country::where('name', 'like', '%' . $request->search . '%')
-                ->get()
-                ->map(function($country) {
-                    return [
-                        'id' => $country->id,
-                        'text' => $country->name
-                    ];
-                });
-            return response()->json($countries);
-        }
+            // Debug temporal - Descomenta esta línea para ver los datos en el navegador
+            // dd([
+            //     'languages' => $languages->toArray(),
+            //     'user_languages' => $this->user_languages,
+            //     'profile' => $this->profileService->getUserProfile(),
+            //     'user_languages_from_service' => $this->profileService->getUserLanguages()
+            // ]);
 
-        if (!empty($this->form->country)) {
-            $states = $this->profileService->countryStates($this->form->country);
-            if ($states->isNotEmpty()) {
-                $this->hasStates = true;
-                $this->dispatch('initSelect2', target: '#country_state', timeOut: 0);
-            } else {
-                $this->hasStates = false;
+            // Debug: Ver los idiomas en el render
+            /* Log::info('Idiomas en render:', [
+                'languages' => $languages->toArray(),
+                'user_languages' => $this->user_languages
+            ]);
+            dd($this->user_languages,"user_languages"); */
+
+            if (!empty($this->country)) {
+                $states = $this->profileService->countryStates($this->country);
+                $this->hasStates = $states->isNotEmpty();
             }
-        }
 
-        // Cargar países iniciales si no es una búsqueda
-        if (!$this->countries) {
-            $this->countries = Country::orderBy('name')->get();
-        }
-
-        return view('livewire.pages.common.profile-settings.personal-details', compact('enableGooglePlaces', 'states'));
-    }
-
-    public function searchCountries($term = '')
-    {
-        
-        $countries = Country::where('name', 'like', '%' . $term . '%')
-            ->select('id', 'name as text') // Seleccionar y renombrar para Select2
-            ->take(20) // Limitar resultados para eficiencia
-            ->get()
-            ->toArray();
-        
-        return $countries;
-    }
-
-    public function boot()
-    {
-        $this->profileService = new ProfileService(Auth::user()->id);
-    }
-
-    public function loadData()
-    {
-        $this->isLoading            = false;
-        \Log::info('Dispatching loadPageJs event from loadData()');
-        $this->dispatch('loadPageJs');
-    }
-
-    public function mount(): void
-    {
-        $this->isProfilePhoneMendatory = setting('_lernen.profile_phone_number') == 'yes' ? true : false;
-        $this->isProfileVideoMendatory = setting('_lernen.profile_video') == 'yes' ? true : false;
-        $this->isProfileKeywordsMendatory = setting('_lernen.profile_keywords') == 'yes' ? true : false;
-        $this->languages = Language::get(['id', 'name'])?->pluck('name', 'id')?->toArray();
-        $this->tutorSubjects = Subject::get(['id', 'name'])?->pluck('name', 'id')?->toArray();
-        $this->countries = Country::get(['id', 'name']);
-        $profile = $this->profileService->getUserProfile();
-        $address = $this->profileService->getUserAddress();
-        $socialProfiles = $this->profileService->getSocialProfiles();
-        $languages = $this->profileService->getUserLanguages();
-        $this->activeRoute = Route::currentRouteName();
-        $this->form->getInfo($profile);
-        $this->form->setUserAddress($address);
-        $socialProfiles = $this->profileService->getSocialProfiles();
-        $this->form->setSocialProfiles($socialProfiles);
-        $this->form->setUserLanguages($languages);
-        $image_file_ext          = setting('_general.allowed_image_extensions');
-        $image_file_size         = setting('_general.max_image_size');
-        $video_file_size         = setting('_general.max_video_size');
-        $video_file_ext          = setting('_general.allowed_video_extensions');
-        $this->fileExt           =  $image_file_ext;
-        $this->vedioExt          =  $video_file_ext;
-        $this->imageFileSize     =  $image_file_size;
-        $this->videoFileSize     =  $video_file_size;
-        $this->googleApiKey      = setting('_api.google_places_api_key');
-        $this->allowImageSize    = (int) (!empty($image_file_size) ? $image_file_size : '3');
-        $this->allowImgFileExt   = !empty($image_file_ext) ?  explode(',', $image_file_ext) : ['jpg', 'png'];
-        $this->allowVideoSize    = (int) (!empty($video_file_size) ? $video_file_size : '20');
-        $this->allowVideoFileExt = !empty($video_file_ext) ?  explode(',', $video_file_ext) : [];
-        
-        if (Session::get('error')) {
-            $this->dispatch('showAlertMessage', type: 'error', message: Session::get('error'));
+            return view('livewire.pages.common.profile-settings.personal-details', [
+                'countries' => $countries,
+                'states' => $states,
+                'languages' => $languages
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error al renderizar vista de perfil: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_loading_view'));
+            return view('livewire.pages.common.profile-settings.personal-details', [
+                'countries' => collect(),
+                'states' => collect(),
+                'languages' => collect()
+            ]);
         }
     }
 
-       public function updateInfo()
+    /**
+     * Actualiza la información del perfil
+     */
+    public function updateInfo()
     {
-       
-      
-    
-        $form = $this->form;
-    
-        if (!empty($this->introVideo)) {
-            $this->form->setVideo($this->introVideo);
+        try {
+            $this->ensureProfileService();
+
+            // Validación temporal sin los campos de ubicación
+            /* $this->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'phone_number' => 'nullable|string|max:20',
+                'gender' => 'required|in:male,female,not_specified',
+                'native_language' => 'required|string|max:255',
+                'user_languages' => 'required|array',
+                'description' => 'required|string|max:500',
+            ]); */ 
+
+            // Actualiza datos del perfilt
+            //dd($this->phone_number);
+
+            $profileData = [
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'phone_number' => $this->phone_number,
+                'gender' => $this->gender,
+                'tagline' => $this->tagline,
+                'description' => $this->description,
+                'native_language' => $this->native_language,
+            ];
+
+           if ($this->image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                // Guardar temporalmente en storage
+                $filename = time() . '_' . $this->image->getClientOriginalName();
+                $tempPath = $this->image->storeAs('temp', $filename);
+
+                // Mover a public/profile_images
+                $destinationPath = public_path('storage/profile_images');
+               
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+                rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
+
+                $profileData['image'] = 'profile_images/' . $filename;
+
+                // Debug para verificar el guardado
+                Log::info('Imagen guardada:', [
+                    'filename' => $filename,
+                    'path' => $profileData['image'],
+                    'full_path' => $destinationPath . '/' . $filename,
+                    'exists' => file_exists($destinationPath . '/' . $filename)
+                ]);
+            } 
+            
+            if ($this->intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                // Guardar temporalmente en storage
+                $filename = time() . '_' . $this->intro_video->getClientOriginalName();
+                $tempPath = $this->intro_video->storeAs('temp', $filename);
+
+                // Mover a public/storage/profile_videos
+                $destinationPath = public_path('storage/profile_videos');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+                rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
+
+                $profileData['intro_video'] = 'profile_videos/' . $filename;
+            } 
+            
+            
+            //dd($profileData, "profileData");
+            // Guarda los datos
+            $this->profileService->setUserProfile($profileData);
+            
+            // Guardar los IDs de idiomas directamente
+            $this->profileService->storeUserLanguages($this->user_languages);
+
+            $this->dispatch('showAlertMessage', type: 'success', message: __('general.success_message'));
+        } catch (\Exception $e) {
+            Log::error('Error al actualizar perfil: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_message'));
         }
-    
-        \Log::info('/log: Este es un mensaje de prueba en el log.');
-        $form->validateForm($this->hasStates);
-                \Log::info('/log: Datos del perfil', json_decode(json_encode($form), true));
-          \Log::info('/entro al validateform.');
-        $response = isDemoSite();
-        if ($response) {
-            $this->dispatch('showAlertMessage', type: 'error', title: __('general.demosite_res_title'), message: __('general.demosite_res_txt'));
-            return;
-        }
-        
-       
-    
-        $this->introVideo = null;
-        $data = $form->updateProfileInfo();
-        $address = $form->userAddress();
-          
-        $this->profileService->setUserProfile($data);
-        $this->profileService->storeUserLanguages($form->user_languages);
-        $this->profileService->setUserAddress($address);
-        $socialsProfiles = $form->socialProfiles();
-    
-        if (!empty($socialsProfiles)) {
-            $this->profileService->setSocialProfiles($socialsProfiles);
-        }
-    
-       
-        $this->dispatch('profile-img-updated', image: resizedImage($form->image, 36, 36));
-        $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: __('general.success_message'));
     }
 
-    public function updatingForm($value, $key)
+    /**
+     * Maneja la carga de archivos
+     */
+    public function upload($field, $file)
     {
-        if ($key == 'country') {
-            $this->form->state = null;
+        try {
+            if ($field === 'image') {
+                $this->isUploadingImage = true;
+                $this->validate([
+                    'image' => 'image|max:' . ($this->maxImageSize * 1024) . '|mimes:' . implode(',', $this->allowImgFileExt)
+                ], [
+                    'image.image' => 'El archivo debe ser una imagen válida.',
+                    'image.max' => 'La imagen no debe superar ' . $this->maxImageSize . 'MB.',
+                    'image.mimes' => 'La imagen debe ser de tipo: ' . implode(', ', $this->allowImgFileExt)
+                ]);
+                $this->imageName = $file->getClientOriginalName();
+            } else if ($field === 'intro_video') {
+                $this->isUploadingVideo = true;
+                $this->validate([
+                    'intro_video' => 'file|max:' . ($this->maxVideoSize * 1024) . '|mimes:' . implode(',', $this->allowVideoFileExt)
+                ], [
+                    'intro_video.file' => 'El archivo debe ser un video válido.',
+                    'intro_video.max' => 'El video no debe superar ' . $this->maxVideoSize . 'MB.',
+                    'intro_video.mimes' => 'El video debe ser de tipo: ' . implode(', ', $this->allowVideoFileExt)
+                ]);
+                $this->videoName = $file->getClientOriginalName();
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Error de validación al cargar archivo: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', message: $e->validator->errors()->first());
+        } catch (\Exception $e) {
+            Log::error('Error al cargar archivo: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_uploading_file'));
+        } finally {
+            $this->isUploadingImage = false;
+            $this->isUploadingVideo = false;
         }
     }
 
-    public function updatedIntroVideo()
-    {
-        // dd($this->allowVideoFileExt, $this->allowVideoSize);
-        $this->validate(['introVideo' => 'required|mimes:' . (!empty($this->allowVideoFileExt) ? implode(',', $this->allowVideoFileExt) : 'mp4')  . '|max:' . (!empty($this->allowVideoSize) ? $this->allowVideoSize : 20) * 1024]);
-    }
-
+    /**
+     * Elimina archivos multimedia
+     */
     public function removeMedia($type)
     {
-        if ($type == 'video') {
-            $this->introVideo = null;
-            $this->form->removeVideo();
-        } else {
-            $this->form->removePhoto();
+        try {
+            if ($type === 'image') {
+                if ($this->image && !$this->image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                    Storage::disk('public')->delete($this->image);
+                }
+                $this->image = null;
+                $this->imageName = '';
+            } else if ($type === 'video') {
+                if ($this->intro_video && !$this->intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                    Storage::disk('public')->delete($this->intro_video);
+                }
+                $this->intro_video = null;
+                $this->videoName = '';
+            }
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar archivo: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_removing_file'));
         }
     }
 
-    public function updatedFormCountry($value)
+    /**
+     * Elimina un idioma de la lista de idiomas seleccionados
+     */
+    public function removeLanguage($languageId)
     {
-        $this->form->state = null; // Resetear el estado seleccionado
-        // La propiedad $hasStates se recalculará automáticamente en el siguiente render
-        // que Livewire dispara después de esta actualización.
-        Log::info('Country changed, state reset. Country ID: ' . $value);
+        try {
+            if (($key = array_search($languageId, $this->user_languages)) !== false) {
+                unset($this->user_languages[$key]);
+                $this->user_languages = array_values($this->user_languages); // Reindexar el array
+                Log::info('Idioma eliminado:', ['language_id' => $languageId, 'remaining_languages' => $this->user_languages]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error al eliminar idioma: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_removing_language'));
+        }
+    }
+
+    /**
+     * Maneja la actualización del país
+     */
+    public function updatedCountry($value)
+    {
+        $this->state = null;
+        $this->hasStates = false;
+    }
+
+    /**
+     * Busca países por término
+     */
+    public function searchCountries($term = '')
+    {
+        return Country::where('name', 'like', '%' . $term . '%')
+            ->select('id', 'name as text')
+            ->take(20)
+            ->get()
+            ->toArray();
+    }
+
+    public function updatedSelectedLanguages($value)
+    {
+        if (is_array($value)) {
+            foreach ($value as $langId) {
+                if (!in_array($langId, $this->user_languages) && $langId != $this->native_language) {
+                    $this->user_languages[] = $langId;
+                }
+            }
+        } else {
+            if (!in_array($value, $this->user_languages) && $value != $this->native_language) {
+                $this->user_languages[] = $value;
+            }
+        }
+        $this->selected_languages = [];
     }
 }

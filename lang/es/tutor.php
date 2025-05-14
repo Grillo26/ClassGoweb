@@ -159,4 +159,6 @@ return [
     'per_course' => '/curso',
     'make_default_method' => 'Hacer método predeterminado',
     'setup_bank_account' => 'Configurar cuenta bancaria',
+    'view_booking' =>'reservar',
+    'confirm_booking' => 'Confirmar reserva',
 ];

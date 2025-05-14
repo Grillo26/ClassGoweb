@@ -3,5 +3,6 @@
     "intelephense.codeLens.implementations.enable": true,
     "intelephense.codeLens.parent.enable": true,
     "intelephense.codeLens.references.enable": true,
-    "intelephense.codeLens.usages.enable": true
+    "intelephense.codeLens.usages.enable": true,
+    "editor.codeLens": true
 }

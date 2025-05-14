@@ -17,88 +17,16 @@
                                 <i wire:click="previousMonthCalendar('{{ $currentDate }}')">
                                     <i class="am-icon-chevron-left"></i>
                                 </i>
-                                <span @if(parseToUserTz($currentDate)->isToday()) disabled @else wire:click="jumpToDate()" @endif>
-                                    {{ __('calendar.today') }}
+                                <span style="margin: 0 10px; font-weight: bold;">
+                                    {{ parseToUserTz($currentDate)->translatedFormat('F Y') }}
                                 </span>
                                 <i wire:click="nextMonthCalendar('{{ $currentDate }}')">
                                     <i class="am-icon-chevron-right"></i>
                                 </i>
                             </div>
-                            <div class="am-booking-calander-date flatpicker">
-                                <input type="text" class="form-control" id="calendar-month-year">
-                            </div>
+                            
 
-                            <div class="am-booking-filter-wrapper">
-                                <a class="am-booking-filter" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-auto-close="outside">
-                                    <i class="am-icon-sliders-horiz-01"></i>
-                                </a>
-                                <form class="am-itemdropdown_list am-filter-list dropdown-menu" aria-labelledby="dropdownMenuLink"  x-on:submit.prevent
-                                    x-data="{
-                                        selectedValues: [],
-                                        init() {
-                                            const selectElement = document.getElementById('filter_subject_group');
-                                            const updateSelectedValues = () => {
-                                                this.selectedValues = Array.from(selectElement.selectedOptions)
-                                                    .filter(option => option.value)
-                                                    .map(option => ({
-                                                        value: option.value,
-                                                        text: option.text,
-                                                        price: option.getAttribute('data-price')
-                                                    })
-                                                );
-                                            };
-                                            $(selectElement).select2().on('change', updateSelectedValues);
-                                            updateSelectedValues();
-                                        },
-                                        removeValue(value) {
-                                            const selectElement = document.getElementById('filter_subject_group');
-                                            const optionToDeselect = Array.from(selectElement.options).find(option => option.value === value);
-                                            if (optionToDeselect) {
-                                                optionToDeselect.selected = false;
-                                                $(selectElement).trigger('change');
-                                            }
-                                        },
-                                        submitFilter() {
-                                            const selectElement = document.getElementById('filter_subject_group');
-                                            @this.set('subjectGroupIds', $(selectElement).select2('val'));
-                                        }
-                                    }"
-                                    >
-                                    <fieldset>
-                                        <div class="form-group">
-                                            <label>{{ __('calendar.subject_placeholder') }}</label>
-                                            <span class="am-select am-multiple-select am-filter-select" wire:ignore>
-                                                <select id="filter_subject_group" data-componentid="@this" class="am-select2" data-class="subject-dropdown-select2" data-format="custom" data-searchable="true" data-wiremodel="subjectGroupIds" data-placeholder="{{ __('calendar.subject_placeholder') }}" multiple>
-                                                    <option label="{{ __('calendar.subject_placeholder') }}"></option>
-                                                    @foreach ($subjectGroups as $sbjGroup)
-                                                        @if ($sbjGroup->subjects->isEmpty() || !$sbjGroup->group)
-                                                            @continue
-                                                        @endif
-                                                        <optgroup label="{{ $sbjGroup->group->name }}">
-                                                            @foreach ($sbjGroup->subjects as $sbj)
-                                                                <option value="{{ $sbj->pivot->id }}">{{ $sbj->name }}</option>
-                                                            @endforeach
-                                                        </optgroup>
-                                                    @endforeach
-                                                </select>
-                                            </span>
-                                        </div>
-                                        <template x-if="selectedValues.length > 0">
-                                            <ul class="am-subject-tag-list">
-                                                <template x-for="(subject, index) in selectedValues">
-                                                    <li>
-                                                        <a href="javascript:void(0)" class="am-subject-tag" @click="removeValue(subject.value)">
-                                                            <span x-text="`${subject.text} (${subject.price})`"></span>
-                                                            <i class="am-icon-multiply-02"></i>
-                                                        </a>
-                                                    </li>
-                                                </template>
-                                            </ul>
-                                        </template>
-                                        <button class="am-btn" @click="submitFilter()">{{ __('general.apply_filter') }}</button>
-                                    </fieldset>
-                                </form>
-                            </div>
+                            
 
                             <button class="am-btn" wire:click="addSessionForm">
                                 {{ __('calendar.add_new_session') }}

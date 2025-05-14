@@ -50,8 +50,18 @@ class ProfileService
 
     public function setUserAddress(array $address): void
     {
-        $this->user->address()->updateOrCreate(['addressable_id' => $this->user->id], $address);
-    }
+        
+        try { 
+           $this->user->address()->updateOrCreate(['addressable_id' => $this->user->id], $address);
+    
+        }
+        catch (\Exception $e) {
+            dd($e->getMessage(),"error");
+            // Handle the exception
+            // You can log the error or take any other action you need
+            //Log::error('Error updating or creating address: ' . $e->getMessage());
+        }
+   }
 
     public function getSocialProfiles(): array
     {
