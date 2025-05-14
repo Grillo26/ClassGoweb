@@ -31,19 +31,13 @@
                                 </div>
                             </div>
                             <ul class="am-tutorsearch_info">
-                                <li>
-                                    <div class="am-tutorsearch_info_icon"><i class="am-icon-dollar"></i></div>
-                                    <span>{{ formatAmount($singleTutor->min_price) }}<em>/hr</em></span>
-                                </li>
+                               
                                 <li>
                                     <div class="am-tutorsearch_info_icon"><i class="am-icon-star-01"></i></div>
                                     <span>{{ number_format($singleTutor->avg_rating, 1) }}<em>/5.0 ({{ $singleTutor->total_reviews == 1 ? __('general.review_count') : __('general.reviews_count', ['count' => $singleTutor->total_reviews] ) }})</em></span>
 
                                 </li>
-                                <li>
-                                    <div class="am-tutorsearch_info_icon"><i class="am-icon-user-group"></i></div>
-                                    <span>{{ $singleTutor->active_students }} <em>{{ __('general.active_students') }}</em></span>
-                                </li>
+                                
                             </ul>
                             <a href="{{ route('tutor-detail', ['slug' => $singleTutor->profile->slug]) }}" class="am-white-btn">{{ __('general.profile') }}</a>
                         </div>

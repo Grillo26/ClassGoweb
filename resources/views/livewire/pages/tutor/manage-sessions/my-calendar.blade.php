@@ -100,7 +100,7 @@
                                 </form>
                             </div>
 
-                            <button class="am-btn" data-bs-toggle="modal" data-bs-target="#new-booking-modal">
+                            <button class="am-btn" wire:click="addSessionForm">
                                 {{ __('calendar.add_new_session') }}
                                 <i class="am-icon-plus-02"></i>
                             </button>
@@ -137,8 +137,16 @@
                                                 ])
                                             >
                                             @if(!empty($availableSlots[parseToUserTz($startOfCalendar)->toDateString()]))
-                                                <div class="am-slots-count">
-                                                    <em><strong>{{ count($availableSlots[parseToUserTz($startOfCalendar)->toDateString()]) }}</strong> sesiones</em>
+                                                <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px;">
+                                                    @foreach($availableSlots[parseToUserTz($startOfCalendar)->toDateString()] as $slot)
+                                                        <div 
+                                                            class="am-slot-label" 
+                                                            style="background: #27ae60; color: #fff; border-radius: 6px; margin-bottom: 2px; padding: 2px 8px; cursor:pointer; font-size: 13px; font-weight: 500;"
+                                                            wire:click="loadSlotForEdit({{ $slot->id }})"
+                                                        >
+                                                            {{ \Carbon\Carbon::parse($slot->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($slot->end_time)->format('H:i') }}
+                                                        </div>
+                                                    @endforeach
                                                 </div>
                                                 <span class="am-custom-tooltip">
                                                     {{ parseToUserTz($startOfCalendar)->format('j') }}
@@ -193,6 +201,11 @@
                                         <label for="end_time_new" class="form-label">Hora Fin</label>
                                         <input type="text" id="end_time_new" class="form-control flatpickr-time" wire:model="form.end_time" placeholder="Selecciona hora de fin">
                                         <x-input-error field_name="form.end_time" />
+                                        @if($errors->has('form.end_time'))
+                                            <div class="alert alert-danger text-center mt-2">
+                                                {{ $errors->first('form.end_time') }}
+                                            </div>
+                                        @endif
                                     </div>
 
                                     
@@ -200,12 +213,62 @@
                                    
 
                                    
+
+                                   
+
                                 </div>
 
                                 <!-- Botones de Acción -->
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary" wire:loading.class="btn-loading">
                                         {{ __('general.save_update') }}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL PARA DETALLE Y EDICIÓN DE SLOT -->
+            <div wire:ignore.self class="modal fade" id="edit-session" tabindex="-1" aria-labelledby="slotDetailModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="newBookingModalLabel">{{ __('calendar.add_session') }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            
+                            <form wire:submit.prevent="editSession" autocomplete="off">
+                                <div class="row">
+                                    <!-- Mostrar la fecha de la reserva seleccionada como texto -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Fecha de la reserva</label>
+                                        <input type="text" class="form-control text-center" wire:model="form.date" readonly>
+                                        <x-input-error field_name="form.date" />
+                                    </div>
+                                    <!-- Campo de Hora de Inicio -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="start_time_new" class="form-label">Hora Inicio</label>
+                                        <input type="text" id="start_time_new" class="form-control flatpickr-time" wire:model="form.start_time" placeholder="Selecciona hora de inicio">
+                                        <x-input-error field_name="form.start_time" />
+                                    </div>
+                                    <!-- Campo de Hora de Fin -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="end_time_new" class="form-label">Hora Fin</label>
+                                        <input type="text" id="end_time_new" class="form-control flatpickr-time" wire:model="form.end_time" placeholder="Selecciona hora de fin">
+                                        <x-input-error field_name="form.end_time" />
+                                    </div>
+                                
+                                </div>
+                                <!-- Botones de Acción -->
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" wire:loading.class="btn-loading">
+                                        {{ __('general.save_update') }}
+                                    </button>
+                                    <button type="button" class="btn btn-danger" wire:click="deleteSession">
+                                        Eliminar reserva
                                     </button>
                                 </div>
                             </form>
@@ -249,6 +312,50 @@
                     minuteIncrement: 1,
                 });
             }
+            // Inicializar Select2 en el modal de edición
+            if (event.target.id === 'edit-session') {
+                flatpickr('#date_range_new', {
+                    mode: "range",
+                    dateFormat: "Y-m-d",
+                    minDate: "today",
+                });
+                flatpickr('#start_time_new', {
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: "H:i",
+                    time_24hr: true,
+                    minuteIncrement: 1,
+                });
+                flatpickr('#end_time_new', {
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: "H:i",
+                    time_24hr: true,
+                    minuteIncrement: 1,
+                });
+            }
         });
+
+        window.livewire.on('editSlot', slotId => {
+            Livewire.emit('loadSlotForEdit', slotId);
+        });
+
+        if (typeof Livewire !== 'undefined') {
+            Livewire.on('toggleModel', (event) => {
+                const modal = document.getElementById(event.id);
+                if (modal) {
+                    const bsModal = bootstrap.Modal.getOrCreateInstance(modal);
+                    if (event.action === 'show') {
+                        bsModal.show();
+                    } else if (event.action === 'hide') {
+                        bsModal.hide();
+                        setTimeout(() => {
+                            document.body.classList.remove('modal-open');
+                            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                        }, 300);
+                    }
+                }
+            });
+        }
     </script>
 @endpush
