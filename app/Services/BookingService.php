@@ -508,15 +508,32 @@ class BookingService
 
     public function reservarSlotBoooking($slot)
     {
-        //$this->updateBooking($slot, ['total_booked' => $slot->total_booked + 1]);
         // Crear la reserva
+      // Extraer solo la fecha del objeto Carbon $slot->date (formato Y-m-d)
+    $dateOnly = $slot->date->format('Y-m-d');
+    
+    // Extraer solo la hora del objeto Carbon $slot->start_time (formato H:i:s)
+    $timeOnly = $slot->start_time->format('H:i:s');
+    
+    // Combinar la fecha y la hora en un string
+    $dateTimeString = $dateOnly . ' ' . $timeOnly;
+    
+    // Crear un nuevo objeto Carbon con la combinación
+    $startDateTime = Carbon::parse($dateTimeString);
+    
+    // Crear la hora de fin
+    $endDateTime = $startDateTime->copy()->addMinutes(20);
+    
+    // Ahora puedes usar métodos de Carbon
+    $endDateTime = $startDateTime->copy()->addMinutes(20);
+
         $slotBooking = SlotBooking::create([
             'student_id'    => Auth::user()->id, // ID del estudiante
             'tutor_id'      => $slot->user_id,   // ID del tutor (user_id del slot)
             'session_fee'   => 15,               // Tarifa de la sesión (por defecto 15)
             'booked_at'     => now(),            // Fecha y hora de la reserva
-            'start_time'    => Carbon::parse($slot->start_time), // Hora de inicio
-            'end_time'      => Carbon::parse($slot->start_time)->addMinutes(20), // Hora de fin (+20 minutos)       
+            'start_time'    => $startDateTime,   // Hora de inicio
+            'end_time'      => $endDateTime,     // Hora de fin
             // Estado de la reserva
         ]);
 

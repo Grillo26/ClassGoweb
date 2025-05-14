@@ -222,7 +222,9 @@ class PersonalDetails extends Component
                 'description' => 'required|string|max:500',
             ]); */ 
 
-            // Actualiza datos del perfil
+            // Actualiza datos del perfilt
+            //dd($this->phone_number);
+
             $profileData = [
                 'first_name' => $this->first_name,
                 'last_name' => $this->last_name,
@@ -233,29 +235,47 @@ class PersonalDetails extends Component
                 'native_language' => $this->native_language,
             ];
 
-            if ($this->image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                // Guardar en storage/app/public/profile_images
+           if ($this->image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                // Guardar temporalmente en storage
                 $filename = time() . '_' . $this->image->getClientOriginalName();
-                $this->image->storeAs('public/profile_images', $filename);
+                $tempPath = $this->image->storeAs('temp', $filename);
+
+                // Mover a public/profile_images
+                $destinationPath = public_path('storage/profile_images');
+               
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+                rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
+
                 $profileData['image'] = 'profile_images/' . $filename;
-                
-                // Debug para ver el guardado de la imagen
+
+                // Debug para verificar el guardado
                 Log::info('Imagen guardada:', [
                     'filename' => $filename,
                     'path' => $profileData['image'],
-                    'full_path' => str_replace('\\', '/', storage_path('app/public/' . $profileData['image'])),
-                    'exists' => file_exists(storage_path('app/public/' . $profileData['image']))
+                    'full_path' => $destinationPath . '/' . $filename,
+                    'exists' => file_exists($destinationPath . '/' . $filename)
                 ]);
-            }
+            } 
             
             if ($this->intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                // Guardar en storage/app/public/profile_videos
+                // Guardar temporalmente en storage
                 $filename = time() . '_' . $this->intro_video->getClientOriginalName();
-                $this->intro_video->storeAs('public/profile_videos', $filename);
+                $tempPath = $this->intro_video->storeAs('temp', $filename);
+
+                // Mover a public/storage/profile_videos
+                $destinationPath = public_path('storage/profile_videos');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0755, true);
+                }
+                rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
+
                 $profileData['intro_video'] = 'profile_videos/' . $filename;
-            }
+            } 
             
             
+            //dd($profileData, "profileData");
             // Guarda los datos
             $this->profileService->setUserProfile($profileData);
             

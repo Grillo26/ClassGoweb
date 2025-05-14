@@ -127,6 +127,7 @@ class TutorSessions extends Component
     public function bookSession($id)
     {
         $slot = $this->bookingService->getSlotDetail($id);
+        dd($slot,"aver quieor la fecha");
         if(!empty($slot)){
             if( $slot->total_booked < $slot->spaces) {
                 $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->user);
@@ -258,6 +259,7 @@ class TutorSessions extends Component
 
         // Lógica para reservar el slot
         $slot = UserSubjectSlot::find($slotId);
+        //dd($slot,"aver quieor la fecha");
         if ($slot) {
             $this->bookingService->reservarSlotBoooking($slot);
 
@@ -278,7 +280,7 @@ class TutorSessions extends Component
         $this->showConfirmationDiv = false;
 
            // Emitir un evento para cerrar el modal
-    $this->dispatch('toggleModel', id: 'confirmationModal', action: 'hide');
+        $this->dispatch('toggleModel', id: 'confirmationModal', action: 'hide');
         // Emitir un evento para cerrar el modal
         //$this->dispatchBrowserEvent('close-modal', ['id' => 'confirmationModal']);
     }
