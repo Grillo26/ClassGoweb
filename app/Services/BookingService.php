@@ -22,17 +22,20 @@ use Illuminate\Support\Facades\Log;
 use Nwidart\Modules\Facades\Module;
 use Symfony\Component\HttpFoundation\Response;
 
-class BookingService {
+class BookingService
+{
 
     public $user;
 
-    public function __construct($user = null) {
+    public function __construct($user = null)
+    {
         $this->user = $user;
     }
 
-    public function getAvailableSlots($subjectGroupIds, $date) {
+    public function getAvailableSlots($subjectGroupIds, $date)
+    {
         $myData = array();
-        $slots = UserSubjectSlot::select('id','start_time','end_time','duracion','date','user_id')
+        $slots = UserSubjectSlot::select('id', 'start_time', 'end_time', 'duracion', 'date', 'user_id')
             ->where('user_id', $this->user->id)
             ->where('date', '>=', $date->copy()->firstOfMonth()->toDateString())
             ->where('date', '<=', $date->copy()->lastOfMonth()->toDateString())
@@ -49,9 +52,10 @@ class BookingService {
         return $myData;
     }
 
-    public function getTutorAvailableSlots($userId, $userTimeZone, $date, $filter = []) {
+    public function getTutorAvailableSlots($userId, $userTimeZone, $date, $filter = [])
+    {
         $myData = array();
-        $slots = UserSubjectSlot::select('id','start_time','end_time','duracion','date','user_id')
+        $slots = UserSubjectSlot::select('id', 'start_time', 'end_time', 'duracion', 'date', 'user_id')
             ->where('user_id', $userId)
             ->when($date, function ($slots) use ($date) {
                 $slots->where('date', '>=', $date['start_date']);
@@ -83,7 +87,8 @@ class BookingService {
     //         })->find($id);
     // }
 
-    public function getSessionSlots() {
+    public function getSessionSlots()
+    {
         $userId = $this->user->id;
         $myData = array();
         // $slots = UserSubjectSlot::with(['subjectGroupSubjects' => function ($query) use ($userId) {
@@ -110,17 +115,18 @@ class BookingService {
         return $myData;
     }
 
-    public function getUserSubjectSlots($date = null) {
+    public function getUserSubjectSlots($date = null)
+    {
         $slotsData = [];
-        $slots = UserSubjectSlot::select('id','start_time','end_time','duracion','date','user_id')
-                    ->withCount('bookings')
-                    ->with('students', fn($query) => $query->select('profiles.id','profiles.user_id', 'profiles.image')->limit(5))
-                    ->when($date, function ($slots) use ($date) {
-                        $slots->where('start_time', '>=', $date['start_date']);
-                        $slots->where('end_time', '<=', $date['end_date']);
-                    })
-                    ->orderBy('start_time')
-                    ->get();
+        $slots = UserSubjectSlot::select('id', 'start_time', 'end_time', 'duracion', 'date', 'user_id')
+            ->withCount('bookings')
+            ->with('students', fn($query) => $query->select('profiles.id', 'profiles.user_id', 'profiles.image')->limit(5))
+            ->when($date, function ($slots) use ($date) {
+                $slots->where('start_time', '>=', $date['start_date']);
+                $slots->where('end_time', '<=', $date['end_date']);
+            })
+            ->orderBy('start_time')
+            ->get();
         // Retornar los slots como un array plano, sin agrupar ni info extra
         foreach ($slots as $slot) {
             $slotsData[] = [
@@ -137,39 +143,16 @@ class BookingService {
         return $slotsData;
     }
 
-    public function getUserBookings($date, $showBy = 'daily', $filters = []) {
+    public function getUserBookings($date, $showBy = 'daily', $filters = [])
+    {
         $bookingData = array();
-        $bookings = SlotBooking::select('id', 'tutor_id', 'student_id', 'user_subject_slot_id', 'session_fee', 'start_time', 'end_time', 'status')
+        $bookings = SlotBooking::select('id', 'tutor_id', 'student_id', 'session_fee', 'start_time', 'end_time', 'status')
             ->with('tutor:profiles.id,profiles.user_id,first_name,last_name,image')
             ->withExists('rating')
             ->withExists('dispute')
-            ->withWhereHas('slot', function ($slot) use ($date, $filters) {
-                $slot->withCount('bookings')
-                    ->with('students', fn($query) => $query->select('profiles.id','profiles.user_id', 'profiles.image','profiles.first_name','profiles.last_name')->limit(5));
-                if (!empty($filters['type']) && $filters['type'] == 'one') {
-                    $slot->where('duracion', 1);
-                }
-                if (!empty($filters['type']) && $filters['type'] == 'group') {
-                    $slot->where('duracion', '>', 1);
-                }
-                if ($this->user->role == 'tutor') {
-                    $slot->where('start_time', '>=', $date['start_date']);
-                    $slot->where('end_time', '<=', $date['end_date']);
-                }
-                if (!empty($filters['keyword'])) {
-                    $slot->where(function ($query) use ($filters) {
-                        $query->whereHas('students', function ($studentQuery) use ($filters) {
-                            $studentQuery->where(function ($studentNameQuery) use ($filters) {
-                                $studentNameQuery->where('profiles.first_name', 'like', "%{$filters['keyword']}%")
-                                                 ->orWhere('profiles.last_name', 'like', "%{$filters['keyword']}%")
-                                                 ->orWhereRaw("CONCAT(profiles.first_name, ' ', profiles.last_name) LIKE ?", ["%{$filters['keyword']}%"]);
-                            });
-                        });
-                    });
-                }
-            })
+            // Eliminada la referencia a 'slot'
             ->when($this->user->role == 'tutor', fn($query) => $query->whereTutorId($this->user->id)->whereIn('status', [BookingStatus::$statuses['active']]))
-            ->when($this->user->role == 'student', function($query) use($date) {
+            ->when($this->user->role == 'student', function ($query) use ($date) {
                 $query->whereStudentId($this->user->id);
                 $query->where('start_time', '>=', $date['start_date']);
                 $query->where('end_time', '<=', $date['end_date']);
@@ -200,19 +183,21 @@ class BookingService {
         return $bookingData;
     }
 
-    public function getBookingDetail($id) {
-        return SlotBooking::select('id', 'tutor_id', 'student_id', 'user_subject_slot_id', 'session_fee', 'start_time', 'end_time', 'status', 'meta_data')
-                ->with('tutor:profiles.id,profiles.user_id,first_name,last_name,image')
-                ->withWhereHas('slot', function ($slot) {
-                    $slot->withCount('bookings');
-                })
-                ->when($this->user->role == 'tutor', fn($query) => $query->whereTutorId($this->user->id))
-                ->when($this->user->role == 'student', fn($query) => $query->whereStudentId($this->user->id))
-                ->whereKey($id)
-                ->first();
+    public function getBookingDetail($id)
+    {
+        return SlotBooking::select('id', 'tutor_id', 'student_id', 'session_fee', 'start_time', 'end_time', 'status', 'meta_data')
+            ->with('tutor:profiles.id,profiles.user_id,first_name,last_name,image')
+            ->withWhereHas('slot', function ($slot) {
+                $slot->withCount('bookings');
+            })
+            ->when($this->user->role == 'tutor', fn($query) => $query->whereTutorId($this->user->id))
+            ->when($this->user->role == 'student', fn($query) => $query->whereStudentId($this->user->id))
+            ->whereKey($id)
+            ->first();
     }
 
-    public function addBookingReview($bookingId, $ratingData) {
+    public function addBookingReview($bookingId, $ratingData)
+    {
         $booking = SlotBooking::whereKey($bookingId)->whereStudentId($this->user->id)->whereStatus(BookingStatus::$statuses['completed'])->first();
         if ($booking) {
             return $booking->rating()->create([
@@ -225,7 +210,8 @@ class BookingService {
         return false;
     }
 
-    public function addUserSubjectGroupSessions($slots = array()) {
+    public function addUserSubjectGroupSessions($slots = array())
+    {
         $dates = explode(" to ", $slots['date_range']);
         if (!empty($dates[0]))
             $slots['start_date'] = $dates[0];
@@ -234,7 +220,7 @@ class BookingService {
         else
             $slots['end_date'] = $slots['start_date'];
 
-        $period = CarbonPeriod::create(parseToUTC($slots['start_date']. " " . $slots['start_time']), parseToUTC($slots['end_date']. " " . $slots['end_time']));
+        $period = CarbonPeriod::create(parseToUTC($slots['start_date'] . " " . $slots['start_time']), parseToUTC($slots['end_date'] . " " . $slots['end_time']));
         foreach ($period as $date) {
             if (!empty($slots['recurring_days']) && !in_array($date->format('l'), (array) $slots['recurring_days'])) {
                 continue;
@@ -243,7 +229,8 @@ class BookingService {
         }
     }
 
-    public function addTimeSlots($date, $slots) {
+    public function addTimeSlots($date, $slots)
+    {
         $startTime = $endTime = $date;
         $daySlotDuration = Carbon::parse($slots['start_time'])->diffInMinutes(Carbon::parse($slots['end_time']));
         $slots['end_time'] = $date->copy()->addMinutes($daySlotDuration);
@@ -260,25 +247,25 @@ class BookingService {
                 ->where(function ($query) use ($startTime, $endTime) {
                     $query->where(function ($query) use ($startTime, $endTime) {
                         $query->where('start_time', '<=', $startTime)
-                              ->where('end_time', '>=', $startTime);
+                            ->where('end_time', '>=', $startTime);
                     })
-                    ->orWhere(function ($query) use ($startTime, $endTime) {
-                        $query->where('start_time', '<=', $endTime)
-                              ->where('end_time', '>=', $endTime);
-                    })
-                    ->orWhere(function ($query) use ($startTime, $endTime) {
-                        $query->where('start_time', '>=', $startTime)
-                              ->where('end_time', '<=', $endTime);
-                    });
+                        ->orWhere(function ($query) use ($startTime, $endTime) {
+                            $query->where('start_time', '<=', $endTime)
+                                ->where('end_time', '>=', $endTime);
+                        })
+                        ->orWhere(function ($query) use ($startTime, $endTime) {
+                            $query->where('start_time', '>=', $startTime)
+                                ->where('end_time', '<=', $endTime);
+                        });
                 })->exists();
 
             $metaData = !empty($slots['template_id']) ? ['template_id' => $slots['template_id']] : null;
-            if(Module::has('subscriptions') && Module::isEnabled('subscriptions') && !empty($slots['allowed_for_subscriptions'])){
+            if (Module::has('subscriptions') && Module::isEnabled('subscriptions') && !empty($slots['allowed_for_subscriptions'])) {
                 $metaData['allowed_for_subscriptions'] = 1;
             }
 
             if (!$slotExists) {
-                $newSlots[] =[
+                $newSlots[] = [
                     'start_time'    => $startTime,
                     'end_time'      => $endTime,
                     'duracion'      => $slots['duration'],
@@ -295,10 +282,11 @@ class BookingService {
         }
     }
 
-    public function addSessionSlot($date, $slotData) {
+    public function addSessionSlot($date, $slotData)
+    {
         $date      = parseToUserTz($date);
-        $startTime = parseToUTC($date->toDateString()." ".$slotData['start_time']);
-        $endTime   = parseToUTC($date->toDateString()." ".$slotData['end_time']);
+        $startTime = parseToUTC($date->toDateString() . " " . $slotData['start_time']);
+        $endTime   = parseToUTC($date->toDateString() . " " . $slotData['end_time']);
         if ($startTime->isPast()) {
             return false;
         }
@@ -306,16 +294,16 @@ class BookingService {
             ->where(function ($query) use ($startTime, $endTime) {
                 $query->where(function ($query) use ($startTime) {
                     $query->where('start_time', '<=', $startTime)
-                          ->where('end_time', '>=', $startTime);
+                        ->where('end_time', '>=', $startTime);
                 })
-                ->orWhere(function ($query) use ($endTime) {
-                    $query->where('start_time', '<=', $endTime)
-                          ->where('end_time', '>=', $endTime);
-                })
-                ->orWhere(function ($query) use ($startTime, $endTime) {
-                    $query->where('start_time', '>=', $startTime)
-                          ->where('end_time', '<=', $endTime);
-                });
+                    ->orWhere(function ($query) use ($endTime) {
+                        $query->where('start_time', '<=', $endTime)
+                            ->where('end_time', '>=', $endTime);
+                    })
+                    ->orWhere(function ($query) use ($startTime, $endTime) {
+                        $query->where('start_time', '>=', $startTime)
+                            ->where('end_time', '<=', $endTime);
+                    });
             })->exists();
 
         if (!$slotExists) {
@@ -333,9 +321,10 @@ class BookingService {
         return false;
     }
 
-    public function rescheduleSession($slotId, $sessionData) {
-        try{
-            $slot = $this->getUserSessionSlot($slotId,['bookings']);
+    public function rescheduleSession($slotId, $sessionData)
+    {
+        try {
+            $slot = $this->getUserSessionSlot($slotId, ['bookings']);
             $metaData = $slot['meta_data'] ?? [];
             $metaData['reason'] = $sessionData['reason'];
             DB::beginTransaction();
@@ -353,7 +342,7 @@ class BookingService {
                 ]);
                 $oldBookingIds = [];
                 if (!empty($slotInfo)) {
-                    $newBooking = $slot->bookings->map(function($booking) use ($slot) {
+                    $newBooking = $slot->bookings->map(function ($booking) use ($slot) {
                         return [
                             'student_id'    => $booking->student_id,
                             'tutor_id'      => $this->user->id,
@@ -366,7 +355,7 @@ class BookingService {
                     })->toArray();
                     $oldBookingIds = $slot->bookings->pluck('id')->toArray();
                     $newBookingsCollection = collect();
-                    foreach($newBooking as $bookingData) {
+                    foreach ($newBooking as $bookingData) {
                         $newBooking = $slotInfo->bookings()->create($bookingData);
                         $newBookingsCollection->push($newBooking);
                         $rescheduleEmailData = $this->getRescheduleEmailData($newBooking);
@@ -375,8 +364,8 @@ class BookingService {
                     }
 
                     $orderItems = OrderItem::whereIn('orderable_id', $oldBookingIds)
-                                    ->where('orderable_type', SlotBooking::class)
-                                    ->get();              
+                        ->where('orderable_type', SlotBooking::class)
+                        ->get();
 
                     foreach ($orderItems as $orderItem) {
                         $correspondingNewBooking = $newBookingsCollection->firstWhere('student_id', $orderItem->orders?->user_id);
@@ -387,7 +376,7 @@ class BookingService {
                         }
                     }
 
-                    $slotInfo->bookings->map(function($booking){
+                    $slotInfo->bookings->map(function ($booking) {
                         $this->addBookingLog($booking, [
                             'activityable_id'   => $booking->tutor_id,
                             'activityable_type' => User::class,
@@ -410,7 +399,8 @@ class BookingService {
         }
     }
 
-    public function deleteSlotsMeta($id) {
+    public function deleteSlotsMeta($id)
+    {
         $slot = $this->getUserSessionSlot($id);
         if (!empty($slot) && empty($slot->total_booked)) {
             return $slot->delete();
@@ -418,13 +408,14 @@ class BookingService {
         return false;
     }
 
-    public function updateSessionSlotById($slotId, $updatedData) {
+    public function updateSessionSlotById($slotId, $updatedData)
+    {
         $slot = $this->getUserSessionSlot($slotId);
         if ($slot) {
-            $updatedArray = Arr::only($updatedData, ['session_fee','duracion','description']);
+            $updatedArray = Arr::only($updatedData, ['session_fee', 'duracion', 'description']);
             $updatedArray['meta_data'] = $slot->meta_data;
             $updatedArray['meta_data']['meeting_link'] = $updatedData['meeting_link'];
-            if(Module::has('subscriptions') && Module::isEnabled('subscriptions')){
+            if (Module::has('subscriptions') && Module::isEnabled('subscriptions')) {
                 $updatedArray['meta_data']['allowed_for_subscriptions'] = $updatedData['allowed_for_subscriptions'] ? 1 : 0;
             }
             $existingLink = $slot->meta_data['meeting_link'] ?? '';
@@ -450,7 +441,8 @@ class BookingService {
         return false;
     }
 
-    public function markUnavailableDays($unavailableDays) {
+    public function markUnavailableDays($unavailableDays)
+    {
         $dates = explode(',', $unavailableDays);
         if (!empty($dates)) {
             foreach ($dates as $date) {
@@ -460,41 +452,48 @@ class BookingService {
         }
     }
 
-    public function deleteUnavailableDay($id) {
+    public function deleteUnavailableDay($id)
+    {
         $this->user->unavailableDates()->whereId($id)->delete();
     }
 
-    public function updateBooking($booking, $newDetails) {
+    public function updateBooking($booking, $newDetails)
+    {
         if ($booking->update($newDetails)) {
             return $booking;
         }
         return false;
     }
 
-    public function addBookingLog($booking, $logInfo) {
+    public function addBookingLog($booking, $logInfo)
+    {
         return $booking->bookingLog()->create($logInfo);
     }
 
-    public function deleteBooking($booking) {
+    public function deleteBooking($booking)
+    {
         if ($booking->delete()) {
             return true;
         }
         return false;
     }
 
-    public function updateSessionSlot($slot, $newDetails) {
+    public function updateSessionSlot($slot, $newDetails)
+    {
         if ($slot->update($newDetails)) {
             return $slot;
         }
         return false;
     }
 
+
+
     public function reservedBookingSlot($slot, $user)
     {
         $this->updateBooking($slot, ['total_booked' => $slot->total_booked + 1]);
         $slotBooking = $slot->bookings()->create([
             'student_id'    => Auth::user()->id,
-            'tutor_id'      => $user->id,
+            'tutor_id'      => $slot->user_id,
             'session_fee'   => $slot->session_fee,
             'booked_at'     => parseToUTC(now()),
             'start_time'    => $slot->start_time,
@@ -507,8 +506,45 @@ class BookingService {
         return $slotBooking;
     }
 
-    public function confirmRescheduledBooking($booking) {
-        if ($this->updateBooking($booking,['status' => 'active', 'start_time' => $booking->slot->start_time, 'end_time'=> $booking->slot->end_time])){
+    public function reservarSlotBoooking($slot)
+    {
+        // Crear la reserva
+      // Extraer solo la fecha del objeto Carbon $slot->date (formato Y-m-d)
+    $dateOnly = $slot->date->format('Y-m-d');
+    
+    // Extraer solo la hora del objeto Carbon $slot->start_time (formato H:i:s)
+    $timeOnly = $slot->start_time->format('H:i:s');
+    
+    // Combinar la fecha y la hora en un string
+    $dateTimeString = $dateOnly . ' ' . $timeOnly;
+    
+    // Crear un nuevo objeto Carbon con la combinación
+    $startDateTime = Carbon::parse($dateTimeString);
+    
+    // Crear la hora de fin
+    $endDateTime = $startDateTime->copy()->addMinutes(20);
+    
+    // Ahora puedes usar métodos de Carbon
+    $endDateTime = $startDateTime->copy()->addMinutes(20);
+
+        $slotBooking = SlotBooking::create([
+            'student_id'    => Auth::user()->id, // ID del estudiante
+            'tutor_id'      => $slot->user_id,   // ID del tutor (user_id del slot)
+            'session_fee'   => 15,               // Tarifa de la sesión (por defecto 15)
+            'booked_at'     => now(),            // Fecha y hora de la reserva
+            'start_time'    => $startDateTime,   // Hora de inicio
+            'end_time'      => $endDateTime,     // Hora de fin
+            // Estado de la reserva
+        ]);
+
+        SlotBooking::created($slotBooking);
+        return $slotBooking;
+    }
+
+
+    public function confirmRescheduledBooking($booking)
+    {
+        if ($this->updateBooking($booking, ['status' => 'active', 'start_time' => $booking->slot->start_time, 'end_time' => $booking->slot->end_time])) {
             $booking->slot->update(['total_booked' => $booking->slot->total_bookings + 1]);
             $this->addBookingLog($booking, [
                 'activityable_id'   => $this->user->id,
@@ -521,18 +557,21 @@ class BookingService {
         return false;
     }
 
-    public function getBookingById($id) {
+    public function getBookingById($id)
+    {
         return SlotBooking::find($id);
     }
 
-    protected function getUserSessionSlot($id, $relations = []) {
+    protected function getUserSessionSlot($id, $relations = [])
+    {
         return UserSubjectSlot::when(!empty($relations), fn($query) => $query->with($relations))
-                ->where('user_id', $this->user->id)
-                ->whereKey($id)
-                ->first();
+            ->where('user_id', $this->user->id)
+            ->whereKey($id)
+            ->first();
     }
 
-    protected function getRescheduleEmailData($booking) {
+    protected function getRescheduleEmailData($booking)
+    {
         return [
             'userName'          => $booking->student->full_name,
             'tutorName'         => $booking->tutor->full_name,
@@ -542,7 +581,8 @@ class BookingService {
         ];
     }
 
-    public function getBookingTime($booking, $type, $includeBr = false) {
+    public function getBookingTime($booking, $type, $includeBr = false)
+    {
         $user = $type == 'booker' ? $booking->booker : $booking->bookee;
         $bookingDate = Carbon::parse($booking->start_time, getUserTimezone($user))->format(setting('_general.date_format') ?? 'F j, Y');
         $startTime   = Carbon::parse($booking->start_time, getUserTimezone($user))->format('h:i a');
@@ -553,16 +593,18 @@ class BookingService {
         return (string) "$bookingDate $startTime - $endTime";
     }
 
-    public function removeReservedBooking($bookingId){
+    public function removeReservedBooking($bookingId)
+    {
 
         $booking = $this->getBookingById($bookingId);
-        if (!empty($booking) && $booking?->status == 'reserved'){
+        if (!empty($booking) && $booking?->status == 'reserved') {
             $this->updateSessionSlot($booking->slot, ['total_booked' => $booking->slot->total_booked - 1]);
             $this->deleteBooking($booking);
         }
     }
 
-    public function createBookingEventGoogleCalendar($booking){
+    public function createBookingEventGoogleCalendar($booking)
+    {
         $eventResponse = (new GoogleCalender($booking->booker))->createEvent([
             'title'         => $booking->orderItem->title . " " . $booking->tutor->full_name,
             'description'   => $booking->slot->description,
@@ -573,13 +615,14 @@ class BookingService {
         if (is_array($eventResponse) && $eventResponse['status'] == Response::HTTP_OK && $eventResponse['data'] instanceof Event) {
             $bookingMeta             = $booking->meta_data;
             $bookingMeta['event_id'] = $eventResponse['data']['id'] ?? null;
-            $this->updateBooking($booking, [ 'meta_data' => $bookingMeta ]);
+            $this->updateBooking($booking, ['meta_data' => $bookingMeta]);
             return true;
         }
         return false;
     }
 
-    public function createSlotEventGoogleCalendar($booking, $updateMeetingLink = false){
+    public function createSlotEventGoogleCalendar($booking, $updateMeetingLink = false)
+    {
         if (empty($booking->slot['meta_data']['event_id'])) {
             $eventResponse = (new GoogleCalender($booking->bookee))->createEvent([
                 'title'         => (($booking->orderItem->options['subject_group'] ?? null) . " " ?? '') . $booking->orderItem->title,
@@ -591,8 +634,8 @@ class BookingService {
             if (is_array($eventResponse) && $eventResponse['status'] == Response::HTTP_OK && $eventResponse['data'] instanceof Event) {
                 $slotMeta               = $booking->slot->meta_data;
                 $slotMeta['event_id']   = $eventResponse['data']['id'] ?? null;
-                $this->updateSessionSlot($booking->slot, [ 'meta_data' => $slotMeta ]);
-                if($updateMeetingLink && !empty($booking->slot['meta_data']['meeting_link'])){
+                $this->updateSessionSlot($booking->slot, ['meta_data' => $slotMeta]);
+                if ($updateMeetingLink && !empty($booking->slot['meta_data']['meeting_link'])) {
                     $this->createSessionMeetingLink($booking, $booking->slot['meta_data']['meeting_link']);
                 }
                 return true;
@@ -601,14 +644,15 @@ class BookingService {
         return false;
     }
 
-    public function createMeetingLink($booking) {
+    public function createMeetingLink($booking)
+    {
         if (empty($booking->slot['meta_data']['meeting_link'])) {
             // \Log::info("Este es el contenido de bookings", ['booking' => $booking]);
             $meeingLink = $this->createSessionMeetingLink($booking);
         }
 
         if (
-            setting('_api.active_conference') == 'google_meet' && 
+            setting('_api.active_conference') == 'google_meet' &&
             !empty($booking['meta_data']['event_id'])
         ) {
             $meetingData = [];
@@ -621,7 +665,8 @@ class BookingService {
         }
     }
 
-    protected function createSessionMeetingLink($booking, $meeingLink = null) {
+    protected function createSessionMeetingLink($booking, $meeingLink = null)
+    {
         $meetingData = [
             "host_email"   => $booking->bookee->email,
             "topic"       => $booking->orderItem->title,
@@ -630,19 +675,18 @@ class BookingService {
             "timezone"    => "America/La_Paz",
             "start_time"  => Carbon::parse($booking->start_time, 'UTC')->toIso8601String(),
         ];
-    
+
         $meetingResponse = getMeetingObject()->createMeeting($meetingData);
-    
+
         if (!empty($meetingResponse) && !empty($meetingResponse['data']['link'])) {
             $meeingLink = $meetingResponse['data']['link'] ?? null;
             $slotMeta = $booking->slot->meta_data;
             $slotMeta['meeting_link'] = $meeingLink;
             $slotMeta['meeting_type'] = setting('_api.active_conference') ?? 'zoom';
-    
-            $this->updateSessionSlot($booking->slot, [ "meta_data" => $slotMeta ]);
+
+            $this->updateSessionSlot($booking->slot, ["meta_data" => $slotMeta]);
         }
-    
+
         return $meeingLink;
     }
-    
 }

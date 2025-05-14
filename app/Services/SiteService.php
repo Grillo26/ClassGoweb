@@ -276,10 +276,10 @@ public function getTutors($data = array()) {
         ->where('id', '!=', $user->id)
         ->withAvg('reviews as avg_rating', 'rating')
         ->withCount('reviews as total_reviews')
-        ->withCount(['bookingSlots as active_students' => function($query) {
+      /*   ->withCount(['bookingSlots as active_students' => function($query) {
             $query->whereStatus('active')
             ->withCount(['slot as total_sessions']);
-        }])
+        }]) */
         ->get()->take(4);
     }
 

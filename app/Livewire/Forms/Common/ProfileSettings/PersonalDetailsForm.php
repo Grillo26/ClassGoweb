@@ -6,86 +6,110 @@ use App\Http\Requests\Common\PersonalDetail\PersonalDetailRequest;
 use App\Traits\PrepareForValidation;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Form;
+use Illuminate\Support\Facades\Log;
 
+/**
+ * Formulario Livewire para la gestión de detalles personales
+ * Maneja la validación y procesamiento de datos del perfil
+ */
 class PersonalDetailsForm extends Form
 {
     use PrepareForValidation;
-    public string $first_name   = '';
-    public string $last_name    = '';
-    public string $gender       = 'male';
-    public string $tagline      = '';
-    public string $keywords     = '';
-    public $lat                 = '';
-    public $long                = '';
-    public string $country      = '';
-    public string $city         = '';
-    public $state               = null;
-    public string $address      = '';
-    public $user_languages      = [];
-    public string $description  = '';
-    public $image;
-    public $intro_video;
-    public string $email        = '';
-    public string $thumbnail    = '';
-    public $profile;
-    public $cropImageUrl        = '';
-    public $isBase64            = false;
-    public $imageName           = false;
-    public $native_language     = '';
-    public $countryName         = '';
-    public $phone_number        = '';
-    public $social_profiles    = [];
-    private ?PersonalDetailRequest $request = null;
-    public $isProfileVideoMendatory = true;
-    
 
+    // Propiedades del formulario
+    public string $first_name = ''; // Nombre del usuario
+    public string $last_name = ''; // Apellido del usuario
+    public string $gender = 'male'; // Género del usuario
+    public string $tagline = ''; // Eslogan o frase del perfil
+    public string $keywords = ''; // Palabras clave del perfil
+    public $lat = ''; // Latitud de ubicación
+    public $long = ''; // Longitud de ubicación
+    public string $country = ''; // País seleccionado
+    public string $city = ''; // Ciudad
+    public $state = null; // Estado/Provincia
+    public string $address = ''; // Dirección
+    public $user_languages = []; // Idiomas del usuario
+    public string $description = ''; // Descripción del perfil
+    public $image; // Imagen de perfil
+    public $intro_video; // Video de introducción
+    public string $email = ''; // Correo electrónico
+    public string $thumbnail = ''; // Miniatura de imagen
+    public $profile; // Datos del perfil
+    public $cropImageUrl = ''; // URL de imagen recortada
+    public $isBase64 = false; // Indica si la imagen está en base64
+    public $imageName = false; // Nombre del archivo de imagen
+    public $native_language = ''; // Idioma nativo
+    public $countryName = ''; // Nombre del país
+    public $phone_number = ''; // Número de teléfono
+    public $social_profiles = []; // Perfiles sociales
+    private ?PersonalDetailRequest $request = null; // Instancia de la solicitud
+    public $isProfileVideoMendatory = true; // Si el video es obligatorio
+    public $videoName = null; // Nombre del archivo de video
+
+    /**
+     * Inicializa el formulario
+     */
     public function boot()
     {
-        $this->request       = new PersonalDetailRequest();
+        $this->request = new PersonalDetailRequest();
     }
 
+    /**
+     * Carga la información del perfil en el formulario
+     * @param mixed $profile Datos del perfil
+     */
     public function getInfo($profile)
     {
-        $this->first_name       = $profile?->first_name ?? '';
-        $this->last_name        = $profile?->last_name ?? '';
-        $this->phone_number     = $profile?->phone_number ?? null;
-        $this->native_language  = $profile?->native_language ?? '';
-        $this->gender           = $profile?->gender ?? 'male';
-        $this->tagline          = $profile?->tagline ?? '';
-        $this->keywords         = $profile?->keywords ?? '';
-        $this->description      = $profile?->description ?? '';
-        $this->image            = $profile?->image ?? '';
-        $this->intro_video      = $profile?->intro_video ?? '';
-        $this->email            = Auth::user()?->email;
+        $this->first_name = $profile?->first_name ?? '';
+        $this->last_name = $profile?->last_name ?? '';
+        $this->phone_number = $profile?->phone_number ?? null;
+        $this->native_language = $profile?->native_language ?? '';
+        $this->gender = $profile?->gender ?? 'male';
+        $this->tagline = $profile?->tagline ?? '';
+        $this->keywords = $profile?->keywords ?? '';
+        $this->description = $profile?->description ?? '';
+        $this->image = $profile?->image ?? '';
+        $this->intro_video = $profile?->intro_video ?? '';
+        $this->email = Auth::user()?->email;
     }
 
+    /**
+     * Obtiene las reglas de validación
+     * @return array
+     */
     public function rules(): array
     {
         return $this->request->rules();
     }
 
+    /**
+     * Obtiene los mensajes de validación
+     * @return array
+     */
     public function messages(): array
     {
         return $this->request->messages();
     }
 
+    /**
+     * Valida el formulario
+     * @param bool $hasStates Indica si el país tiene estados
+     */
     public function validateForm($hasStates)
     {
         $rules = $this->rules();
         $messages = $this->messages();
-         
         if ($hasStates) {
             $rules['state'] = 'required';
         }
-       
         $this->beforeValidation(['user_languages', 'intro_video', 'social_profiles']);
-         \Log::info('/pasoelbefore');
-        $this->validate($rules, $messages);
-        
-        \Log::info('/finalizo el validate');
-         
+        $this->validate($rules, $messages);     
     }
 
+    /**
+     * Actualiza la información del perfil
+     * @return array Datos actualizados del perfil
+     */
     public function updateProfileInfo()
     {
         $isProfileVideoMendatory = setting('_lernen.profile_video') == 'yes' ? true : false;
@@ -120,15 +144,38 @@ class PersonalDetailsForm extends Form
         return $data;
     }
 
+    /**
+     * Valida archivos multimedia
+     * @param string $type Tipo de archivo (image/video)
+     * @return bool
+     */
     public function validateMedia($type)
     {
-        $type == 'image'
-            ?
-            $this->validate(['image' => 'image|mimes:' . (setting('_general.allowed_image_extensions') ?? 'jpg,png') . '|max:' . ((int) (setting('_general.max_image_size') ?? 5) * 1024)])
-            :
-            $this->validate(['intro_video' => 'required|mimes:' . (setting('_general.allowed_video_extensions') ?? 'mp4')  . '|max:' . ((int) (setting('_general.max_video_size') ?? 20) * 1024)]);
+       
+        try {
+            if ($type == 'image') {
+                $this->validate([
+                    'image' => 'image|mimes:' . (setting('_general.allowed_image_extensions') ?? 'jpg,png') . '|max:' . ((int) (setting('_general.max_image_size') ?? 5) * 1024)
+                ]);
+            } else {
+                $this->validate([
+                    'intro_video' => 'required|mimes:' . (setting('_general.allowed_video_extensions') ?? 'mp4') . '|max:' . ((int) (setting('_general.max_video_size') ?? 20) * 1024)
+                ]);
+            }
+            return true;
+        } catch (\Exception $e) {
+            Log::error('Error en validación de media: ' . $e->getMessage());
+            return false;
+        }
     }
 
+
+
+
+    /**
+     * Prepara los datos de dirección
+     * @return array
+     */
     public function userAddress()
     {
         $data = [
@@ -151,6 +198,10 @@ class PersonalDetailsForm extends Form
         return $data;
     }
 
+    /**
+     * Prepara los datos de perfiles sociales
+     * @return array
+     */
     public function socialProfiles()
     {
         $socialProfiles = [];
@@ -167,11 +218,19 @@ class PersonalDetailsForm extends Form
         return $socialProfiles;
     }
 
+    /**
+     * Establece los idiomas del usuario
+     * @param array $languages
+     */
     public function setUserLanguages($languages)
     {
         $this->user_languages = $languages ?? [];
     }
 
+    /**
+     * Establece los datos de dirección
+     * @param mixed $address
+     */
     public function setUserAddress($address)
     {
         $this->country  = $address?->country_id ?? '';
@@ -182,6 +241,10 @@ class PersonalDetailsForm extends Form
         $this->long     = $address?->long ?? '';
     }
 
+    /**
+     * Establece los perfiles sociales
+     * @param array $socialProfiles
+     */
     public function setSocialProfiles(array $socialProfiles)
     {
 
@@ -196,18 +259,56 @@ class PersonalDetailsForm extends Form
         }
     }
 
+
+    
+    /**
+     * Establece el video de introducción
+     * @param mixed $video
+     */
     public function setVideo($video)
     {
-        $this->intro_video = $video;
+        if ($video) {
+            if (method_exists($video, 'temporaryUrl')) {
+                $this->intro_video = $video;
+                $this->videoName = $video->getClientOriginalName();
+            } else {
+                $this->intro_video = $video;
+                $this->videoName = basename($video);
+            }
+        }
     }
 
+    /**
+     * Establece la imagen de perfil
+     * @param mixed $image
+     */
+    public function setImage($image)
+    {
+        if ($image) {
+            $this->image = $image;
+            $this->isBase64 = false;
+            $this->imageName = $image->getClientOriginalName();
+        }
+    }
+
+
+
+    /**
+     * Elimina la foto de perfil
+     */
     public function removePhoto()
     {
         $this->image = null;
+        $this->isBase64 = false;
+        $this->imageName = null;
     }
 
+    /**
+     * Elimina el video de introducción
+     */
     public function removeVideo()
     {
         $this->intro_video = null;
+        $this->videoName = null;
     }
 }

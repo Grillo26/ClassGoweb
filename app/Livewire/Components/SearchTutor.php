@@ -3,11 +3,9 @@
 namespace App\Livewire\Components;
 
 use App\Http\Requests\Student\Booking\SendMessageRequest;
-use App\Models\Country;
 use App\Services\SiteService;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Lazy;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
@@ -47,7 +45,7 @@ class SearchTutor extends Component
 
         try {
             $tutors = $this->siteService->getTutors($this->filters);
-            \Log::info('Tutors loaded:', ['count' => $tutors->count(), 'filters' => $this->filters]);
+            //Log::info('Tutors loaded:', ['count' => $tutors->count(), 'filters' => $this->filters]);
             
             if ($this->allowFavAction){
                 $favouriteTutors = $this->userService->getFavouriteUsers()
@@ -56,7 +54,7 @@ class SearchTutor extends Component
                     ->toArray();
             }
         } catch (\Exception $e) {
-            \Log::error('Error loading tutors:', ['error' => $e->getMessage()]);
+            //Log::error('Error loading tutors:', ['error' => $e->getMessage()]);
         }
         
         $this->dispatch('initVideoJs');
@@ -67,9 +65,9 @@ class SearchTutor extends Component
     {
         try {
             $this->isLoadPage = true;
-            \Log::info('Page loading initiated');
+            //Log::info('Page loading initiated');
         } catch (\Exception $e) {
-            \Log::error('Error in loadPage:', ['error' => $e->getMessage()]);
+            //Log::error('Error in loadPage:', ['error' => $e->getMessage()]);
         }
     }
 
@@ -82,13 +80,13 @@ class SearchTutor extends Component
             
             $this->filters = $filters;
             $this->isLoadPage = true;
-            \Log::info('Component mounted with filters:', ['filters' => $filters]);
+            //Log::info('Component mounted with filters:', ['filters' => $filters]);
 
             if(Auth::user()?->role == 'student'){
                 $this->allowFavAction = true;
             }
         } catch (\Exception $e) {
-            \Log::error('Error in mount:', ['error' => $e->getMessage()]);
+            //Log::error('Error in mount:', ['error' => $e->getMessage()]);
         }
     }
 

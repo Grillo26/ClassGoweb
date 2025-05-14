@@ -34,6 +34,7 @@ class UserBooking extends Component
     public $userBooking;
     public $description = '';
     public $selectedReason = '';
+    public $bookings = [];
     protected $bookingService, $subjectService, $disputeService;
     public function boot() {
         $this->bookingService = new BookingService(Auth::user());
@@ -43,8 +44,10 @@ class UserBooking extends Component
 
     public function mount() {
         $this->disputeReason = setting('_dispute_setting.dispute_reasons') ?? [];
-        if(!empty($this->disputeReason)) {
-            $this->disputeReason = array_column($this->disputeReason, 'dispute_reason', 'id');     
+        if (is_array($this->disputeReason) && !empty($this->disputeReason)) {
+            $this->disputeReason = array_column($this->disputeReason, 'dispute_reason', 'id');
+        } else {
+            $this->disputeReason = [];
         }
         $this->showBy   = 'daily';
         $this->startOfWeek = (int) (setting('_lernen.start_of_week') ?? Carbon::SUNDAY);
@@ -54,13 +57,26 @@ class UserBooking extends Component
         $this->subjectGroups = $this->subjectService->getSubjectsByUserRole();
         $this->dispatchSessionMessages();
         $this->activeRoute = Route::currentRouteName();
+
+        // Obtener las reservas del usuario logueado
+        $this->bookings = SlotBooking::getBookingsByStudent(Auth::id())->map(function($booking) {
+            return [
+                'title' => $booking->status,
+                'start' => $booking->start_time,
+                'end' => $booking->end_time,
+                'color' => $booking->status === 'confirmed' ? 'green' : ($booking->status === 'pending' ? 'orange' : 'red')
+            ];
+        });
+        //dd($this->bookings, "aver");
     }
 
     #[Layout('layouts.app')]
     public function render()
     {
         $this->upcomingBookings = $this->bookingService->getUserBookings($this->dateRange, $this->showBy, $this->filter);
-        return view('livewire.pages.common.bookings.user-booking');
+        return view('livewire.pages.common.bookings.user-booking', [
+            'bookings' => $this->bookings, // Pasar las reservas a la vista
+        ]);
     }
 
     protected function dispatchSessionMessages() {

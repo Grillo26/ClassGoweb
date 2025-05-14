@@ -44,6 +44,19 @@ class SlotBooking extends Model
         ];
     }
 
+    /**
+     * Obtiene las reservas del usuario logueado.
+     *
+     * @param int $studentId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getBookingsByStudent($studentId)
+    {
+        return self::where('student_id', $studentId)
+            ->select('start_time', 'end_time', 'status')
+            ->get();
+    }
+
     public function booker(): BelongsTo {
         return $this->belongsTo(User::class, 'student_id');
     }
@@ -56,10 +69,10 @@ class SlotBooking extends Model
         return $this->hasOneThrough(Profile::class, User::class, 'id', 'user_id', 'student_id', 'id');
     }
 
-
-    public function slot(): BelongsTo {
-        return $this->belongsTo(UserSubjectSlot::class, 'user_subject_slot_id');
-    }
+    // Eliminada la relación con 'user_subject_slot_id'
+    // public function slot(): BelongsTo {
+    //     return $this->belongsTo(UserSubjectSlot::class, 'user_subject_slot_id');
+    // }
 
     public function tutor(): HasOneThrough {
         return $this->hasOneThrough(Profile::class, User::class, 'id', 'user_id', 'tutor_id', 'id');

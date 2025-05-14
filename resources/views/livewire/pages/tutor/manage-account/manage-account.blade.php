@@ -1,25 +1,33 @@
 <div class="am-accountwrap" wire:init="loadData">
     @slot('title')
-        {{ __('general.dashboard') }}
+    {{ __('general.dashboard') }}
     @endslot
     @if($isLoading)
-        @include('skeletons.manage-account')
+    @include('skeletons.manage-account')
     @else
     <div class="am-section-load" wire:loading wire:target="refresh">
         @include('skeletons.manage-account')
     </div>
     <div>
+
         <div wire:loading.remove wire:target="refresh">
-            
             <div class="am-dbbox">
+                
+            
+            
                 <div class="am-dbbox_title">
                     <h2>{{ __('tutor.setup_payouts_methods') }}</h2>
                 </div>
+
+
+
                 <div class="am-dbbox_content">
-                    <div x-data="{current_method:@entangle('form.current_method')}" class="am-payout_wrap">
+                    
+                
+                <div x-data="{current_method:@entangle('form.current_method')}" class="am-payout_wrap">
                         @php
                         $payout_method = [
-                       
+
                         'bank' => [
                         'id' => 'bank',
                         'title' => __('tutor.bank_transfer') ,
@@ -37,10 +45,11 @@
                         'status' => isset($payoutStatus['QR']) ??[],
                         'remove_action' => isset($payoutStatus['QR']) ? 'deletepopup' : 'setupqrpopup',
                         'btnTitle' => isset($payoutStatus['QR']) ?__('tutor.remove_account') : __('tutor.add_account')
-                        ], 
+                        ],
                         ];
                         @endphp
                         @foreach ($payout_method as $method => $item)
+                        
                         <div wire:key=$method.'-'.time()}}" class="am-payout_item">
                             <figure class="am-payout_item_img">
                                 <img src="{{ asset($item['image']) }}" alt="img description">
@@ -73,26 +82,40 @@
                                 <a href="javascript:void(0);" wire:click="openPayout('{{ $method }}', '{{ $item['remove_action'] }}')">{{ $item['btnTitle'] }}</a>
                                 @endif
                             </div>
-                        </div>
+                        </div>    
                         @endforeach
                     </div>
+
                     <div class="am-payout_description">
                         <p>{{__('tutor.detail')}} <a href="{{ url('terms-condition') }}">{{__('tutor.transfer_policy')}}</a></p>
                     </div>
+                    
+
                 </div>
+
+
             </div>
 
         </div>
         <!-- setup account popup modal -->
         <div wire:ignore.self class="modal fade am-setupaccountpopup" id="setupaccountpopup" data-bs-backdrop="static">
+
+
+
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
+
+
+
                     <div class="am-modal-header">
                         <h2>{{ __('tutor.setup_bank_account') }}</h2>
                         <span data-bs-dismiss="modal" class="am-closepopup">
                             <i class="am-icon-multiply-01"></i>
                         </span>
                     </div>
+
+
+
                     <div class="am-modal-body">
                         <form class="am-themeform">
                             <fieldset>
@@ -126,51 +149,65 @@
                                 <!--        placeholder="{{ __('tutor.enter_bank_iban') }}" type="text" />-->
                                 <!--    <x-input-error field_name="form.bankIban" />-->
                                 <!--</div>-->
-                                
+
+                            </fieldset>
+                        </form>
+                    </div>
+
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+
+
+
+        <!-- Modal para el formulario de QR -->
+        <div wire:ignore.self class="modal fade am-setupqrpopup" id="setupqrpopup" data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="am-modal-header">
+                        <h2>{{ __('tutor.setup_qr_code') }}</h2>
+                        <span data-bs-dismiss="modal" class="am-closepopup">
+                            <i class="am-icon-multiply-01"></i>
+                        </span>
+                    </div>
+                    <div class="am-modal-body">
+                        <form wire:submit.prevent="updateQR" enctype="multipart/form-data"> <!-- Asegura el enctype -->
+                            <fieldset>
+                                <!-- Mostrar QR actual si existe -->
+                                @if ($currentQRPath)
+                                <div class="text-center">
+                                    <img src="{{ asset('storage/'.$currentQRPath) }}" alt="QR Code" width="150">
+                                </div>
+                                @endif
+
+                                <!-- Campo para subir la imagen del QR -->
+                                <div class="form-group">
+                                    <label for="qr_image" class="am-important-bank">{{ __('tutor.upload_qr_code') }}</label>
+                                    <input wire:model="qrImage" id="qr_image" name="qr_image" type="file" accept="image/*">
+                                    @error('qrImage') <span class="text-danger">{{ $message }}</span> @enderror
+                                </div>
+
+                                <!-- Boton para guardar -->
+                                <div class="form-group am-form-btns">
+                                    <button wire:target="updateQR" wire:loading.class="am-btn_disable"
+                                        wire:click="updateQR" type="button" class="am-btn">{{ __('tutor.save_update') }}</button>
+                                </div>
                             </fieldset>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Modal para el formulario de QR -->
-     <div wire:ignore.self class="modal fade am-setupqrpopup" id="setupqrpopup" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="am-modal-header">
-                <h2>{{ __('tutor.setup_qr_code') }}</h2>
-                <span data-bs-dismiss="modal" class="am-closepopup">
-                    <i class="am-icon-multiply-01"></i>
-                </span>
-            </div>
-            <div class="am-modal-body">
-                <form wire:submit.prevent="updateQR" enctype="multipart/form-data"> <!-- Asegura el enctype -->
-                    <fieldset>
-                        <!-- Mostrar QR actual si existe -->
-                        @if ($currentQRPath)
-                            <div class="text-center">
-                                <img src="{{ asset('storage/'.$currentQRPath) }}" alt="QR Code" width="150">
-                            </div>
-                        @endif
 
-                        <!-- Campo para subir la imagen del QR -->
-                        <div class="form-group">
-                            <label for="qr_image" class="am-important-bank">{{ __('tutor.upload_qr_code') }}</label>
-                            <input wire:model="qrImage" id="qr_image" name="qr_image" type="file" accept="image/*">
-                            @error('qrImage') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
 
-                         <!-- Boton para guardar -->
-                                <div class="form-group am-form-btns">
-                                    <button wire:target="updateQR" wire:loading.class="am-btn_disable"
-                                        wire:click="updateQR" type="button" class="am-btn">{{ __('tutor.save_update') }}</button>
-                                </div>
-                    </fieldset>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+
+
+
         <!-- setup payoneer popup modal -->
         <div wire:ignore.self class="modal fade am-setuppayoneerpopup" id="setuppayoneerpopup"
             data-bs-backdrop="static">
@@ -202,7 +239,13 @@
                 </div>
             </div>
         </div>
+
+
+
+
+
         <!-- Delete modal -->
+        
         <div wire:ignore.self class="modal fade am-deletepopup" id="deletepopup" data-bs-backdrop="static">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -218,7 +261,7 @@
                             <p>{{ __('tutor.confirm_message') }}</p>
                         </div>
                         <div class="am-deletepopup_btns">
-                            <a href="javascript:void(0);"class="am-btn am-btnsmall" data-bs-dismiss="modal">{{ __('tutor.no_button') }}</a>
+                            <a href="javascript:void(0);" class="am-btn am-btnsmall" data-bs-dismiss="modal">{{ __('tutor.no_button') }}</a>
                             <a href="javascript:void(0);" wire:target="removePayout" wire:loading.class="am-btn_disable" wire:click="removePayout"
                                 class="am-btn am-btn-del">{{ __('tutor.yes_button') }}</a>
                         </div>
@@ -226,6 +269,11 @@
                 </div>
             </div>
         </div>
+
+
+
+
+
     </div>
     @endif
 </div>
@@ -241,94 +289,97 @@
 <script defer src="{{ asset('js/flatpicker-month-year-plugin.js') }}"></script>
 <script defer src="{{ asset('js/chart.js')}}"></script>
 <script type="text/javascript" data-navigate-once>
-        var earningsChart;
-        var component = '';
-        document.addEventListener('livewire:navigated', function() {
-                component = @this;
-        },{ once: true });
+    var earningsChart;
+    var component = '';
+    document.addEventListener('livewire:navigated', function() {
+        component = @this;
+    }, {
+        once: true
+    });
 
-        document.addEventListener('initChartJs', (event)=>{
-            setTimeout(() => {
-                initCalendarJs(event.detail.currentDate);
-                renderChart(event.detail.data.earnings, event.detail.data.days);
-            }, 500);
-        })
+    document.addEventListener('initChartJs', (event) => {
+        setTimeout(() => {
+            initCalendarJs(event.detail.currentDate);
+            renderChart(event.detail.data.earnings, event.detail.data.days);
+        }, 500);
+    })
 
-        function initCalendarJs(defaultDate) {
-            $("#calendar-month-year").flatpickr({
-                defaultDate: defaultDate,
-                disableMobile: true,
-                plugins: [
-                    new monthSelectPlugin({
-                        shorthand: true, //defaults to false
-                        dateFormat: "F, Y", //defaults to "F Y"
-                    })
-                ],
-                onChange: function(selectedDates, dateStr, instance) {
-                    @this.set('selectedDate', dateStr);
-                }
-            });
-        }
-        function renderChart(earnigns, labels) {
-            let days = Object.values(labels).map(day => day.toString());
-            var ctx = document.getElementById('am-themechart').getContext('2d');
-            if (earningsChart) {
-                earningsChart.destroy();
+    function initCalendarJs(defaultDate) {
+        $("#calendar-month-year").flatpickr({
+            defaultDate: defaultDate,
+            disableMobile: true,
+            plugins: [
+                new monthSelectPlugin({
+                    shorthand: true, //defaults to false
+                    dateFormat: "F, Y", //defaults to "F Y"
+                })
+            ],
+            onChange: function(selectedDates, dateStr, instance) {
+                @this.set('selectedDate', dateStr);
             }
-            var gradient = ctx.createLinearGradient(0, 0, 0, 400);
-            gradient.addColorStop(0, 'rgba(117, 79, 254, 0.30)');
-            gradient.addColorStop(1, 'rgba(255, 255, 255, 0.00)');
+        });
+    }
 
-            earningsChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: days,
-                    datasets: [{
-                        label: 'Earning',
-                        data: earnigns,
-                        backgroundColor: gradient,
-                        borderColor: '#754FFE',
-                        tension : 0.5,
-                        borderWidth: 1,
-                        fill: true,
-                        pointBackgroundColor: '#754FFE',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: '#754FFE'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        x:{
-                            grid:{
-                                drawTicks:false,
-                                // display:false,
-                            },
+    function renderChart(earnigns, labels) {
+        let days = Object.values(labels).map(day => day.toString());
+        var ctx = document.getElementById('am-themechart').getContext('2d');
+        if (earningsChart) {
+            earningsChart.destroy();
+        }
+        var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(117, 79, 254, 0.30)');
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0.00)');
 
+        earningsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: days,
+                datasets: [{
+                    label: 'Earning',
+                    data: earnigns,
+                    backgroundColor: gradient,
+                    borderColor: '#754FFE',
+                    tension: 0.5,
+                    borderWidth: 1,
+                    fill: true,
+                    pointBackgroundColor: '#754FFE',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#754FFE'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        grid: {
+                            drawTicks: false,
+                            // display:false,
                         },
-                        y: {
-                            beginAtZero: true,
-                            grid:{
-                                drawTicks:false,
-                            },
-                            border:{
-                                display:false,
-                                dash:[12,12]
-                            }
-                        }
+
                     },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `$${context.formattedValue} Earning`;
-                                }
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            drawTicks: false,
+                        },
+                        border: {
+                            display: false,
+                            dash: [12, 12]
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `$${context.formattedValue} Earning`;
                             }
                         }
                     }
                 }
-            });
-        }
+            }
+        });
+    }
 </script>
 @endpush
