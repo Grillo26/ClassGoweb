@@ -59,72 +59,50 @@
                             @endif
                         </div>
                         <div class="am-fnavigation_wrap">
-                            <nav class="am-fnavigation">
-                                <div class="am-fnavigation_title">
-                                    <h3>{{ setting('_front_page_settings.quick_links_heading') }}</h3>
-                                </div>
-                                @if (!empty(getMenu('footer', 'Footer menu 1')))
-                                <ul>
-                                    @foreach (getMenu('footer', 'Footer menu 1') as $item)
-                                        <x-menu-item :menu="$item" />
-                                    @endforeach
-                                </ul>
-                                @endif
-                            </nav>
-                            <nav class="am-fnavigation">
-                                 <div class="am-fnavigation_title">
-                                    <h3>{{ setting('_front_page_settings.tutors_by_country_heading') }}</h3>
-                                </div>
-                                @if (!empty(getMenu('footer', 'Footer menu 2')))
-                                <ul>
-                                    @foreach (getMenu('footer', 'Footer menu 2') as $item)
-                                        <x-menu-item :menu="$item" /> 
-                                    @endforeach
-                                </ul>
-                                @endif
-                            </nav>
-                            <nav class="am-fnavigation">
-                               <div class="am-fnavigation_title">
-                                    <h3>{{ setting('_front_page_settings.our_services_heading') }}</h3>
-                                </div>
-                                <ul>
-                                    @if (!empty(getMenu('footer', 'Footer menu 3')))
-                                        @foreach (getMenu('footer', 'Footer menu 3') as $item)
+                            <div class="am-fnavigation_center" style="display: flex; justify-content: center; flex: 1; gap: 40px;">
+                                <nav class="am-fnavigation">
+                                    <div class="am-fnavigation_title">
+                                        <h3>{{ setting('_front_page_settings.quick_links_heading') }}</h3>
+                                    </div>
+                                    @if (!empty(getMenu('footer', 'menu tutores')))
+                                    <ul>
+                                        @foreach (getMenu('footer', 'menu tutores') as $item)
+                                            <x-menu-item :menu="$item" />
+                                        @endforeach
+                                    </ul>
+                                    @endif
+                                </nav>
+                                <nav class="am-fnavigation">
+                                    <div class="am-fnavigation_title">
+                                        <h3>{{ setting('_front_page_settings.tutors_by_country_heading') }}</h3>
+                                    </div>
+                                    @if (!empty(getMenu('footer', 'clases online')))
+                                    <ul>
+                                        @foreach (getMenu('footer', 'clases online') as $item)
                                             <x-menu-item :menu="$item" /> 
                                         @endforeach
+                                    </ul>
                                     @endif
-                                </ul>
-                            </nav>
-                            <nav class="am-fnavigation">
-                               <div class="am-fnavigation_title">
-                                    <h3>{{ setting('_front_page_settings.one_on_one_sessions_heading') }}</h3>
-                                </div>
-                                <ul>
-                                    @if (!empty(getMenu('footer', 'Footer menu 4')))
-                                        @foreach (getMenu('footer', 'Footer menu 4') as $item)
-                                            <x-menu-item :menu="$item" /> 
-                                        @endforeach
-                                    @endif
-                                </ul>
-                            </nav>
-                            <nav class="am-fnavigation">
-                               <div class="am-fnavigation_title">
-                                    <h3>{{ setting('_front_page_settings.group_sessions_heading') }}</h3>
-                                </div>
-                                <ul>
-                                    @if (!empty(getMenu('footer', 'Footer menu 5')))
-                                        @foreach (getMenu('footer', 'Footer menu 5') as $item)
-                                            <x-menu-item :menu="$item" /> 
-                                        @endforeach
-                                    @endif
-                                </ul>
-                            </nav>
+                                </nav>
+                                <nav class="am-fnavigation">
+                                    <div class="am-fnavigation_title">
+                                        <h3>{{ setting('_front_page_settings.group_sessions_heading') }}</h3>
+                                    </div>
+                                    <ul>
+                                        @if (!empty(getMenu('footer', 'soporte')))
+                                            @foreach (getMenu('footer', 'soporte') as $item)
+                                                <x-menu-item :menu="$item" /> 
+                                            @endforeach
+                                        @endif
+                                    </ul>
+                                </nav>
+                            </div>
                             @if (
-                            !empty( setting('_front_page_settings.app_section_heading')) ||
-                            !empty(setting('_front_page_settings.app_section_description')) ||
-                            !empty(setting('_general.android_app_logo')) || !empty(setting('_generalios._app_logo'))
+                                !empty( setting('_front_page_settings.app_section_heading')) ||
+                                !empty(setting('_front_page_settings.app_section_description')) ||
+                                !empty(setting('_general.android_app_logo')) || !empty(setting('_generalios._app_logo'))
                             )
-                            <div class="am-fnavigation">
+                            <div class="am-fnavigation am-fnavigation_apps" style="margin-left: auto;">
                                 @if (!empty( setting('_front_page_settings.app_section_heading')))
                                     <div class="am-fnavigation_title">
                                         <h3>{{ setting('_front_page_settings.app_section_heading') }}</h3>
@@ -152,7 +130,6 @@
                                 @endif
                             </div>
                             @endif
-
                         </div>
                         
                     </div>
