@@ -186,7 +186,7 @@
 
                 <!-- Sección de Ubicación -->
 
-
+                
 
 
 
@@ -194,142 +194,181 @@
 
 
                 <!-- Foto de perfil -->
-                <div class="col-span-2 mt-5">
-                    <div class="bg-white p-4 sm:p-5 rounded-2xl mx-4 sm:mx-5 shadow-sm border border-gray-200">
-                        <label class="block text-sm font-medium text-gray-700 mb-4">
+                <div class="col-12 mt-4 mt-md-5">
+                    <div class="bg-white p-4 p-lg-5 rounded-3 shadow-sm border">
+                        <h5 class="form-label text-black mb-4 fw-semibold fs-4">
                             {{ __('profile.profile_picture') }}
-                        </label>
+                        </h5>
 
-                        <!-- Contenedor principal - cambiado a columna en TODOS los tamaños -->
-
-                        <div class="flex-shrink-0 w-full max-w-[80px] max-h-[80px] overflow-hidden">
-                            @if($image && !$image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
-                            <img src="{{ asset('storage/' . $image) }}" alt="Profile" class="w-full h-full rounded-full object-cover border-2 border-gray-200 shadow-sm">
-                            @elseif($image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
-                            <img src="{{ $image->temporaryUrl() }}" alt="Profile" class="w-full h-full rounded-full object-cover border-2 border-gray-200 shadow-sm">
-                            @else
-                            <div class="w-full h-full rounded-full flex items-center justify-center bg-gray-100 border-2 border-gray-200 shadow-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
+                        <!-- Contenedor de imagen extra grande -->
+                        <div class="d-flex justify-content-center mb-4">
+                            <div class="overflow-hidden" style="width: 600px; height: 300px;">
+                                @if($image && !$image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
+                                <img src="{{ asset('storage/' . $image) }}"
+                                    alt="Profile"
+                                    class="img-fluid h-100 w-100 object-fit-cover border border-secondary p-2">
+                                @elseif($image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
+                                <img src="{{ $image->temporaryUrl() }}"
+                                    alt="Profile"
+                                    class="img-fluid h-100 w-100 object-fit-cover border border-secondary p-2">
+                                @else
+                                <div class="h-100 w-100 d-flex align-items-center justify-content-center bg-light border border-secondary">
+                                    <i class="bi bi-person text-muted" style="font-size: 4rem;"></i>
+                                </div>
+                                @endif
                             </div>
-                            @endif
                         </div>
 
-                        <!-- Controles para subir/eliminar - siempre centrados y debajo de la imagen -->
-                        <div class="w-full flex flex-col items-center">
-                            <div class="flex flex-col gap-3 w-full max-w-[200px]">
-                                <label for="image-upload" class="w-full cursor-pointer px-3 py-2 bg-blue-500 text-center text-black text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-150 truncate">
+                        <!-- Controles ampliados -->
+                        <div class="text-center">
+                            <div class="d-flex flex-column flex-md-row gap-3 justify-content-center mx-auto" style="max-width: 600px;">
+                                <label for="image-upload" class="btn btn-primary btn-lg flex-grow-1 py-2">
+                                    <i class="bi bi-cloud-arrow-up me-2"></i>
                                     {{ __('profile.upload_image') }}
                                     <input id="image-upload"
                                         type="file"
-                                        class="sr-only"
+                                        class="d-none"
                                         wire:model="image"
                                         wire:loading.attr="disabled">
                                 </label>
 
                                 @if($image)
                                 <button type="button"
-                                    class="w-full px-3 py-2 bg-danger rounded-xl text-center text-white text-sm font-medium hover:bg-red-600"
+                                    class="btn btn-outline-danger btn-lg flex-grow-1 py-2"
                                     wire:click="removeMedia('image')">
+                                    <i class="bi bi-trash me-2"></i>
                                     {{ __('profile.remove') }}
                                 </button>
                                 @endif
                             </div>
 
-                            <!-- Mensaje de carga -->
-                            <div class="mt-3 w-full text-center" wire:loading wire:target="image">
-                                <span class="text-sm text-blue-500">{{ __('profile.uploading') }}...</span>
+                            <!-- Mensaje de carga mejorado -->
+                            <div class="mt-4" wire:loading wire:target="image">
+                                <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="text-primary mt-2 mb-0 fs-5">{{ __('profile.uploading') }}...</p>
                             </div>
 
                             @if($imageName)
-                            <div class="mt-2 text-sm text-gray-500 truncate w-full text-center max-w-[200px]">
-                                {{ $imageName }}
+                            <div class="mt-4 text-muted fs-5 mx-auto" style="max-width: 500px;">
+                                <i class="bi bi-file-image-fill me-2"></i>
+                                <span class="text-truncate d-inline-block" style="max-width: 80%; vertical-align: middle;">
+                                    {{ $imageName }}
+                                </span>
                             </div>
                             @endif
-                           
-                            <div class="mt-4 text-xs text-gray-700 text-center w-full max-w-[250px]">
-                                {{ __('profile.allowed_formats') }}: {{ implode(', ', $allowImgFileExt) }} ({{ __('profile.max') }} {{ $maxImageSize }}MB)
+
+                            <div class="mt-4 text-muted fs-5">
+                                {{ __('profile.allowed_formats') }}:
+                                <span class="fw-bold">{{ implode(', ', $allowImgFileExt) }}</span>
+                                <br>
+                                <span class="fw-semibold">{{ __('profile.max') }} {{ $maxImageSize }}MB</span>
                             </div>
 
-                            @error('image') <span class="text-red-500 text-sm mt-2 block w-full text-center">{{ $message }}</span> @enderror
+                            @error('image')
+                            <div class="alert alert-danger mt-4 mb-0 fs-5 py-2">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                {{ $message }}
+                            </div>
+                            @enderror
                         </div>
                     </div>
                 </div>
+
+
             </div>
 
             <!-- Video de presentación -->
-            <div style="border-radius: 20px; margin:20px" class="bg-white p-5  border-gray-200">
-                <div class="bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-700">
-                    <label class="block text-sm font-medium text-gray-700 mb-4">
-                        {{ __('profile.intro_video') }}
-                    </label>
-                    <div class="flex items-start space-x-6">
-                        <!-- Preview del video -->
-                        <div class="flex-shrink-0">
-                            <div class="w-[100px] h-[100px] bg-gray-700 rounded-lg flex items-center justify-center relative overflow-hidden border-2 border-gray-600 shadow-md" style="width: 200px; height: 200px;">
-                                @if($intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
-                                <video class="absolute inset-0 w-full h-full object-cover" controls>
-                                    <source src="{{ $intro_video->temporaryUrl() }}" type="video/mp4">
-                                </video>
-                                @elseif($intro_video)
-                                <video class="absolute inset-0 w-full h-full object-cover" controls>
-                                    <source src="{{ asset('storage/' . $intro_video) }}" type="video/mp4">
-                                </video>
-                                @else
-                                <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                @endif
+<div class="col-12 mt-4 mt-md-5">
+    <div class="bg-white p-4 p-lg-5 rounded-3 shadow border">
+        <div class="bg-white p-4 p-lg-5 rounded-3">
+            <h5 class="form-label mb-4 fw-semibold fs-4 text-black">
+                {{ __('profile.intro_video') }}
+            </h5>
+
+            <!-- Contenedor de video extra grande -->
+            <div class="d-flex flex-column flex-lg-row gap-4 align-items-start">
+                <!-- Preview del video ampliado -->
+                <div class="flex-shrink-0">
+                    <div class="position-relative bg-black bg-opacity-25 rounded-3 overflow-hidden border border-secondary" 
+                         style="width: 300px; height: 200px;">
+                        @if($intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
+                            <video class="w-100 h-100 object-fit-cover" controls>
+                                <source src="{{ $intro_video->temporaryUrl() }}" type="video/mp4">
+                            </video>
+                        @elseif($intro_video)
+                            <video class="w-100 h-100 object-fit-cover" controls>
+                                <source src="{{ asset('storage/' . $intro_video) }}" type="video/mp4">
+                            </video>
+                        @else
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center">
+                                <i class="bi bi-play-circle-fill text-white opacity-50" style="font-size: 3rem;"></i>
                             </div>
-                        </div>
-
-                        <!-- Controles para subir/eliminar -->
-                        <div class="flex-grow">
-                            <div class="flex items-center space-x-4">
-                                <label for="video-upload" class="cursor-pointer px-6 py-3 bg-blue-600 text-black text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition duration-150">
-                                    {{ __('profile.upload_video') }}
-                                    <input id="video-upload"
-                                        type="file"
-                                        class="sr-only"
-                                        wire:model="intro_video"
-                                        wire:loading.attr="disabled">
-                                </label>
-
-                                @if($intro_video)
-                                <button type="button"
-                                    class="px-6 py-3 border border-gray-600 rounded-lg text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition duration-150"
-                                    wire:click="removeMedia('video')">
-                                    {{ __('profile.remove') }}
-                                </button>
-                                @endif
-                            </div>
-
-                            <!-- Mensaje de carga -->
-                            @if($isUploadingVideo)
-                            <div class="mt-3">
-                                <span class="text-sm text-blue-400">{{ __('profile.uploading') }}...</span>
-                            </div>
-                            @endif
-
-                            @if($videoName)
-                            <div class="mt-2 text-sm text-gray-400">
-                                {{ $videoName }}
-                            </div>
-                            @endif
-
-                            <div class="mt-2 text-sm text-gray-800">
-                                {{ __('profile.allowed_formats') }}: {{ implode(', ', $allowVideoFileExt) }} ({{ __('profile.max') }} {{ $maxVideoSize }}MB)
-                            </div>
-
-                            @error('intro_video') <span class="text-red-400 text-sm mt-2">{{ $message }}</span> @enderror
-                        </div>
+                        @endif
                     </div>
                 </div>
+
+                <!-- Controles ampliados -->
+                <div class="flex-grow-1 w-100">
+                    <div class="d-flex flex-column flex-md-row gap-3 mb-3">
+                        <label for="video-upload" class="btn btn-primary btn-lg flex-grow-1 py-2">
+                            <i class="bi bi-cloud-arrow-up me-2"></i>
+                            {{ __('profile.upload_video') }}
+                            <input id="video-upload"
+                                   type="file"
+                                   class="d-none"
+                                   wire:model="intro_video"
+                                   wire:loading.attr="disabled">
+                        </label>
+
+                        @if($intro_video)
+                            <button type="button"
+                                    class="btn btn-outline-danger btn-lg flex-grow-1 py-2"
+                                    wire:click="removeMedia('video')">
+                                <i class="bi bi-trash me-2"></i>
+                                {{ __('profile.remove') }}
+                            </button>
+                        @endif
+                    </div>
+
+                    <!-- Mensaje de carga mejorado -->
+                    @if($isUploadingVideo)
+                    <div class="d-flex align-items-center gap-2 mt-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <span class="text-primary fs-5">{{ __('profile.uploading') }}...</span>
+                    </div>
+                    @endif
+
+                    @if($videoName)
+                    <div class="mt-3 text-white fs-5">
+                        <i class="bi bi-file-play-fill me-2"></i>
+                        <span class="text-truncate d-inline-block" style="max-width: 80%">
+                            {{ $videoName }}
+                        </span>
+                    </div>
+                    @endif
+
+                    <div class="mt-3 text-black fs-5">
+                        {{ __('profile.allowed_formats') }}: 
+                        <span class="fw-bold">{{ implode(', ', $allowVideoFileExt) }}</span>
+                        <br>
+                        <span class="fw-semibold">{{ __('profile.max') }} {{ $maxVideoSize }}MB</span>
+                    </div>
+
+                    @error('intro_video') 
+                        <div class="alert alert-danger mt-3 mb-0 fs-5 py-2">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
             </div>
+        </div>
+    </div>
+</div>
     </div>
 
     <!-- Botones de acción -->
@@ -371,5 +410,14 @@
             Livewire.emit('nativeLanguageUpdated', e.target.value);
         });
     });
+   
+     $( '#multiple-select-field' ).select2( {
+    theme: "bootstrap-5",
+    width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+    placeholder: $( this ).data( 'placeholder' ),
+    closeOnSelect: false,
+} );
+
+
 </script>
 @endpush

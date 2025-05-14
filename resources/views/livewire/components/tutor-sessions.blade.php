@@ -114,7 +114,7 @@
                                     </span>
                                 </div>
                                 <div class="form-group">
-                                    <label>{{ __('calendar.subject_placeholder') }}</label>
+                                    {{-- <label>{{ __('calendar.subject_placeholder') }}</label>
                                     <span class="am-select am-multiple-select am-filter-select" wire:ignore>
                                         <select id="filter_subject_group" data-componentid="@this" data-parent=".am-filter-list" class="am-customselect" data-class="subject-dropdown-select2" data-format="custom" data-searchable="true" data-wiremodel="filter.subject_group_ids" data-placeholder="{{ __('calendar.subject_placeholder') }}" multiple>
                                             <option label="{{ __('calendar.subject_placeholder') }}"></option>
@@ -131,7 +131,7 @@
                                             @endforeach
                                             @endif
                                         </select>
-                                    </span>
+                                    </span> --}}
                                     <template x-if="selectedValues.length > 0">
                                         <ul class="am-subject-tag-list">
                                             <template x-for="(subject, index) in selectedValues">
