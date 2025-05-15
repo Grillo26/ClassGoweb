@@ -26,7 +26,6 @@ class SlotBooking extends Model
             $booking->bookingLog()->delete();
             if ($booking->status == 'active') {
                 dispatch(new DeleteGoogleCalendarEvent($booking->booker, $booking->meta_data['event_id'] ?? null));
-                dispatch(new DeleteGoogleCalendarEvent($booking->bookee, $booking->slot->meta_data['event_id'] ?? null));
             }
         });
     }
@@ -69,10 +68,10 @@ class SlotBooking extends Model
         return $this->hasOneThrough(Profile::class, User::class, 'id', 'user_id', 'student_id', 'id');
     }
 
-    // Eliminada la relación con 'user_subject_slot_id'
-    // public function slot(): BelongsTo {
-    //     return $this->belongsTo(UserSubjectSlot::class, 'user_subject_slot_id');
-    // }
+    public function slot()
+    {
+        return $this->belongsTo(UserSubjectSlot::class, 'user_subject_slot_id');
+    }
 
     public function tutor(): HasOneThrough {
         return $this->hasOneThrough(Profile::class, User::class, 'id', 'user_id', 'tutor_id', 'id');

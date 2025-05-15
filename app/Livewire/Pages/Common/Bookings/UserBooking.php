@@ -73,7 +73,28 @@ class UserBooking extends Component
     #[Layout('layouts.app')]
     public function render()
     {
-        $this->upcomingBookings = $this->bookingService->getUserBookings($this->dateRange, $this->showBy, $this->filter);
+        if (Auth::user()->role == 'tutor') {
+            // Obtener reservas donde el tutor es el usuario actual
+            $this->upcomingBookings = SlotBooking::where('tutor_id', Auth::id())
+                ->orderBy('start_time')
+                ->get()
+                ->groupBy(function($item) {
+                    return parseToUserTz($item->start_time)->toDateString();
+                })
+                ->toArray();
+                
+        } else if (Auth::user()->role == 'student') {
+            // Obtener reservas donde el estudiante es el usuario actual
+            $this->upcomingBookings = SlotBooking::where('student_id', Auth::id())
+                ->orderBy('start_time')
+                ->get()
+                ->groupBy(function($item) {
+                    return parseToUserTz($item->start_time)->toDateString();
+                })
+                ->toArray();
+                
+        }
+        
         return view('livewire.pages.common.bookings.user-booking', [
             'bookings' => $this->bookings, // Pasar las reservas a la vista
         ]);

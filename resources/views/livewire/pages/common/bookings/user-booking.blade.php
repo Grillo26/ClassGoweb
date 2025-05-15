@@ -180,22 +180,20 @@
                                 @endphp
                                 @while ($startTime <= $endTime)
                                     <tr>
-                                        <td>{{ $startTime->format(setting('_lernen.time_format') == '12' ? 'h:i A' : 'H:i') }}</td>
+                                        <td>{{ $startTime->format('h:i A') }}</td>
                                         <td>
-                                            @if(isset($bookings))
-                                                @foreach ($bookings as $booking)
-                                                    @if (\Carbon\Carbon::parse($booking['start'])->toDateString() == $currentDate->toDateString() && \Carbon\Carbon::parse($booking['start'])->format('H:i') == $startTime->format('H:i'))
-                                                        <div class="booking-item" style="background-color: {{ $booking['color'] }};">
-                                                            {{ $booking['title'] }}
+                                            @if(isset($upcomingBookings[$currentDate->toDateString()]))
+                                                @foreach($upcomingBookings[$currentDate->toDateString()] as $booking)
+                                                    @if(\Carbon\Carbon::parse($booking['start_time'])->format('H:i') == $startTime->format('H:i'))
+                                                        <div style="background:rgb(255, 221, 0);color:white;padding:5px;border-radius:5px;">
+                                                            {{ $booking['status'] }}
                                                         </div>
                                                     @endif
                                                 @endforeach
                                             @endif
                                         </td>
                                     </tr>
-                                    @php
-                                        $startTime->addMinutes(30);
-                                    @endphp
+                                    @php $startTime->addMinutes(30); @endphp
                                 @endwhile
                             </tbody>
                         </table>
@@ -211,43 +209,48 @@
                     </style>
                     @elseif($showBy == 'weekly')
                     <div class="tab-pane fade show active" id="weeklytab">
-                        <table class="am-booking-weekly-clander">
-                            <thead>
-                                <tr>
-                                    @for ($date = $currentDate->copy()->startOfWeek($startOfWeek);
-                                    $date->lte($currentDate->copy()->endOfWeek(getEndOfWeek($startOfWeek)));
-                                    $date->addDay())
-                                    <th>
-                                        <div class="am-booking-calander-title">
-                                            <strong>{{ $date->format('j F') }}</strong>
-                                            <span>{{ $date->format('D') }}</span>
-                                        </div>
-                                    </th>
-                                    @endfor
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    @for ($date = $currentDate->copy()->startOfWeek($startOfWeek);
-                                    $date->lte($currentDate->copy()->endOfWeek(getEndOfWeek($startOfWeek)));
-                                    $date->addDay())
-                                    <td>
-                                        <div class="am-weekly-slots_wrap">
-                                            <div class="am-weekly-slots">
-                                                @if (isset($upcomingBookings[$date->toDateString()]))
-                                                @foreach ($upcomingBookings[$date->toDateString()] as $booking)
-                                                <x-single-booking :booking="$booking" :disputeReason="$disputeReason" :description="$description" :selectedReason="$selectedReason"/>
-                                                @endforeach
-                                                @else
-                                                <span class="am-emptyslot">{{ __('calendar.no_sessions') }}</span>
-                                                @endif
+                        <div style="overflow-x:auto; width:100%;">
+                            <table class="am-booking-weekly-clander" style="min-width:900px; width:100%;">
+                                <thead>
+                                    <tr>
+                                        @for ($date = $currentDate->copy()->startOfWeek($startOfWeek);
+                                        $date->lte($currentDate->copy()->endOfWeek(getEndOfWeek($startOfWeek)));
+                                        $date->addDay())
+                                        <th style="min-width:120px;">
+                                            <div class="am-booking-calander-title">
+                                                <strong>{{ $date->format('j F') }}</strong>
+                                                <span>{{ $date->format('D') }}</span>
                                             </div>
-                                        </div>
-                                    </td>
-                                    @endfor
-                                </tr>
-                            </tbody>
-                        </table>
+                                        </th>
+                                        @endfor
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        @for ($date = $currentDate->copy()->startOfWeek($startOfWeek);
+                                        $date->lte($currentDate->copy()->endOfWeek(getEndOfWeek($startOfWeek)));
+                                        $date->addDay())
+                                        <td style="min-width:120px; vertical-align:top;">
+                                            <div class="am-weekly-slots_wrap">
+                                                <div class="am-weekly-slots">
+                                                    @if (isset($upcomingBookings[$date->toDateString()]))
+                                                        @foreach ($upcomingBookings[$date->toDateString()] as $booking)
+                                                            <div style="background:rgb(255, 221, 0);color:white;padding:5px 8px;border-radius:5px;margin-bottom:5px; font-size:14px;">
+                                                                {{ $booking['status'] }}<br>
+                                                                {{ \Carbon\Carbon::parse($booking['start_time'])->format('h:i A') }} - {{ \Carbon\Carbon::parse($booking['end_time'])->format('h:i A') }}
+                                                            </div>
+                                                        @endforeach
+                                                    @else
+                                                        <span class="am-emptyslot">{{ __('calendar.no_sessions') }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </td>
+                                        @endfor
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     @elseif($showBy == 'monthly')
                     <div class="tab-pane fade show active" id="monthlytab">
@@ -262,105 +265,36 @@
                             <tbody>
                                 @php
                                 $startOfCalendar = $currentDate->copy()->firstOfMonth()->startOfWeek($startOfWeek);
-                                $endOfCalendar =
-                                $currentDate->copy()->lastOfMonth()->endOfWeek(getEndOfWeek($startOfWeek));
+                                $endOfCalendar = $currentDate->copy()->lastOfMonth()->endOfWeek(getEndOfWeek($startOfWeek));
                                 @endphp
-                                @while ($startOfCalendar <= $endOfCalendar) <tr>
-                                    @for ($i = 0; $i < 7; $i++) @php $totalBookings=0; @endphp <td
-                                        @class(['am-outside-calendar'=> $startOfCalendar->format('m') !=
-                                        $currentDate->format('m')])>
+                                @while ($startOfCalendar <= $endOfCalendar)
+                                <tr>
+                                    @for ($i = 0; $i < 7; $i++)
+                                    @php $totalBookings=0; @endphp
+                                    <td @class(['am-outside-calendar'=> $startOfCalendar->format('m') != $currentDate->format('m')])>
                                         <div class="am-monthly-session-title">
-                                            <span @class(['current-date'=> $startOfCalendar->isToday()])>{{
-                                                parseToUserTz($startOfCalendar)->format('j') }}</span>
+                                            <span @class(['current-date'=> $startOfCalendar->isToday()])>{{ parseToUserTz($startOfCalendar)->format('j') }}</span>
                                             @if (isset($upcomingBookings[$startOfCalendar->toDateString()]))
                                             @foreach ($upcomingBookings[$startOfCalendar->toDateString()] as $booking)
-                                            @php
-                                            $totalBookings += 1;
-                                            @endphp
+                                            @php $totalBookings += 1; @endphp
                                             @endforeach
-                                            <em> {{ $totalBookings }} {{ __('calendar.sessions') }} </em>
+                                            <em> {{ $totalBookings }} Tutorías </em>
                                             @endif
                                         </div>
                                         @if (isset($upcomingBookings[$startOfCalendar->toDateString()]))
-                                        <ul class="am-monthly-session-lsit">
+                                        <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px;">
                                             @foreach ($upcomingBookings[$startOfCalendar->toDateString()] as $index => $booking)
-                                            @php
-                                            // $subject = $booking->slot->subjectGroupSubjects?->subject?->name;
-                                            $tooltipClass = Arr::random(['warning', 'pending', 'ready', 'success'])
-                                            @endphp
-                                            <li @class([ "am-$tooltipClass-tooltip"=>
-                                                parseToUserTz($booking->slot->start_time)->isFuture(),
-                                                'am-blur-tooltip' => auth()->user()->role == 'student' &&
-                                                ($booking->status == 'rescheduled' || $booking->status == 'disputed'),
-                                                'am-tooltip',
-                                                'am-addreview-tooltip' =>
-                                                parseToUserTz($booking->slot->start_time)->isPast()
-                                                ])>
-                                                <div class="am-titleblur">
-                                                    <div class="am-session-monthly-tooltip">
-                                                        <strong wire:loading.class="am-btn_disable"
-                                                            wire:click="showBookingDetail({{ $booking->id }})">
-                                                            {{-- $subject --}}
-                                                        </strong>
-                                                        @if(parseToUserTz($booking->slot->start_time)->isFuture())
-                                                        <span>
-                                                            <i class="am-icon-time"></i>
-                                                            {{ parseToUserTz($booking->slot->start_time)->format('h:i
-                                                            a') }} -
-                                                            {{ parseToUserTz($booking->slot->end_time)->format('h:i a')
-                                                            }}
-                                                        </span>
-                                                        @elseif($booking->rating_exists)
-                                                        <span>
-                                                            <i class="am-icon-check-circle06"></i>
-                                                            {{ __('calendar.review_submitted') }}
-                                                        </span>
-                                                        @elseif($booking->status == 'completed')
-                                                        @php
-                                                            $tutorInfo['name'] = $booking->tutor->full_name;
-                                                            if (!empty($booking?->tutor?->image) &&
-                                                                Storage::disk(getStorageDisk())->exists($booking?->tutor?->image)) {
-                                                                $tutorInfo['image'] = resizedImage($booking?->tutor?->image, 36, 36);
-                                                            } else {
-                                                                $tutorInfo['image'] = setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 36, 36);
-                                                            }
-                                                        @endphp
-                                                            <a href="#"
-                                                                @click=" tutorInfo = @js($tutorInfo); form.bookingId = @js($booking->id); $nextTick(() => $wire.dispatch('toggleModel', {id:'review-modal',action:'show'}) )">
-                                                                {{ __('calendar.add_review') }} 
-                                                            </a>
-                                                        @else
-                                                            <a href="#" wire:click.prevent="showCompletePopup({{ json_encode($booking) }})">
-                                                                {{ __('calendar.mark_as_completed') }}
-                                                            </a>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                @if(auth()->user()->role == 'student' && $booking->status ==
-                                                'rescheduled')
-                                                <div class="am-blur-content">
-                                                    <a href="{{ route('student.reschedule-session', ['id' => $booking->id]) }}"
-                                                        wire:navigate.remove>{{ __('calendar.tutor_rescheduled') }}</a>
-                                                </div>
-                                                @elseif(auth()->user()->role == 'student' && $booking->status == 'disputed')
-                                                <div class="am-blur-content">
-                                                    <a href="{{ route('student.manage-dispute', ['id' => $booking?->dispute?->uuid]) }}">{{ __('calendar.dispute_session') }}</a>  
-                                                </div>
-                                                @elseif(parseToUserTz($booking->slot->start_time)->isFuture())
-                                                    <i class="am-icon-arrow-right"></i>
-                                                @endif
-                                                
-                                            </li>
+                                            <div class="am-slot-label" style="background: rgb(255, 221, 0); color: #222; border-radius: 6px; margin-bottom: 2px; padding: 2px 8px; cursor: pointer; font-size: 13px; font-weight: 500;">
+                                                {{ \Carbon\Carbon::parse($booking['start_time'])->format('h:i a') }} - {{ \Carbon\Carbon::parse($booking['end_time'])->format('h:i a') }}
+                                            </div>
                                             @endforeach
-                                        </ul>
+                                        </div>
                                         @endif
-                                        </td>
-                                        @php
-                                        $startOfCalendar->addDay();
-                                        @endphp
-                                        @endfor
-                                        </tr>
-                                        @endwhile
+                                    </td>
+                                    @php $startOfCalendar->addDay(); @endphp
+                                    @endfor
+                                </tr>
+                                @endwhile
                             </tbody>
                         </table>
                     </div>
