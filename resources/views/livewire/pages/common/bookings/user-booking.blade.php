@@ -164,6 +164,15 @@
             </div>
             <div wire:loading.class="d-none" class="am-booking-calander_body" wire:target="switchShow,jumpToDate,nextBookings,previousBookings,filter">
                 <div class="tab-content">
+                    @php
+                        $statusColors = [
+                            'pendiente' => '#FACC15', // amarillo
+                            'rechazado' => '#EF4444', // rojo
+                            'aceptado' => '#22C55E', // verde
+                            'no_completado' => '#64748B', // gris
+                            'completado' => '#3B82F6', // azul
+                        ];
+                    @endphp
                     @if($showBy == 'daily')
                     <div class="tab-pane fade show active" id="dailytab">
                         <table class="am-booking-clander-daily">
@@ -185,7 +194,7 @@
                                             @if(isset($upcomingBookings[$currentDate->toDateString()]))
                                                 @foreach($upcomingBookings[$currentDate->toDateString()] as $booking)
                                                     @if(\Carbon\Carbon::parse($booking['start_time'])->format('H:i') == $startTime->format('H:i'))
-                                                        <div style="background:rgb(255, 221, 0);color:white;padding:5px;border-radius:5px;">
+                                                        <div style="background: {{ $statusColors[strtolower(trim($booking['status']))] ?? '#FACC15' }} !important; color:white;padding:5px;border-radius:5px;">
                                                             {{ $booking['status'] }}
                                                         </div>
                                                     @endif
@@ -235,9 +244,10 @@
                                             <div class="am-weekly-slots">
                                                 @if (isset($upcomingBookings[$date->toDateString()]))
                                                 @foreach ($upcomingBookings[$date->toDateString()] as $booking)
-                                                            <div style="background:rgb(255, 221, 0);color:white;padding:5px 8px;border-radius:5px;margin-bottom:5px; font-size:14px;">
-                                                                {{ $booking['status'] }}<br>
-                                                                {{ \Carbon\Carbon::parse($booking['start_time'])->format('h:i A') }} - {{ \Carbon\Carbon::parse($booking['end_time'])->format('h:i A') }}
+                                                            <div style="background:{{ $statusColors[strtolower(trim($booking['status']))] ?? '#FACC15' }} !important;color:white;padding:5px 8px;border-radius:5px;margin-bottom:5px; font-size:14px;">
+                                                                Estado: <b>{{ $booking['status'] }}</b>
+                                                                <br>
+                                                                {{ \Carbon\Carbon::parse($booking['start_time'])->format('h:i a') }} - {{ \Carbon\Carbon::parse($booking['end_time'])->format('h:i a') }}
                                                             </div>
                                                 @endforeach
                                                 @else
@@ -284,8 +294,10 @@
                                         @if (isset($upcomingBookings[$startOfCalendar->toDateString()]))
                                         <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px;">
                                             @foreach ($upcomingBookings[$startOfCalendar->toDateString()] as $index => $booking)
-                                            <div class="am-slot-label" style="background: rgb(255, 221, 0); color: #222; border-radius: 6px; margin-bottom: 2px; padding: 2px 8px; cursor: pointer; font-size: 13px; font-weight: 500;">
-                                                {{ \Carbon\Carbon::parse($booking['start_time'])->format('h:i a') }} - {{ \Carbon\Carbon::parse($booking['end_time'])->format('h:i a') }}
+                                                <div style="background: {{ $statusColors[strtolower(trim($booking['status']))] ?? '#FACC15' }} !important; color: #222; padding:5px; border-radius:5px;">
+                                                    Estado: <b>{{ $booking['status'] }}</b>
+                                                    <br>
+                                                    {{ \Carbon\Carbon::parse($booking['start_time'])->format('h:i a') }} - {{ \Carbon\Carbon::parse($booking['end_time'])->format('h:i a') }}
                                                 </div>
                                             @endforeach
                                         </div>
