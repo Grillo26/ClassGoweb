@@ -537,7 +537,6 @@ class BookingService
             // Estado de la reserva
         ]);
 
-        SlotBooking::created($slotBooking);
         return $slotBooking;
     }
 
