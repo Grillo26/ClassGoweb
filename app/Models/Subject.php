@@ -26,4 +26,9 @@ class Subject extends Model {
         return $this->hasMany(UserSubject::class);
     }
 
+    public function slotBookings(): HasMany
+    {
+        return $this->hasMany(SlotBooking::class, 'subject_id');
+    }
+
 }

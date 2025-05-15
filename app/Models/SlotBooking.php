@@ -91,4 +91,14 @@ class SlotBooking extends Model
     public function dispute(): HasOne {
         return $this->hasOne(Dispute::class, 'disputable_id');
     }
+
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class, 'subject_id');
+    }
+
+    public function paymentSlotBooking()
+    {
+        return $this->hasOne(PaymentSlotBooking::class, 'slot_booking_id');
+    }
 }
