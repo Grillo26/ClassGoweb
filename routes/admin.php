@@ -25,6 +25,7 @@ use App\Livewire\Pages\Admin\Taxonomy\Subjects;
 use App\Livewire\Pages\Admin\Upgrade\Upgrade;
 use App\Livewire\Pages\Admin\Users\Users;
 use App\Http\Controllers\Admin\AlianzaController;
+use App\Http\Controllers\Admin\SlotBookingAdminController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -79,4 +80,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
         Route::delete('/{alianza}', [AlianzaController::class, 'destroy'])->name('destroy');
         Route::post('/{alianza}/toggle-status', [AlianzaController::class, 'toggleStatus'])->name('toggle-status');
     });
+
+    Route::get('tutorias', [SlotBookingAdminController::class, 'index'])->name('tutorias.index');
+    Route::post('tutorias/{id}/status', [SlotBookingAdminController::class, 'updateStatus'])->name('tutorias.updateStatus');
 });

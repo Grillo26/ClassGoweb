@@ -18,7 +18,7 @@
                 @endif
                 @if(false)
                     <span></span>
-                @endif
+                        @endif
                 @if($booking->rating_exists)
                     <span class="am-reviewreqslot">
                         <i class="am-icon-check-circle06"></i> 
@@ -60,5 +60,5 @@
 @else
     <div class="alert alert-danger">
         Error: La reserva no está disponible o es inválida.
-    </div>
+    </div> 
 @endif

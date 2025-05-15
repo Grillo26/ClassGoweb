@@ -211,45 +211,45 @@
                     <div class="tab-pane fade show active" id="weeklytab">
                         <div style="overflow-x:auto; width:100%;">
                             <table class="am-booking-weekly-clander" style="min-width:900px; width:100%;">
-                                <thead>
-                                    <tr>
-                                        @for ($date = $currentDate->copy()->startOfWeek($startOfWeek);
-                                        $date->lte($currentDate->copy()->endOfWeek(getEndOfWeek($startOfWeek)));
-                                        $date->addDay())
+                            <thead>
+                                <tr>
+                                    @for ($date = $currentDate->copy()->startOfWeek($startOfWeek);
+                                    $date->lte($currentDate->copy()->endOfWeek(getEndOfWeek($startOfWeek)));
+                                    $date->addDay())
                                         <th style="min-width:120px;">
-                                            <div class="am-booking-calander-title">
-                                                <strong>{{ $date->format('j F') }}</strong>
-                                                <span>{{ $date->format('D') }}</span>
-                                            </div>
-                                        </th>
-                                        @endfor
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        @for ($date = $currentDate->copy()->startOfWeek($startOfWeek);
-                                        $date->lte($currentDate->copy()->endOfWeek(getEndOfWeek($startOfWeek)));
-                                        $date->addDay())
+                                        <div class="am-booking-calander-title">
+                                            <strong>{{ $date->format('j F') }}</strong>
+                                            <span>{{ $date->format('D') }}</span>
+                                        </div>
+                                    </th>
+                                    @endfor
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    @for ($date = $currentDate->copy()->startOfWeek($startOfWeek);
+                                    $date->lte($currentDate->copy()->endOfWeek(getEndOfWeek($startOfWeek)));
+                                    $date->addDay())
                                         <td style="min-width:120px; vertical-align:top;">
-                                            <div class="am-weekly-slots_wrap">
-                                                <div class="am-weekly-slots">
-                                                    @if (isset($upcomingBookings[$date->toDateString()]))
-                                                        @foreach ($upcomingBookings[$date->toDateString()] as $booking)
+                                        <div class="am-weekly-slots_wrap">
+                                            <div class="am-weekly-slots">
+                                                @if (isset($upcomingBookings[$date->toDateString()]))
+                                                @foreach ($upcomingBookings[$date->toDateString()] as $booking)
                                                             <div style="background:rgb(255, 221, 0);color:white;padding:5px 8px;border-radius:5px;margin-bottom:5px; font-size:14px;">
                                                                 {{ $booking['status'] }}<br>
                                                                 {{ \Carbon\Carbon::parse($booking['start_time'])->format('h:i A') }} - {{ \Carbon\Carbon::parse($booking['end_time'])->format('h:i A') }}
                                                             </div>
-                                                        @endforeach
-                                                    @else
-                                                        <span class="am-emptyslot">{{ __('calendar.no_sessions') }}</span>
-                                                    @endif
-                                                </div>
+                                                @endforeach
+                                                @else
+                                                <span class="am-emptyslot">{{ __('calendar.no_sessions') }}</span>
+                                                @endif
                                             </div>
-                                        </td>
-                                        @endfor
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        </div>
+                                    </td>
+                                    @endfor
+                                </tr>
+                            </tbody>
+                        </table>
                         </div>
                     </div>
                     @elseif($showBy == 'monthly')
@@ -286,15 +286,15 @@
                                             @foreach ($upcomingBookings[$startOfCalendar->toDateString()] as $index => $booking)
                                             <div class="am-slot-label" style="background: rgb(255, 221, 0); color: #222; border-radius: 6px; margin-bottom: 2px; padding: 2px 8px; cursor: pointer; font-size: 13px; font-weight: 500;">
                                                 {{ \Carbon\Carbon::parse($booking['start_time'])->format('h:i a') }} - {{ \Carbon\Carbon::parse($booking['end_time'])->format('h:i a') }}
-                                            </div>
+                                                </div>
                                             @endforeach
                                         </div>
                                         @endif
-                                    </td>
+                                        </td>
                                     @php $startOfCalendar->addDay(); @endphp
-                                    @endfor
-                                </tr>
-                                @endwhile
+                                        @endfor
+                                        </tr>
+                                        @endwhile
                             </tbody>
                         </table>
                     </div>
