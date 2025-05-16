@@ -28,15 +28,13 @@ class Profile extends Model {
      *
      * @return array<string, string>
      */
-    protected function casts(): array
+    /* protected function casts(): array
     {
         return [
             'gender'        => GenderCast::class,
             'recommend_tutor' => RecommendTutorCast::class,
-
-
         ];
-    }
+    } */
 
     /**
      * Get the user that owns the Profile
