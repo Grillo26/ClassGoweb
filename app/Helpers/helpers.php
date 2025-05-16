@@ -391,22 +391,41 @@ if (!function_exists('resizedImage')) {
 
     function resizedImage(string $image, int $width, int $height)
     {
-        $disk = getStorageDisk();
-        if (!Storage::disk($disk)->exists($image)) {
+
+
+        try {
+            $disk = getStorageDisk();
+            // Verificar si la imagen existe en public_path
+            $imagePath = public_path('storage/' . $image);
+            if (!file_exists($imagePath)) {
+                return null;
+            }
+            $resizedImageName = 'thumbnails/' . uniqueImageName($image, $width . 'x' . $height);
+            $resizedImagePath = public_path('storage/' . $resizedImageName);
+
+
+            // Verificar si la imagen redimensionada ya existe
+            if (file_exists(public_path('storage/' . $resizedImageName))) {
+                return asset('storage/' . $resizedImageName);
+            }
+            //transformar la imagen
+            $imagePath = public_path('storage/' . $image);
+            $imageContent = file_get_contents($imagePath);
+            $resizedImage = Image::read($imageContent)->cover($width, $height)->encode();
+
+
+            // Crear el directorio de destino si no existe
+            $resizedImageDir = dirname($resizedImagePath);
+            if (!file_exists($resizedImageDir)) {
+                mkdir($resizedImageDir, 0755, true);
+            }
+
+            file_put_contents($resizedImagePath, $resizedImage);
+            return asset('storage/' . $resizedImageName);
+        } catch (\Exception $e) {
+            dd($e->getMessage());
             return null;
         }
-
-        $resizedImageName = 'thumbnails/' . uniqueImageName($image, $width . 'x' . $height);
-
-        if (Storage::disk($disk)->exists($resizedImageName)) {
-            return Storage::disk($disk)->url($resizedImageName);
-        }
-
-        $resizedImage = Image::read(Storage::disk($disk)->get($image))->cover($width, $height)->encode();
-
-        Storage::disk($disk)->put($resizedImageName, $resizedImage);
-
-        return Storage::disk($disk)->url($resizedImageName);
     }
 }
 
@@ -470,10 +489,10 @@ if (! function_exists('getProfileImageURL')) {
     }
 }
 
-if(!function_exists('getCurrentCurrency')) {
+if (!function_exists('getCurrentCurrency')) {
     function getCurrentCurrency()
     {
-        $currency = !empty(session()->get('selected_currency')) ? session()->get('selected_currency') :  (setting('_general.currency') ?? 'USD');
+        $currency = !empty(session()->get('selected_currency')) ? session()->get('selected_currency') : (setting('_general.currency') ?? 'USD');
         return !empty($currency) ? currencyList($currency) : array();
     }
 }
@@ -2210,10 +2229,10 @@ if (!function_exists('getMenu')) {
 if (!function_exists('getCommission')) {
     function getCommission($amount, $for = 'bookings')
     {
-        if(empty($amount)){
+        if (empty($amount)) {
             return 0;
         }
-        if($for == 'bookings') {
+        if ($for == 'bookings') {
             if (!empty(setting('admin_settings.commission_setting')['percentage'])) {
                 $commissionPercentage = setting('admin_settings.commission_setting')['percentage']['value'] ?? 0;
 
@@ -2225,7 +2244,7 @@ if (!function_exists('getCommission')) {
             }
 
             return 0;
-        } elseif(isActiveModule('Courses') && $for == 'courses') {
+        } elseif (isActiveModule('Courses') && $for == 'courses') {
             if (!empty(setting('admin_settings.course_commission_setting')['percentage']['course_price'])) {
                 $commissionPercentage = setting('admin_settings.course_commission_setting')['percentage']['course_price'] ?? 0;
 
@@ -2322,7 +2341,7 @@ if (!function_exists('getSocialProfileUrl')) {
     function getSocialProfileUrl($socialProfiles, $platform)
     {
         if ($platform == 'WhatsApp') {
-            if( !empty($socialProfiles->firstWhere('type', $platform)->url)) { 
+            if (!empty($socialProfiles->firstWhere('type', $platform)->url)) {
                 $url = $socialProfiles->firstWhere('type', $platform)->url;
                 $url = preg_replace('/[^\d]/', '', $url);
                 return 'https://wa.me/' . $url;
@@ -2330,13 +2349,14 @@ if (!function_exists('getSocialProfileUrl')) {
 
             return false;
         }
-        
+
         return $socialProfiles->firstWhere('type', $platform)->url ?? false;
     }
 }
 
 if (!function_exists('convertColor')) {
-    function convertColor($color) {
+    function convertColor($color)
+    {
         if (preg_match('/^#([a-fA-F0-9]{6})([a-fA-F0-9]{2})?$/', $color, $matches)) {
             $hex = strtoupper($matches[1]);
             $alpha = isset($matches[2]) ? strtoupper($matches[2]) : 'FF';
@@ -2345,7 +2365,7 @@ if (!function_exists('convertColor')) {
             $r = intval($matches[1]);
             $g = intval($matches[2]);
             $b = intval($matches[3]);
-            
+
             if ($r >= 0 && $r <= 255 && $g >= 0 && $g <= 255 && $b >= 0 && $b <= 255) {
                 $alpha = isset($matches[4]) ? sprintf('%02X', intval(floatval($matches[4]) * 255)) : 'FF';
                 $hex = sprintf('%02X%02X%02X', $r, $g, $b);

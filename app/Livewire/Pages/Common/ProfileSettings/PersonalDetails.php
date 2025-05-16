@@ -250,13 +250,15 @@ class PersonalDetails extends Component
 
                 $profileData['image'] = 'profile_images/' . $filename;
 
+                // Generar miniatura de la imagen
+                if (!empty($profileData['image'])) {
+                  
+                    $this->dispatch('update_image', image: resizedImage($profileData['image'], 36, 36));
+                
+                }
+
                 // Debug para verificar el guardado
-                Log::info('Imagen guardada:', [
-                    'filename' => $filename,
-                    'path' => $profileData['image'],
-                    'full_path' => $destinationPath . '/' . $filename,
-                    'exists' => file_exists($destinationPath . '/' . $filename)
-                ]);
+    
             } 
             
             if ($this->intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
