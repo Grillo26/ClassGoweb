@@ -4,7 +4,7 @@
     @endphp
     <div @class([
         'am-reminder-tooltip',
-        "am-$tooltipClass-tooltip" => parseToUserTz($booking->slot->start_time)->isFuture() || $booking->status == 'disputed' || $booking->status == 'rescheduled' ,
+        "am-$tooltipClass-tooltip" => $booking->status == 'disputed' || $booking->status == 'rescheduled',
         'am-blur-tooltip' => auth()->user()->role == 'student' && ($booking->status == 'rescheduled' || $booking->status == 'disputed')
         ])>
         <div class="am-reminder-tooltip_title am-titleblur">
@@ -12,19 +12,14 @@
                 <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 40, 40) }}" alt="Subject">
             </figure>
             <h2>
-                {{ $subject }}
-                @if(parseToUserTz($booking->slot->start_time)->isFuture())
-                    <span>
-                        <i class="am-icon-time"></i>
-                        @if(setting('_lernen.time_format') == '12')
-                            {{ parseToUserTz($booking->slot->start_time)->format('h:i a') }} -
-                            {{ parseToUserTz($booking->slot->end_time)->format('h:i a') }}
-                        @else
-                            {{ parseToUserTz($booking->slot->start_time)->format('H:i') }} -
-                            {{ parseToUserTz($booking->slot->end_time)->format('H:i') }}
+                {{-- Materia eliminada temporalmente --}}
+                @if(false)
+                    <span></span>
+                @endif
+                @if(false)
+                    <span></span>
                         @endif
-                    </span>
-                @elseif($booking->rating_exists)
+                @if($booking->rating_exists)
                     <span class="am-reviewreqslot">
                         <i class="am-icon-check-circle06"></i> 
                         {{ __('calendar.review_submitted') }}
@@ -60,39 +55,10 @@
             <div class="am-blur-content">
                 <a href="{{ route('student.manage-dispute', ['id' => $booking?->dispute?->uuid]) }}">{{ __('calendar.dispute_session') }}</a>   
             </div>
-        @elseif(parseToUserTz($booking->slot->start_time)->isFuture())
-            <div class="am-reminder-tooltip_body">
-                <ul class="am-reminder-tooltip-content">
-                    <li>
-                        <span>{{ __('calendar.session_fee') }}</span>
-                        <strong> {{ formatAmount($booking->slot->session_fee) }}</strong>
-                    </li>
-                    <li>
-                        <span>{{ __('general.date') }}</span>
-                        <strong>{{ parseToUserTz($booking->slot->start_time)->format(setting('_general.date_format') ?? 'F j, Y') }}</strong>
-                    </li>
-                    <li>
-                        <span>{{ __('calendar.time') }}</span>
-                        <strong>
-                            @if(setting('_lernen.time_format') == '12')
-                                {{ parseToUserTz($booking->slot->start_time)->format('h:i a') }} -
-                                {{ parseToUserTz($booking->slot->end_time)->format('h:i a') }}
-                            @else
-                                {{ parseToUserTz($booking->slot->start_time)->format('H:i') }} -
-                                {{ parseToUserTz($booking->slot->end_time)->format('H:i') }}
-                            @endif
-                        </strong>
-                    </li>
-                </ul>
-                <div class="am-reminder-btn">
-                    <button class="am-btn-light" wire:loading.class="am-btn_disable" wire:click="showBookingDetail({{ $booking->id }})">{{ __('calendar.view_full_details') }}</button>
-                    @if(!empty($booking->slot->meta_data['meeting_link']))
-                        <a href="{{ $booking->slot->meta_data['meeting_link'] ?? '#' }}" target="_blank" class="am-btn">
-                            @role('tutor'){{ __('calendar.start_session_now') }} @elserole('student') {{ __('calendar.join_session') }} @endrole
-                        </a>
-                    @endif
-                </div>
-            </div>
         @endif    
+    </div> 
+@else
+    <div class="alert alert-danger">
+        Error: La reserva no está disponible o es inválida.
     </div> 
 @endif

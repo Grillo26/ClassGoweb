@@ -6,12 +6,10 @@
                 <div class="am-session-detail_content">
                     <span>
                         <i class="am-icon-book-1"></i>
-                        {{-- <span>{{ $currentBooking?->slot?->subjectGroupSubjects?->group?->name }}</span> --}}
                     </span>
                     <div class="am-closepopup" data-bs-dismiss="modal">
                         <i class="am-icon-multiply-01"></i>
                     </div>
-                    {{-- <h4>{{ $currentBooking?->slot?->subjectGroupSubjects?->subject?->name }}</h4> --}}
                 </div>
                 <ul class="am-session-duration">
                     <li>
@@ -21,7 +19,7 @@
                             </em>
                             <span>{{ __('general.date') }}</span>
                         </div>
-                        <strong @class(['am-rescheduled' =>  auth()->user()->role == 'student' && $currentBooking?->status == 'rescheduled'])>{{ parseToUserTz($currentBooking?->slot?->start_time)->format(setting('_general.date_format') ?? 'F j, Y') }}</strong>
+                        <strong @class(['am-rescheduled' =>  auth()->user()->role == 'student' && $currentBooking?->status == 'rescheduled'])>{{ parseToUserTz($currentBooking?->start_time)->format(setting('_general.date_format') ?? 'F j, Y') }}</strong>
                     </li>
                     <li>
                         <div class="am-session-duration_title">
@@ -32,11 +30,11 @@
                         </div>
                         <strong @class(['am-rescheduled' => auth()->user()->role == 'student' && $currentBooking?->status == 'rescheduled'])>
                             @if(setting('_lernen.time_format') == '12')
-                                {{ parseToUserTz($currentBooking?->slot?->start_time)->format('h:i a') }} -
-                                {{ parseToUserTz($currentBooking?->slot?->end_time)->format('h:i a') }}
+                                {{ parseToUserTz($currentBooking?->start_time)->format('h:i a') }} -
+                                {{ parseToUserTz($currentBooking?->end_time)->format('h:i a') }}
                             @else
-                                {{ parseToUserTz($currentBooking?->slot?->start_time)->format('H:i') }} -
-                                {{ parseToUserTz($currentBooking?->slot?->end_time)->format('H:i') }}
+                                {{ parseToUserTz($currentBooking?->start_time)->format('H:i') }} -
+                                {{ parseToUserTz($currentBooking?->end_time)->format('H:i') }}
                             @endif
                         </strong>
                     </li>
@@ -48,7 +46,7 @@
                             <span>{{ __('calendar.type') }}</span>
                         </div>
                         <strong>
-                            {{ $currentBooking?->slot?->spaces > 1 ? __('calendar.group') : __('calendar.one') }}
+                            {{ $currentBooking?->spaces > 1 ? __('calendar.group') : __('calendar.one') }}
                         </strong>
                     </li>
                     <li>
@@ -58,7 +56,7 @@
                             </em>
                             <span>{{ __('calendar.total_enrollment') }}</span>
                         </div>
-                        <strong>{{ __('calendar.booked_students', ['count' => $currentBooking?->slot?->bookings_count]) }}</strong>
+                        <strong>{{ __('calendar.booked_students', ['count' => $currentBooking?->bookings_count]) }}</strong>
                     </li>
                     <li>
                         <div class="am-session-duration_title">
@@ -67,7 +65,7 @@
                             </em>
                             <span>{{ __('calendar.session_fee') }}</span>
                         </div>
-                        <strong> {{ formatAmount($currentBooking?->slot?->session_fee) }}<em>{{ __('calendar.person') }}</em></strong>
+                        <strong> {{ formatAmount($currentBooking?->session_fee) }}<em>{{ __('calendar.person') }}</em></strong>
                     </li>
                     <li>
                         <div class="am-session-duration_title">
@@ -86,88 +84,11 @@
                         </strong>
                     </li>
                 </ul>
-                @if($currentBooking?->status == 'active')
-                    @role('tutor')
-                        @if(!empty($currentBooking?->slot?->meta_data['meeting_link']))
-                            <a href="{{ $currentBooking?->slot?->meta_data['meeting_link'] ?? '#' }}" target="_blank" class="am-btn">{{ __('calendar.start_session_now') }}</a>
-                            <div class="am-optioanl-or">
-                                <span>{{ __('general.or') }}</span>
-                            </div>
-                            <div class="am-zoom-session" x-data="{ textToCopy: '{{ $currentBooking?->slot?->meta_data['meeting_link'] ?? '#' }}', copied: false }">
-                                <div class="am-zoom-session_title">
-                                    <span>
-                                        <img src="{{asset('images/' . ($currentBooking?->slot?->meta_data['meeting_type'] ?? 'zoom' ) . '-icon.png')}}" alt="{{ $currentBooking?->slot?->meta_data['meeting_type'] ?? 'Zoom' }}">
-                                        {{ __('calendar.meeting_link') }}
-                                    </span>
-                                    <a href="#">{{ $currentBooking?->slot?->meta_data['meeting_link'] ?? '#' }}</a>
-                                </div>
-                                <button class="am-white-btn" @click="
-                                    navigator.clipboard.writeText(textToCopy)
-                                    .then(() => {
-                                        copied = true;
-                                        setTimeout(() => copied = false, 2000);
-                                    })
-                                ">
-                                    <template x-if="!copied">
-                                        <div class="am-copy-link">
-                                            {{ __('calendar.copy_session_link') }}
-                                            <i class="am-icon-copy-01"></i>
-                                        </div>
-                                    </template>
-                                    <template x-if="copied">
-                                        <span x-show="copied" x-transition>{{ __('general.copied') }}</span>
-                                    </template>
-                                </button>
-                            </div>
-                        @else
-                            <p>{{ __('calendar.generate_meeting_link_msg') }}</p>
-                        @endif
-                        @if(isCalendarConnected() && empty($currentBooking?->slot?->meta_data['event_id']))
-                            <button class="am-btn am-sync_btn" wire:click="syncWithGoogleCalendar()" wire:loading.class="am-btn_disable">
-                                <img src="{{ asset('images/calendar.png') }}">
-                                {{ __('calendar.sync_google_calendar') }}
-                            </button>
-                        @endif
-                    @elserole('student')
-                        <div class="am-session-start">
-                            <div class="am-session-time">
-                                <em><i class="am-icon-megaphone-02"></i> </em>
-                                <span>
-                                    {{ __('calendar.session_start_at') }}
-                                </span>
-                                <i>
-                                    {{ timeLeft($currentBooking?->start_time) }}
-                                </i>
-                            </div>
-                            @if(!empty($currentBooking?->slot?->meta_data['meeting_link']))
-                                <div class="am-sessionstart-btn">
-                                    <a href="{{ $currentBooking?->slot?->meta_data['meeting_link'] ?? '#' }}" class="am-btn" target="_blank">
-                                        {{ __('calendar.join_session') }}
-                                    </a>
-                                </div>
-                            @endif
-                        </div>
-                        @if(empty($currentBooking?->slot?->meta_data['meeting_link']))
-                            <p>{{ __('calendar.missing_meeting_link') }}</p>
-                        @endif
-                        @if(isCalendarConnected() && empty($currentBooking?->meta_data['event_id']))
-                            <button class="am-btn am-sync_btn" wire:click="syncWithGoogleCalendar()" wire:loading.class="am-btn_disable">
-                                <img src="{{ asset('images/calendar.png') }}">
-                                {{ __('calendar.sync_google_calendar') }}
-                            </button>
-                        @endif
-                    @endrole
-                @elseif(auth()->user()->role == 'student' && $currentBooking?->status == 'rescheduled')
-                    <p>{!! __('calendar.rescheduled_date_desc', ['date' => parseToUserTz($currentBooking?->slot?->start_time)->format(setting('_general.date_format') ?? 'F j, Y')]) !!}</p>
-                @endif
             </div>
             <div class="am-session-detail-modal_body">
-                <figure>
-                    {{-- @if(!empty($currentBooking?->slot?->subjectGroupSubjects?->image) && Storage::disk(getStorageDisk())->exists($currentBooking?->slot?->subjectGroupSubjects?->image)) --}}
-                    {{-- <img src="{{ resizedImage($currentBooking?->slot?->subjectGroupSubjects?->image, 700, 360) }}" alt="{{ $currentBooking?->slot?->subjectGroupSubjects?->subject?->name }}"> --}}
-                </figure>
+                <figure></figure>
                 <div class="am-session-content">
-                    {!! $currentBooking?->slot?->description !!}
+                    {!! $currentBooking?->description !!}
                 </div>
             </div>
         </div>

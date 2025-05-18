@@ -7,21 +7,20 @@ use App\Jobs\SendNotificationJob;
 use App\Livewire\Forms\Frontend\RequestSessionForm;
 use App\Models\SlotBooking;
 use App\Models\User;
-use App\Models\UserSubjectGroupSubject;
 use App\Services\BookingService;
 use App\Services\SubjectService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Livewire\Attributes\On;
 use Livewire\Component;
 use Nwidart\Modules\Facades\Module;
 use App\Models\UserSubjectSlot;
 use Illuminate\Support\Facades\Storage;
 use Livewire\WithFileUploads;
 use App\Models\PaymentSlotBooking;
-use Faker\Provider\ar_EG\Payment;
+use Illuminate\Support\Facades\Log;
+
 
 class TutorSessions extends Component
 {
@@ -46,6 +45,12 @@ class TutorSessions extends Component
     public $uploadedImage = null; // Imagen subida por el usuario
     public $uploadedImagePreview = null; // Previsualización de la imagen subida por el usuario
     public $selectedDate = null;
+    public $hourRange = []; // Rango de horas para el modal
+    public $selectedHour; // Hora seleccionada por el usuario
+    public $subjects = []; // Lista de subjects del tutor
+    public $selectedSubject;
+    public $subjectError = '';
+    public $successMessage = '';
     private $bookingService, $subjectService;
 
     public RequestSessionForm $requestSessionForm;
@@ -55,7 +60,7 @@ class TutorSessions extends Component
      */
     public function render()
     {
-        if(!empty($this->timezone) && !empty($this->pageLoaded)){
+        if (!empty($this->timezone) && !empty($this->pageLoaded)) {
             $this->availableSlots = $this->bookingService->getTutorAvailableSlots($this->userId, $this->timezone, $this->dateRange, $this->filter);
         }
         $this->cartItems = Cart::content();
@@ -66,7 +71,8 @@ class TutorSessions extends Component
     /**
      * Inicializa la página configurando la fecha actual y el rango de fechas.
      */
-    public function loadPage() {
+    public function loadPage()
+    {
         $this->currentDate = Carbon::now($this->timezone);
         $this->getRange();
         $this->pageLoaded = true;
@@ -78,7 +84,6 @@ class TutorSessions extends Component
     public function boot()
     {
         $this->bookingService = new BookingService($this->user);
-
     }
 
     /**
@@ -95,14 +100,12 @@ class TutorSessions extends Component
         $this->startOfWeek = (int) (setting('_lernen.start_of_week') ?? Carbon::SUNDAY);
         $this->subjectService = new SubjectService($user);
         $this->subjectGroups = $this->subjectService->getSubjectsByUserRole();
-        if(Auth::check()){
+        if (Auth::check()) {
             $this->timezone = getUserTimezone();
         }
-        $currency               = setting('_general.currency');
-        $currency_detail        = !empty( $currency)  ? currencyList($currency) : array();
-
-
-        if( !empty($currency_detail['symbol']) ){
+        $currency  = setting('_general.currency');
+        $currency_detail  = !empty($currency)  ? currencyList($currency) : array();
+        if (!empty($currency_detail['symbol'])) {
             $this->currency_symbol = $currency_detail['symbol'];
         }
     }
@@ -112,7 +115,8 @@ class TutorSessions extends Component
      *
      * @param int $id ID del slot.
      */
-    public function showSlotDetail($id) {
+    public function showSlotDetail($id)
+    {
         $this->currentSlot =  $this->bookingService->getSlotDetail($id);
         $this->dispatch('toggleModel', id: 'slot-detail', action: 'show');
     }
@@ -122,35 +126,31 @@ class TutorSessions extends Component
      *
      * @param int $id ID del slot a reservar.
      */
-
-     
     public function bookSession($id)
     {
         $slot = $this->bookingService->getSlotDetail($id);
-        dd($slot,"aver quieor la fecha");
-        if(!empty($slot)){
-            if( $slot->total_booked < $slot->spaces) {
-                $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->user);
+        if (!empty($slot)) {
+            if ($slot->total_booked < $slot->spaces) {
+                $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->selectedSubject);
                 $data = [
                     'id' => $bookedSlot->id,
                     'slot_id' => $slot->id,
                     'tutor_id' => $this->user->id,
                     'tutor_name' => $this->user?->profile?->full_name,
-                    'session_time' => parseToUserTz($slot->start_time, $this->timezone)->format('h:i a').' - '.parseToUserTz($slot->end_time, $this->timezone)->format('h:i a'),
+                    'session_time' => parseToUserTz($slot->start_time, $this->timezone)->format('h:i a') . ' - ' . parseToUserTz($slot->end_time, $this->timezone)->format('h:i a'),
                     'currency_symbol' => $this->currency_symbol,
                     'price' => number_format($slot->session_fee, 2),
                 ];
-
-                if(Module::has('subscriptions') && Module::isEnabled('subscriptions')){
+                if (Module::has('subscriptions') && Module::isEnabled('subscriptions')) {
                     $data['allowed_for_subscriptions'] = $slot->meta_data['allowed_for_subscriptions'] ?? 0;
                 }
 
                 Cart::add(
-                    cartableId: $data['id'], 
-                    cartableType: SlotBooking::class, 
-                    name: $data['tutor_name'], 
-                    qty: 1, 
-                    price: $slot->session_fee, 
+                    cartableId: $data['id'],
+                    cartableType: SlotBooking::class,
+                    name: $data['tutor_name'],
+                    qty: 1,
+                    price: $slot->session_fee,
                     options: $data
                 );
                 $this->dispatch('scrollToTop');
@@ -161,11 +161,11 @@ class TutorSessions extends Component
                     $this->dispatch('cart-updated', cart_data: Cart::content(), total: formatAmount(Cart::total(), true), subTotal: formatAmount(Cart::subtotal(), true), toggle_cart: 'open');
                 }
 
-                if(!empty($this->currentSlot)){
+                if (!empty($this->currentSlot)) {
                     $this->dispatch('toggleModel', id: 'slot-detail', action: 'hide');
                 }
             } else {
-                $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title') , message: __('tutor.not_available_slot'));
+                $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: __('tutor.not_available_slot'));
             }
         }
     }
@@ -175,25 +175,26 @@ class TutorSessions extends Component
      *
      * @param array $params Parámetros del elemento a eliminar.
      */
-    #[On('remove-cart')]
+    /* #[On('remove-cart')]
     public function removeCartItem($params)
     {
-        if(!empty($params['cartable_id']) && !empty($params['cartable_type'])){
+        if (!empty($params['cartable_id']) && !empty($params['cartable_type'])) {
             $this->bookingService->removeReservedBooking($params['cartable_id']);
             Cart::remove(
-                cartableId: $params['cartable_id'], 
+                cartableId: $params['cartable_id'],
                 cartableType: $params['cartable_type']
             );
             $this->dispatch('cart-updated', cart_data: Cart::content(), discount: formatAmount(Cart::discount(), true), total: formatAmount(Cart::total(), true), subTotal: formatAmount(Cart::subtotal(), true), toggle_cart: 'open');
         }
-    }
+    } */
 
     /**
      * Salta a una fecha específica en el calendario.
      *
      * @param string|null $date Fecha a la que se desea saltar.
      */
-    public function jumpToDate($date=null) {
+    public function jumpToDate($date = null)
+    {
         if (!empty($date)) {
             $format = 'Y-m-d';
             $this->currentDate = Carbon::createFromFormat($format, $date, $this->timezone);
@@ -215,10 +216,37 @@ class TutorSessions extends Component
 
         if ($this->showConfirmationDiv) {
             // Cargar la imagen desde el almacenamiento
-            $this->imagePreview = Storage::url('qr/0pKnkQyx3ejW4Z05yapJeGtUQQ2DHlZVioLNEyLy.png'); // Ruta relativa dentro de storage/app/public
+            $this->imagePreview = Storage::url('qr/77b1a7da.jpg');
+
+            // Calcular el rango de horas basado en el slotId
+            $slot = UserSubjectSlot::find($slotId);
+            if ($slot) {
+                $startTime = Carbon::parse($slot->start_time);
+                $endTime = Carbon::parse($slot->end_time);
+                $this->hourRange = $this->generateHourRange($startTime, $endTime);
+
+                // Obtener los subjects del tutor
+                $this->subjects = $slot->user->userSubjects->map(function ($userSubject) {
+                    return $userSubject->subject;
+                });
+            }
         } else {
             $this->resetImageFields();
+            $this->hourRange = [];
+            $this->subjects = [];
         }
+    }
+
+    private function generateHourRange($startTime, $endTime)
+    {
+        $range = [];
+        $current = $startTime->copy();
+        // Generar el rango de horas con intervalos de 20 minutos
+        while ($current->diffInMinutes($endTime) >= 20) {
+            $range[] = $current->format('H:i');
+            $current->addMinutes(20);
+        }
+        return $range;
     }
 
     /**
@@ -229,9 +257,8 @@ class TutorSessions extends Component
         $this->validate([
             'uploadedImage' => 'image|max:2048', // Máximo 2MB
         ]);
-
         // Generar una URL temporal para previsualizar la imagen subida
-        $this->uploadedImagePreview = $this->uploadedImage->temporaryUrl();
+        //$this->uploadedImagePreview = $this->uploadedImage->temporaryUrl();
     }
 
     /**
@@ -249,46 +276,91 @@ class TutorSessions extends Component
      */
     public function estudianteReserva($slotId)
     {
-        if (!$this->uploadedImage) {
-            $this->dispatch('showAlertMessage', type: 'error', message: 'Por favor, sube una imagen antes de continuar.');
+        $this->subjectError = '';
+        if (empty($this->selectedSubject)) {
+            $this->subjectError = 'Debes seleccionar una materia.';
             return;
         }
-
-        // Guardar la imagen en el almacenamiento
-        $path = $this->uploadedImage->store('uploads/bookings', 'public');
-
-        // Lógica para reservar el slot
         $slot = UserSubjectSlot::find($slotId);
-        //dd($slot,"aver quieor la fecha");
-        if ($slot) {
-            $this->bookingService->reservarSlotBoooking($slot);
+        if (!empty($slot)) {
+            $sessionFee = $slot->session_fee ?? 15;
+            $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->selectedSubject);
+            $data = [
+                'id' => $bookedSlot->id,
+                'slot_id' => $slot->id,
+                'tutor_id' => $this->user->id,
+                'tutor_name' => $this->user?->profile?->full_name,
+                'session_time' => parseToUserTz($slot->start_time, $this->timezone)->format('h:i a') . ' - ' . parseToUserTz($slot->end_time, $this->timezone)->format('h:i a'),
+                'currency_symbol' => $this->currency_symbol,
+                'price' => number_format($sessionFee, 2),
+            ];
+            if (Module::has('subscriptions') && Module::isEnabled('subscriptions')) {
+                $data['allowed_for_subscriptions'] = $slot->meta_data['allowed_for_subscriptions'] ?? 0;
+            }
 
-            // Guardar la ruta de la imagen en la base de datos si es necesario
-            $slot->update(['image_path' => $path]);
-            PaymentSlotBooking::create([
-                'image_url' => $path,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);   
+            Cart::add(
+                cartableId: $data['id'],
+                cartableType: SlotBooking::class,
+                name: $data['tutor_name'],
+                qty: 1,
+                price: $sessionFee,
+                options: $data
+            );
+            $this->dispatch('scrollToTop');
 
-            $this->dispatch('showAlertMessage', type: 'success', message: 'Reserva confirmada con éxito.');
-        } else {
-            $this->dispatch('showAlertMessage', type: 'error', message: 'El slot no está disponible.');
+            if (\Nwidart\Modules\Facades\Module::has('kupondeal') && \Nwidart\Modules\Facades\Module::isEnabled('kupondeal')) {
+                // $response = \Modules\KuponDeal\Facades\KuponDeal::applyCouponIfAvailable($slot->subjectGroupSubjects->id, UserSubjectGroupSubject::class);
+            } else {
+                $this->dispatch('cart-updated', cart_data: Cart::content(), total: formatAmount(Cart::total(), true), subTotal: formatAmount(Cart::subtotal(), true), toggle_cart: 'open');
+            }
+
+            // Guardar la imagen del comprobante si existe
+            if ($this->uploadedImage) {
+                try {
+                    // Nombre único para evitar sobrescribir archivos
+                    $fileName = uniqid() . '_' . $this->uploadedImage->getClientOriginalName();
+
+                    // Guarda el archivo en storage/app/public/uploads/bookings
+                    $this->uploadedImage->storeAs('uploads/bookings', $fileName, 'public');
+
+                    // Copia el archivo a public/storage/uploads/bookings
+                    $source = storage_path('app/public/uploads/bookings/' . $fileName);
+                    $destination = public_path('storage/uploads/bookings/' . $fileName);
+                    if (!file_exists(dirname($destination))) {
+                        mkdir(dirname($destination), 0775, true);
+                    }
+                    copy($source, $destination);
+
+                    // Guarda la ruta relativa en la base de datos
+                    $path = 'uploads/bookings/' . $fileName;
+
+                    PaymentSlotBooking::create([
+                        'slot_booking_id' => $bookedSlot->id,
+                        'image_url' => $path,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error('Error al guardar el comprobante: ' . $e->getMessage());
+                    $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: 'Error al guardar el comprobante de pago.');
+                    return;
+                }
+            }
+
+            if (!empty($this->currentSlot)) {
+                $this->dispatch('toggleModel', id: 'slot-detail', action: 'hide');
+            }
+            $this->successMessage = '¡Tutoría reservada exitosamente!';
+            $this->reset(['selectedSubject', 'uploadedImage']);
+            $this->dispatch('showSuccessAndCloseModal');
         }
-
-        $this->resetImageFields();
-        $this->showConfirmationDiv = false;
-
-           // Emitir un evento para cerrar el modal
-        $this->dispatch('toggleModel', id: 'confirmationModal', action: 'hide');
-        // Emitir un evento para cerrar el modal
-        //$this->dispatchBrowserEvent('close-modal', ['id' => 'confirmationModal']);
     }
 
     /**
      * Avanza al siguiente rango de fechas en el calendario.
      */
-    public function nextBookings() {
+    public function nextBookings()
+    {
         $this->currentDate->setTimezone($this->timezone);
         $this->currentDate->addWeek();
         $this->selectedDate = $this->currentDate->startOfWeek($this->startOfWeek)->toDateString();
@@ -298,7 +370,8 @@ class TutorSessions extends Component
     /**
      * Retrocede al rango de fechas anterior en el calendario.
      */
-    public function previousBookings() {
+    public function previousBookings()
+    {
         $this->currentDate->setTimezone($this->timezone);
         $this->currentDate->subWeek();
         $this->selectedDate = $this->currentDate->startOfWeek($this->startOfWeek)->toDateString();
@@ -308,12 +381,13 @@ class TutorSessions extends Component
     /**
      * Calcula el rango de fechas actual basado en la semana seleccionada.
      */
-    protected function getRange(){
+    protected function getRange()
+    {
         $start = $end = null;
         $this->disablePrevious = $this->isCurrent = false;
         $now = Carbon::now($this->timezone);
-        $start = $this->currentDate->copy()->startOfWeek($this->startOfWeek)->toDateString()." 00:00:00";
-        $end = $this->currentDate->copy()->endOfWeek(getEndOfWeek($this->startOfWeek))->toDateString()." 23:59:59";
+        $start = $this->currentDate->copy()->startOfWeek($this->startOfWeek)->toDateString() . " 00:00:00";
+        $end = $this->currentDate->copy()->endOfWeek(getEndOfWeek($this->startOfWeek))->toDateString() . " 23:59:59";
         if ($now->between($this->currentDate->copy()->startOfWeek($this->startOfWeek), $this->currentDate->copy()->endOfWeek(getEndOfWeek($this->startOfWeek)))) {
             $this->disablePrevious = true;
             $this->isCurrent = true;
@@ -330,10 +404,11 @@ class TutorSessions extends Component
      *
      * @return string Formato de fecha.
      */
-    protected function getDateFormat() {
+    protected function getDateFormat()
+    {
         $start = $this->currentDate->copy()->startOfWeek($this->startOfWeek);
         $end = $this->currentDate->copy()->endOfWeek(getEndOfWeek($this->startOfWeek));
-        return $start->format('F') . " ". $start->format('d') . " - " . $end->format('F') . " ". $end->format('d') . " " . $end->format('Y');
+        return $start->format('F') . " " . $start->format('d') . " - " . $end->format('F') . " " . $end->format('d') . " " . $end->format('Y');
     }
 
     /**
@@ -343,7 +418,7 @@ class TutorSessions extends Component
      */
     public function setDefaultTimezone($timezone)
     {
-        if(empty($this->timezone)){
+        if (empty($this->timezone)) {
             $this->timezone = $timezone;
         }
     }
@@ -357,9 +432,9 @@ class TutorSessions extends Component
     {
         Cart::clear();
         $this->dispatch('cart-updated', cart_data: Cart::content(), discount: formatAmount(Cart::discount(), true), total: formatAmount(Cart::total(), true), subTotal: formatAmount(Cart::subtotal(), true), toggle_cart: 'close');
-        if(Auth::check()){
+        if (Auth::check()) {
             $service = new UserService(Auth::user());
-            $service->setAccountSetting('timezone',[$value]);
+            $service->setAccountSetting('timezone', [$value]);
             Cache::forget('userTimeZone_' . Auth::user()?->id);
         }
         $this->currentDate = Carbon::now($value);
@@ -378,57 +453,50 @@ class TutorSessions extends Component
     /**
      * Abre un modal para solicitar una sesión.
      */
-    public function openModel(){
-        if(Auth::check()){
-            if(Auth::user()->role == 'student'){
+    public function openModel()
+    {
+        if (Auth::check()) {
+            if (Auth::user()->role == 'student') {
                 $this->requestSessionForm->setUserFormData(Auth::user());
-                $this->dispatch('toggleModel', id:'requestsession-popup', action:'show');
+                $this->dispatch('toggleModel', id: 'requestsession-popup', action: 'show');
             } else {
                 $this->dispatch('showAlertMessage', type: `error`, message: __('general.not_allowed'));
             }
         } else {
             $this->dispatch('showAlertMessage', type: 'error',  message: __('general.login_error'));
         }
-    }
+    } 
 
     /**
      * Envía una solicitud de sesión al tutor.
      */
-    public function sendRequestSession(){
+    public function sendRequestSession()
+    {
         $this->requestSessionForm->validateData();
         $response = isDemoSite();
-        if( $response ){
+        if ($response) {
             $this->requestSessionForm->reset();
-            $this->dispatch('toggleModel', id:'requestsession-popup', action:'hide');
-            $this->dispatch('showAlertMessage', type: 'error', title:  __('general.demosite_res_title') , message: __('general.demosite_res_txt'));
+            $this->dispatch('toggleModel', id: 'requestsession-popup', action: 'hide');
+            $this->dispatch('showAlertMessage', type: 'error', title: __('general.demosite_res_title'), message: __('general.demosite_res_txt'));
             return;
         }
         $templateData = [
-            'userName' => $this->user?->profile?->full_name, 
-            'studentName' => $this->requestSessionForm->last_name, 
-            'studentEmail' => $this->requestSessionForm->email, 
-            'sessionType' => __('tutor.'.$this->requestSessionForm->type.'_session'), 
+            'userName' => $this->user?->profile?->full_name,
+            'studentName' => $this->requestSessionForm->last_name,
+            'studentEmail' => $this->requestSessionForm->email,
+            'sessionType' => __('tutor.' . $this->requestSessionForm->type . '_session'),
             'message' => $this->requestSessionForm->message
         ];
         dispatch(new SendNotificationJob('sessionRequest', $this->user, $templateData));
         dispatch(new SendNotificationJob('sessionRequest', User::admin(), $templateData));
-        $this->dispatch('toggleModel', id:'requestsession-popup', action:'hide');
-        $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title') , message: __('tutor.request_session_success'));
+        $this->dispatch('toggleModel', id: 'requestsession-popup', action: 'hide');
+        $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: __('tutor.request_session_success'));
         $this->requestSessionForm->reset();
     }
 
 
     public function resetImagePreview()
-{
-    $this->imagePreview = Storage::url('qr/imagen.png'); // Vuelve a cargar la imagen
-}
-
-    /**
-     * Método para alternar la visibilidad del div de confirmación.
-     */
-    /* public function toggleConfirmationDiv($slotId)
     {
-        $this->activeId = $this->activeId === $slotId ? null : $slotId;
+        $this->imagePreview = Storage::url('qr/77b1a7da.jpg'); // Vuelve a cargar la imagen
     }
- */
 }

@@ -161,4 +161,10 @@ return [
     'setup_bank_account' => 'Configurar cuenta bancaria',
     'view_booking' =>'reservar',
     'confirm_booking' => 'Confirmar reserva',
+    'cancel' => 'cancelar',
+    'select_subject'=> 'Seleccionar materia',
+    'select_hour' => 'Seleccionar hora',
+    'confirm' => 'Confirmar',
+    'upload_image' => 'Subir imagen',
+
 ];

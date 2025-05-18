@@ -15,8 +15,13 @@ class PaymentSlotBooking extends Model
         'id',
         'image_url',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'slot_booking_id',
     ];
 
+    public function slotBooking()
+    {
+        return $this->belongsTo(SlotBooking::class, 'slot_booking_id');
+    }
   
 }

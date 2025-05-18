@@ -20,13 +20,15 @@ class SlotBooking extends Model
 
     public $guarded = [];
 
-     public static function boot() {
+    // Campo adicional para el link de la tutoría
+    // 'meeting_link' es string|null
+
+    public static function boot() {
         parent::boot();
         self::deleting(function($booking) {
             $booking->bookingLog()->delete();
             if ($booking->status == 'active') {
                 dispatch(new DeleteGoogleCalendarEvent($booking->booker, $booking->meta_data['event_id'] ?? null));
-                dispatch(new DeleteGoogleCalendarEvent($booking->bookee, $booking->slot->meta_data['event_id'] ?? null));
             }
         });
     }
@@ -69,10 +71,10 @@ class SlotBooking extends Model
         return $this->hasOneThrough(Profile::class, User::class, 'id', 'user_id', 'student_id', 'id');
     }
 
-    // Eliminada la relación con 'user_subject_slot_id'
-    // public function slot(): BelongsTo {
-    //     return $this->belongsTo(UserSubjectSlot::class, 'user_subject_slot_id');
-    // }
+    public function slot()
+    {
+        return $this->belongsTo(UserSubjectSlot::class, 'user_subject_slot_id');
+    }
 
     public function tutor(): HasOneThrough {
         return $this->hasOneThrough(Profile::class, User::class, 'id', 'user_id', 'tutor_id', 'id');
@@ -91,5 +93,15 @@ class SlotBooking extends Model
     }
     public function dispute(): HasOne {
         return $this->hasOne(Dispute::class, 'disputable_id');
+    }
+
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class, 'subject_id');
+    }
+
+    public function paymentSlotBooking()
+    {
+        return $this->hasOne(PaymentSlotBooking::class, 'slot_booking_id');
     }
 }

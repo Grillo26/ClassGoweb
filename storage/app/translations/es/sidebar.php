@@ -73,4 +73,5 @@ return [
     'coupons' => 'Ofertas y cupones',
     'disputes_system' => 'Sistema de disputas',
     'manage-dispute' => 'Gestionar disputa',
+    'tutorias' => 'Tutorías',
 ];

@@ -72,30 +72,30 @@ class MyCalendar extends Component
 
     public function addSession(){
         try {
-            $validatedData = $this->form->validateData();
+        $validatedData = $this->form->validateData();
 
-            // Validación: la hora de fin no puede ser menor o igual que la de inicio
-            if (strtotime($validatedData['end_time']) <= strtotime($validatedData['start_time'])) {
-                $this->addError('form.end_time', 'La hora de fin debe ser mayor que la hora de inicio.');
+        // Validación: la hora de fin no puede ser menor o igual que la de inicio
+        if (strtotime($validatedData['end_time']) <= strtotime($validatedData['start_time'])) {
+            $this->addError('form.end_time', 'La hora de fin debe ser mayor que la hora de inicio.');
                 $this->dispatch('toggleModel', id: 'new-booking-modal', action: 'hide');
                 $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: 'La hora de fin debe ser mayor que la hora de inicio.');
-                return;
-            }
+            return;
+        }
 
-            // Procesar el rango de fechas
-            $dates = explode(' to ', $validatedData['date_range']);
-            $startDate = Carbon::parse($dates[0]);
-            $endDate = isset($dates[1]) ? Carbon::parse($dates[1]) : $startDate;
+        // Procesar el rango de fechas
+        $dates = explode(' to ', $validatedData['date_range']);
+        $startDate = Carbon::parse($dates[0]);
+        $endDate = isset($dates[1]) ? Carbon::parse($dates[1]) : $startDate;
 
-            $period = CarbonPeriod::create($startDate, $endDate);
+        $period = CarbonPeriod::create($startDate, $endDate);
 
-            // Calcular duración en horas
-            $startTime = Carbon::createFromFormat('H:i', $validatedData['start_time']);
-            $endTime = Carbon::createFromFormat('H:i', $validatedData['end_time']);
-            $durationHours = $endTime->diffInMinutes($startTime) / 60;
-            $duracion = $durationHours . ' horas';
+        // Calcular duración en horas
+        $startTime = Carbon::createFromFormat('H:i', $validatedData['start_time']);
+        $endTime = Carbon::createFromFormat('H:i', $validatedData['end_time']);
+        $durationHours = $endTime->diffInMinutes($startTime) / 60;
+        $duracion = $durationHours . ' horas';
 
-            foreach ($period as $date) {
+        foreach ($period as $date) {
                 // Validar solapamiento
                 $overlap = UserSubjectSlot::where('user_id', Auth::id())
                     ->where('date', $date->format('Y-m-d'))
@@ -111,18 +111,18 @@ class MyCalendar extends Component
                     $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: 'Ya existe una reserva en ese rango de horas para el día ' . $date->format('Y-m-d'));
                     return;
                 }
-                UserSubjectSlot::create([
-                    'start_time' => $validatedData['start_time'],
-                    'end_time'   => $validatedData['end_time'],
-                    'duracion'   => $duracion,
-                    'date'       => $date->format('Y-m-d'),
-                    'user_id'    => Auth::id(),
-                ]);
-            }
+            UserSubjectSlot::create([
+                'start_time' => $validatedData['start_time'],
+                'end_time'   => $validatedData['end_time'],
+                'duracion'   => $duracion,
+                'date'       => $date->format('Y-m-d'),
+                'user_id'    => Auth::id(),
+            ]);
+        }
 
-            $this->form->reset();
-            $this->dispatch('toggleModel', id: 'new-booking-modal', action: 'hide');
-            $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: __('general.success_message'));
+        $this->form->reset();
+        $this->dispatch('toggleModel', id: 'new-booking-modal', action: 'hide');
+        $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: __('general.success_message'));
         } catch (\Exception $e) {
             $this->dispatch('toggleModel', id: 'new-booking-modal', action: 'hide');
             // Si es una excepción de validación, mostrar el campo y el mensaje
@@ -198,13 +198,13 @@ class MyCalendar extends Component
     public function editSession()
     {
         try {
-            $validatedData = $this->form->validateData();
-            $slot = UserSubjectSlot::findOrFail($this->editableSlotId);
-            $slot->start_time = $validatedData['start_time'];
-            $slot->end_time = $validatedData['end_time'];
-            $slot->save();
-            $this->dispatch('toggleModel', id: 'edit-session', action: 'hide');
-            $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: __('general.updated_msg'));
+        $validatedData = $this->form->validateData();
+        $slot = UserSubjectSlot::findOrFail($this->editableSlotId);
+        $slot->start_time = $validatedData['start_time'];
+        $slot->end_time = $validatedData['end_time'];
+        $slot->save();
+        $this->dispatch('toggleModel', id: 'edit-session', action: 'hide');
+        $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: __('general.updated_msg'));
         } catch (\Exception $e) {
             $this->dispatch('toggleModel', id: 'edit-session', action: 'hide');
             if ($e instanceof \Illuminate\Validation\ValidationException) {

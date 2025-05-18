@@ -1,72 +1,76 @@
-<div class="am-userinfo_section" wire:init="loadPage" x-data="{
-    defaultTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    timezone: $wire.entangle('timezone'),
-    }"
-    x-init="if(!timezone) {
-        $wire.set('timezone', defaultTimeZone, false);
-    }">
-    @if(empty($pageLoaded))
-    <div class="am-booking-skeleton">
-        @include('skeletons.book-sessions')
-    </div>
-    @else
-    <div class="d-none" wire:target="jumpToDate, nextBookings, previousBookings, timezone, filter" wire:loading.class.remove="d-none">
-        @include('skeletons.book-sessions')
-    </div>
-    <div class="am-userinfo_content" wire:loading.class="d-none" wire:target="jumpToDate, nextBookings, previousBookings, timezone, filter">
-        @php
-        $show_all = false;
-        $showAll = array();
-        @endphp
-        <div class="am-booksession-title">
-            <h3>{{ __('tutor.book_session') }} </h3>
-           {{-- <button class="am-btn" wire:click='openModel' wire:loading.class="am-btn_disable" wire:target="openModel">{{ __('tutor.request_a_session') }}</button> --}}
+<div>
+    <div class="am-userinfo_section" wire:init="loadPage" x-data="{
+        defaultTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timezone: $wire.entangle('timezone'),
+        }"
+        x-init="if(!timezone) {
+            $wire.set('timezone', defaultTimeZone, false);
+        }">
+        @if(empty($pageLoaded))
+        <div class="am-booking-skeleton">
+            @include('skeletons.book-sessions')
         </div>
-        <div class="am-booking-calander">
-            <div class="am-booking-calander_header">
-                <div class="am-booking-dates-slot">
-                    <div class="am-booking-calander-day">
-                        <a href="javascript:void(0);" @if($isCurrent) disabled @else wire:click="jumpToDate()" @endif>
-                            {{ __('calendar.today') }}
-                        </a>
-                    </div>
-                    <div wire:ignore class="am-booking-calander-date">
-                        <input type="text" id="flat-picker" />
-                    </div>
-                </div>
-                <div class="am-booking-filter-slot">
-                    <div class="flatpicker" x-init="$wire.dispatch('initSelect2', {target:'.am-customselect'})" wire:ignore>
-                        <span class="am-select">
-                            <select
-                                data-componentid="@this"
-                                class="am-customselect"
-                                value="{{$timezone}}"
-                                data-searchable="true"
-                                id="timezone"
-                                data-live="true"
-                                data-wiremodel="timezone"
-                                data-placeholder="{{ __('settings.timezone_placeholder') }}">
-                                <option value=""></option>
-                                @foreach (timezone_identifiers_list() as $tz)
-                                <option value="{{ $tz }}" x-bind:selected="timezone == '{{ $tz }}'">{{ $tz }}</option>
-                                @endforeach
-                            </select>
-                            <div class="am-tooltipicon am-custom-tooltip">
-                                <span class="am-tooltip-text">
-                                    <span>{{ __('tutor.tooltip_text') }}</span>
-                                </span>
-                                <i class="am-icon-exclamation-01"></i>
-                            </div>
-                        </span>
-                    </div>
+        @else
+        <div class="d-none" wire:target="jumpToDate, nextBookings, previousBookings, timezone, filter" wire:loading.class.remove="d-none">
+            @include('skeletons.book-sessions')
+        </div>
+        <div class="am-userinfo_content" wire:loading.class="d-none" wire:target="jumpToDate, nextBookings, previousBookings, timezone, filter">
+            @php
+            $show_all = false;
+            $showAll = array();
+            @endphp
+            <div class="am-booksession-title">
+                <h3>{{ __('tutor.book_session') }} </h3>
+                {{-- <button class="am-btn" wire:click='openModel' wire:loading.class="am-btn_disable" wire:target="openModel">{{ __('tutor.request_a_session') }}</button> --}}
+            </div>
 
+
+
+            {{-- header del calendario --}}
+            <div class="am-booking-calander">
+                <div class="am-booking-calander_header">
+                    <div class="am-booking-dates-slot">
+                        <div class="am-booking-calander-day">
+                            <a href="javascript:void(0);" @if($isCurrent) disabled @else wire:click="jumpToDate()" @endif>
+                                {{ __('calendar.today') }}
+                            </a>
+                        </div>
+                        <div wire:ignore class="am-booking-calander-date">
+                            <input type="text" id="flat-picker" />
+                        </div>
+                    </div>
+                    <div class="am-booking-filter-slot">
+                        {{--<div class="flatpicker" x-init="$wire.dispatch('initSelect2', {target:'.am-customselect'})" wire:ignore>
+                            <span class="am-select">
+                                <select
+                                    data-componentid="@this"
+                                    class="am-customselect"
+                                    value="{{$timezone}}"
+                        data-searchable="true"
+                        id="timezone"
+                        data-live="true"
+                        data-wiremodel="timezone"
+                        data-placeholder="{{ __('settings.timezone_placeholder') }}">
+                        <option value=""></option>
+                        @foreach (timezone_identifiers_list() as $tz)
+                        <option value="{{ $tz }}" x-bind:selected="timezone == '{{ $tz }}'">{{ $tz }}</option>
+                        @endforeach
+                        </select>
+                        <div class="am-tooltipicon am-custom-tooltip">
+                            <span class="am-tooltip-text">
+                                <span>{{ __('tutor.tooltip_text') }}</span>
+                            </span>
+                            <i class="am-icon-exclamation-01"></i>
+                        </div>
+                        </span>
+                    </div> --}}
 
 
 
                     <div class="am-booking-filter-wrapper">
-                        <a class="am-booking-filter" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-auto-close="outside">
+                        {{-- <a class="am-booking-filter" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-auto-close="outside">
                             <i class="am-icon-sliders-horiz-01"></i>
-                        </a>
+                        </a> --}}
                         <form class="am-itemdropdown_list am-filter-list dropdown-menu" aria-labelledby="dropdownMenuLink" x-on:submit.prevent
                             x-data="{
                                     selectedValues: [],
@@ -153,6 +157,11 @@
                     </div>
                 </div>
             </div>
+
+
+
+
+
 
 
             <div class="am-booking-calander_body">
@@ -243,7 +252,14 @@
                                                                 <button class="am-booksession" wire:loading.class="am-btn_disable" wire:target="bookSiosion $slot->id }})" wire:click.prevent="boobookS({sionlot->id }})" >{{ __('tutor.book_session_txt') }}</button>
                                                     @endif
                                                     --}}
-                                                    <button class="am-viewdetail" wire:loading.class="am-btn_disable" wire:target="estudianteReserva('{{ $slot->id }}')" wire:click.prevent="toggleConfirmationDiv('{{ $slot->id }}');" data-bs-toggle="modal" data-bs-target="#confirmationModal">{{ __('tutor.view_booking') }}</button>
+                                                    @php
+                                                    $isPastDate = \Carbon\Carbon::parse($date)->lt(\Carbon\Carbon::now()->startOfDay());
+                                                    @endphp
+                                                    @if(!$isPastDate)
+                                                    <button class="am-viewdetail" wire:loading.class="am-btn_disable" wire:target="estudianteReserva('{{ $slot->id }}')" wire:click.prevent="toggleConfirmationDiv('{{ $slot->id }}');" data-bs-toggle="modal" data-bs-target="#confirmationModal">
+                                                        {{ __('tutor.view_booking') }}
+                                                    </button>
+                                                    @endif
                                                 </div>
 
                                             </div>
@@ -309,7 +325,14 @@
                                         @if((Auth::check() && Auth()->user()->role == 'student') && !in_array($slot->id, $cartItemIds) && $available_slot > 0)
                                         <button class="am-booksession" wire:loading.class="am-btn_disable" wire:target="bookSession({{ $slot->id }})" wire:click.prevent="bookSession({{ $slot->id }})">{{ __('tutor.book_session_txt') }}</button>
                                         @endif
-                                        <button class="am-viewdetail" wire:loading.class="am-btn_disable" wire:target="showSlotDetail('{{ $slot->id }}')" wire:click.prevent="showSlotDetail('{{ $slot->id }}');">{{ __('tutor.view_detail') }}</button>
+                                        @php
+                                        $isPastDate = \Carbon\Carbon::parse($date)->lt(\Carbon\Carbon::now()->startOfDay());
+                                        @endphp
+                                        @if(!$isPastDate)
+                                        <button class="am-viewdetail" wire:loading.class="am-btn_disable" wire:target="estudianteReserva('{{ $slot->id }}')" wire:click.prevent="toggleConfirmationDiv('{{ $slot->id }}');" data-bs-toggle="modal" data-bs-target="#confirmationModal">
+                                            {{ __('tutor.view_booking') }}
+                                        </button>
+                                        @endif
                                     </div>
 
                                 </div>
@@ -340,70 +363,18 @@
 
 
     </div>
+
+
+
+
+
     <x-slot-detail-modal :cartItems="$cartItems" :timezone="$timezone" :currentSlot="$currentSlot" :user="$user" wire:key="{{ time() }}" />
-    
-    
-    
     @endif
 
 
 
 
 
-
-    <div wire:ignore.self class="modal fade am-requestsessionpopup" id="requestsession-popup" data-bs-backdrop="static" x-data="{requestSessionForm: @entangle('requestSessionForm')}">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="am-modal-header">
-                    <h2>{{ __('tutor.request_a_session') }}</h2>
-                    <span data-bs-dismiss="modal" class="am-closepopup">
-                        <i class="am-icon-multiply-01"></i>
-                    </span>
-                </div>
-                <div class="am-modal-body">
-                    <ul class="nav nav-pills am-booking-tabs" id="pills-tab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" @click="requestSessionForm.type = 'private'" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">
-                                {{ __('tutor.private_session') }}
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" @click="requestSessionForm.type = 'group'" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">
-                                {{ __('tutor.group_session') }}
-                            </button>
-                        </li>
-                    </ul>
-                    <form class="am-themeform">
-                        <fieldset>
-                            <div class="form-group form-group-two-wrap">
-                                <div @error('requestSessionForm.first_name') class="am-invalid" @enderror>
-                                    <label class="am-label am-important2" for="name">{{ __('auth.first_name') }}</label>
-                                    <input type="text" x-model="requestSessionForm.first_name" class="form-control" placeholder="{{ __('auth.first_name') }}">
-                                    <x-input-error field_name="requestSessionForm.first_name" />
-                                </div>
-                                <div @error('requestSessionForm.last_name') class="am-invalid" @enderror>
-                                    <label class="am-label am-important2" for="email">{{ __('auth.last_name') }}</label>
-                                    <input type="text" x-model="requestSessionForm.last_name" class="form-control" placeholder="{{ __('auth.last_name') }}">
-                                    <x-input-error field_name="requestSessionForm.last_name" />
-                                </div>
-                            </div>
-                            <div class="form-group @error('requestSessionForm.email') am-invalid @enderror">
-                                <label class="am-label am-important2" for="email">{{ __('auth.email_placeholder') }}</label>
-                                <input type="text" x-model="requestSessionForm.email" class="form-control" placeholder="{{ __('auth.email_placeholder') }}">
-                                <x-input-error field_name="requestSessionForm.email" />
-                            </div>
-                            <div class="form-group @error('requestSessionForm.message') am-invalid @enderror">
-                                <label class="am-label am-important2" for="email">{{ __('tutor.message') }}</label>
-                                <textarea name="message" x-model="requestSessionForm.message" placeholder="{{ __('tutor.message_placeholder') }}"></textarea>
-                                <x-input-error field_name="requestSessionForm.message" />
-                            </div>
-                        </fieldset>
-                    </form>
-                    <button class="am-btn" wire:click="sendRequestSession" wire:loading.class="am-btn_disable" wire:target="sendRequestSession">{{ __('tutor.send_request') }}</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div wire:ignore.self class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -413,6 +384,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    @if($successMessage)
+                        <div class="alert alert-success mt-2 mb-3 text-center">{{ $successMessage }}</div>
+                    @endif
                     <!-- Imagen obtenida desde el backend -->
                     @if($imagePreview)
                     <div class="mb-4">
@@ -421,33 +395,65 @@
                     @endif
 
                     <!-- Previsualización de la imagen subida por el usuario -->
+                    {{--
+
                     @if($uploadedImagePreview)
                     <div class="mb-4">
                         <img src="{{ $uploadedImagePreview }}" alt="Previsualización de la imagen subida" class="w-full h-auto border border-gray-300 rounded-md">
-                    </div>
-                    @endif
+                </div>
+                @endif
 
-                    <!-- Input para subir una imagen -->
-                    <div class="mb-4">
-                        <label for="image-upload" class="block text-sm font-medium text-gray-700 mb-2">{{ __('tutor.upload_image') }}</label>
-                        <input type="file" id="image-upload" wire:model="uploadedImage" accept="image/*" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring focus:ring-indigo-500">
-                        @error('uploadedImage')
-                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
-                    </div>
+                --}}
+
+                <!-- Input para subir una imagen -->
+                <div class="mb-4">
+                    <label for="image-upload" class="block text-sm font-medium text-gray-700 mb-2">{{ __('tutor.upload_image') }}</label>
+                    <input type="file" id="image-upload" wire:model="uploadedImage" accept="image/*" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring focus:ring-indigo-500">
+                    @error('uploadedImage')
+                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('tutor.cancel') }}</button>
-                    <button type="button" class="btn btn-primary" wire:click.prevent="estudianteReserva('{{ $selectedSlotId }}');">{{ __('tutor.confirm') }}</button>
+
+                <!-- Selector de hora basado en el rango de horas -->
+
+                @if(!empty($hourRange))
+                <div class="mb-4">
+                    <label for="hour-selector" class="block text-sm font-medium text-gray-700 mb-2">{{ __('tutor.select_hour') }}</label>
+                    <select id="hour-selector" wire:model="selectedHour" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring focus:ring-indigo-500">
+                        @foreach($hourRange as $hour)
+                        <option value="{{ $hour }}">{{ $hour }}</option>
+                        @endforeach
+                    </select>
                 </div>
+                @endif
+
+
+                <!-- Selector de subjects del tutor -->
+                @if(!empty($subjects))
+                <div class="mb-4">
+                    <label for="subject-selector" class="block text-sm font-medium text-gray-700 mb-2">{{ __('tutor.select_subject') }}</label>
+                    <select id="subject-selector" wire:model="selectedSubject" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring focus:ring-indigo-500">
+                        <option value="">Selecciona una materia</option>
+                        @foreach($subjects as $subject)
+                        <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                        @endforeach
+                    </select>
+                    @if($subjectError)
+                        <span class="text-red-500 text-sm mt-1">{{ $subjectError }}</span>
+                    @endif
+                </div>
+                @endif
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('tutor.cancel') }}</button>
+                <button type="button" class="btn btn-primary" wire:click.prevent="estudianteReserva('{{ $selectedSlotId }}'); return false;">{{ __('tutor.confirm') }}</button>
             </div>
         </div>
     </div>
 </div>
 
-
-
-
+</div>
+<div id="data-container" data-start-of-week="{{ json_encode($startOfWeek) }}"></div>
 
 @push('styles')
 @vite([
@@ -483,11 +489,12 @@
             if (dateInstance) {
                 dateInstance.destroy();
             }
-            let startOfWeek = @js($startOfWeek);
+
+            let startOfWeek = JSON.parse(document.getElementById('data-container').getAttribute('data-start-of-week'));
             let config = {
                 defaultDate: parseDateRange(currentDate),
                 onChange: function(selectedDates, dateStr, instance) {
-                    @this.call('jumpToDate', dateStr);
+                    Livewire.emit('jumpToDate', dateStr);
                 },
                 disableMobile: true,
                 minDate: "{{ Carbon\Carbon::now($timezone)->toDateString() }}",
@@ -498,10 +505,10 @@
                 ],
                 dateFormat: 'Y-m-d',
                 onReady: function(selectedDates, dateStr, instance) {
-                    instance.input.value = currentDate
+                    // Código adicional si es necesario
                 }
             };
-            dateInstance = flatpickr($(`#flat-picker`), config);
+            dateInstance = flatpickr('#flat-picker', config);
         }
 
         function parseDateRange(dateRangeStr) {
@@ -559,4 +566,46 @@
         });
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Obtener los datos del atributo data-* del contenedor
+        let dataContainer = document.getElementById('data-container');
+        let startOfWeek = JSON.parse(dataContainer.getAttribute('data-start-of-week'));
+
+        // Usar Livewire.emit para manejar eventos correctamente
+        document.getElementById('flat-picker').addEventListener('change', function(event) {
+            let dateStr = event.target.value;
+            Livewire.emit('jumpToDate', dateStr);
+        });
+    });
+</script>
+<script>
+    document.addEventListener('closeConfirmationModal', function () {
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmationModal'));
+        modal.hide();
+    });
+</script>
+<script>
+    let lastScrollY = 0;
+    document.addEventListener('DOMContentLoaded', function () {
+        // Captura la posición justo antes de la acción Livewire
+        document.querySelectorAll('.btn-primary[wire\\:click]').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                lastScrollY = window.scrollY;
+                e.preventDefault();
+                return false;
+            });
+        });
+        document.addEventListener('showSuccessAndCloseModal', function () {
+            setTimeout(function() {
+                const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmationModal'));
+                modal.hide();
+                setTimeout(function() {
+                    window.scrollTo({ top: lastScrollY, behavior: 'auto' });
+                }, 300);
+            }, 1500);
+        });
+    });
+</script>
 @endpush
+</div>
