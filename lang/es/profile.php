@@ -70,7 +70,7 @@ return [
     'description_text' => 'Proporcione su formación académica para ayudarnos a evaluar sus calificaciones.',
     'resume_highlights' => 'Aspectos destacados del currículum',
     'social_profile_placeholder' => 'Introduzca :profile_name :type',
-    'basic_info' => 'Información básica',
+    'basic_info' => 'Proporcione su informacion personal a continuación para completar su perfil',
     'email' => 'Correo electrónico',
     'phone_number' => 'Número de teléfono',
     'gender' => 'Género',
