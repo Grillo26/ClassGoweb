@@ -101,6 +101,9 @@ class ManageSubjects extends Component
 
     public function saveNewSubject()
     {
+
+        // dd($this->form->validateData());
+       
         $validate = $this->form->validateData();
         $response = isDemoSite();
         if ($response) {
@@ -139,6 +142,15 @@ class ManageSubjects extends Component
         $this->loadData();
     }
     }
+
+
+    
+public function updateSubjectGroupOrder($order)
+{
+    // Aquí puedes guardar el nuevo orden si lo necesitas
+    // Ejemplo: Log::info($order);
+}
+
 
     public function loadSubjectsByGroup($groupId)
     {
@@ -257,13 +269,15 @@ class ManageSubjects extends Component
 
         if ($userSubject) {
             $this->form->reset();
+            //dd($userSubject,"aver");
             $this->form->edit_id = $userSubject->id;
             $this->form->subject_id = $userSubject->subject_id;
             $this->form->description = $userSubject->description;
             $this->form->image = $userSubject->image;
-
+          
+            //dd($this->form, "form");
             $subject = $this->subjectService->getSubjectbyId($userSubject->subject_id);
-
+          
             $result = [
                 [
                     'id' => '',
