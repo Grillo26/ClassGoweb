@@ -31,25 +31,32 @@
                             $tutorInfo['name'] = $tutor->profile->full_name;
                             $tutorInfo['id'] = $tutor?->id;
                             if (!empty($tutor->profile->image) && Storage::disk(getStorageDisk())->exists($tutor->profile->image)) {
-                                $tutorInfo['image'] = resizedImage($tutor->profile->image, 80, 80);
+                                $tutorInfo['image'] = url('storage/profile_images/' . basename($tutor->profile->image));
                             } else {
-                                $tutorInfo['image'] = setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 36, 36);
+                                $tutorInfo['image'] = setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : url('storage/profile_images/placeholder.png');
                             }
                         @endphp
                         @if(!empty($tutor?->profile?->image))
                             <div class="am-tutorsearch_card" id="profile-{{ $tutor->id }}">
                                 <div class="am-tutorsearch_video">
-                                    <div class="am-tutorImage"> 
-                                    @if (!empty($tutorInfo['image']))
-                            <img class="image-profile" src="{{ $tutorInfo['image'] }}">
-                        @elseif(!empty($old_image))
-                            <img src="{{ url(Storage::url($old_image))  }}" alt="">
-                        @else
-                            <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 132, 132) }}" alt="">
-                        @endif
-                                    </div>
-                                    <div class="am-tutorsearch_btns">
-                                        <a href="{{ route('tutor-detail',['slug' => $tutor->profile->slug]).'#availability' }}" class="am-white-btn">{{ __('tutor.book_session') }}<i class="am-icon-calender-duration"></i></a>
+                                    @php
+                                        $imagePath = public_path('storage/profile_images/' . basename($tutor?->profile?->image));
+                                        $imagePath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $imagePath);
+                                        $defaultAvatar = setting('_general.default_avatar_for_user');
+                                        
+                                        if (!empty($tutor?->profile?->image) && file_exists($imagePath)) {
+                                            $tutorInfo['image'] = url('storage/profile_images/' . basename($tutor->profile->image));
+                                        } elseif ($defaultAvatar && is_array($defaultAvatar) && isset($defaultAvatar[0]['path'])) {
+                                            $tutorInfo['image'] = url(Storage::url($defaultAvatar[0]['path']));
+                                        } else {
+                                            $tutorInfo['image'] = url('storage/profile_images/placeholder.png');
+                                        }
+                                    @endphp
+                                    <img class="rounded-xl d-block mx-auto" src="{{ $tutorInfo['image'] }}" alt="{{ $tutor->profile->full_name }}"style ="border-radius: 16px;" width="250" height="250"><div class="am-tutorsearch_btns">
+                                        
+                                    
+                                    
+                                    <a href="{{ route('tutor-detail',['slug' => $tutor->profile->slug]).'#availability' }}" class="am-white-btn">{{ __('tutor.book_session') }}<i class="am-icon-calender-duration"></i></a>
                                         @if(Auth::check() && $allowFavAction)
                                             <a href="javascript:;" @click=" tutorInfo = @js($tutorInfo);threadId=''; recepientId=@js($tutor->id); $nextTick(() => $wire.dispatch('toggleModel', {id: 'message-model-'+@js($tutor->id),action:'show'}) )" class="am-btn">{{ __('tutor.send_message') }}<i class="am-icon-chat-03"></i></a>
                                             <a href="javascript:void(0);" id="toggleFavourite-{{ $tutor->id }}" wire:click.prevent="toggleFavourite({{ $tutor->id }})" @class(['am-likebtn', 'active' => in_array($tutor->id, $favouriteTutors)])> <i class="am-icon-heart-01"></i></a>
@@ -64,15 +71,24 @@
                                 <div class="am-tutorsearch_content">
                                     <div class="am-tutorsearch_head">
                                         <div class="am-tutorsearch_user">
+
+                                        
+                                            @php
+                                                $imagePath = public_path('storage/profile_images/' . basename($tutor?->profile?->image));
+                                                $imagePath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $imagePath);
+                                                $defaultAvatar = setting('_general.default_avatar_for_user');
+                                                if (!empty($tutor?->profile?->image) && file_exists($imagePath)) {
+                                                    $userImage = url('storage/profile_images/' . basename($tutor->profile->image));
+                                                } elseif ($defaultAvatar && is_array($defaultAvatar) && isset($defaultAvatar[0]['path'])) {
+                                                    $userImage = url(Storage::url($defaultAvatar[0]['path']));
+                                                } else {
+                                                    $userImage = url('storage/profile_images/placeholder.png');
+                                                }
+                                            @endphp
                                             <figure class="am-tutorvone_img">
-                                                @if(!empty($tutor->profile->image) && Storage::disk(getStorageDisk())->exists($tutor->profile->image))
-                                                    <img src="{{ resizedImage($tutor->profile->image, 50, 50) }}" class="am-user_image" alt="{{$tutor->profile->full_name}}" />
-                                                @else 
-                                                    <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 50, 50) }}" alt="{{ $tutor->profile->full_name }}" />
-                                                @endif
+                                                <img src="{{ $userImage }}" class="am-user_image" alt="{{ $tutor->profile->full_name }}" />
                                                 <span @class(['am-userstaus', 'am-userstaus_online' => $tutor->is_online])></span>
                                             </figure>
-                                            
                                             <div class="am-tutorsearch_user_name">
                                                 <h3>
                                                     <a href="{{ route('tutor-detail',['slug' => $tutor->profile->slug]) }}">{{ $tutor->profile->full_name }}</a>
@@ -172,12 +188,20 @@
                                 <div class="am-tutorsearch_content">
                                     <div class="am-tutorsearch_head">
                                         <div class="am-tutorsearch_user">
+                                            @php
+                                                $imagePath = public_path('storage/profile_images/' . basename($tutor?->profile?->image));
+                                                $imagePath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $imagePath);
+                                                $defaultAvatar = setting('_general.default_avatar_for_user');
+                                                if (!empty($tutor?->profile?->image) && file_exists($imagePath)) {
+                                                    $userImage = url('storage/profile_images/' . basename($tutor->profile->image));
+                                                } elseif ($defaultAvatar && is_array($defaultAvatar) && isset($defaultAvatar[0]['path'])) {
+                                                    $userImage = url(Storage::url($defaultAvatar[0]['path']));
+                                                } else {
+                                                    $userImage = url('storage/profile_images/placeholder.png');
+                                                }
+                                            @endphp
                                             <figure class="am-tutorvone_img">
-                                                @if(!empty($tutor->profile->image) && Storage::disk(getStorageDisk())->exists($tutor->profile->image))
-                                                    <img src="{{ resizedImage($tutor->profile->image, 50, 50) }}" class="am-user_image" alt="{{$tutor->profile->full_name}}" />
-                                                @else 
-                                                    <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 50, 50) }}" alt="{{ $tutor->profile->full_name }}" />
-                                                @endif
+                                                <img src="{{ $userImage }}" class="am-user_image" alt="{{ $tutor->profile->full_name }}" />
                                                 <span @class(['am-userstaus', 'am-userstaus_online' => $tutor->is_online])></span>
                                             </figure>
                                             <div class="am-tutorsearch_user_name">
