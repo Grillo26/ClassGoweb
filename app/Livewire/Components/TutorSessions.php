@@ -19,6 +19,7 @@ use App\Models\UserSubjectSlot;
 use Illuminate\Support\Facades\Storage;
 use Livewire\WithFileUploads;
 use App\Models\PaymentSlotBooking;
+use Illuminate\Support\Facades\Log;
 
 
 class TutorSessions extends Component
@@ -47,6 +48,9 @@ class TutorSessions extends Component
     public $hourRange = []; // Rango de horas para el modal
     public $selectedHour; // Hora seleccionada por el usuario
     public $subjects = []; // Lista de subjects del tutor
+    public $selectedSubject;
+    public $subjectError = '';
+    public $successMessage = '';
     private $bookingService, $subjectService;
 
     public RequestSessionForm $requestSessionForm;
@@ -122,15 +126,12 @@ class TutorSessions extends Component
      *
      * @param int $id ID del slot a reservar.
      */
-
-
     public function bookSession($id)
     {
         $slot = $this->bookingService->getSlotDetail($id);
-        dd($slot, "aver quieor la fecha");
         if (!empty($slot)) {
             if ($slot->total_booked < $slot->spaces) {
-                $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->user);
+                $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->selectedSubject);
                 $data = [
                     'id' => $bookedSlot->id,
                     'slot_id' => $slot->id,
@@ -275,49 +276,84 @@ class TutorSessions extends Component
      */
     public function estudianteReserva($slotId)
     {
-        if (!$this->uploadedImage) {
-            $this->dispatch('showAlertMessage', type: 'error', message: 'Por favor, sube una imagen antes de continuar.');
+        $this->subjectError = '';
+        if (empty($this->selectedSubject)) {
+            $this->subjectError = 'Debes seleccionar una materia.';
             return;
         }
-
-        // Guardar la imagen en el almacenamiento
-        $path = $this->uploadedImage->store('temp', 'public');
-
-        // Mover a public/uploads/bookings
-        $destinationPath = public_path('storage/uploads/bookings');
-        if (!file_exists($destinationPath)) {
-            mkdir($destinationPath, 0755, true);
-        }
-        $filename = basename($path);
-        rename(storage_path('app/public/' . $path), $destinationPath . '/' . $filename);
-
-        $path = 'uploads/bookings/' . $filename;
-
-        // Lógica para reservar el slot
         $slot = UserSubjectSlot::find($slotId);
-        if ($slot) {
-            $booking = $this->bookingService->reservarSlotBoooking($slot);
+        if (!empty($slot)) {
+            $sessionFee = $slot->session_fee ?? 15;
+            $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->selectedSubject);
+            $data = [
+                'id' => $bookedSlot->id,
+                'slot_id' => $slot->id,
+                'tutor_id' => $this->user->id,
+                'tutor_name' => $this->user?->profile?->full_name,
+                'session_time' => parseToUserTz($slot->start_time, $this->timezone)->format('h:i a') . ' - ' . parseToUserTz($slot->end_time, $this->timezone)->format('h:i a'),
+                'currency_symbol' => $this->currency_symbol,
+                'price' => number_format($sessionFee, 2),
+            ];
+            if (Module::has('subscriptions') && Module::isEnabled('subscriptions')) {
+                $data['allowed_for_subscriptions'] = $slot->meta_data['allowed_for_subscriptions'] ?? 0;
+            }
 
-            // Guardar la ruta de la imagen en la base de datos si es necesario
-            $slot->update(['image_path' => $path]);
+            Cart::add(
+                cartableId: $data['id'],
+                cartableType: SlotBooking::class,
+                name: $data['tutor_name'],
+                qty: 1,
+                price: $sessionFee,
+                options: $data
+            );
+            $this->dispatch('scrollToTop');
 
-            PaymentSlotBooking::create([
-                'slot_booking_id' => $booking->id, // Asociar el ID de la reserva
-                'image_url' => $path,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
+            if (\Nwidart\Modules\Facades\Module::has('kupondeal') && \Nwidart\Modules\Facades\Module::isEnabled('kupondeal')) {
+                // $response = \Modules\KuponDeal\Facades\KuponDeal::applyCouponIfAvailable($slot->subjectGroupSubjects->id, UserSubjectGroupSubject::class);
+            } else {
+                $this->dispatch('cart-updated', cart_data: Cart::content(), total: formatAmount(Cart::total(), true), subTotal: formatAmount(Cart::subtotal(), true), toggle_cart: 'open');
+            }
 
-            $this->dispatch('showAlertMessage', type: 'success', message: 'Reserva confirmada con éxito.');
-        } else {
-            $this->dispatch('showAlertMessage', type: 'error', message: 'El slot no está disponible.');
+            // Guardar la imagen del comprobante si existe
+            if ($this->uploadedImage) {
+                try {
+                    // Nombre único para evitar sobrescribir archivos
+                    $fileName = uniqid() . '_' . $this->uploadedImage->getClientOriginalName();
+
+                    // Guarda el archivo en storage/app/public/uploads/bookings
+                    $this->uploadedImage->storeAs('uploads/bookings', $fileName, 'public');
+
+                    // Copia el archivo a public/storage/uploads/bookings
+                    $source = storage_path('app/public/uploads/bookings/' . $fileName);
+                    $destination = public_path('storage/uploads/bookings/' . $fileName);
+                    if (!file_exists(dirname($destination))) {
+                        mkdir(dirname($destination), 0775, true);
+                    }
+                    copy($source, $destination);
+
+                    // Guarda la ruta relativa en la base de datos
+                    $path = 'uploads/bookings/' . $fileName;
+
+                    PaymentSlotBooking::create([
+                        'slot_booking_id' => $bookedSlot->id,
+                        'image_url' => $path,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error('Error al guardar el comprobante: ' . $e->getMessage());
+                    $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: 'Error al guardar el comprobante de pago.');
+                    return;
+                }
+            }
+
+            if (!empty($this->currentSlot)) {
+                $this->dispatch('toggleModel', id: 'slot-detail', action: 'hide');
+            }
+            $this->successMessage = '¡Tutoría reservada exitosamente!';
+            $this->reset(['selectedSubject', 'uploadedImage']);
+            $this->dispatch('showSuccessAndCloseModal');
         }
-
-        $this->resetImageFields();
-        $this->showConfirmationDiv = false;
-
-        // Emitir un evento para cerrar el modal
-        $this->dispatch('toggleModel', id: 'confirmationModal', action: 'hide');
     }
 
     /**

@@ -277,7 +277,7 @@
                         <div class="am-modal-body">
                             <div class="am-seatsinfocard">
                                 <figure class="am-seatsinfocard_img">
-                                    <img :src="sessionInfo?.image" alt="sessionInfo?.subject">
+                                    <img :src="sessionInfo?image" alt="sessionInfo?.subject">
                                 </figure>
                                 <div class="am-seatsinfocard_details" >
                                     <p x-text="sessionInfo?.subject"></p>

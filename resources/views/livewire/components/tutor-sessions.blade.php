@@ -384,6 +384,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    @if($successMessage)
+                        <div class="alert alert-success mt-2 mb-3 text-center">{{ $successMessage }}</div>
+                    @endif
                     <!-- Imagen obtenida desde el backend -->
                     @if($imagePreview)
                     <div class="mb-4">
@@ -430,20 +433,21 @@
                 <div class="mb-4">
                     <label for="subject-selector" class="block text-sm font-medium text-gray-700 mb-2">{{ __('tutor.select_subject') }}</label>
                     <select id="subject-selector" wire:model="selectedSubject" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring focus:ring-indigo-500">
+                        <option value="">Selecciona una materia</option>
                         @foreach($subjects as $subject)
                         <option value="{{ $subject->id }}">{{ $subject->name }}</option>
                         @endforeach
                     </select>
+                    @if($subjectError)
+                        <span class="text-red-500 text-sm mt-1">{{ $subjectError }}</span>
+                    @endif
                 </div>
                 @endif
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('tutor.cancel') }}</button>
-                <button type="button" class="btn btn-primary" wire:click.prevent="estudianteReserva('{{ $selectedSlotId }}');">{{ __('tutor.confirm') }}</button>
+                <button type="button" class="btn btn-primary" wire:click.prevent="estudianteReserva('{{ $selectedSlotId }}'); return false;">{{ __('tutor.confirm') }}</button>
             </div>
-
-
-
         </div>
     </div>
 </div>
@@ -572,6 +576,34 @@
         document.getElementById('flat-picker').addEventListener('change', function(event) {
             let dateStr = event.target.value;
             Livewire.emit('jumpToDate', dateStr);
+        });
+    });
+</script>
+<script>
+    document.addEventListener('closeConfirmationModal', function () {
+        const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmationModal'));
+        modal.hide();
+    });
+</script>
+<script>
+    let lastScrollY = 0;
+    document.addEventListener('DOMContentLoaded', function () {
+        // Captura la posición justo antes de la acción Livewire
+        document.querySelectorAll('.btn-primary[wire\\:click]').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                lastScrollY = window.scrollY;
+                e.preventDefault();
+                return false;
+            });
+        });
+        document.addEventListener('showSuccessAndCloseModal', function () {
+            setTimeout(function() {
+                const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmationModal'));
+                modal.hide();
+                setTimeout(function() {
+                    window.scrollTo({ top: lastScrollY, behavior: 'auto' });
+                }, 300);
+            }, 1500);
         });
     });
 </script>

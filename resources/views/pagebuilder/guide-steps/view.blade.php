@@ -52,9 +52,21 @@ $alianzas = Alianza::where('activo', true)->orderBy('orden')->get();
 .alianzas-carousel {
     width: 100%;
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: row;
     gap: 30px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    scrollbar-width: thin; /* Firefox */
+    padding-bottom: 10px;
+}
+
+.alianzas-carousel::-webkit-scrollbar {
+    height: 10px;
+}
+.alianzas-carousel::-webkit-scrollbar-thumb {
+    background: #0a4a5a;
+    border-radius: 4px;
 }
 
 .alianzas-slide {

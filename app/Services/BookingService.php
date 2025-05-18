@@ -506,35 +506,26 @@ class BookingService
         return $slotBooking;
     }
 
-    public function reservarSlotBoooking($slot)
+    public function reservarSlotBoooking($slot, $subjectId = null)
     {
         // Crear la reserva
-      // Extraer solo la fecha del objeto Carbon $slot->date (formato Y-m-d)
-    $dateOnly = $slot->date->format('Y-m-d');
-    
-    // Extraer solo la hora del objeto Carbon $slot->start_time (formato H:i:s)
-    $timeOnly = $slot->start_time->format('H:i:s');
-    
-    // Combinar la fecha y la hora en un string
-    $dateTimeString = $dateOnly . ' ' . $timeOnly;
-    
-    // Crear un nuevo objeto Carbon con la combinación
-    $startDateTime = Carbon::parse($dateTimeString);
-    
-    // Crear la hora de fin
-    $endDateTime = $startDateTime->copy()->addMinutes(20);
-    
-    // Ahora puedes usar métodos de Carbon
-    $endDateTime = $startDateTime->copy()->addMinutes(20);
+        $dateOnly = $slot->date->format('Y-m-d');
+        $timeOnly = $slot->start_time->format('H:i:s');
+        $dateTimeString = $dateOnly . ' ' . $timeOnly;
+        $startDateTime = Carbon::parse($dateTimeString);
+        $endDateTime = $startDateTime->copy()->addMinutes(20);
 
         $slotBooking = SlotBooking::create([
-            'student_id'    => Auth::user()->id, // ID del estudiante
-            'tutor_id'      => $slot->user_id,   // ID del tutor (user_id del slot)
-            'session_fee'   => 15,               // Tarifa de la sesión (por defecto 15)
-            'booked_at'     => now(),            // Fecha y hora de la reserva
-            'start_time'    => $startDateTime,   // Hora de inicio
-            'end_time'      => $endDateTime,     // Hora de fin
-            // Estado de la reserva
+            'student_id'           => Auth::user()->id, // ID del estudiante
+            'tutor_id'             => $slot->user_id,   // ID del tutor (user_id del slot)
+            'user_subject_slot_id' => $slot->id,        // ID del slot obligatorio
+            'session_fee'          => 15,               // Tarifa de la sesión (por defecto 15)
+            'booked_at'            => now(),            // Fecha y hora de la reserva
+            'start_time'           => $startDateTime,   // Hora de inicio
+            'end_time'             => $endDateTime,     // Hora de fin
+            'meeting_link'         => null,             // Link nulo al crear
+            'subject_id'           => $subjectId,       // Usar el subject_id recibido
+            'status'               => 'active'          // Estado de la reserva
         ]);
 
         return $slotBooking;

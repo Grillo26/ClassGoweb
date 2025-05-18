@@ -148,6 +148,14 @@ new class extends Component
         if (\Nwidart\Modules\Facades\Module::has('starup') && \Nwidart\Modules\Facades\Module::isEnabled('starup') && function_exists('badgeMenuOptions')) {         
             $this->menuItems = array_merge($this->menuItems, badgeMenuOptions());
         }
+
+        $this->menuItems[] = [
+            'title' =>  __('sidebar.tutorias'),
+            'icon'  => 'icon-book-open',
+            'routes' => [
+                'admin.tutorias.index' => __('sidebar.tutorias'),
+            ],
+        ];
     }
 
 

@@ -16527,6 +16527,9 @@ background: linear-gradient(337deg, rgba(2,48,71,1) 0%, rgba(18,103,130,1) 71%, 
 .tk-success-tag::after {
   background-color: #22C55E;
 }
+.tk-canceled::after {
+  background-color: #fe7b00;
+}
 .tk-success-tag:hover {
   color: #0A0F26;
   background-color: transparent !important;
