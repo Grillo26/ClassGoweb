@@ -20,7 +20,10 @@ class SlotBooking extends Model
 
     public $guarded = [];
 
-     public static function boot() {
+    // Campo adicional para el link de la tutoría
+    // 'meeting_link' es string|null
+
+    public static function boot() {
         parent::boot();
         self::deleting(function($booking) {
             $booking->bookingLog()->delete();
