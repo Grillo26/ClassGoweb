@@ -6,6 +6,7 @@ use App\Models\SlotBooking;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Log;
+use App\Services\ZoomService;
 
 class TutoriasTable extends Component
 {
@@ -60,6 +61,31 @@ class TutoriasTable extends Component
         $tutoria = SlotBooking::find($this->modalTutoriaId);
         if ($tutoria) {
             $tutoria->status = $this->modalStatus;
+            // Si el nuevo estado es 'aceptado', crear reunión Zoom
+            if ($this->modalStatus === 'aceptado') {
+                $zoomService = new ZoomService();
+                $startTime = $tutoria->start_time ? date('c', strtotime($tutoria->start_time)) : null;
+                $duration = null;
+                if ($tutoria->start_time && $tutoria->end_time) {
+                    $start = strtotime($tutoria->start_time);
+                    $end = strtotime($tutoria->end_time);
+                    $duration = 20;
+                }
+
+                dd($startTime, $duration,);
+                $meetingData = [
+                    'host_email' => $tutoria->tutor?->email,
+                    'topic' => 'Tutoría',
+                    'agenda' => 'Sesión de tutoría',
+                    'duration' => '20',
+                    'timezone' => 'America/La_Paz', 
+                    'start_time' => $startTime,
+                ];
+                $zoomResponse = $zoomService->createMeeting($meetingData);
+                if ($zoomResponse['status'] && !empty($zoomResponse['data']['join_url'])) {
+                    $tutoria->meeting_link = $zoomResponse['data']['join_url'];
+                }
+            }
             $tutoria->save();
         }
         $this->dispatch('cerrar-modal-tutoria');

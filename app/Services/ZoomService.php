@@ -14,9 +14,9 @@ class ZoomService {
 
     public function __construct()
     {
-        $this->client_id = setting('_api.zoom_client_id');
-        $this->client_secret = setting('_api.zoom_client_secret');
-        $this->account_id = setting('_api.zoom_account_id');
+        $this->client_id = env('ZOOM_CLIENT_ID');
+        $this->client_secret = env('ZOOM_CLIENT_SECRET');
+        $this->account_id =env('ZOOM_ACCOUNT_ID');
 
         $this->accessToken = $this->getAccessToken();
 
