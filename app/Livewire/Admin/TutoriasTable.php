@@ -73,6 +73,8 @@ class TutoriasTable extends Component
                 }
 
                 //dd($startTime, $duration,);
+                //dd('para pushear
+                // ')
                 $meetingData = [
                     'host_email' => $tutoria->tutor?->email,
                     'topic' => 'Tutoría',
