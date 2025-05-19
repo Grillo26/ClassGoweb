@@ -8,7 +8,7 @@
     overflow: hidden;
     border-radius: 20px;
     min-height: calc(100vh - 124px);
-    background-color: $clr-white;
+    background-color: #FFF9DB;
     & > .am-section-load{
         width: calc(100% - 12px) !important;
         height: calc(100vh - 195px);
@@ -908,4 +908,10 @@
 }
 .am-rescheduled{
     text-decoration: line-through;
+}
+.am-weekly-slots {
+    background: #FFF9DB !important;
+}
+.am-weekly-slots_card {
+    background: #FFF9DB !important;
 }
