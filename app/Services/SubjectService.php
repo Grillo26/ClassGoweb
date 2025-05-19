@@ -121,7 +121,16 @@ class SubjectService
 
     public function saveUserSubject($userSubject)
     {
-        return UserSubject::create($userSubject);
+         return UserSubject::updateOrCreate(
+        [
+            'user_id' => $userSubject['user_id'],
+            'subject_id' => $userSubject['subject_id'],
+        ],
+        [
+            'description' => $userSubject['description'] ?? null,
+            'image' => $userSubject['image'] ?? null,
+        ]
+    );
     }
 
     public function getUserSubjects($userId,)

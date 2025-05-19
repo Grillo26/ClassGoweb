@@ -476,4 +476,6 @@ return [
     '403_heading' => 'Acceso prohibido',
     '404_title' => '404 no encontrado',
     '500_title' => '500 Error interno del servidor',
+    'previous' => 'anterior',
+    'next' => 'siguiente',
 ];

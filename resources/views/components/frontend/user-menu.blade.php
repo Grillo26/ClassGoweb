@@ -1,9 +1,17 @@
 @props(['multiLang' => true])
 @php
-    if(!empty(auth()?->user()?->profile->image) && Storage::disk(getStorageDisk())->exists(auth()?->user()?->profile?->image)) {
+     $imagePath = public_path('storage/' . auth()?->user()?->profile?->image);
+
+    // Normalizar la ruta para evitar inconsistencias
+    $imagePath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $imagePath);
+
+    // Verificar si el archivo existe
+    if (!empty(auth()?->user()?->profile?->image) && file_exists($imagePath)) {
         $userImage = resizedImage(auth()?->user()?->profile?->image, 36, 36);
     } else {
-        $userImage = setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 36, 36);
+        $userImage = setting('_general.default_avatar_for_user') 
+            ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) 
+            : resizedImage('placeholder.png', 36, 36);
     }
 @endphp
 @props(['showCart' => true, 'showMessage' => true])

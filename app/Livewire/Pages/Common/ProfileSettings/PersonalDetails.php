@@ -4,6 +4,7 @@ namespace App\Livewire\Pages\Common\ProfileSettings;
 
 use App\Models\Country;
 use App\Models\Language;
+use App\Models\UserLanguage;
 use App\Services\ProfileService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,7 @@ use Livewire\WithFileUploads;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+
 
 /**
  * Componente Livewire para la gestión de detalles personales
@@ -29,7 +31,7 @@ class PersonalDetails extends Component
     public $last_name = '';
     public $email = '';
     public $phone_number = '';
-    public $gender = 'male';
+    public $gender = 'No especificado'; // Cambiado a string para evitar problemas de validación
     public $tagline = '';
     public $description = '';
     public $country = '';
@@ -114,39 +116,25 @@ class PersonalDetails extends Component
         $profile = $this->profileService->getUserProfile();
         $address = $this->profileService->getUserAddress();
         
-        // Debug para ver los datos del perfil
-        Log::info('Datos del perfil cargados:', [
-            'profile' => $profile,
-            'image' => $profile?->image ?? 'no image'
-        ]);
-        
         // Consulta directa a user_languages para el usuario actual
-        $userLanguages = \App\Models\UserLanguage::where('user_id', Auth::id())
+        $userLanguages = UserLanguage::where('user_id', Auth::id())
             ->pluck('language_id')
             ->toArray();
             
         $this->user_languages = $userLanguages;
-        
+       // dd($this->user_languages, "user_languages"); // Debug: Ver los idiomas cargados
         // Carga datos básicos
         $this->first_name = $profile?->first_name ?? '';
         $this->last_name = $profile?->last_name ?? '';
         $this->email = Auth::user()?->email;
         $this->phone_number = $profile?->phone_number ?? '';
-        $this->gender = $profile?->gender ?? 'male';
+        // Ahora el valor de género es int, lo pasamos tal cual
+        $this->gender = $this->normalizeGender($profile?->gender ?? 3);
         $this->tagline = $profile?->tagline ?? '';
         $this->description = $profile?->description ?? '';
         $this->image = $profile?->image ?? '';
-        
-        // Debug para ver la ruta de la imagen
-        Log::info('Ruta de la imagen cargada:', [
-            'image_path' => $this->image,
-            'full_path' => $this->image ? str_replace('\\', '/', storage_path('app/public/' . $this->image)) : 'no path',
-            'exists' => $this->image ? file_exists(storage_path('app/public/' . $this->image)) : false
-        ]);
-        
         $this->intro_video = $profile?->intro_video ?? '';
         $this->native_language = $profile?->native_language ?? '';
-
         // Carga datos de ubicación
         $this->country = $address?->country_id ?? '';
         $this->state = $address?->state_id ?? '';
@@ -154,6 +142,26 @@ class PersonalDetails extends Component
         $this->address = $address?->address ?? '';
         $this->lat = $address?->lat ?? '';
         $this->long = $address?->long ?? '';
+    }
+
+    /**
+     * Normaliza el valor de género a int (1,2,3)
+     */
+    private function normalizeGender($value)
+    {
+        // Si ya es int válido, retorna tal cual
+        $valid = [1, 2, 3];
+        if (in_array($value, $valid, true)) return $value;
+        // Si viene como string, mapea
+        $map = [
+            'male' => 1,
+            'female' => 2,
+            'not_specified' => 3,
+            'masculino' => 1,
+            'femenino' => 2,
+            'no_especificado' => 3,
+        ];
+        return $map[$value] ?? 3;
     }
 
     /**
@@ -166,22 +174,7 @@ class PersonalDetails extends Component
             $states = null;
             $countries = Country::orderBy('name')->get();
             $languages = Language::get(['id', 'name'])->pluck('name', 'id');
-
-            // Debug temporal - Descomenta esta línea para ver los datos en el navegador
-            // dd([
-            //     'languages' => $languages->toArray(),
-            //     'user_languages' => $this->user_languages,
-            //     'profile' => $this->profileService->getUserProfile(),
-            //     'user_languages_from_service' => $this->profileService->getUserLanguages()
-            // ]);
-
-            // Debug: Ver los idiomas en el render
-            /* Log::info('Idiomas en render:', [
-                'languages' => $languages->toArray(),
-                'user_languages' => $this->user_languages
-            ]);
-            dd($this->user_languages,"user_languages"); */
-
+         
             if (!empty($this->country)) {
                 $states = $this->profileService->countryStates($this->country);
                 $this->hasStates = $states->isNotEmpty();
@@ -225,6 +218,9 @@ class PersonalDetails extends Component
             // Actualiza datos del perfilt
             //dd($this->phone_number);
 
+
+            // El valor de género ya es int desde el front
+            //dd($this->gender);
             $profileData = [
                 'first_name' => $this->first_name,
                 'last_name' => $this->last_name,
@@ -250,13 +246,12 @@ class PersonalDetails extends Component
 
                 $profileData['image'] = 'profile_images/' . $filename;
 
-                // Debug para verificar el guardado
-                Log::info('Imagen guardada:', [
-                    'filename' => $filename,
-                    'path' => $profileData['image'],
-                    'full_path' => $destinationPath . '/' . $filename,
-                    'exists' => file_exists($destinationPath . '/' . $filename)
-                ]);
+                // Generar miniatura de la imagen
+                if (!empty($profileData['image'])) {
+                  
+                    $this->dispatch('update_image', image: resizedImage($profileData['image'], 36, 36));
+                
+                }    
             } 
             
             if ($this->intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
@@ -270,23 +265,34 @@ class PersonalDetails extends Component
                     mkdir($destinationPath, 0755, true);
                 }
                 rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
-
                 $profileData['intro_video'] = 'profile_videos/' . $filename;
-            } 
-            
-            
-            //dd($profileData, "profileData");
+            }   
             // Guarda los datos
             $this->profileService->setUserProfile($profileData);
-            
             // Guardar los IDs de idiomas directamente
             $this->profileService->storeUserLanguages($this->user_languages);
-
             $this->dispatch('showAlertMessage', type: 'success', message: __('general.success_message'));
         } catch (\Exception $e) {
             Log::error('Error al actualizar perfil: ' . $e->getMessage());
             $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_message'));
         }
+    }
+
+    /**
+     * Convierte el string de género a integer según GenderCast
+     */
+    private function genderStringToInt($value)
+    {
+        $map = [
+            'male' => 1,
+            'female' => 2,
+            'not_specified' => 3,
+            // Por compatibilidad con español
+            'Masculino' => 1,
+            'Femenino' => 2,
+            'no_especificado' => 3,
+        ];
+        return $map[$value] ?? 3;
     }
 
     /**

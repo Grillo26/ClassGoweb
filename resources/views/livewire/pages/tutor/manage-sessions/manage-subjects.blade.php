@@ -43,6 +43,7 @@
             </button>
         </div>
 
+        <!-- Contenido -->
         @if($isLoading)
             @include('skeletons.manage-subject')
         @else
@@ -60,91 +61,89 @@
                 @else
                     @foreach ($filteredGroups as $index => $group)
                         <div class="am-subject" wire:sortable.item="{{ $group?->id }}" wire:key="subject-group-{{ $group?->id }}">
-                            <div class="am-subject-heading">
-
+                            <div class="">
                                 <!-- icono de grupo -->
+                                {{--  
                                 <div class="am-sotingitem" wire:sortable.handle>
                                     <i class="am-icon-youtube-1"></i>
                                 </div>
+                                --}}
 
-                                <!-- tarjeta con nombre de grupo -->
-                                <div wire:ignore.self @class(['am-subject-title', 'collapsed'=> $index != 0]) id="heading-{{ $group?->id }}" data-bs-toggle="collapse" data-bs-target="#collapse-{{ $group?->id }}" aria-expanded="{{ $index == 0 ? 'true': 'false' }}">
-                                    <h3>{{ $group->name }}</h3>
-                                    <span class="am-subject-title-icon">
-                                        <i class="am-icon-minus-02 am-subject-title-icon-open"></i>
-                                        <i class="am-icon-plus-02 am-subject-title-icon-close"></i>
-                                    </span>
-                                </div>
-                            </div>
+                                <!-- tarjeta con nombre de grupo y control de colapso -->
+                                <div x-data="{ open: false }">
+                                    <div wire:ignore.self id="heading-{{ $group?->id }}"
+                                        @click="open = !open"
+                                        :class="{'am-subject-title': true, 'collapsed': !open}"
+                                        style="cursor:pointer;"
+                                        aria-expanded="false">
+                                        <h3>{{ $group->name }}</h3>
+                                        <span class="am-subject-title-icon">
+                                            <i class="am-icon-minus-02 am-subject-title-icon-open" x-show="open"></i>
+                                            <i class="am-icon-plus-02 am-subject-title-icon-close" x-show="!open"></i>
+                                        </span>
+                                    </div>
+                                    <div wire:ignore.self id="collapse-{{ $group?->id }}" x-show="open" style="padding:0;">
+                                        <div class="am-subject-body">
+                                            <!-- Mostrar UserSubjects del grupo actual -->
 
-
-
-
-
-
-                            <div wire:ignore.self id="collapse-{{ $group?->id }}" @class(['collapse', 'show'=> $index == 0]) data-bs-parent="#subjectList">
-                                <div class="am-subject-body">
-                                    <!-- Mostrar UserSubjects del grupo actual -->
-                                    @if($userSubjects->isNotEmpty())
-                                    <div class="am-user-subjects">
-                                        @foreach($userSubjects as $userSubject)
-                                        @if($userSubject['subject']['subject_group_id'] == $group->id)
-                                        <div class="am-subject-item" style="display: flex; justify-content: space-between; align-items: center; background-color: #ffffff; border-radius: 8px; margin-bottom: 12px; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                                            <!-- Ajustar espacio para el nombre y la descripción -->
-                                            <div class="am-subject-info" style="flex-grow: 0; flex-shrink: 1; flex-basis: 60%;">
-                                                <h2 style="color: #004558; font-size: 16px; margin: 0; font-weight: 600;">{{ $userSubject['subject']['name'] }}</h2>
-                                                @if($userSubject['description'])
-                                                <p style="color: #555; margin: 5px 0 0 0; font-size: 14px;">{{ $userSubject['description'] }}</p>
+                                            
+                                            @if($userSubjects->isNotEmpty())
+                                            <div class="am-user-subjects" style="width: 90%; margin: 0 auto;">
+                                                @foreach($userSubjects as $userSubject)
+                                                @if($userSubject['subject']['subject_group_id'] == $group->id)
+                                                <div class="am-subject-item" style="display: flex; align-items: center; background-color: #fff; border-radius: 8px; margin-bottom: 12px; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                                                    <!-- Info principal a la izquierda -->
+                                                    <div class="am-subject-info" style="flex: 1; min-width: 0;">
+                                                        <h2 style="color: #004558; font-size: 16px; margin: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $userSubject['subject']['name'] }}</h2>
+                                                        @if($userSubject['description'])
+                                                        <p style="color: #555; margin: 5px 0 0 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $userSubject['description'] }}</p>
+                                                        @endif
+                                                    </div>
+                                                    <!-- Acciones a la derecha -->
+                                                    <div class="am-subject-actions" style="display: flex; gap: 10px; flex-shrink: 0; margin-left: 20px;">
+                                                        <!-- Botón Editar -->
+                                                        <a href="javascript:void(0);" @click="$wire.editUserSubject({{ $userSubject['id'] }})"
+                                                            style="display: flex; align-items: center; justify-content: center; color: #004558; text-decoration: none; padding: 5px 10px; border: 1px solid #004558; border-radius: 4px;">
+                                                            <i class="am-icon-pencil-02"></i>
+                                                            <span style="margin-left: 5px;">{{ __('general.edit') }}</span>
+                                                        </a>
+                                                        <!-- Botón Eliminar -->
+                                                        <a href="javascript:void(0);" @click="$wire.dispatch('showConfirm', { subjectId: {{ $userSubject['id'] }}, action : 'delete-user-subject' })"
+                                                            style="display: flex; align-items: center; justify-content: center; color: #d9534f; text-decoration: none; padding: 5px 10px; border: 1px solid #d9534f; border-radius: 4px;">
+                                                            <i class="am-icon-trash-02"></i>
+                                                            <span style="margin-left: 5px;">{{ __('general.delete') }}</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
                                                 @endif
+                                                @endforeach
                                             </div>
 
-                                            <!-- Asegurarse de que las acciones se queden al lado derecho -->
-                                            <div class="am-subject-actions" style="display: flex; gap: 15px; flex-grow: 0; flex-shrink: 0; padding-right: 15px; width: 200px; justify-content: space-between;">
-                                                <!-- Botón Editar -->
-                                                <div class="am-itemdropdown" style="flex: 1;">
-                                                    <a href="javascript:void(0);" @click="$wire.editUserSubject({{ $userSubject['id'] }})"
-                                                        style="display: flex; align-items: center; justify-content: center; color: #004558; text-decoration: none; padding: 5px 10px; border: 1px solid #004558; border-radius: 4px; width: 100%;">
-                                                        <i class="am-icon-pencil-02"></i>
-                                                        {{ __('general.edit') }}
-                                                    </a>
-                                                </div>
-                                                <!-- Botón Eliminar -->
-                                                <div class="am-itemdropdown" style="flex: 1;">
-                                                    <a href="javascript:void(0);" @click="$wire.dispatch('showConfirm', { subjectId: {{ $userSubject['id'] }}, action : 'delete-user-subject' })"
-                                                        style="display: flex; align-items: center; justify-content: center; color: #d9534f; text-decoration: none; padding: 5px 10px; border: 1px solid #d9534f; border-radius: 4px; width: 100%;">
-                                                        <i class="am-icon-trash-02"></i>
-                                                        {{ __('general.delete') }}
-                                                    </a>
-                                                </div>
+
+
+
+
+                                            @endif
+                                            <div class="am-addclasses-wrapper">
+                                                <button
+                                                    class="am-add-class"
+                                                    @click="
+                                                                sessionData.edit_id = null;
+                                                                $wire.call('resetForm');
+                                                                $wire.call('addNewSubject', {{ $group?->id }});
+                                                                $nextTick(() => {
+                                                                    $wire.dispatch('initSummerNote', {target: '#subject_desc', wiremodel: 'form.description', componentId: @this})
+                                                                    $('.am-select2').prop('disabled', false);
+                                                                    clearFormErrors('#subject_modal form');
+                                                                })">
+                                                    {{ __('subject.add_new_subject') }}
+                                                    <i class="am-icon-plus-01"></i>
+                                                    <svg>
+                                                        <rect width="100%" height="100%" rx="10"></rect>
+                                                    </svg>
+                                                </button>
                                             </div>
                                         </div>
-                                        @endif
-                                        @endforeach
-                                    </div>
-
-
-
-
-                                    @endif
-
-                                    <div class="am-addclasses-wrapper">
-                                        <button
-                                            class="am-add-class"
-                                            @click="
-                                                        sessionData.edit_id = null;
-                                                        $wire.call('resetForm');
-                                                        $wire.call('addNewSubject', {{ $group?->id }});
-                                                        $nextTick(() => {
-                                                            $wire.dispatch('initSummerNote', {target: '#subject_desc', wiremodel: 'form.description', componentId: @this})
-                                                            $('.am-select2').prop('disabled', false);
-                                                            clearFormErrors('#subject_modal form');
-                                                        })">
-                                            {{ __('subject.add_new_subject') }}
-                                            <i class="am-icon-plus-01"></i>
-                                            <svg>
-                                                <rect width="100%" height="100%" rx="10"></rect>
-                                            </svg>
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -188,12 +187,13 @@
             </div>
         @endif
 
-        <!-- Modals -->
+        <!-- Modals crear o editar -->
         <div wire:ignore.self class="modal am-modal fade am-subject_modal" id="subject_modal" data-bs-backdrop="static">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-
-
+                
+                
+                 <div class="modal-content">
+                       <!-- Modal  Header-->
                     <div class="am-modal-header">
                         <template x-if="sessionData.edit_id">
                             <h2>{{ __('subject.edit_subject') }} </h2>
@@ -207,9 +207,10 @@
                     </div>
 
 
-
+                     <!-- Modal formulario -->
                     <div class="am-modal-body">
-                        <form class="am-themeform am-modal-form">
+                       
+                    <form class="am-themeform am-modal-form">
                             <fieldset>
                                 <div @class(['form-group', 'am-invalid'=> $errors->has('form.subject_id')])>
                                     <label class="am-label am-important2" for="subjects">
@@ -234,9 +235,10 @@
 
 
                                 <div @class(['form-group', 'am-invalid'=> $errors->has('form.description')])>
-                                    <x-input-label class="am-important2" for="introduction" :value="__('subject.breif_introduction')" />
+                                       
+                                  <x-input-label class="am-important2" for="introduction" :value="__('subject.breif_introduction')" />
                                     <div class="am-custom-editor" wire:ignore>
-                                        <textarea id="subject_desc" class="form-control" placeholder="{{ __('subject.add_introduction') }}">{{ $form->description }}</textarea>
+                                        <textarea id="subject_desc" class="form-control" placeholder="{{ __('subject.add_introduction') }}" wire:model.defer="form.description"></textarea>
                                         <span class="characters-count"></span>
                                     </div>
                                     <x-input-error field_name="form.description" />
@@ -244,10 +246,11 @@
 
 
 
-
+                                 {{--  
                                 <div class="form-group">
                                     <x-input-label for="Profile1" :value="__('general.upload_image')" />
                                     <div class="am-uploadoption" x-data="{isUploading:false}" wire:key="uploading-profile-{{ time() }}">
+
 
 
                                         <div class="tk-draganddrop"
@@ -304,24 +307,29 @@
                                         <x-input-error field_name="form.image" />
                                     </div>
                                 </div>
-
-
-
+                                --}}
 
                                 <div class="form-group am-mt-10 am-form-btn-wrap">
                                     <button class="am-btn" wire:click.prevent="saveNewSubject" wire:target="saveNewSubject" wire:loading.class="am-btn_disable">{{ __('general.save_update') }} </button>
                                 </div>
                             </fieldset>
                         </form>
+
+
+
+
                     </div>
-
-
-
-
-
                 </div>
             </div>
         </div>
+
+
+
+
+
+
+       {{-- final modal   --}}
+
 
     </div>
 </div>

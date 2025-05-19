@@ -13,22 +13,16 @@ use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use App\Models\UserSubject;
 
-
 class ManageSubjects extends Component
 {
     use WithFileUploads;
     use WithPagination;
-
-    public $selected_groups = [];
     public $subjectGroups = [];
-    public $groups = [];
     public $isLoading = true;
-    public $subjects = [];
     public $userSubjects = [];
     public $allowImgFileExt = [];
     public $allowImageSize = '3';
     public SubjectForm $form;
-    public $MAX_PROFILE_CHAR = 1000;
     protected $subjectService;
     public $activeRoute;
     public $selectedGroup = 'Ciencias Exactas'; // Valor por defecto
@@ -41,8 +35,8 @@ class ManageSubjects extends Component
     #[Layout('layouts.app')]
     public function render()
     {
-        $this->subjectGroups = $this->subjectService->getUserSubjectGroups($this->selectedGroup);
-        
+        $this->subjectGroups = $this->subjectService->getUserSubjectGroups();
+
         // Aplicar filtro de búsqueda
         if (!empty($this->searchQuery)) {
             $this->subjectGroups = collect($this->subjectGroups)->filter(function ($group) {
@@ -58,12 +52,12 @@ class ManageSubjects extends Component
                 });
             })->values();
         }
-        
+
         // Implementar paginación manual
         $paginatedGroups = collect($this->subjectGroups)->forPage($this->currentPage, $this->perPage);
         $totalGroups = count($this->subjectGroups);
         $totalPages = ceil($totalGroups / $this->perPage);
-        
+
         return view('livewire.pages.tutor.manage-sessions.manage-subjects', [
             'filteredGroups' => $paginatedGroups,
             'totalPages' => $totalPages,
@@ -73,7 +67,6 @@ class ManageSubjects extends Component
 
     public function boot()
     {
-
         $this->subjectService = new SubjectService(Auth::user());
     }
 
@@ -92,81 +85,84 @@ class ManageSubjects extends Component
         $this->userSubjects = $this->subjectService->getUserSubjectsWithSubjects(Auth::id());
         $this->currentPage = 1; // Resetear a la primera página cuando se cargan nuevos datos
     }
-
-    public function obtenerUserSubjects()
-    {
-        //$this->userSubjects = $this->subjectService->getUserSubjectsWithSubjects(Auth::id());
-    }
-
-
+    
     public function saveNewSubject()
     {
-        $validate = $this->form->validateData();
-        $response = isDemoSite();
-        if ($response) {
-            $this->dispatch('showAlertMessage', type: 'error', title: __('general.demosite_res_title'), message: __('general.demosite_res_txt'));
-            $this->dispatch('toggleModel', id: 'subject_modal', action: 'hide');
-            return;
-        }
-        // Procesar la imagen si existe
-        if ($this->form->image && method_exists($this->form->image, 'temporaryUrl')) {
-            $imagePath = $this->form->image->store('subjects', 'public');
-            $validate['image'] = $imagePath;
-        }
-        $userId = Auth::id();
-        // Crear el array de datos para la materia
-        $subject = [
-            'subject_id' => $this->form->subject_id,
-            'description' => $validate['description'],
-            'image' => $validate['image'] ?? null,
-            'user_id' => $userId,
-        ];
+            // Validar directamente los campos requeridos para la materia
+            $validated = validator([
+                'subject_id'   => $this->form->subject_id,
+                'description'  => $this->form->description,
+                'image'        => $this->form->image,
+            ], [
+                'subject_id'   => 'required|integer',
+                'description'  => 'required|string|min:20|max:255',
+                'image'        => 'nullable|image|max:' . ($this->allowImageSize * 1024),
+            ])->validate();
+            //modo demo
+            $response = isDemoSite();
+            if ($response) {
+                $this->dispatch('showAlertMessage', type: 'error', title: __('general.demosite_res_title'), message: __('general.demosite_res_txt'));
+                $this->dispatch('toggleModel', id: 'subject_modal', action: 'hide');
+                return;
+            }
+            // Procesar la imagen si existe
+            if ($this->form->image && method_exists($this->form->image, 'temporaryUrl')) {
+                $imagePath = $this->form->image->store('subjects', 'public');
+                $validated['image'] = $imagePath;
+            }
+            $userId = Auth::id();
+            $subject = [
+                'subject_id' => $validated['subject_id'],
+                'description' => $validated['description'],
+                'image' => $validated['image'] ?? null,
+                'user_id' => $userId,
+            ];
+            $result = $this->subjectService->saveUserSubject($subject);
+            //resetear el formulario
+            $this->form->reset();
+            
+            $this->dispatch(
+                'showAlertMessage',
+                type: !empty($result) ? 'success' : 'error',
+                title: !empty($result) ? __('algo aver ') : __('general.error_title'),
+                message: !empty($result) ? __('general.success_message') : __('general.error_message')
+            );
+            if (!empty($result)) {
+                // Cerrar el modal
+                $this->dispatch('toggleModel', id: 'subject_modal', action: 'hide');
+                // Recargar los datos para actualizar la lista
+                $this->loadData();
+            }        
+    }
 
-        $result = $this->subjectService->saveUserSubject($subject);
-        //no tocar
-        $this->form->reset();
-        $this->dispatch(
-            'showAlertMessage',
-            type: !empty($result) ? 'success' : 'error',
-            title: !empty($result) ? __('general.success_title') : __('general.error_title'),
-            message: !empty($result) ? __('general.success_message') : __('general.error_message')
-        );
-       
-    if (!empty($result)) {
-        // Cerrar el modal
-        $this->dispatch('toggleModel', id: 'subject_modal', action: 'hide');
-        // Recargar los datos para actualizar la lista
-        $this->loadData();
+    public function updateSubjectGroupOrder($order)
+    {
+        // Aquí puedes guardar el nuevo orden si lo necesitas
+        // Ejemplo: Log::info($order);
     }
-    }
+
 
     public function loadSubjectsByGroup($groupId)
     {
-        $this->form->group_id = $groupId;
-
         // Obtener los subjects ya asociados al usuario
         $userSubjectIds = collect($this->userSubjects)->pluck('subject_id')->toArray();
-
         // Filtrar los subjects del grupo excluyendo los ya asociados
         $groupSubjects = $this->subjectService->getSubjectsByGroup($groupId)
             ->filter(function ($subject) use ($userSubjectIds) {
                 return !in_array($subject->id, $userSubjectIds);
             });
-
         $result = [
             [
                 'id' => '',
                 'text' => __('Select a subject')
             ]
         ];
-
         foreach ($groupSubjects as $subject) {
             $result[] = [
                 'id' => $subject->id,
                 'text' => htmlspecialchars_decode($subject->name)
             ];
         }
-
         $this->dispatch(
             'initSelect2',
             target: '.am-select2',
@@ -179,16 +175,12 @@ class ManageSubjects extends Component
     public function addNewSubject($subjectGroupId = '')
     {
         $this->form->reset();
-        $this->form->group_id = $subjectGroupId;
-        $this->form->hour_rate = 15;
-        if ($subjectGroupId) {
+        if ($subjectGroupId)
             $this->loadSubjectsByGroup($subjectGroupId);
-        }
-
         $this->dispatch('toggleModel', id: 'subject_modal', action: 'show');
     }
 
-    
+
 
 
     #[On('delete-user-subject')]
@@ -217,11 +209,10 @@ class ManageSubjects extends Component
         $this->form->image = null;
         $this->form->preview_image = null;
     }
-    
+
     public function resetForm()
     {
         $this->form->reset();
-        $this->form->hour_rate = 15; // Fijar el precio de la sesión en 15
     }
 
     public function updatedForm($value, $key)
@@ -257,11 +248,11 @@ class ManageSubjects extends Component
 
         if ($userSubject) {
             $this->form->reset();
+            //dd($userSubject,"aver");
             $this->form->edit_id = $userSubject->id;
             $this->form->subject_id = $userSubject->subject_id;
             $this->form->description = $userSubject->description;
             $this->form->image = $userSubject->image;
-
             $subject = $this->subjectService->getSubjectbyId($userSubject->subject_id);
 
             $result = [
@@ -294,7 +285,6 @@ class ManageSubjects extends Component
             $this->dispatch('showAlertMessage', type: 'error', title: __('general.demosite_res_title'), message: __('general.demosite_res_txt'));
             return;
         }
-
         $userSubject = UserSubject::where('id', $params['subjectId'])
             ->where('user_id', Auth::id())
             ->first();
