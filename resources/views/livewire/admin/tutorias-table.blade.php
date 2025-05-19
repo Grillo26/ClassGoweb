@@ -36,45 +36,26 @@
                         <table class="tb-table @if(setting('_general.table_responsive') == 'yes') tb-table-responsive @endif">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Tutor</th>
-                                    <th>Estudiante</th>
-                                    <th>Inicio</th>
-                                    <th>Fin</th>
-                                    <th>Estado</th>
+                                    <th style="width: 40px; text-align: center;">#</th>
+                                    <th style="text-align: left;">Tutor</th>
+                                    <th style="text-align: left;">Estudiante</th>
+                                    <th style="width: 110px; text-align: center;">Fecha</th>
+                                    <th style="width: 90px; text-align: center;">Hora inicio</th>
+                                    <th style="width: 90px; text-align: center;">Hora fin</th>
+                                    <th style="width: 120px; text-align: center;">Estado</th>
+                                    <th style="width: 110px; text-align: center;">Comprobante</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($tutorias as $tutoria)
                                 <tr>
-                                    <td data-label="#"><span>{{ $tutoria->id }}</span></td>
-                                    <td data-label="Tutor">
-                                        <div class="tb-varification_userinfo">
-                                            <strong class="tb-adminhead__img">
-                                                @if (!empty($tutoria->tutor?->image) && Storage::disk(getStorageDisk())->exists($tutoria->tutor?->image))
-                                                    <img src="{{ resizedImage($tutoria->tutor->image,34,34) }}" alt="{{$tutoria->tutor->image}}" />
-                                                @else
-                                                    <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 34, 34) }}" alt="{{ $tutoria->tutor?->image }}" />
-                                                @endif
-                                            </strong>
-                                            <span>{{ $tutoria->tutor?->full_name ?? '-' }}</span>
-                                        </div>
-                                    </td>
-                                    <td data-label="Estudiante">
-                                        <div class="tb-varification_userinfo">
-                                            <strong class="tb-adminhead__img">
-                                                @if (!empty($tutoria->student?->image) && Storage::disk(getStorageDisk())->exists($tutoria->student?->image))
-                                                    <img src="{{ resizedImage($tutoria->student->image,34,34) }}" alt="{{$tutoria->student->image}}" />
-                                                @else
-                                                    <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 34, 34) }}" alt="{{ $tutoria->student?->image }}" />
-                                                @endif
-                                            </strong>
-                                            <span>{{ $tutoria->student?->full_name ?? '-' }}</span>
-                                        </div>
-                                    </td>
-                                    <td data-label="Inicio"><span>{{ $tutoria->start_time }}</span></td>
-                                    <td data-label="Fin"><span>{{ $tutoria->end_time }}</span></td>
-                                    <td data-label="Estado">
+                                    <td style="text-align: center;">{{ $tutoria->id }}</td>
+                                    <td style="text-align: left;">{{ $tutoria->tutor?->full_name ?? '-' }}</td>
+                                    <td style="text-align: left;">{{ $tutoria->student?->full_name ?? '-' }}</td>
+                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($tutoria->start_time)->format('Y-m-d') }}</td>
+                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($tutoria->start_time)->format('H:i') }}</td>
+                                    <td style="text-align: center;">{{ \Carbon\Carbon::parse($tutoria->end_time)->format('H:i') }}</td>
+                                    <td style="text-align: center;">
                                         <em class="tk-project-tag {{
                                             $tutoria->status == 'aceptado' ? 'tk-hourly-tag' :
                                             ($tutoria->status == 'pendiente' ? 'tk-fixed-tag' :
@@ -88,6 +69,17 @@
                                         <span class="estado-dot estado-dot-{{ $tutoria->status }}"></span>
                                         <span>{{ ucfirst($tutoria->status) }}</span>
                                         </em>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                                            @if (!empty($tutoria->paymentSlotBooking?->image_url))
+                                                <a href="{{ Storage::url($tutoria->paymentSlotBooking->image_url) }}" target="_blank" style="margin-left: 12px;">
+                                                    <img src="{{ Storage::url($tutoria->paymentSlotBooking->image_url) }}" alt="Comprobante" style="max-width: 60px; max-height: 60px; border-radius: 6px; display: block;" />
+                                                </a>
+                                            @else
+                                                <span style="margin-left: 12px;">Sin comprobante</span>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                                 @endforeach

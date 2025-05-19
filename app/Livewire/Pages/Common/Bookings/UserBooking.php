@@ -28,6 +28,7 @@ class UserBooking extends Component
     public $dateRange = [];
     public $subjectGroups, $upcomingBookings, $currentBooking;
     public $filter = [];
+    public $subject_id;
     public RatingForm $form;
     public $activeRoute;
     public $disputeReason = '';
@@ -75,24 +76,40 @@ class UserBooking extends Component
     {
         if (Auth::user()->role == 'tutor') {
             // Obtener reservas donde el tutor es el usuario actual
-            $this->upcomingBookings = SlotBooking::where('tutor_id', Auth::id())
+            $this->upcomingBookings = SlotBooking::with('subject')
+                ->where('tutor_id', Auth::id())
                 ->orderBy('start_time')
                 ->get()
                 ->groupBy(function($item) {
                     return parseToUserTz($item->start_time)->toDateString();
                 })
+                ->map(function($bookings) {
+                    return $bookings->map(function($booking) {
+                        $array = $booking->toArray();
+                        $array['subject_name'] = $booking->subject->name ?? '';
+                        $array['status_num'] = $booking->getRawOriginal('status');
+                        return $array;
+                    });
+                })
                 ->toArray();
-                
         } else if (Auth::user()->role == 'student') {
             // Obtener reservas donde el estudiante es el usuario actual
-            $this->upcomingBookings = SlotBooking::where('student_id', Auth::id())
+            $this->upcomingBookings = SlotBooking::with('subject')
+                ->where('student_id', Auth::id())
                 ->orderBy('start_time')
                 ->get()
                 ->groupBy(function($item) {
                     return parseToUserTz($item->start_time)->toDateString();
                 })
+                ->map(function($bookings) {
+                    return $bookings->map(function($booking) {
+                        $array = $booking->toArray();
+                        $array['subject_name'] = $booking->subject->name ?? '';
+                        $array['status_num'] = $booking->getRawOriginal('status');
+                        return $array;
+                    });
+                })
                 ->toArray();
-                
         }
         
         return view('livewire.pages.common.bookings.user-booking', [

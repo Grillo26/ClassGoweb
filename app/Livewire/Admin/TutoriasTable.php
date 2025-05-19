@@ -31,7 +31,7 @@ class TutoriasTable extends Component
 
     public function render()
     {
-        $query = SlotBooking::with(['tutor', 'student']);
+        $query = SlotBooking::with(['tutor', 'student', 'paymentSlotBooking']);
         if ($this->status) {
             $query->where('status', $this->status);
         }

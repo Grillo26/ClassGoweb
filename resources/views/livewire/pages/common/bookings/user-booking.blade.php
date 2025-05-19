@@ -19,6 +19,15 @@
                     this.form.comment = this.form.comment.substring(0, maxLength);
                 }
                 this.charLeft = maxLength - this.form.comment.length;
+            },
+            showModal: false,
+            selectedTutoria: {},
+            openModal(tutoria) {
+                this.selectedTutoria = tutoria;
+                this.showModal = true;
+            },
+            closeModal() {
+                this.showModal = false;
             }
         }">
         <div class="am-booking-calander">
@@ -172,6 +181,21 @@
                             'no_completado' => '#64748B', // gris
                             'completado' => '#3B82F6', // azul
                         ];
+                        $statusTranslations = [
+                            'active' => 'Activo',
+                            'rescheduled' => 'Reprogramada',
+                            'refunded' => 'Reembolsada',
+                            'reserved' => 'Reservada',
+                            'completed' => 'Completada',
+                            'disputed' => 'En disputa',
+                        ];
+                        $statusMap = [
+                            1 => 'Pendiente',
+                            2 => 'Observada',
+                            3 => 'Aceptada',
+                            4 => 'Completada',
+                            5 => 'No completada',
+                        ];
                     @endphp
                     @if($showBy == 'daily')
                     <div class="tab-pane fade show active" id="dailytab">
@@ -191,15 +215,25 @@
                                     <tr>
                                         <td>{{ $startTime->format('h:i A') }}</td>
                                         <td>
+                                            <div style="display: flex; flex-direction: column; gap: 4px; width: 100%;">
                                             @if(isset($upcomingBookings[$currentDate->toDateString()]))
                                                 @foreach($upcomingBookings[$currentDate->toDateString()] as $booking)
                                                     @if(\Carbon\Carbon::parse($booking['start_time'])->format('H:i') == $startTime->format('H:i'))
-                                                        <div style="background: {{ $statusColors[strtolower(trim($booking['status']))] ?? '#FACC15' }} !important; color:white;padding:5px;border-radius:5px;">
-                                                            {{ $booking['status'] }}
+                                                            <div style="background: {{ $statusColors[strtolower(trim($booking['status']))] ?? '#FACC15' }} !important; color:black;padding:5px;border-radius:5px; cursor:pointer; width: 100%;"
+                                                                @click="openModal({
+                                                                    estado: '{{ $statusMap[$booking['status_num']] ?? $booking['status_num'] }}',
+                                                                    hora_inicio: '{{ \Carbon\Carbon::parse($booking['start_time'])->format('H:i') }}',
+                                                                    hora_fin: '{{ \Carbon\Carbon::parse($booking['end_time'])->format('H:i') }}',
+                                                                    fecha: '{{ \Carbon\Carbon::parse($booking['start_time'])->format('Y-m-d') }}',
+                                                                    materia: '{{ $booking['subject_name'] }}',
+                                                                    meeting_link: '{{ $booking['meeting_link'] ?? '' }}'
+                                                                })">
+                                                                {{ $statusMap[$booking['status_num']] ?? $booking['status_num'] }}
                                                         </div>
                                                     @endif
                                                 @endforeach
                                             @endif
+                                            </div>
                                         </td>
                                     </tr>
                                     @php $startTime->addMinutes(30); @endphp
@@ -244,9 +278,16 @@
                                             <div class="am-weekly-slots">
                                                 @if (isset($upcomingBookings[$date->toDateString()]))
                                                 @foreach ($upcomingBookings[$date->toDateString()] as $booking)
-                                                            <div style="background:{{ $statusColors[strtolower(trim($booking['status']))] ?? '#FACC15' }} !important;color:white;padding:5px 8px;border-radius:5px;margin-bottom:5px; font-size:14px;">
-                                                                Estado: <b>{{ $booking['status'] }}</b>
-                                                                <br>
+                                                            <div style="background:{{ $statusColors[strtolower(trim($booking['status']))] ?? '#FACC15' }} !important;color:black;padding:5px 8px;border-radius:5px;margin-bottom:5px; font-size:14px; cursor:pointer;"
+                                                                @click="openModal({
+                                                                    estado: '{{ $statusMap[$booking['status_num']] ?? $booking['status_num'] }}',
+                                                                    hora_inicio: '{{ \Carbon\Carbon::parse($booking['start_time'])->format('H:i') }}',
+                                                                    hora_fin: '{{ \Carbon\Carbon::parse($booking['end_time'])->format('H:i') }}',
+                                                                    fecha: '{{ \Carbon\Carbon::parse($booking['start_time'])->format('Y-m-d') }}',
+                                                                    materia: '{{ $booking['subject_name'] }}',
+                                                                    meeting_link: '{{ $booking['meeting_link'] ?? '' }}'
+                                                                })">
+                                                                Estado: <b>{{ $statusMap[$booking['status_num']] ?? $booking['status_num'] }}</b><br>
                                                                 {{ \Carbon\Carbon::parse($booking['start_time'])->format('h:i a') }} - {{ \Carbon\Carbon::parse($booking['end_time'])->format('h:i a') }}
                                                             </div>
                                                 @endforeach
@@ -294,9 +335,16 @@
                                         @if (isset($upcomingBookings[$startOfCalendar->toDateString()]))
                                         <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px;">
                                             @foreach ($upcomingBookings[$startOfCalendar->toDateString()] as $index => $booking)
-                                                <div style="background: {{ $statusColors[strtolower(trim($booking['status']))] ?? '#FACC15' }} !important; color: #222; padding:5px; border-radius:5px;">
-                                                    Estado: <b>{{ $booking['status'] }}</b>
-                                                    <br>
+                                                <div style="background: {{ $statusColors[strtolower(trim($booking['status']))] ?? '#FACC15' }} !important; color: #222; padding:5px; border-radius:5px; cursor:pointer;"
+                                                    @click="openModal({
+                                                        estado: '{{ $statusMap[$booking['status_num']] ?? $booking['status_num'] }}',
+                                                        hora_inicio: '{{ \Carbon\Carbon::parse($booking['start_time'])->format('H:i') }}',
+                                                        hora_fin: '{{ \Carbon\Carbon::parse($booking['end_time'])->format('H:i') }}',
+                                                        fecha: '{{ \Carbon\Carbon::parse($booking['start_time'])->format('Y-m-d') }}',
+                                                        materia: '{{ $booking['subject_name'] }}',
+                                                        meeting_link: '{{ $booking['meeting_link'] ?? '' }}'
+                                                    })">
+                                                    Estado: <b>{{ $statusMap[$booking['status_num']] ?? $booking['status_num'] }}</b><br>
                                                     {{ \Carbon\Carbon::parse($booking['start_time'])->format('h:i a') }} - {{ \Carbon\Carbon::parse($booking['end_time'])->format('h:i a') }}
                                                 </div>
                                             @endforeach
@@ -318,85 +366,81 @@
             </div>
         </div>
 
+        <!-- Modal de detalles de tutoría -->
+       <div 
+  x-show="showModal" 
+  class="am-modal-overlay"
+  x-transition
+>
+  <div 
+    style="
+      background: #fff; 
+      border-radius: 12px; 
+      padding: 24px 30px; 
+      max-width: 400px; 
+      width: 100%; 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+      display: flex; 
+      flex-direction: column; 
+      align-items: stretch;
+      position: relative;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+    "
+  >
+    <h3 style="font-size: 1.4rem; font-weight: 600; margin-bottom: 20px; text-align: center; color: #222;">
+      Detalles de la tutoría
+    </h3>
 
+    <p style="margin: 8px 0; font-size: 1rem;">
+      <strong>Estado:</strong> <span x-text="selectedTutoria.estado" style="color: #007BFF;"></span>
+    </p>
+    <p style="margin: 8px 0; font-size: 1rem;">
+      <strong>Fecha:</strong> <span x-text="selectedTutoria.fecha"></span>
+    </p>
+    <p style="margin: 8px 0; font-size: 1rem;">
+      <strong>Hora inicio:</strong> <span x-text="selectedTutoria.hora_inicio"></span>
+    </p>
+    <p style="margin: 8px 0; font-size: 1rem;">
+      <strong>Hora fin:</strong> <span x-text="selectedTutoria.hora_fin"></span>
+    </p>
+    <p style="margin: 8px 0; font-size: 1rem;">
+        <strong>Materia:</strong> <span x-text="selectedTutoria.materia"></span>
+      </p>
+      <p style="margin: 8px 0; font-size: 1rem;">
+        <strong>Link de la tutoría:</strong> 
+        <template x-if="selectedTutoria.meeting_link">
+            <a :href="selectedTutoria.meeting_link" target="_blank" style="color: #007BFF; text-decoration: underline; word-break: break-all;">
+                <span x-text="selectedTutoria.meeting_link"></span>
+            </a>
+        </template>
+        <template x-if="!selectedTutoria.meeting_link">
+            <span style="color: #888;">No disponible</span>
+        </template>
+    </p>
+    <!-- Más campos aquí -->
 
+    <button 
+      @click="closeModal" 
+      style="
+        margin-top: 24px; 
+        padding: 10px 20px; 
+        background-color: #007BFF; 
+        color: white; 
+        border: none; 
+        border-radius: 6px; 
+        cursor: pointer; 
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+      "
+      onmouseover="this.style.backgroundColor='#0056b3'"
+      onmouseout="this.style.backgroundColor='#007BFF'"
+    >
+      Cerrar
+    </button>
+  </div>
+</div>
 
-        
-        <!-- session detail modal v2 -->
-        <div class="modal fade am-review-popup" id="review-modal" aria-hidden="true" wire:ignore.self>
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="am-review-detail">
-                    <div class="am-review-session">
-                        <h3>{{ __('calendar.tell_us_experience') }}</h3>
-                        <div class="am-review-user">
-                            <a href="#" class="am-review-user-detail">
-                                <img :src="tutorInfo?.image" :alt="tutorInfo?.name">
-                                <span x-text="tutorInfo?.name"></span>
-                            </a>
-                            <div class="am-stars-list_wrap">
-                                <ul class="am-stars-list">
-                                    <template x-for="(star, index) in 5">
-                                        <li>
-                                            <span :class="{
-                                                'am-stars-items-fill': form.rating > index,
-                                                'am-stars-items-empty': true
-                                                }" @click="form.rating = index + 1">
-                                                <i class="am-icon-star-fill"></i>
-                                            </span>
-                                        </li>
-                                    </template>
-                                </ul>
-                                <x-input-error field_name="form.rating" />
-                            </div>
-                        </div>
-                        <div class="am-review-details @error('form.comment') am-invalid @enderror">
-                            <textarea placeholder="{{ __('calendar.add_review') }}" x-model="form.comment"
-                                x-on:input="updateCharLeft"></textarea>
-                            <span x-text="charLeft + ' {{ __('general.char_left') }}'"></span>
-                            <x-input-error field_name="form.comment" />
-                        </div>
-                        <button class="am-btn" wire:click="submitReview" wire:loading.class="am-btn_disable">{{
-                            __('calendar.submit_review') }}</button>
-                    </div>
-                    @if (!empty(setting('_lernen.enabl_tips')) &&
-                    (!empty(setting('_lernen.tip_section_title')) ||
-                    !empty(setting('_lernen.tip_section_description')) ||
-                    !empty(setting('_lernen.tip_bullets_repeater'))) ||
-                    !empty(setting('_lernen.well_wishing_text'))
-                    )
-                    <div class="am-reviews-tips">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        @if (!empty(setting('_lernen.tip_section_title')))
-                        <div class="am-review-tips-heading">
-                            <span>
-                                <i class="am-icon-check-circle04"></i>
-                            </span>
-                            <h3>{{ setting('_lernen.tip_section_title') }}</h3>
-                        </div>
-                        @endif
-                        @if (!empty(setting('_lernen.tip_section_description')))
-                        <p class="am-review-description">{{ setting('_lernen.tip_section_description') }}</p>
-                        @endif
-                        @if (!empty(setting('_lernen.tip_bullets_repeater')))
-                        <ul class="am-reviews-tips-list">
-                            @foreach (setting('_lernen.tip_bullets_repeater') as $bullet)
-                            <li>
-                                <span class="am-review-tip">
-                                    <i class="am-icon-check-circle06"></i>
-                                    {{ $bullet['tip_bullets'] }}
-                                </span>
-                            </li>
-                            @endforeach
-                        </ul>
-                        @endif
-                        @if (!empty(setting('_lernen.well_wishing_text')))
-                        <span class="am-review-end">{{ setting('_lernen.well_wishing_text') }}</span>
-                        @endif
-                    </div>
-                    @endif
-                </div>
-            </div>
-        </div>
         <x-completion/>
         <x-dispute-reason-popup :booking="$userBooking" :disputeReason="$disputeReason" :description="$description" :selectedReason="$selectedReason"/>
         <x-booking-detail-modal :currentBooking="$currentBooking" wire:key="{{ time() }}" />
@@ -407,6 +451,25 @@
     'public/css/flatpicker.css',
     'public/css/flatpicker-month-year-plugin.css'
     ])
+<style>
+.am-modal-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.am-booking-clander-daily td {
+    height: auto !important;
+    vertical-align: top;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+</style>
 @endpush
 @push('scripts')
 <script defer src="{{ asset('js/flatpicker.js') }}"></script>
