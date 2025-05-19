@@ -88,6 +88,14 @@ class UserBooking extends Component
                         $array = $booking->toArray();
                         $array['subject_name'] = $booking->subject->name ?? '';
                         $array['status_num'] = $booking->getRawOriginal('status');
+                        // Controlar visibilidad del link desde el backend
+                        $now = Carbon::now(getUserTimezone());
+                        $start = Carbon::parse($booking->start_time, getUserTimezone());
+                        if ($now->greaterThanOrEqualTo($start)) {
+                            $array['meeting_link'] = $booking->meeting_link;
+                        } else {
+                            $array['meeting_link'] = null;
+                        }
                         return $array;
                     });
                 })
@@ -106,6 +114,14 @@ class UserBooking extends Component
                         $array = $booking->toArray();
                         $array['subject_name'] = $booking->subject->name ?? '';
                         $array['status_num'] = $booking->getRawOriginal('status');
+                        // Controlar visibilidad del link desde el backend
+                        $now = Carbon::now(getUserTimezone());
+                        $start = Carbon::parse($booking->start_time, getUserTimezone());
+                        if ($now->greaterThanOrEqualTo($start)) {
+                            $array['meeting_link'] = $booking->meeting_link;
+                        } else {
+                            $array['meeting_link'] = null;
+                        }
                         return $array;
                     });
                 })
