@@ -174,6 +174,7 @@
             <div wire:loading.class="d-none" class="am-booking-calander_body" wire:target="switchShow,jumpToDate,nextBookings,previousBookings,filter">
                 <div class="tab-content">
                     @php
+                        //dd('para el push);
                         $statusColors = [
                             'pendiente' => '#FACC15', // amarillo
                             'rechazado' => '#EF4444', // rojo
