@@ -35,9 +35,6 @@
                                 {{ __('calendar.today') }}
                             </a>
                         </div>
-                        <div wire:ignore class="am-booking-calander-date">
-                            <input type="text" id="flat-picker" />
-                        </div>
                     </div>
                     <div class="am-booking-filter-slot">
                         {{--<div class="flatpicker" x-init="$wire.dispatch('initSelect2', {target:'.am-customselect'})" wire:ignore>
@@ -180,7 +177,7 @@
                                             <a href="javascript:void(0);" class="text-decoration-none" wire:click.prevent="showSlotsForDate('{{ $date->toDateString() }}')">
                                                 <div class="am-booking-calander-title">
                                                     <strong>{{ $date->format('j M') }}</strong>
-                                                    <span>{{ $date->format('D') }}</span>
+                                                    <span>{{ $date->translatedFormat('D') }}</span>
                                                 </div>
                                             </a>
                                         </th>
@@ -609,3 +606,4 @@
 </script>
 @endpush
 </div>
+

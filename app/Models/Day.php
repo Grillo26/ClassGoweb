@@ -10,44 +10,44 @@ class Day {
         [
             'id' => 1,
             'week_day' => Carbon::SUNDAY,
-            'short_name' => 'Sun',
-            'name' => 'Sunday'
+            'short_name' => 'Dom',
+            'name' => 'Domingo'
         ],
         [
             'id' => 2,
             'week_day' => Carbon::MONDAY,
-            'short_name' => 'Mon',
-            'name' => 'Monday'
+            'short_name' => 'Lun',
+            'name' => 'Lunes'
         ],
         [
             'id' => 3,
             'week_day' => Carbon::TUESDAY,
-            'short_name' => 'Tue',
-            'name' => 'Tuesday'
+            'short_name' => 'Mar',
+            'name' => 'Martes'
         ],
         [
             'id' => 4,
             'week_day' => Carbon::WEDNESDAY,
-            'short_name' => 'Wed',
-            'name' => 'Wednesday'
+            'short_name' => 'Mié',
+            'name' => 'Miércoles'
         ],
         [
             'id' => 5,
             'week_day' => Carbon::THURSDAY,
-            'short_name' => 'Thu',
-            'name' => 'Thursday'
+            'short_name' => 'Jue',
+            'name' => 'Jueves'
         ],
         [
             'id' => 6,
             'week_day' => Carbon::FRIDAY,
-            'short_name' => 'Fri',
-            'name' => 'Friday'
+            'short_name' => 'Vie',
+            'name' => 'Viernes'
         ],
         [
             'id' => 7,
             'week_day' => Carbon::SATURDAY,
-            'short_name' => 'Sat',
-            'name' => 'Saturday'
+            'short_name' => 'Sáb',
+            'name' => 'Sábado'
         ]
     ];
 

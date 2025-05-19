@@ -26069,8 +26069,13 @@ background: linear-gradient(337deg, rgba(2,48,71,1) 0%, rgba(18,103,130,1) 71%, 
 
 .follow_steps{
   color: black;
+
 }
 
 
+
+.am-weekly-slots_card {
+  background: #17B26A !important;
+}
 
 
