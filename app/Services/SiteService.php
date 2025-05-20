@@ -27,6 +27,7 @@ public function getTutors($data = array()) {
 
         $instructors->withWhereHas('profile', function ($query) {
             $query->select('id', 'verified_at', 'user_id', 'first_name', 'last_name', 'image', 'gender', 'tagline', 'description', 'slug', 'intro_video');
+            $query->whereNotNull('verified_at'); // Solo tutores verificados
         });
 
         // Agregar conteos y promedios básicos

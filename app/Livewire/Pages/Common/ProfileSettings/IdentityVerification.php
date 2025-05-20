@@ -192,12 +192,17 @@ class IdentityVerification extends Component {
      */
     public function updatedForm($value, $key)
     {
+
+        
         if( $key == 'countryName' ) {
             $country = Country::where('short_code',$value)->select('id')->first();
             $this->form->country =  $country?->id;
+            
         } elseif( in_array($key, ['image', 'identificationCard','transcript']) ) {
+            $entro= 'asdhvasjdasdas';
             $mimeType = $value->getMimeType();
             $type = explode('/', $mimeType);
+          
             if($type[0] != 'image') {
                 $this->dispatch('showAlertMessage', type: `error`, message: __('validation.invalid_file_type', ['file_types' => fileValidationText($this->allowImgFileExt)]));
                 $this->form->{$key} = null;
@@ -218,8 +223,11 @@ class IdentityVerification extends Component {
         $this->states = null;
         $this->identity         = $this->userIdentity->getUserIdentityVerification();
         if(!empty($this->form->country)){
+/*             dd( $this->states =$this->userIdentity->countryStates($this->form->country)
+           ,"se seleccionó un país"); */
             $this->states =$this->userIdentity->countryStates($this->form->country);
             if($this->states->isNotEmpty()){
+                //dd($this->states, "hay estados");
                 $this->hasStates = true;
                 $this->dispatch('initSelect2', target: '#country_state' );
             } else {
@@ -294,5 +302,21 @@ class IdentityVerification extends Component {
         }
         dispatch(new SendNotificationJob('identityVerificationRequest', Auth::user(), $this->data));
     }
+
+
+    /* public function updatedFormCountry($value)
+{
+    // Este método se ejecuta automáticamente cuando cambia form.country
+    // $value contendrá el ID del país seleccionado
+    
+    // Por ejemplo, podrías cargar estados/provincias del país seleccionado
+     dd($value, "el valor del país");
+
+    if (!empty($value)) {
+        $this->states = State::where('country_id', $value)->get();
+    } else {
+        $this->states = [];
+    }
+} */
 
 }
