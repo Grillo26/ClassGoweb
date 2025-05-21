@@ -2296,3 +2296,33 @@
   content: "\eb37";
   color: #585858;
 }
+.am-weekly-slots_card.am-slot-past,
+.am-weekly-slots_card.am-slot-past.am-slot-warning,
+.am-weekly-slots_card.am-slot-past.am-slot-success,
+.am-weekly-slots_card.am-slot-past.am-slot-ready,
+.am-weekly-slots_card.am-slot-past.am-slot-pending {
+    background: #d1d5db !important;
+    color: #888 !important;
+    border-color: #b0b0b0 !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+    border-top: 2px solid #b0b0b0 !important; /* fuerza el borde gris */
+    box-shadow: none !important;
+    background-image: none !important;
+}
+
+/* Si usan ::before para la línea de color, ocúltalo así: */
+.am-weekly-slots_card.am-slot-past::before {
+    display: none !important;
+}
+
+/* Si quieres que NO tengan ningún color de borde arriba, simplemente: */
+.am-weekly-slots_card {
+  border-top: none !important;
+  box-shadow: none !important;
+  background-image: none !important;
+}
+
+.am-weekly-slots_card::before {
+  display: none !important;
+}

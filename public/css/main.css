@@ -13490,7 +13490,7 @@ background: linear-gradient(337deg, rgba(2,48,71,1) 0%, rgba(18,103,130,1) 71%, 
 }
 .am-booksession-details {
   width: 100%;
-  height: 640px;
+  height: auto;
   overflow: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;

@@ -190,6 +190,7 @@
                                         @php
                                         $active_date = $date->toDateString();
                                         $slots = $availableSlots[$active_date] ?? [];
+                                        $isPast = \Carbon\Carbon::parse($date)->lt(\Carbon\Carbon::now($timezone)->startOfDay());
                                         @endphp
                                         <td>
                                             <div class="am-weekly-slots">
@@ -209,7 +210,12 @@
                                                                 }
                                                             }
                                                         @endphp
-                                                        <div @class(['d-none'=> $index > 3, 'am-weekly-slots_card', 'am-slot-'.$tooltipClass]) id="sessionslot-{{ $slot->id}}">
+                                                        <div @class([
+                                                            'am-weekly-slots_card',
+                                                            'am-slot-past' => $isPast,
+                                                            'am-slot-'.$tooltipClass,
+                                                            'd-none' => $index > 3
+                                                        ]) id="sessionslot-{{ $slot->id }}">
                                                             @if(!empty($group))
                                                                 <h6>
                                                                     {{ $group }}
@@ -229,10 +235,7 @@
                                                                 </span>
                                                             </div>
                                                             <div class="am-bookingbtns">
-                                                                @php
-                                                                    $isPastDate = \Carbon\Carbon::parse($date)->lt(\Carbon\Carbon::now()->startOfDay());
-                                                                @endphp
-                                                                @if(!$isPastDate)
+                                                                @if(!$isPast)
                                                                     <button class="am-viewdetail" wire:loading.class="am-btn_disable" wire:target="estudianteReserva('{{ $slot->id }}')" wire:click.prevent="toggleConfirmationDiv('{{ $slot->id }}');" data-bs-toggle="modal" data-bs-target="#confirmationModal">
                                                                         {{ __('tutor.view_booking') }}
                                                                     </button>
@@ -257,6 +260,7 @@
                             $active_date = $date->toDateString();
                             $slots = $availableSlots[$active_date] ?? [];
                             $showAll[$active_date] = false;
+                            $isPast = \Carbon\Carbon::parse($date)->lt(\Carbon\Carbon::now($timezone)->startOfDay());
                             @endphp
                             <td>
                                 <div class="am-weekly-slots @if($selectedDate === $date->toDateString()) am-day-slots-show @endif">
@@ -269,7 +273,12 @@
                                                 $showAll[$active_date] = $index > 4;
                                                 $tooltipClass = Arr::random(['warning', 'pending', 'ready', 'success'])
                                             @endphp
-                                            <div @class(['d-none'=> $index > 4, 'am-weekly-slots_card', 'am-slot-'.$tooltipClass]) id="sessionslot-{{ $slot->id}}">
+                                            <div @class([
+                                                'am-weekly-slots_card',
+                                                'am-slot-past' => $isPast,
+                                                'am-slot-'.$tooltipClass,
+                                                'd-none' => $index > 4
+                                            ]) id="sessionslot-{{ $slot->id }}">
                                                 @if(!empty($group))
                                                     <h6>
                                                         {{ $group }}
@@ -290,10 +299,7 @@
                                                     </span>
                                                 </div>
                                                 <div class="am-bookingbtns">
-                                                    @php
-                                                        $isPastDate = \Carbon\Carbon::parse($date)->lt(\Carbon\Carbon::now()->startOfDay());
-                                                    @endphp
-                                                    @if(!$isPastDate)
+                                                    @if(!$isPast)
                                                         <button class="am-viewdetail" wire:loading.class="am-btn_disable" wire:target="estudianteReserva('{{ $slot->id }}')" wire:click.prevent="toggleConfirmationDiv('{{ $slot->id }}');" data-bs-toggle="modal" data-bs-target="#confirmationModal">
                                                             {{ __('tutor.view_booking') }}
                                                         </button>
@@ -335,9 +341,6 @@
 
     <x-slot-detail-modal :cartItems="$cartItems" :timezone="$timezone" :currentSlot="$currentSlot" :user="$user" wire:key="{{ time() }}" />
     @endif
-
-
-    <input type="text" class="form-control flatpickr-time hour-selector" wire:model="selectedHour" placeholder="Selecciona hora" @if($minTime) data-min-time="{{ $minTime }}" @endif @if($maxTime) data-max-time="{{ $maxTime }}" @endif @if(!empty($enableTimes)) data-enable-times='@json($enableTimes)' @endif>
 
 
 

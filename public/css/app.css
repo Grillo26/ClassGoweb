@@ -1,0 +1,19 @@
+.am-slot-past {
+    background: #d1d5db !important; /* gris claro */
+    color: #888 !important;
+    border-color: #b0b0b0 !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
+.am-weekly-slots_card.am-slot-past,
+.am-weekly-slots_card.am-slot-past.am-slot-warning,
+.am-weekly-slots_card.am-slot-past.am-slot-success,
+.am-weekly-slots_card.am-slot-past.am-slot-ready,
+.am-weekly-slots_card.am-slot-past.am-slot-pending {
+    background: #d1d5db !important; /* gris claro */
+    color: #888 !important;
+    border-color: #b0b0b0 !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+} 
