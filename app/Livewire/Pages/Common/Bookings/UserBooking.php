@@ -96,9 +96,9 @@ class UserBooking extends Component
         foreach ($result as $booking) {
             // Convertir la fecha a la zona horaria del usuario para el agrupamiento
             $date = Carbon::parse($booking->start_time)->setTimezone(getUserTimezone())->toDateString();
-            $array = $booking->toArray();
-            $array['subject_name'] = $booking->subject->name ?? '';
-            $array['status_num'] = $booking->getRawOriginal('status');
+                        $array = $booking->toArray();
+                        $array['subject_name'] = $booking->subject->name ?? '';
+                        $array['status_num'] = $booking->getRawOriginal('status');
             $this->upcomingBookings[$date][] = $array;
         }
         Log::info('upcomingBookings keys', array_keys($this->upcomingBookings));

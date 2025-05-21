@@ -194,161 +194,129 @@
                                         <td>
                                             <div class="am-weekly-slots">
                                                 @if(!empty($slots))
-                                                @foreach ($slots as $index => $slot)
-                                                @php
+                                                    @foreach ($slots as $index => $slot)
+                                                        @php
+                                                            $total_spaces = $slot->spaces ?? 0;
+                                                            $total_booked = $slot->total_booked ?? 0;
+                                                            $available_slot = $total_spaces - $total_booked;
+                                                            $show_all = $index > 3;
+                                                            $tooltipClass = Arr::random(['warning', 'pending', 'ready', 'success']);
+                                                            $discountedFee = 0;
+                                                            if (\Nwidart\Modules\Facades\Module::has('kupondeal') && \Nwidart\Modules\Facades\Module::isEnabled('kupondeal')){
+                                                                $coupon = $slot?->subjectGroupSubjects?->coupons?->first();
+                                                                if(!empty($coupon)){
+                                                                    $discountedFee = getDiscountedTotal($slot->session_fee, $coupon->discount_type, $coupon->discount_value);
+                                                                }
+                                                            }
+                                                        @endphp
+                                                        <div @class(['d-none'=> $index > 3, 'am-weekly-slots_card', 'am-slot-'.$tooltipClass]) id="sessionslot-{{ $slot->id}}">
+                                                            @if(!empty($group))
+                                                                <h6>
+                                                                    {{ $group }}
+                                                                </h6>
+                                                            @endif
+                                                            @if(!empty($subject))<h5>{{ $subject }}</h5>@endif
+                                                            <div class="am-weekly-slots_info">
+                                                                <span>
+                                                                    <i class="am-icon-time"></i>
+                                                                    @if(setting('_lernen.time_format') == '12')
+                                                                        <em>{{ parseToUserTz($slot->start_time, $timezone)->format('h:i a') }} -
+                                                                            {{ parseToUserTz($slot->end_time, $timezone)->format('h:i a') }}</em>
+                                                                    @else
+                                                                        <em>{{ parseToUserTz($slot->start_time, $timezone)->format('H:i') }} -
+                                                                            {{ parseToUserTz($slot->end_time, $timezone)->format('H:i') }}</em>
+                                                                    @endif
+                                                                </span>
+                                                            </div>
+                                                            <div class="am-bookingbtns">
+                                                                @php
+                                                                    $isPastDate = \Carbon\Carbon::parse($date)->lt(\Carbon\Carbon::now()->startOfDay());
+                                                                @endphp
+                                                                @if(!$isPastDate)
+                                                                    <button class="am-viewdetail" wire:loading.class="am-btn_disable" wire:target="estudianteReserva('{{ $slot->id }}')" wire:click.prevent="toggleConfirmationDiv('{{ $slot->id }}');" data-bs-toggle="modal" data-bs-target="#confirmationModal">
+                                                                        {{ __('tutor.view_booking') }}
+                                                                    </button>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                @else
+                                                    <span class="am-emptyslot">{{ __('calendar.no_sessions') }}</span>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        @endfor
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="am-booking-weekly-clander am-booking-mobile">
+                            @for ($date = $currentDate->copy()->startOfWeek($startOfWeek); $date->lte($currentDate->copy()->endOfWeek(getEndOfWeek($startOfWeek))); $date->addDay())
+                            @php
+                            $active_date = $date->toDateString();
+                            $slots = $availableSlots[$active_date] ?? [];
+                            $showAll[$active_date] = false;
+                            @endphp
+                            <td>
+                                <div class="am-weekly-slots @if($selectedDate === $date->toDateString()) am-day-slots-show @endif">
+                                    @if(!empty($slots))
+                                        @foreach ($slots as $index => $slot)
+                                            @php
                                                 $total_spaces = $slot->spaces ?? 0;
                                                 $total_booked = $slot->total_booked ?? 0;
                                                 $available_slot = $total_spaces - $total_booked;
-                                                $show_all = $index > 3;
-                                                $cartItemIds = array_column(array_column($cartItems?->toArray() ?? [], 'options'), 'slot_id');
-                                                $tooltipClass = Arr::random(['warning', 'pending', 'ready', 'success']);
-                                                $discountedFee = 0;
-                                                if (\Nwidart\Modules\Facades\Module::has('kupondeal') && \Nwidart\Modules\Facades\Module::isEnabled('kupondeal')){
-                                                $coupon = $slot?->subjectGroupSubjects?->coupons?->first();
-                                                if(!empty($coupon)){
-                                                $discountedFee = getDiscountedTotal($slot->session_fee, $coupon->discount_type, $coupon->discount_value);
-                                                }
-                                                }
-                                                @endphp
-                                                <div @class(['d-none'=> $index > 3, 'am-slot-selected' => in_array($slot->id, $cartItemIds), 'am-weekly-slots_card', 'am-slot-'.$tooltipClass]) id="sessionslot-{{ $slot->id}}">
-                                                    @if(!empty($group))
+                                                $showAll[$active_date] = $index > 4;
+                                                $tooltipClass = Arr::random(['warning', 'pending', 'ready', 'success'])
+                                            @endphp
+                                            <div @class(['d-none'=> $index > 4, 'am-weekly-slots_card', 'am-slot-'.$tooltipClass]) id="sessionslot-{{ $slot->id}}">
+                                                @if(!empty($group))
                                                     <h6>
                                                         {{ $group }}
-                                                        @if(in_array($slot->id, $cartItemIds))
-                                                        <div class="am-closepopup"
-                                                            @click="$wire.dispatch('remove-cart', { params: { cartable_id: @js($slot->bookings->first()?->id), cartable_type: 'App\\Models\\SlotBooking' } })">
-                                                            <i class="am-icon-multiply-01"></i>
-                                                        </div>
-                                                        @endif
                                                     </h6>
-                                                    @endif
-                                                    @if(!empty($subject))<h5>{{ $subject }}</h5>@endif
-                                                    <div class="am-weekly-slots_info">
-                                                        <span>
-                                                            <i class="am-icon-time"></i>
-                                                            @if(setting('_lernen.time_format') == '12')
+                                                @endif
+                                                @if(!empty($subject))<h5>{{ $subject }}</h5>
+                                                @endif
+                                                <div class="am-weekly-slots_info">
+                                                    <span>
+                                                        <i class="am-icon-time"></i>
+                                                        @if(setting('_lernen.time_format') == '12')
                                                             <em>{{ parseToUserTz($slot->start_time, $timezone)->format('h:i a') }} -
                                                                 {{ parseToUserTz($slot->end_time, $timezone)->format('h:i a') }}</em>
-                                                            @else
+                                                        @else
                                                             <em>{{ parseToUserTz($slot->start_time, $timezone)->format('H:i') }} -
                                                                 {{ parseToUserTz($slot->end_time, $timezone)->format('H:i') }}</em>
-                                                            @endif
-                                                        </span>
-                                                    </div>
-
-                                                    {{--
-                                                    <div class="am-bookingbtns">
-                                                        @if(((Auth::check() && Auth()->user()->role == 'student') && !in_array($slot->id, $cartItemIds) && $available_slot > 0) && $slot->bookings->isEmpty())
-                                                        <button class="am-booksession" wire:loading.class="am-btn_disable" wire:target="bookSiosion $slot->id }})" wire:click.prevent="boobookS({sionlot->id }})">{{ __('tutor.book_session_txt') }}</button>
-                                                    @endif
-                                                    <button class="am-viewdetail" wire:loading.class="am-btn_disable" wire:target="showSlotDetail('{{ $slot->id }}')" wire:click.prevent="showSlotDetail('{{ $slot->id }}');">{{ __('tutor.view_detail') }}</button>
-                                                </div> --}}
+                                                        @endif
+                                                    </span>
+                                                </div>
                                                 <div class="am-bookingbtns">
-                                                    {{--
-                                                            @if(((Auth::check() && Auth()->user()->role == 'student') && !in_array($slot->id, $cartItemIds) && $available_slot > 0) && $slot->bookings->isEmpty())
-                                                                <button class="am-booksession" wire:loading.class="am-btn_disable" wire:target="bookSiosion $slot->id }})" wire:click.prevent="boobookS({sionlot->id }})" >{{ __('tutor.book_session_txt') }}</button>
-                                                    @endif
-                                                    --}}
                                                     @php
-                                                    $isPastDate = \Carbon\Carbon::parse($date)->lt(\Carbon\Carbon::now()->startOfDay());
+                                                        $isPastDate = \Carbon\Carbon::parse($date)->lt(\Carbon\Carbon::now()->startOfDay());
                                                     @endphp
                                                     @if(!$isPastDate)
-                                                    <button class="am-viewdetail" wire:loading.class="am-btn_disable" wire:target="estudianteReserva('{{ $slot->id }}')" wire:click.prevent="toggleConfirmationDiv('{{ $slot->id }}');" data-bs-toggle="modal" data-bs-target="#confirmationModal">
-                                                        {{ __('tutor.view_booking') }}
-                                                    </button>
+                                                        <button class="am-viewdetail" wire:loading.class="am-btn_disable" wire:target="estudianteReserva('{{ $slot->id }}')" wire:click.prevent="toggleConfirmationDiv('{{ $slot->id }}');" data-bs-toggle="modal" data-bs-target="#confirmationModal">
+                                                            {{ __('tutor.view_booking') }}
+                                                        </button>
                                                     @endif
                                                 </div>
-
                                             </div>
-                                            @endforeach
-                                            @else
-                                            <span class="am-emptyslot">{{ __('calendar.no_sessions') }}</span>
-                                            @endif
-                        </div>
-                        </td>
-                        @endfor
-                        </tr>
-                        </tbody>
-                        </table>
-                    </div>
-
-                    <div class="am-booking-weekly-clander am-booking-mobile">
-                        @for ($date = $currentDate->copy()->startOfWeek($startOfWeek); $date->lte($currentDate->copy()->endOfWeek(getEndOfWeek($startOfWeek))); $date->addDay())
-                        @php
-                        $active_date = $date->toDateString();
-                        $slots = $availableSlots[$active_date] ?? [];
-                        $showAll[$active_date] = false;
-                        @endphp
-                        <td>
-                            <div class="am-weekly-slots @if($selectedDate === $date->toDateString()) am-day-slots-show @endif">
-                                @if(!empty($slots))
-
-                                @foreach ($slots as $index => $slot)
-                                @php
-                                $total_spaces = $slot->spaces ?? 0;
-                                $total_booked = $slot->total_booked ?? 0;
-                                $available_slot = $total_spaces - $total_booked;
-                                $showAll[$active_date] = $index > 4;
-                                $cartItemIds = array_column(array_column($cartItems?->toArray() ?? [], 'options'), 'slot_id');
-                                $tooltipClass = Arr::random(['warning', 'pending', 'ready', 'success'])
-                                @endphp
-                                <div @class(['d-none'=> $index > 4, 'am-slot-selected' => in_array($slot->id, $cartItemIds), 'am-weekly-slots_card', 'am-slot-'.$tooltipClass]) id="sessionslot-{{ $slot->id}}">
-                                    @if(!empty($group))
-                                    <h6>
-                                        {{ $group }}
-                                        @if(in_array($slot->id, $cartItemIds))
-                                        <div class="am-closepopup"
-                                            @click="$wire.dispatch('remove-cart', { params: { cartable_id: @js($slot->bookings->first()?->id), cartable_type: 'App\\Models\\SlotBooking' } })">
-                                            <i class="am-icon-multiply-02"></i>
-                                        </div>
-                                        @endif
-                                    </h6>
+                                        @endforeach
+                                    @else
+                                        <span class="am-emptyslot">{{ __('calendar.no_sessions') }}</span>
                                     @endif
-                                    @if(!empty($subject))<h5>{{ $subject }}</h5>
-                                    @endif
-                                    <div class="am-weekly-slots_info">
-                                        <span>
-                                            <i class="am-icon-time"></i>
-                                            @if(setting('_lernen.time_format') == '12')
-                                            <em>{{ parseToUserTz($slot->start_time, $timezone)->format('h:i a') }} -
-                                                {{ parseToUserTz($slot->end_time, $timezone)->format('h:i a') }}</em>
-                                            @else
-                                            <em>{{ parseToUserTz($slot->start_time, $timezone)->format('H:i') }} -
-                                                {{ parseToUserTz($slot->end_time, $timezone)->format('H:i') }}</em>
-                                            @endif
-                                        </span>
-                                    </div>
-                                    <div class="am-bookingbtns">
-                                        @if((Auth::check() && Auth()->user()->role == 'student') && !in_array($slot->id, $cartItemIds) && $available_slot > 0)
-                                        <button class="am-booksession" wire:loading.class="am-btn_disable" wire:target="bookSession({{ $slot->id }})" wire:click.prevent="bookSession({{ $slot->id }})">{{ __('tutor.book_session_txt') }}</button>
-                                        @endif
-                                        @php
-                                        $isPastDate = \Carbon\Carbon::parse($date)->lt(\Carbon\Carbon::now()->startOfDay());
-                                        @endphp
-                                        @if(!$isPastDate)
-                                        <button class="am-viewdetail" wire:loading.class="am-btn_disable" wire:target="estudianteReserva('{{ $slot->id }}')" wire:click.prevent="toggleConfirmationDiv('{{ $slot->id }}');" data-bs-toggle="modal" data-bs-target="#confirmationModal">
-                                            {{ __('tutor.view_booking') }}
-                                        </button>
-                                        @endif
-                                    </div>
-
                                 </div>
-                                @endforeach
-                                @else
-                                <span class="am-emptyslot">{{ __('calendar.no_sessions') }}</span>
-                                @endif
+                            </td>
+                            @if($showAll[$active_date] && $selectedDate == $active_date)
+                            <div class="am-view_schedule-wrap">
+                                <button class="am-white-btn am-view_schedule am-showmore">{{ __('tutor.view_full_schedules')}}</button>
                             </div>
-                        </td>
-                        @if($showAll[$active_date] && $selectedDate == $active_date)
-                        <div class="am-view_schedule-wrap">
-                            <button class="am-white-btn am-view_schedule am-showmore">{{ __('tutor.view_full_schedules')}}</button>
+                            @endif
+                            @endfor
                         </div>
-                        @endif
-                        @endfor
+                        <a class="tab-pane_rightarrow" href="javascript:void(0);" wire:click="nextBookings">
+                            <i class="am-icon-chevron-right"></i>
+                        </a>
                     </div>
-                    <a class="tab-pane_rightarrow" href="javascript:void(0);" wire:click="nextBookings">
-                        <i class="am-icon-chevron-right"></i>
-                    </a>
                 </div>
             </div>
             @if($show_all)
@@ -369,7 +337,7 @@
     @endif
 
 
-    <input type="text" class="form-control flatpickr-time hour-selector" placeholder="Prueba flatpickr">
+    <input type="text" class="form-control flatpickr-time hour-selector" wire:model="selectedHour" placeholder="Selecciona hora" @if($minTime) data-min-time="{{ $minTime }}" @endif @if($maxTime) data-max-time="{{ $maxTime }}" @endif @if(!empty($enableTimes)) data-enable-times='@json($enableTimes)' @endif>
 
 
 
@@ -412,7 +380,7 @@
                 </div>
 
                 <!-- Input de hora sin tabindex -->
-                <input type="text" class="form-control flatpickr-time hour-selector" wire:model="selectedHour" placeholder="Selecciona hora" @if($minTime) data-min-time="{{ $minTime }}" @endif @if($maxTime) data-max-time="{{ $maxTime }}" @endif>
+                <input type="text" class="form-control flatpickr-time hour-selector" wire:model="selectedHour" placeholder="Selecciona hora" @if($minTime) data-min-time="{{ $minTime }}" @endif @if($maxTime) data-max-time="{{ $maxTime }}" @endif @if(!empty($enableTimes)) data-enable-times='@json($enableTimes)' @endif>
 
 
                 <!-- Selector de subjects del tutor -->
@@ -468,6 +436,7 @@
                     allowInput: true,
                     minTime: hourPicker.getAttribute('data-min-time') || undefined,
                     maxTime: hourPicker.getAttribute('data-max-time') || undefined,
+                    ...(hourPicker.getAttribute('data-enable-times') ? { enable: JSON.parse(hourPicker.getAttribute('data-enable-times')) } : {}),
                     onOpen: function(selectedDates, dateStr, instance) {
                         instance.calendarContainer.style.zIndex = 99999;
                     }
