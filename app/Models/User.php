@@ -112,7 +112,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
         );
     }
 
-    public static function admin() {
+    public static function admin()
+    {
         return self::with('profile:id,user_id,first_name,last_name,image')->role('admin')->first();
     }
 
@@ -125,10 +126,10 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     {
         return Attribute::make(
             get: fn() => match ($this->role) {
-                'admin'     => route('admin.insights', absolute: false),
-                'tutor'     => route('tutor.dashboard', absolute: false),
-                'student'   => route('student.bookings', absolute: false),
-                default     => url('/')
+                'admin' => route('admin.insights', absolute: false),
+                'tutor' => route('tutor.dashboard', absolute: false),
+                'student' => route('student.bookings', absolute: false),
+                default => url('/')
             },
         );
     }
@@ -242,7 +243,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     {
         return $this->hasMany(Dispute::class, 'responsible_by');
     }
-    
+
     public function socialProfiles(): HasMany
     {
         return $this->hasMany(SocialProfile::class);
@@ -253,15 +254,15 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function badges(): BelongsToMany | null
+    public function badges(): BelongsToMany|null
     {
         if (\Nwidart\Modules\Facades\Module::has('starup') && \Nwidart\Modules\Facades\Module::isEnabled('starup')) {
-            return $this->belongsToMany(\Modules\Starup\Models\Badge::class,  getStarupDbPrefix(). 'user_badges', 'user_id', 'badge_id');
+            return $this->belongsToMany(\Modules\Starup\Models\Badge::class, getStarupDbPrefix() . 'user_badges', 'user_id', 'badge_id');
         }
         return null;
     }
 
-     /**
+    /**
      * Get the courses for the user.
      */
     public function courses(): HasMany
@@ -279,7 +280,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     {
         // Buscar los user_subjects que pertenezcan a este grupo
         $subjects = UserSubject::where('user_id', $this->user->id)
-            ->whereHas('subject', function($q) use ($groupId) {
+            ->whereHas('subject', function ($q) use ($groupId) {
                 $q->where('subject_group_id', $groupId);
             })
             ->with('subject')
@@ -321,7 +322,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     {
         // Eliminar todos los UserSubject del grupo para este usuario
         $userSubjects = UserSubject::where('user_id', $this->user->id)
-            ->whereHas('subject', function($q) use ($groupId) {
+            ->whereHas('subject', function ($q) use ($groupId) {
                 $q->where('subject_group_id', $groupId);
             })->get();
 
@@ -346,5 +347,11 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
             'user_id',
             'subject_id'
         );
+    }
+
+
+    public function userSubjectSlots()
+    {
+        return $this->hasMany(UserSubjectSlot::class, 'user_id');
     }
 }

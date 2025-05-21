@@ -52,7 +52,29 @@
                                             $tutorInfo['image'] = url('storage/profile_images/placeholder.png');
                                         }
                                     @endphp
-                                    <img class="rounded-xl d-block mx-auto" src="{{ $tutorInfo['image'] }}" alt="{{ $tutor->profile->full_name }}"style ="border-radius: 16px;" width="250" height="250"><div class="am-tutorsearch_btns">
+                                    
+                                   <div class="d-flex justify-content-center mb-4" style="position: relative; display: inline-block;">
+    <img class="rounded-xl d-block mx-auto" 
+         src="{{ $tutorInfo['image'] }}"
+         alt="{{ $tutor->profile->full_name }}"
+         style="border-radius: 16px; width: 150px; height: 150px; object-fit: cover;">
+    
+    @if($tutor->userSubjectSlots && $tutor->userSubjectSlots->count() > 0)
+        <div style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 20px; background-color: #28a745; border-radius: 50%; border: 2px solid white;"></div>
+    @else
+        <div style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 20px; background-color:gray; border-radius: 50%; border: 2px solid white;"></div>
+    @endif
+</div>
+                                        
+
+
+
+
+
+
+
+                                                                            
+                                    <div class="am-tutorsearch_btns">
                                         
                                     
                                     
