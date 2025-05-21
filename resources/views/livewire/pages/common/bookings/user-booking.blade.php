@@ -198,8 +198,12 @@
                         ];
                     @endphp
                     @if($showBy == 'daily')
-                    <div class="tab-pane fade show active" id="dailytab">
-                        <table class="am-booking-clander-daily">
+                    @php
+                        $selectedDay = parseToUserTz($currentDate)->toDateString();
+                        $bookingsSelectedDay = $upcomingBookings[$selectedDay] ?? [];
+                    @endphp
+                    <div class="tab-pane fade show active" id="dailytab" wire:key="dailytab-{{ $selectedDay }}">
+                        <table class="am-booking-clander-daily" wire:key="table-{{ $selectedDay }}">
                             <thead>
                                 <tr>
                                     <th>{{ __('calendar.time') }}</th>
@@ -208,48 +212,46 @@
                             </thead>
                             <tbody>
                                 @php
-                                    $startTime = \Carbon\Carbon::createFromTime(0, 0, 0);
-                                    $endTime = \Carbon\Carbon::createFromTime(23, 59, 0);
+                                    $startTime = \Carbon\Carbon::parse($selectedDay)->setTime(0, 0, 0);
+                                    $endTime = \Carbon\Carbon::parse($selectedDay)->setTime(23, 59, 0);
                                 @endphp
                                 @while ($startTime <= $endTime)
+                                    @php
+                                        $slotStart = $startTime->copy();
+                                        $slotEnd = $startTime->copy()->addMinutes(30);
+                                    @endphp
                                     <tr>
                                         <td>{{ $startTime->format('h:i A') }}</td>
                                         <td>
                                             <div style="display: flex; flex-direction: column; gap: 4px; width: 100%;">
-                                            @if(isset($upcomingBookings[$currentDate->toDateString()]))
-                                                @foreach($upcomingBookings[$currentDate->toDateString()] as $booking)
-                                                    @if(\Carbon\Carbon::parse($booking['start_time'])->format('H:i') == $startTime->format('H:i'))
-                                                            <div style="background: {{ $statusColors[strtolower(trim($booking['status']))] ?? '#FACC15' }} !important; color:black;padding:5px;border-radius:5px; cursor:pointer; width: 100%;"
-                                                                @click="openModal({
-                                                                    estado: '{{ $statusMap[$booking['status_num']] ?? $booking['status_num'] }}',
-                                                                    hora_inicio: '{{ \Carbon\Carbon::parse($booking['start_time'])->format('H:i') }}',
-                                                                    hora_fin: '{{ \Carbon\Carbon::parse($booking['end_time'])->format('H:i') }}',
-                                                                    fecha: '{{ \Carbon\Carbon::parse($booking['start_time'])->format('Y-m-d') }}',
-                                                                    materia: '{{ $booking['subject_name'] }}',
-                                                                    meeting_link: '{{ $booking['meeting_link'] ?? '' }}'
-                                                                })">
-                                                                {{ $statusMap[$booking['status_num']] ?? $booking['status_num'] }}
+                                            @foreach($bookingsSelectedDay as $booking)
+                                                @if(is_array($booking) && isset($booking['start_time']))
+                                                    @php
+                                                        $bookingStart = \Carbon\Carbon::parse($booking['start_time']);
+                                                    @endphp
+                                                    @if($bookingStart >= $slotStart && $bookingStart < $slotEnd)
+                                                        <div style="background: {{ $statusColors[strtolower(trim($booking['status']))] ?? '#FACC15' }} !important; color:black;padding:5px;border-radius:5px; cursor:pointer; width: 100%;"
+                                                            @click="openModal({
+                                                                estado: '{{ $statusMap[$booking['status_num']] ?? $booking['status_num'] }}',
+                                                                hora_inicio: '{{ \Carbon\Carbon::parse($booking['start_time'])->format('H:i') }}',
+                                                                hora_fin: '{{ \Carbon\Carbon::parse($booking['end_time'])->format('H:i') }}',
+                                                                fecha: '{{ \Carbon\Carbon::parse($booking['start_time'])->format('Y-m-d') }}',
+                                                                materia: '{{ $booking['subject_name'] }}',
+                                                                meeting_link: '{{ $booking['meeting_link'] ?? '' }}'
+                                                            })">
+                                                            {{ $statusMap[$booking['status_num']] ?? $booking['status_num'] }}
                                                         </div>
                                                     @endif
-                                                @endforeach
-                                            @endif
+                                                @endif
+                                            @endforeach
                                             </div>
                                         </td>
                                     </tr>
-                                    @php $startTime->addMinutes(30); @endphp
+                                    @php $startTime = $startTime->copy()->addMinutes(30); @endphp
                                 @endwhile
                             </tbody>
                         </table>
                     </div>
-
-                    <style>
-                        .booking-item {
-                            padding: 5px;
-                            margin-bottom: 5px;
-                            border-radius: 4px;
-                            color: #fff;
-                        }
-                    </style>
                     @elseif($showBy == 'weekly')
                     <div class="tab-pane fade show active" id="weeklytab">
                         <div style="overflow-x:auto; width:100%;">

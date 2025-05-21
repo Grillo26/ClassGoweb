@@ -369,11 +369,11 @@
     @endif
 
 
+    <input type="text" class="form-control flatpickr-time hour-selector" placeholder="Prueba flatpickr">
 
 
 
-
-    <div wire:ignore.self class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true" data-bs-focus="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -411,18 +411,8 @@
                     @enderror
                 </div>
 
-                <!-- Selector de hora basado en el rango de horas -->
-
-                @if(!empty($hourRange))
-                <div class="mb-4">
-                    <label for="hour-selector" class="block text-sm font-medium text-gray-700 mb-2">{{ __('tutor.select_hour') }}</label>
-                    <select id="hour-selector" wire:model="selectedHour" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring focus:ring-indigo-500">
-                        @foreach($hourRange as $hour)
-                        <option value="{{ $hour }}">{{ $hour }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                @endif
+                <!-- Input de hora sin tabindex -->
+                <input type="text" class="form-control flatpickr-time hour-selector" wire:model="selectedHour" placeholder="Selecciona hora" @if($minTime) data-min-time="{{ $minTime }}" @endif @if($maxTime) data-max-time="{{ $maxTime }}" @endif>
 
 
                 <!-- Selector de subjects del tutor -->
@@ -453,12 +443,39 @@
 <div id="data-container" data-start-of-week="{{ json_encode($startOfWeek) }}"></div>
 
 @push('styles')
-@vite([
-'public/css/flatpicker-month-year-plugin.css',
-])
+    <link rel="stylesheet" href="{{ asset('css/flatpicker.css') }}">
 @endpush
 
 @push('scripts')
+<script src="{{ asset('js/flatpicker.js') }}"></script>
+<script>
+    console.log('flatpickr:', typeof flatpickr); // Debe decir "function"
+</script>
+<script defer src="{{ asset('js/weekSelect.min.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            document.querySelectorAll('.hour-selector').forEach(function(hourPicker) {
+                if (hourPicker._flatpickr) {
+                    hourPicker._flatpickr.destroy();
+                }
+                flatpickr(hourPicker, {
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: "H:i",
+                    time_24hr: true,
+                    minuteIncrement: 1,
+                    allowInput: true,
+                    minTime: hourPicker.getAttribute('data-min-time') || undefined,
+                    maxTime: hourPicker.getAttribute('data-max-time') || undefined,
+                    onOpen: function(selectedDates, dateStr, instance) {
+                        instance.calendarContainer.style.zIndex = 99999;
+                    }
+                });
+            });
+        }, 500);
+    });
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         Livewire.on('scrollToTop', function() {
@@ -468,101 +485,10 @@
             });
         });
     });
+    
 </script>
 
-<script defer src="{{ asset('js/flatpicker.js') }}"></script>
-<script defer src="{{ asset('js/weekSelect.min.js') }}"></script>
-<script defer src="{{ asset('js/flatpicker-month-year-plugin.js') }}"></script>
-<script>
-    let dateInstance = null;
-    document.addEventListener("DOMContentLoaded", (event) => {
-        document.addEventListener('initCalendarJs', (event) => {
-            setTimeout(() => {
-                initFlatPicker(event.detail.currentDate, );
-            }, 100);
-        })
 
-        function initFlatPicker(currentDate) {
-            if (dateInstance) {
-                dateInstance.destroy();
-            }
-
-            let startOfWeek = JSON.parse(document.getElementById('data-container').getAttribute('data-start-of-week'));
-            let config = {
-                defaultDate: parseDateRange(currentDate),
-                onChange: function(selectedDates, dateStr, instance) {
-                    Livewire.emit('jumpToDate', dateStr);
-                },
-                disableMobile: true,
-                minDate: "{{ Carbon\Carbon::now($timezone)->toDateString() }}",
-                plugins: [
-                    new weekSelect({
-                        weekStart: startOfWeek
-                    })
-                ],
-                dateFormat: 'Y-m-d',
-                onReady: function(selectedDates, dateStr, instance) {
-                    // Código adicional si es necesario
-                }
-            };
-            dateInstance = flatpickr('#flat-picker', config);
-        }
-
-        function parseDateRange(dateRangeStr) {
-            const [range, year] = dateRangeStr.split(' ');
-            const [startStr, endStr] = range.split('-');
-
-            const monthMap = {
-                January: 0,
-                February: 1,
-                March: 2,
-                April: 3,
-                May: 4,
-                June: 5,
-                July: 6,
-                August: 7,
-                September: 8,
-                October: 9,
-                November: 10,
-                December: 11
-            };
-
-            const parseDate = (str) => new Date(`${monthMap[str.split(' ')[0]]}/${str.split(' ')[1]}/${year}`);
-
-            try {
-                const startDate = parseDate(startStr);
-                const endDate = parseDate(endStr);
-                if (isNaN(startDate) || isNaN(endDate)) throw new Error('Invalid date');
-                return {
-                    start: startDate.toISOString().split('T')[0],
-                    end: endDate.toISOString().split('T')[0]
-                };
-            } catch {
-                return null;
-            }
-        }
-
-        jQuery(document).on('click', '.am-view_schedule', function() {
-            let _this = jQuery(this);
-            if (_this.hasClass('am-showmore')) {
-                _this.addClass('am-showless').removeClass('am-showmore');
-                jQuery('.am-weekly-slots').find('.d-none').addClass('am-showless').removeClass('d-none');
-                _this.text("{{ __('tutor.show_less') }}");
-            } else {
-                _this.addClass('am-showmore')
-                jQuery('.am-weekly-slots').find('.am-showless').addClass('d-none').removeClass('am-showless');
-                _this.text("{{ __('tutor.view_full_schedules') }}");
-            }
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const confirmationModal = document.getElementById('confirmationModal');
-        confirmationModal.addEventListener('hidden.bs.modal', function() {
-            Livewire.emit('resetImagePreview');
-        });
-    });
-</script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Obtener los datos del atributo data-* del contenedor
@@ -601,6 +527,102 @@
                     window.scrollTo({ top: lastScrollY, behavior: 'auto' });
                 }, 300);
             }, 1500);
+        });
+    });
+</script>
+<script>
+    // Inicialización para inputs estáticos
+    window.onload = function() {
+        setTimeout(function() {
+            document.querySelectorAll('.hour-selector').forEach(function(hourPicker) {
+                if (hourPicker._flatpickr) {
+                    hourPicker._flatpickr.destroy();
+                }
+                flatpickr(hourPicker, {
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: "H:i",
+                    time_24hr: true,
+                    minuteIncrement: 1,
+                    allowInput: true,
+                    onOpen: function(selectedDates, dateStr, instance) {
+                        instance.calendarContainer.style.zIndex = 99999;
+                    }
+                });
+            });
+        }, 500);
+    };
+    // Inicialización para inputs dinámicos con Livewire
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.Livewire) {
+            Livewire.on('initFlatpickr', function() {
+                setTimeout(function() {
+                    document.querySelectorAll('.hour-selector').forEach(function(hourPicker) {
+                        if (hourPicker._flatpickr) {
+                            hourPicker._flatpickr.destroy();
+                        }
+                        flatpickr(hourPicker, {
+                            enableTime: true,
+                            noCalendar: true,
+                            dateFormat: "H:i",
+                            time_24hr: true,
+                            minuteIncrement: 1,
+                            allowInput: true,
+                            onOpen: function(selectedDates, dateStr, instance) {
+                                instance.calendarContainer.style.zIndex = 99999;
+                            }
+                        });
+                    });
+                }, 100);
+            });
+        }
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Evita que el body haga scroll al top cuando se interactúa con flatpickr dentro de un modal
+        function preventBodyScrollOnFlatpickr() {
+            document.querySelectorAll('.hour-selector').forEach(function(input) {
+                input.addEventListener('focus', function(e) {
+                    const scrollY = window.scrollY;
+                    setTimeout(function() {
+                        window.scrollTo({ top: scrollY });
+                    }, 1);
+                });
+                input.addEventListener('mousedown', function(e) {
+                    const scrollY = window.scrollY;
+                    setTimeout(function() {
+                        window.scrollTo({ top: scrollY });
+                    }, 1);
+                });
+            });
+        }
+        // Llama la función al cargar y cada vez que se inicializa flatpickr
+        preventBodyScrollOnFlatpickr();
+        if (window.Livewire) {
+            Livewire.on('initFlatpickr', function() {
+                setTimeout(preventBodyScrollOnFlatpickr, 100);
+            });
+        }
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let lastScrollY = 0;
+        // Guarda la posición del scroll al abrir el modal
+        document.addEventListener('shown.bs.modal', function(event) {
+            lastScrollY = window.scrollY;
+        });
+        // Evita que el modal haga scroll al top al enfocar el input de flatpickr SOLO la primera vez
+        document.addEventListener('focusin', function(e) {
+            if (
+                e.target.classList.contains('hour-selector') &&
+                e.target.closest('.modal')
+            ) {
+                if (window.scrollY !== lastScrollY) {
+                    window.scrollTo({ top: lastScrollY });
+                }
+            }
         });
     });
 </script>

@@ -53,9 +53,9 @@ class MyCalendar extends Component
     #[Layout('layouts.app')]
     public function render()
     {
-        $this->makeCalendar($this->currentDate);
-        $this->availableSlots = $this->bookingService->getAvailableSlots($this->subjectGroupIds, $this->currentDate);
-        $this->dispatch('initCalendarJs', currentDate: parseToUserTz($this->currentDate->copy())->format('F, Y'));
+        if (empty($this->currentDate)) {
+            $this->makeCalendar();
+        }
         return view('livewire.pages.tutor.manage-sessions.my-calendar');
     }
 
@@ -165,12 +165,14 @@ class MyCalendar extends Component
         $date = Carbon::createFromDate($dateString);
         $date->subMonth();
         $this->makeCalendar($date);
+        $this->dispatch('initCalendarJs', currentDate: parseToUserTz($this->currentDate->copy())->format('F, Y'));
     }
 
     public function nextMonthCalendar($dateString) {
         $date = Carbon::createFromDate($dateString);
         $date->addMonth();
         $this->makeCalendar($date);
+        $this->dispatch('initCalendarJs', currentDate: parseToUserTz($this->currentDate->copy())->format('F, Y'));
     }
 
     private function makeCalendar($date = null) {
@@ -180,6 +182,9 @@ class MyCalendar extends Component
         $this->currentYear = $date->format('Y');
         $this->startOfCalendar = $date->copy()->firstOfMonth()->startOfWeek($this->startOfWeek);
         $this->endOfCalendar = $date->copy()->lastOfMonth()->endOfWeek(getEndOfWeek($this->startOfWeek));
+        
+        // Cargar las reservas inmediatamente después de actualizar las fechas
+        $this->availableSlots = $this->bookingService->getAvailableSlots($this->subjectGroupIds, $this->currentDate);
     }
 
     public function loadSlotForEdit($slotId)

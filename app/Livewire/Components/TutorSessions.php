@@ -51,6 +51,8 @@ class TutorSessions extends Component
     public $selectedSubject;
     public $subjectError = '';
     public $successMessage = '';
+    public $minTime;
+    public $maxTime;
     private $bookingService, $subjectService;
 
     public RequestSessionForm $requestSessionForm;
@@ -223,17 +225,23 @@ class TutorSessions extends Component
             if ($slot) {
                 $startTime = Carbon::parse($slot->start_time);
                 $endTime = Carbon::parse($slot->end_time);
+                $maxTime = $endTime->copy()->subMinutes(20);
                 $this->hourRange = $this->generateHourRange($startTime, $endTime);
+                $this->minTime = $startTime->format('H:i');
+                $this->maxTime = $maxTime->format('H:i');
 
                 // Obtener los subjects del tutor
                 $this->subjects = $slot->user->userSubjects->map(function ($userSubject) {
                     return $userSubject->subject;
                 });
             }
+            $this->dispatch('initFlatpickr');
         } else {
             $this->resetImageFields();
             $this->hourRange = [];
             $this->subjects = [];
+            $this->minTime = null;
+            $this->maxTime = null;
         }
     }
 
@@ -276,6 +284,7 @@ class TutorSessions extends Component
      */
     public function estudianteReserva($slotId)
     {
+        
         $this->subjectError = '';
         if (empty($this->selectedSubject)) {
             $this->subjectError = 'Debes seleccionar una materia.';
@@ -284,7 +293,7 @@ class TutorSessions extends Component
         $slot = UserSubjectSlot::find($slotId);
         if (!empty($slot)) {
             $sessionFee = $slot->session_fee ?? 15;
-            $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->selectedSubject);
+            $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->selectedSubject, $this->selectedHour);
             $data = [
                 'id' => $bookedSlot->id,
                 'slot_id' => $slot->id,

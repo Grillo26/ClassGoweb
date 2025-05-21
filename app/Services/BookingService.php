@@ -69,7 +69,54 @@ class BookingService
                 if (!isset($myData[$slotDate])) {
                     $myData[$slotDate] = [];
                 }
-                $myData[$slotDate][] = $slot;
+
+                // Normalizar las horas al día del slot
+                $slotStart = Carbon::parse($slotDate . ' ' . Carbon::parse($slot->start_time)->format('H:i:s'));
+                $slotEnd = Carbon::parse($slotDate . ' ' . Carbon::parse($slot->end_time)->format('H:i:s'));
+
+                // Obtener reservas que caen dentro de este slot
+                $bookings = \App\Models\SlotBooking::where('user_subject_slot_id', $slot->id)
+                    ->orderBy('start_time')
+                    ->get();
+
+                $freeRanges = [];
+                $current = $slotStart->copy();
+                foreach ($bookings as $booking) {
+                    $bookingStart = Carbon::parse($booking->start_time);
+                    $bookingEnd = Carbon::parse($booking->end_time);
+                    if ($current < $bookingStart) {
+                        $freeRanges[] = [
+                            'start_time' => $current->format('Y-m-d H:i:s'),
+                            'end_time' => $bookingStart->format('Y-m-d H:i:s'),
+                            'slot_id' => $slot->id,
+                            'user_id' => $slot->user_id,
+                            'date' => $slotDate,
+                            'duracion' => null
+                        ];
+                    }
+                    $current = $bookingEnd->copy();
+                }
+                if ($current < $slotEnd) {
+                    $freeRanges[] = [
+                        'start_time' => $current->format('Y-m-d H:i:s'),
+                        'end_time' => $slotEnd->format('Y-m-d H:i:s'),
+                        'slot_id' => $slot->id,
+                        'user_id' => $slot->user_id,
+                        'date' => $slotDate,
+                        'duracion' => null
+                    ];
+                }
+                // Solo agrego los sub-bloques que tengan al menos 20 minutos
+                foreach ($freeRanges as $range) {
+                    $start = Carbon::parse($range['start_time']);
+                    $end = Carbon::parse($range['end_time']);
+                    if ($start->diffInMinutes($end) >= 20) {
+                        // Generar un id único para el sub-bloque
+                        $range['id'] = $range['slot_id'] . '_' . $start->format('His') . '_' . $end->format('His');
+                        $myData[$slotDate][] = (object) $range;
+                    }
+                }
+                Log::info('SUB-BLOQUES GENERADOS', ['slot_id' => $slot->id, 'date' => $slotDate, 'freeRanges' => $freeRanges]);
             }
         }
         return $myData;
@@ -506,11 +553,11 @@ class BookingService
         return $slotBooking;
     }
 
-    public function reservarSlotBoooking($slot, $subjectId = null)
+    public function reservarSlotBoooking($slot, $subjectId = null, $selectedHour = null)
     {
         // Crear la reserva
         $dateOnly = $slot->date->format('Y-m-d');
-        $timeOnly = $slot->start_time->format('H:i:s');
+        $timeOnly = $selectedHour ?? $slot->start_time->format('H:i:s');
         $dateTimeString = $dateOnly . ' ' . $timeOnly;
         $startDateTime = Carbon::parse($dateTimeString);
         $endDateTime = $startDateTime->copy()->addMinutes(20);

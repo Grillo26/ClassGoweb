@@ -19,6 +19,7 @@ use App\Services\DisputeService;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Log;
 
 class UserBooking extends Component
 {
@@ -36,6 +37,7 @@ class UserBooking extends Component
     public $description = '';
     public $selectedReason = '';
     public $bookings = [];
+    public $debugBookings = [];
     protected $bookingService, $subjectService, $disputeService;
     public function boot() {
         $this->bookingService = new BookingService(Auth::user());
@@ -58,7 +60,7 @@ class UserBooking extends Component
         $this->subjectGroups = $this->subjectService->getSubjectsByUserRole();
         $this->dispatchSessionMessages();
         $this->activeRoute = Route::currentRouteName();
-
+        $this->loadBookings();
         // Obtener las reservas del usuario logueado
         $this->bookings = SlotBooking::getBookingsByStudent(Auth::id())->map(function($booking) {
             return [
@@ -71,49 +73,45 @@ class UserBooking extends Component
         //dd($this->bookings, "aver");
     }
 
+    public function loadBookings() {
+        $start = $this->dateRange['start_date'] ?? null;
+        $end = $this->dateRange['end_date'] ?? null;
+        
+        Log::info('loadBookings rango', ['start' => $start, 'end' => $end]);
+        if (Auth::user()->role == 'tutor') {
+            $query = SlotBooking::with('subject')->where('tutor_id', Auth::id());
+        } else {
+            $query = SlotBooking::with('subject')->where('student_id', Auth::id());
+        }
+        if ($start && $end) {
+            // Convertir las fechas a UTC para la consulta
+            $startUTC = Carbon::parse($start, getUserTimezone())->setTimezone('UTC');
+            $endUTC = Carbon::parse($end, getUserTimezone())->setTimezone('UTC');
+            $query->whereBetween('start_time', [$startUTC, $endUTC]);
+        }
+        $result = $query->orderBy('start_time')->get();
+        $this->debugBookings = $result->toArray(); // Guardar para debug visual
+        // Agrupamiento robusto: array plano de reservas por día
+        $this->upcomingBookings = [];
+        foreach ($result as $booking) {
+            // Convertir la fecha a la zona horaria del usuario para el agrupamiento
+            $date = Carbon::parse($booking->start_time)->setTimezone(getUserTimezone())->toDateString();
+            $array = $booking->toArray();
+            $array['subject_name'] = $booking->subject->name ?? '';
+            $array['status_num'] = $booking->getRawOriginal('status');
+            $this->upcomingBookings[$date][] = $array;
+        }
+        Log::info('upcomingBookings keys', array_keys($this->upcomingBookings));
+    }
+
     #[Layout('layouts.app')]
     public function render()
     {
-        if (Auth::user()->role == 'tutor') {
-            // Obtener reservas donde el tutor es el usuario actual
-            $this->upcomingBookings = SlotBooking::with('subject')
-                ->where('tutor_id', Auth::id())
-                ->orderBy('start_time')
-                ->get()
-                ->groupBy(function($item) {
-                    return parseToUserTz($item->start_time)->toDateString();
-                })
-                ->map(function($bookings) {
-                    return $bookings->map(function($booking) {
-                        $array = $booking->toArray();
-                        $array['subject_name'] = $booking->subject->name ?? '';
-                        $array['status_num'] = $booking->getRawOriginal('status');
-                        return $array;
-                    });
-                })
-                ->toArray();
-        } else if (Auth::user()->role == 'student') {
-            // Obtener reservas donde el estudiante es el usuario actual
-            $this->upcomingBookings = SlotBooking::with('subject')
-                ->where('student_id', Auth::id())
-                ->orderBy('start_time')
-                ->get()
-                ->groupBy(function($item) {
-                    return parseToUserTz($item->start_time)->toDateString();
-                })
-                ->map(function($bookings) {
-                    return $bookings->map(function($booking) {
-                        $array = $booking->toArray();
-                        $array['subject_name'] = $booking->subject->name ?? '';
-                        $array['status_num'] = $booking->getRawOriginal('status');
-                        return $array;
-                    });
-                })
-                ->toArray();
-        }
-        
         return view('livewire.pages.common.bookings.user-booking', [
-            'bookings' => $this->bookings, // Pasar las reservas a la vista
+            'bookings' => $this->bookings,
+            'upcomingBookings' => $this->upcomingBookings,
+            'currentDate' => $this->currentDate,
+            'debugBookings' => $this->debugBookings,
         ]);
     }
 
@@ -134,6 +132,7 @@ class UserBooking extends Component
         $this->currentDate = parseToUserTz(Carbon::now());
         $this->filter = [];
         $this->getRange();
+        $this->loadBookings();
         $this->dispatch('initCalendarJs', showBy: $showBy, currentDate: $this->getDateFormat());
     }
 
@@ -145,12 +144,14 @@ class UserBooking extends Component
                 $format = 'd F, Y';
                 $date = "01 $date";
             }
-            $this->currentDate = Carbon::createFromFormat($format, $date, getUserTimezone());
+            $this->currentDate = Carbon::createFromFormat($format, $date, getUserTimezone())->copy();
         } else {
-            $this->currentDate = parseToUserTz(Carbon::now());
+            $this->currentDate = parseToUserTz(Carbon::now())->copy();
         }
         $this->getRange();
+        $this->loadBookings();
         $this->dispatch('initCalendarJs', showBy: $this->showBy, currentDate: $this->getDateFormat());
+        $this->emit('$refresh');
     }
     public function showCompletePopup($booking) {
         $this->dispatch('toggleModel', id: 'confirm-complete-popup', action: 'show');
@@ -171,25 +172,27 @@ class UserBooking extends Component
 
     public function nextBookings() {
         if ($this->showBy == 'daily') {
-            $this->currentDate->addDay();
+            $this->currentDate = $this->currentDate->copy()->addDay();
         } elseif ($this->showBy == 'weekly') {
-            $this->currentDate->addWeek();
+            $this->currentDate = $this->currentDate->copy()->addWeek();
         } else {
-            $this->currentDate->addMonth();
+            $this->currentDate = $this->currentDate->copy()->addMonth();
         }
         $this->getRange();
+        $this->loadBookings();
         $this->dispatch('initCalendarJs', showBy: $this->showBy, currentDate: $this->getDateFormat());
     }
 
     public function previousBookings() {
         if ($this->showBy == 'daily') {
-            $this->currentDate->subDay();
+            $this->currentDate = $this->currentDate->copy()->subDay();
         } elseif ($this->showBy == 'weekly') {
-            $this->currentDate->subWeek();
+            $this->currentDate = $this->currentDate->copy()->subWeek();
         } else {
-            $this->currentDate->subMonth();
+            $this->currentDate = $this->currentDate->copy()->subMonth();
         }
         $this->getRange();
+        $this->loadBookings();
         $this->dispatch('initCalendarJs', showBy: $this->showBy, currentDate: $this->getDateFormat());
     }
 
