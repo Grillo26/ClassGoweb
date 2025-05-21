@@ -595,6 +595,18 @@
         });
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var confirmationModal = document.getElementById('confirmationModal');
+        if (confirmationModal) {
+            confirmationModal.addEventListener('hidden.bs.modal', function () {
+                if (window.Livewire) {
+                    Livewire.emit('closeConfirmationDiv');
+                }
+            });
+        }
+    });
+</script>
 @endpush
 </div>
 

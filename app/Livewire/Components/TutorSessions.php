@@ -58,6 +58,8 @@ class TutorSessions extends Component
 
     public RequestSessionForm $requestSessionForm;
 
+    protected $listeners = ['closeConfirmationDiv'];
+
     /**
      * Renderiza la vista del componente y carga los slots disponibles.
      */
@@ -214,58 +216,59 @@ class TutorSessions extends Component
      */
     public function toggleConfirmationDiv($slotId)
     {
-        $this->selectedSlotId = $slotId;
-        $this->showConfirmationDiv = !$this->showConfirmationDiv;
+        // Limpiar el estado SIEMPRE antes de abrir el modal
+        $this->resetImageFields();
+        $this->hourRange = [];
+        $this->subjects = [];
+        $this->minTime = null;
+        $this->maxTime = null;
+        $this->enableTimes = [];
+        $this->showConfirmationDiv = false;
 
-        if ($this->showConfirmationDiv) {
-            $this->imagePreview = \Storage::url('qr/77b1a7da.jpg');
-            // Buscar el bloque libre exacto (tarjeta verde) en availableSlots
-            $selectedBlock = null;
-            foreach ($this->availableSlots as $daySlots) {
-                foreach ($daySlots as $slot) {
-                    if (isset($slot->id) && $slot->id == $slotId) {
-                        $selectedBlock = $slot;
-                        break 2;
-                    }
+        // Ahora sí, abrir y cargar los datos
+        $this->selectedSlotId = $slotId;
+        $this->showConfirmationDiv = true;
+
+        $this->imagePreview = \Storage::url('qr/77b1a7da.jpg');
+        // Buscar el bloque libre exacto (tarjeta verde) en availableSlots
+        $selectedBlock = null;
+        foreach ($this->availableSlots as $daySlots) {
+            foreach ($daySlots as $slot) {
+                if (isset($slot->id) && $slot->id == $slotId) {
+                    $selectedBlock = $slot;
+                    break 2;
                 }
             }
-            if ($selectedBlock) {
-                $startTime = \Carbon\Carbon::parse($selectedBlock->start_time);
-                $endTime = \Carbon\Carbon::parse($selectedBlock->end_time);
-                $maxTime = $endTime->copy()->subMinutes(20);
-                $this->minTime = $startTime->format('H:i');
-                $this->maxTime = $maxTime->format('H:i');
-                // Solo permitir el inicio exacto del bloque
-                $this->enableTimes = [$startTime->format('H:i')];
-                // Obtener los subjects del tutor
-                $slotModel = \App\Models\UserSubjectSlot::find($selectedBlock->slot_id ?? $selectedBlock->id);
-                $this->subjects = $slotModel && $slotModel->user ? $slotModel->user->userSubjects->map(function ($userSubject) {
-                    return $userSubject->subject;
-                }) : [];
-            } else {
-                // Fallback: buscar el slot original
-                $slot = \App\Models\UserSubjectSlot::find($slotId);
-                if ($slot) {
-                    $startTime = $slot->start_time;
-                    $endTime = $slot->end_time;
-                    $maxTime = \Carbon\Carbon::parse($endTime)->copy()->subMinutes(20);
-                    $this->minTime = \Carbon\Carbon::parse($startTime)->format('H:i');
-                    $this->maxTime = $maxTime->format('H:i');
-                    $this->enableTimes = [\Carbon\Carbon::parse($startTime)->format('H:i')];
-                    $this->subjects = $slot->user->userSubjects->map(function ($userSubject) {
-                        return $userSubject->subject;
-                    });
-                }
-            }
-            $this->dispatch('initFlatpickr');
-        } else {
-            $this->resetImageFields();
-            $this->hourRange = [];
-            $this->subjects = [];
-            $this->minTime = null;
-            $this->maxTime = null;
-            $this->enableTimes = [];
         }
+        if ($selectedBlock) {
+            $startTime = \Carbon\Carbon::parse($selectedBlock->start_time);
+            $endTime = \Carbon\Carbon::parse($selectedBlock->end_time);
+            $maxTime = $endTime->copy()->subMinutes(20);
+            $this->minTime = $startTime->format('H:i');
+            $this->maxTime = $maxTime->format('H:i');
+            // Solo permitir el inicio exacto del bloque
+            $this->enableTimes = [$startTime->format('H:i')];
+            // Obtener los subjects del tutor
+            $slotModel = \App\Models\UserSubjectSlot::find($selectedBlock->slot_id ?? $selectedBlock->id);
+            $this->subjects = $slotModel && $slotModel->user ? $slotModel->user->userSubjects->map(function ($userSubject) {
+                return $userSubject->subject;
+            }) : [];
+        } else {
+            // Fallback: buscar el slot original
+            $slot = \App\Models\UserSubjectSlot::find($slotId);
+            if ($slot) {
+                $startTime = $slot->start_time;
+                $endTime = $slot->end_time;
+                $maxTime = \Carbon\Carbon::parse($endTime)->copy()->subMinutes(20);
+                $this->minTime = \Carbon\Carbon::parse($startTime)->format('H:i');
+                $this->maxTime = $maxTime->format('H:i');
+                $this->enableTimes = [\Carbon\Carbon::parse($startTime)->format('H:i')];
+                $this->subjects = $slot->user->userSubjects->map(function ($userSubject) {
+                    return $userSubject->subject;
+                });
+            }
+        }
+        $this->dispatch('initFlatpickr');
     }
 
     private function generateHourRange($startTime, $endTime)
@@ -530,5 +533,16 @@ class TutorSessions extends Component
     public function resetImagePreview()
     {
         $this->imagePreview = Storage::url('qr/77b1a7da.jpg'); // Vuelve a cargar la imagen
+    }
+
+    public function closeConfirmationDiv()
+    {
+        $this->showConfirmationDiv = false;
+        $this->resetImageFields();
+        $this->hourRange = [];
+        $this->subjects = [];
+        $this->minTime = null;
+        $this->maxTime = null;
+        $this->enableTimes = [];
     }
 }
