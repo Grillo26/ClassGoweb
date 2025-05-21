@@ -229,7 +229,7 @@ class TutorSessions extends Component
         $this->selectedSlotId = $slotId;
         $this->showConfirmationDiv = true;
 
-        $this->imagePreview = \Storage::url('qr/77b1a7da.jpg');
+        $this->imagePreview = Storage::url('qr/77b1a7da.jpg');
         // Buscar el bloque libre exacto (tarjeta verde) en availableSlots
         $selectedBlock = null;
         foreach ($this->availableSlots as $daySlots) {

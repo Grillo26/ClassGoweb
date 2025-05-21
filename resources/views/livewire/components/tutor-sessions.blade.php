@@ -424,29 +424,39 @@
 </script>
 <script defer src="{{ asset('js/weekSelect.min.js') }}"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(function() {
-            document.querySelectorAll('.hour-selector').forEach(function(hourPicker) {
-                if (hourPicker._flatpickr) {
-                    hourPicker._flatpickr.destroy();
+    function initHourPickers() {
+        document.querySelectorAll('.hour-selector').forEach(function(hourPicker) {
+            if (hourPicker._flatpickr) {
+                hourPicker._flatpickr.destroy();
+            }
+            flatpickr(hourPicker, {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true,
+                minuteIncrement: 1,
+                allowInput: true,
+                minTime: hourPicker.getAttribute('data-min-time') || undefined,
+                maxTime: hourPicker.getAttribute('data-max-time') || undefined,
+                ...(hourPicker.getAttribute('data-enable-times') ? { enable: JSON.parse(hourPicker.getAttribute('data-enable-times')) } : {}),
+                disableMobile: true,
+                onOpen: function(selectedDates, dateStr, instance) {
+                    instance.calendarContainer.style.zIndex = 99999;
                 }
-                flatpickr(hourPicker, {
-                    enableTime: true,
-                    noCalendar: true,
-                    dateFormat: "H:i",
-                    time_24hr: true,
-                    minuteIncrement: 1,
-                    allowInput: true,
-                    minTime: hourPicker.getAttribute('data-min-time') || undefined,
-                    maxTime: hourPicker.getAttribute('data-max-time') || undefined,
-                    ...(hourPicker.getAttribute('data-enable-times') ? { enable: JSON.parse(hourPicker.getAttribute('data-enable-times')) } : {}),
-                    onOpen: function(selectedDates, dateStr, instance) {
-                        instance.calendarContainer.style.zIndex = 99999;
-                    }
-                });
             });
-        }, 500);
+        });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(initHourPickers, 500);
+        if (window.Livewire) {
+            Livewire.on('initFlatpickr', function() {
+                setTimeout(initHourPickers, 100);
+            });
+        }
     });
+    window.onload = function() {
+        setTimeout(initHourPickers, 500);
+    };
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -500,54 +510,6 @@
                 }, 300);
             }, 1500);
         });
-    });
-</script>
-<script>
-    // Inicialización para inputs estáticos
-    window.onload = function() {
-        setTimeout(function() {
-            document.querySelectorAll('.hour-selector').forEach(function(hourPicker) {
-                if (hourPicker._flatpickr) {
-                    hourPicker._flatpickr.destroy();
-                }
-                flatpickr(hourPicker, {
-                    enableTime: true,
-                    noCalendar: true,
-                    dateFormat: "H:i",
-                    time_24hr: true,
-                    minuteIncrement: 1,
-                    allowInput: true,
-                    onOpen: function(selectedDates, dateStr, instance) {
-                        instance.calendarContainer.style.zIndex = 99999;
-                    }
-                });
-            });
-        }, 500);
-    };
-    // Inicialización para inputs dinámicos con Livewire
-    document.addEventListener('DOMContentLoaded', function() {
-        if (window.Livewire) {
-            Livewire.on('initFlatpickr', function() {
-                setTimeout(function() {
-                    document.querySelectorAll('.hour-selector').forEach(function(hourPicker) {
-                        if (hourPicker._flatpickr) {
-                            hourPicker._flatpickr.destroy();
-                        }
-                        flatpickr(hourPicker, {
-                            enableTime: true,
-                            noCalendar: true,
-                            dateFormat: "H:i",
-                            time_24hr: true,
-                            minuteIncrement: 1,
-                            allowInput: true,
-                            onOpen: function(selectedDates, dateStr, instance) {
-                                instance.calendarContainer.style.zIndex = 99999;
-                            }
-                        });
-                    });
-                }, 100);
-            });
-        }
     });
 </script>
 <script>
