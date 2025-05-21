@@ -91,60 +91,32 @@ class UserBooking extends Component
         }
         $result = $query->orderBy('start_time')->get();
         $this->debugBookings = $result->toArray(); // Guardar para debug visual
+        
         // Agrupamiento robusto: array plano de reservas por día
         $this->upcomingBookings = [];
         foreach ($result as $booking) {
             // Convertir la fecha a la zona horaria del usuario para el agrupamiento
             $date = Carbon::parse($booking->start_time)->setTimezone(getUserTimezone())->toDateString();
-                        $array = $booking->toArray();
-                        $array['subject_name'] = $booking->subject->name ?? '';
-                        $array['status_num'] = $booking->getRawOriginal('status');
-                        // Controlar visibilidad del link desde el backend
-                        $now = Carbon::now(getUserTimezone());
-                        $start = Carbon::parse($booking->start_time, getUserTimezone());
-                        if ($now->greaterThanOrEqualTo($start)) {
-                            $array['meeting_link'] = $booking->meeting_link;
-                        } else {
-                            $array['meeting_link'] = null;
-                        }
-                        return $array;
-                    });
-                })
-                ->toArray();
-        } else if (Auth::user()->role == 'student') {
-            // Obtener reservas donde el estudiante es el usuario actual
-            $this->upcomingBookings = SlotBooking::with('subject')
-                ->where('student_id', Auth::id())
-                ->orderBy('start_time')
-                ->get()
-                ->groupBy(function($item) {
-                    return parseToUserTz($item->start_time)->toDateString();
-                })
-                ->map(function($bookings) {
-                    return $bookings->map(function($booking) {
-                        $array = $booking->toArray();
-                        $array['subject_name'] = $booking->subject->name ?? '';
-                        $array['status_num'] = $booking->getRawOriginal('status');
-                        // Controlar visibilidad del link desde el backend
-                        $now = Carbon::now(getUserTimezone());
-                        $start = Carbon::parse($booking->start_time, getUserTimezone());
-                        if ($now->greaterThanOrEqualTo($start)) {
-                            $array['meeting_link'] = $booking->meeting_link;
-                        } else {
-                            $array['meeting_link'] = null;
-                        }
-                        return $array;
-                    });
-                })
-                ->toArray();
+            if (!isset($this->upcomingBookings[$date])) {
+                $this->upcomingBookings[$date] = [];
+            }
+            
+            $array = $booking->toArray();
+            $array['subject_name'] = $booking->subject->name ?? '';
+            $array['status_num'] = $booking->getRawOriginal('status');
+            
+            // Controlar visibilidad del link desde el backend
+            $now = Carbon::now(getUserTimezone());
+            $start = Carbon::parse($booking->start_time, getUserTimezone());
+            if ($now->greaterThanOrEqualTo($start)) {
+                $array['meeting_link'] = $booking->meeting_link;
+            } else {
+                $array['meeting_link'] = null;
+            }
+            
+            $this->upcomingBookings[$date][] = $array;
         }
-        
-        return view('livewire.pages.common.bookings.user-booking', [
-            'bookings' => $this->bookings,
-            'upcomingBookings' => $this->upcomingBookings,
-            'currentDate' => $this->currentDate,
-            'debugBookings' => $this->debugBookings,
-        ]);
+        Log::info('upcomingBookings keys', array_keys($this->upcomingBookings));
     }
 
     protected function dispatchSessionMessages() {
@@ -369,5 +341,16 @@ class UserBooking extends Component
         $this->disputeService->sendMessage($dispute->id, $disputeMessage, "student");
         $this->dispatch('toggleModel', id: 'dispute-reason-popup', action: 'hide');
         $this->dispatch('showAlertMessage', type: 'success',  message: __('calendar.dispute_success_msg'));
+    }
+
+    #[Layout('layouts.app')]
+    public function render()
+    {
+        return view('livewire.pages.common.bookings.user-booking', [
+            'bookings' => $this->bookings,
+            'upcomingBookings' => $this->upcomingBookings,
+            'currentDate' => $this->currentDate,
+            'debugBookings' => $this->debugBookings,
+        ]);
     }
 }
