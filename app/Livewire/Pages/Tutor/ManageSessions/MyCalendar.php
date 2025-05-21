@@ -33,7 +33,8 @@ class MyCalendar extends Component
     public $template_id = '';
     public $allowed_for_subscriptions = 0;
     public $editableSlotId;
-    protected $listeners = ['loadSlotForEdit'];
+    public $slotHasBookings = false;
+    protected $listeners = ['loadSlotForEdit', 'refreshCalendar' => 'loadData'];
 
     public function boot() {
         $this->bookingService = new BookingService(Auth::user());
@@ -53,7 +54,15 @@ class MyCalendar extends Component
     #[Layout('layouts.app')]
     public function render()
     {
+        \Log::info('Renderizando calendario', [
+            'currentDate' => $this->currentDate,
+            'days' => $this->days,
+            'availableSlots' => $this->availableSlots,
+        ]);
         if (empty($this->currentDate)) {
+            $this->currentDate = \Carbon\Carbon::now(getUserTimezone());
+        }
+        if (empty($this->currentDate) || empty($this->availableSlots)) {
             $this->makeCalendar();
         }
         return view('livewire.pages.tutor.manage-sessions.my-calendar');
@@ -61,6 +70,7 @@ class MyCalendar extends Component
 
     public function loadData() {
         $this->isLoading = true;
+        $this->makeCalendar();
         $this->isLoading = false;
     }
 
@@ -176,13 +186,13 @@ class MyCalendar extends Component
     }
 
     private function makeCalendar($date = null) {
-        $date = empty($date) ? Carbon::now(getUserTimezone()) : Carbon::createFromDate($date)->setTimezone(getUserTimezone());
+        // Usar la fecha actual si no hay currentDate
+        $date = empty($date) ? ($this->currentDate ?: Carbon::now(getUserTimezone())) : Carbon::createFromDate($date)->setTimezone(getUserTimezone());
         $this->currentDate = $date;
         $this->currentMonth = $date->format('m');
         $this->currentYear = $date->format('Y');
         $this->startOfCalendar = $date->copy()->firstOfMonth()->startOfWeek($this->startOfWeek);
         $this->endOfCalendar = $date->copy()->lastOfMonth()->endOfWeek(getEndOfWeek($this->startOfWeek));
-        
         // Cargar las reservas inmediatamente después de actualizar las fechas
         $this->availableSlots = $this->bookingService->getAvailableSlots($this->subjectGroupIds, $this->currentDate);
     }
@@ -191,12 +201,13 @@ class MyCalendar extends Component
     {
         $slot = UserSubjectSlot::findOrFail($slotId);
         $this->editableSlotId = $slot->id;
-        $this->form->date = $slot->date instanceof \DateTimeInterface ? $slot->date->format('Y-m-d') : substr($slot->date, 0, 10);
+        $this->form->form_date = $slot->date instanceof \DateTimeInterface ? $slot->date->format('Y-m-d') : substr($slot->date, 0, 10);
         $this->form->start_time = $slot->start_time instanceof \DateTimeInterface ? $slot->start_time->format('H:i') : $slot->start_time;
         $this->form->end_time = $slot->end_time instanceof \DateTimeInterface ? $slot->end_time->format('H:i') : $slot->end_time;
-       
         $this->form->meeting_link = $slot->meta_data['meeting_link'] ?? '';
         $this->form->action = 'edit';
+        // Verificar si el slot tiene reservas asociadas
+        $this->slotHasBookings = $slot->bookings()->count() > 0;
         $this->dispatch('toggleModel', id: 'edit-session', action: 'show');
     }
 

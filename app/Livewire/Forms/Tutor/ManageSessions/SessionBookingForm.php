@@ -21,12 +21,12 @@ class SessionBookingForm extends Form
     public $subject_group_id;
     public $meeting_link = '';
     public $action = '';
-    public $date = '';
+    public $form_date = '';
 
     public function rules(){
         return [
             'date_range' => $this->action === 'edit' ? 'nullable|string' : 'required|string',
-            'date' => 'required|date',
+            'form_date' => 'required|date',
             'start_time' => 'required',
             'end_time' => 'required',
             'session_fee' => 'nullable|numeric',
@@ -51,9 +51,9 @@ class SessionBookingForm extends Form
 
     public function beforeValidation()
     {
-        if (empty($this->date) && !empty($this->date_range)) {
+        if (empty($this->form_date) && !empty($this->date_range)) {
             $dates = explode(' to ', $this->date_range);
-            $this->date = $dates[0]; // Toma la primera fecha del rango para la validación
+            $this->form_date = $dates[0]; // Toma la primera fecha del rango para la validación
         }
     }
 }

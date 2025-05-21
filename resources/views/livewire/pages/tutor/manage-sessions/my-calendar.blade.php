@@ -50,7 +50,7 @@
                                     @for ($i = 0; $i < 7; $i++)
                                         <td>
                                             <a
-                                                wire:key="{{ time() }}"
+                                                wire:key="calendar-cell-{{ parseToUserTz($startOfCalendar)->toDateString() }}"
                                                 @if(empty($availableSlots[parseToUserTz($startOfCalendar)->toDateString()]))
                                                     href="#"
                                                     x-on:click="$wire.dispatch('toggleModel', {id:'booking-modal',action:'show'})"
@@ -167,35 +167,38 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            
+                            @if($slotHasBookings)
+                                <div class="alert alert-warning text-center mb-3">
+                                    Este horario ya tiene tutorías reservadas y no puede ser editado ni eliminado.
+                                </div>
+                            @endif
                             <form wire:submit.prevent="editSession" autocomplete="off">
                                 <div class="row">
                                     <!-- Mostrar la fecha de la reserva seleccionada como texto -->
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Fecha de la reserva</label>
-                                        <input type="text" class="form-control text-center" wire:model="form.date" readonly>
-                                        <x-input-error field_name="form.date" />
+                                        <input type="text" class="form-control text-center" wire:model="form.form_date" readonly>
+                                        <x-input-error field_name="form.form_date" />
                                     </div>
                                     <!-- Campo de Hora de Inicio -->
                                     <div class="col-md-6 mb-3">
                                         <label for="start_time_new" class="form-label">Hora Inicio</label>
-                                        <input type="text" id="start_time_new" class="form-control flatpickr-time" wire:model="form.start_time" placeholder="Selecciona hora de inicio">
+                                        <input type="text" id="start_time_new" class="form-control flatpickr-time" wire:model="form.start_time" placeholder="Selecciona hora de inicio" @if($slotHasBookings) disabled @endif>
                                         <x-input-error field_name="form.start_time" />
                                     </div>
                                     <!-- Campo de Hora de Fin -->
                                     <div class="col-md-6 mb-3">
                                         <label for="end_time_new" class="form-label">Hora Fin</label>
-                                        <input type="text" id="end_time_new" class="form-control flatpickr-time" wire:model="form.end_time" placeholder="Selecciona hora de fin">
+                                        <input type="text" id="end_time_new" class="form-control flatpickr-time" wire:model="form.end_time" placeholder="Selecciona hora de fin" @if($slotHasBookings) disabled @endif>
                                         <x-input-error field_name="form.end_time" />
                                     </div>
-                                
                                 </div>
                                 <!-- Botones de Acción -->
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" wire:loading.class="btn-loading">
+                                    <button type="submit" class="btn btn-primary" wire:loading.class="btn-loading" @if($slotHasBookings) disabled @endif>
                                         {{ __('general.save_update') }}
                                     </button>
-                                    <button type="button" class="btn btn-danger" wire:click="deleteSession">
+                                    <button type="button" class="btn btn-danger" wire:click="deleteSession" @if($slotHasBookings) disabled @endif>
                                         Eliminar reserva
                                     </button>
                                 </div>
@@ -218,6 +221,15 @@
 @push('scripts')
     <script defer src="{{ asset('js/flatpicker.js') }}"></script>
     <script>
+        // Función compatible para emitir eventos Livewire
+        function emitLivewireEvent(event, ...params) {
+            if (window.Livewire && typeof window.Livewire.emit === 'function') {
+                window.Livewire.emit(event, ...params);
+            } else if (window.livewire && typeof window.livewire.emit === 'function') {
+                window.livewire.emit(event, ...params);
+            }
+        }
+
         document.addEventListener('shown.bs.modal', function (event) {
             if (event.target.id === 'new-booking-modal') {
                 flatpickr('#date_range_new', {
@@ -264,9 +276,11 @@
             }
         });
 
-        window.livewire.on('editSlot', slotId => {
-            Livewire.emit('loadSlotForEdit', slotId);
-        });
+        if (window.Livewire) {
+            Livewire.on('editSlot', slotId => {
+                emitLivewireEvent('loadSlotForEdit', slotId);
+            });
+        }
 
         if (typeof Livewire !== 'undefined') {
             Livewire.on('toggleModel', (event) => {
@@ -280,9 +294,34 @@
                         setTimeout(() => {
                             document.body.classList.remove('modal-open');
                             document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                            // Forzar visibilidad del calendario
+                            document.querySelectorAll('.am-booking-wrapper, .am-booking-calander').forEach(el => {
+                                el.style.display = 'block';
+                            });
                         }, 300);
                     }
                 }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var editSessionModal = document.getElementById('edit-session');
+            if (editSessionModal) {
+                editSessionModal.addEventListener('hidden.bs.modal', function () {
+                    window.location.reload();
+                });
+            }
+            var newBookingModal = document.getElementById('new-booking-modal');
+            if (newBookingModal) {
+                newBookingModal.addEventListener('hidden.bs.modal', function () {
+                    window.location.reload();
+                });
+            }
+        });
+
+        if (window.Livewire) {
+            Livewire.on('forcePageReload', function() {
+                window.location.reload();
             });
         }
     </script>
