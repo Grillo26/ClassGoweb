@@ -23,12 +23,12 @@ public function getTutors($data = array()) {
         $instructors = User::select('users.*')
             ->whereHas('roles', fn($query) => $query->whereName('tutor'));
 
-        $instructors->with(['subjects', 'languages:id,name', 'address.country', 'profile']);
+        $instructors->with(['subjects', 'languages:id,name', 'address.country', 'profile','userSubjectSlots']);
 
         $instructors->withWhereHas('profile', function ($query) {
             $query->select('id', 'verified_at', 'user_id', 'first_name', 'last_name', 'image', 'gender', 'tagline', 'description', 'slug', 'intro_video');
+            $query->whereNotNull('verified_at'); // Solo tutores verificados
         });
-
         // Agregar conteos y promedios básicos
         $instructors->withAvg('reviews as avg_rating', 'rating')
             ->withCount('reviews as total_reviews')

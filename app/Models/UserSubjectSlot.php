@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 class UserSubjectSlot extends Model {
     use HasFactory;
 
+
+    protected $table = 'user_subject_slots';
     protected $fillable = [
         'start_time',
         'end_time',

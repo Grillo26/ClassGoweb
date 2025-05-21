@@ -99,14 +99,46 @@ class UserBooking extends Component
                         $array = $booking->toArray();
                         $array['subject_name'] = $booking->subject->name ?? '';
                         $array['status_num'] = $booking->getRawOriginal('status');
-            $this->upcomingBookings[$date][] = $array;
+                        // Controlar visibilidad del link desde el backend
+                        $now = Carbon::now(getUserTimezone());
+                        $start = Carbon::parse($booking->start_time, getUserTimezone());
+                        if ($now->greaterThanOrEqualTo($start)) {
+                            $array['meeting_link'] = $booking->meeting_link;
+                        } else {
+                            $array['meeting_link'] = null;
+                        }
+                        return $array;
+                    });
+                })
+                ->toArray();
+        } else if (Auth::user()->role == 'student') {
+            // Obtener reservas donde el estudiante es el usuario actual
+            $this->upcomingBookings = SlotBooking::with('subject')
+                ->where('student_id', Auth::id())
+                ->orderBy('start_time')
+                ->get()
+                ->groupBy(function($item) {
+                    return parseToUserTz($item->start_time)->toDateString();
+                })
+                ->map(function($bookings) {
+                    return $bookings->map(function($booking) {
+                        $array = $booking->toArray();
+                        $array['subject_name'] = $booking->subject->name ?? '';
+                        $array['status_num'] = $booking->getRawOriginal('status');
+                        // Controlar visibilidad del link desde el backend
+                        $now = Carbon::now(getUserTimezone());
+                        $start = Carbon::parse($booking->start_time, getUserTimezone());
+                        if ($now->greaterThanOrEqualTo($start)) {
+                            $array['meeting_link'] = $booking->meeting_link;
+                        } else {
+                            $array['meeting_link'] = null;
+                        }
+                        return $array;
+                    });
+                })
+                ->toArray();
         }
-        Log::info('upcomingBookings keys', array_keys($this->upcomingBookings));
-    }
-
-    #[Layout('layouts.app')]
-    public function render()
-    {
+        
         return view('livewire.pages.common.bookings.user-booking', [
             'bookings' => $this->bookings,
             'upcomingBookings' => $this->upcomingBookings,

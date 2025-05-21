@@ -26,6 +26,10 @@ class SearchTutor extends Component
     private $siteService;
     private $userService;
 
+    private $libre;
+
+
+
     public function boot(SiteService $siteService) {
         $this->siteService = $siteService;
         $user = Auth::user();
@@ -42,11 +46,9 @@ class SearchTutor extends Component
     {
         $favouriteTutors = array();
         $tutors = [];
-
         try {
             $tutors = $this->siteService->getTutors($this->filters);
-            //Log::info('Tutors loaded:', ['count' => $tutors->count(), 'filters' => $this->filters]);
-            
+           // dd($tutors, "tutores");
             if ($this->allowFavAction){
                 $favouriteTutors = $this->userService->getFavouriteUsers()
                     ->get(['favourite_user_id'])
@@ -55,11 +57,13 @@ class SearchTutor extends Component
             }
         } catch (\Exception $e) {
             //Log::error('Error loading tutors:', ['error' => $e->getMessage()]);
-        }
-        
+        } 
         $this->dispatch('initVideoJs');
         return view('livewire.components.search-tutor', compact('tutors', 'favouriteTutors'));
     }
+
+
+
 
     public function loadPage()
     {

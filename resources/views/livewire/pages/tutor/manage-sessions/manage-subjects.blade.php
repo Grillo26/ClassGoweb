@@ -60,27 +60,22 @@
                     </div>
                 @else
                     @foreach ($filteredGroups as $index => $group)
-                        <div class="am-subject" wire:sortable.item="{{ $group?->id }}" wire:key="subject-group-{{ $group?->id }}">
+                        <div class="am-subject" wire:key="subject-group-{{ $group?->id }}">
                             <div class="">
-                                <!-- icono de grupo -->
-                                {{--  
-                                <div class="am-sotingitem" wire:sortable.handle>
-                                    <i class="am-icon-youtube-1"></i>
-                                </div>
-                                --}}
 
                                 <!-- tarjeta con nombre de grupo y control de colapso -->
                                 <div x-data="{ open: false }">
-                                    <div wire:ignore.self id="heading-{{ $group?->id }}"
-                                        @click="open = !open"
-                                        :class="{'am-subject-title': true, 'collapsed': !open}"
-                                        style="cursor:pointer;"
-                                        aria-expanded="false">
-                                        <h3>{{ $group->name }}</h3>
-                                        <span class="am-subject-title-icon">
-                                            <i class="am-icon-minus-02 am-subject-title-icon-open" x-show="open"></i>
-                                            <i class="am-icon-plus-02 am-subject-title-icon-close" x-show="!open"></i>
-                                        </span>
+                                    <div wire:ignore.self id="heading-{{ $group?->id }}">
+                                        <h3
+                                            @click="open = !open"
+                                             @touchend="open = !open"
+                                              :class="{'am-subject-title': true, 'collapsed': !open}"
+                                            style="cursor:pointer; color:black;  gap: 8px; ;  border-radius: 6px; padding: 10px 16px; font-size: 1.1rem; font-weight: 600; transition: background 0.2s; user-select: none;"
+                                            aria-expanded="false"
+                                        >
+                                            {{ $group->name }}
+
+                                        </h3>
                                     </div>
                                     <div wire:ignore.self id="collapse-{{ $group?->id }}" x-show="open" style="padding:0;">
                                         <div class="am-subject-body">
@@ -118,11 +113,6 @@
                                                 @endif
                                                 @endforeach
                                             </div>
-
-
-
-
-
                                             @endif
                                             <div class="am-addclasses-wrapper">
                                                 <button
@@ -322,15 +312,7 @@
                 </div>
             </div>
         </div>
-
-
-
-
-
-
        {{-- final modal   --}}
-
-
     </div>
 </div>
 

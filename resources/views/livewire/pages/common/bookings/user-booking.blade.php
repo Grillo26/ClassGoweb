@@ -174,6 +174,7 @@
             <div wire:loading.class="d-none" class="am-booking-calander_body" wire:target="switchShow,jumpToDate,nextBookings,previousBookings,filter">
                 <div class="tab-content">
                     @php
+                        //dd('para el push);
                         $statusColors = [
                             'pendiente' => '#FACC15', // amarillo
                             'rechazado' => '#EF4444', // rojo
@@ -337,6 +338,14 @@
                                         @if (isset($upcomingBookings[$startOfCalendar->toDateString()]))
                                         <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px;">
                                             @foreach ($upcomingBookings[$startOfCalendar->toDateString()] as $index => $booking)
+                                                @php
+                                                    $now = \Carbon\Carbon::now(getUserTimezone());
+                                                    $start = \Carbon\Carbon::parse($booking['start_time'], getUserTimezone());
+                                                    $showLink = $now->greaterThanOrEqualTo($start);
+                                                    if ($showLink && request()->has('debug')) {
+                                                        dd(['now' => $now, 'start' => $start, 'meeting_link' => $booking['meeting_link'] ?? null]);
+                                                    }
+                                                @endphp
                                                 <div style="background: {{ $statusColors[strtolower(trim($booking['status']))] ?? '#FACC15' }} !important; color: #222; padding:5px; border-radius:5px; cursor:pointer;"
                                                     @click="openModal({
                                                         estado: '{{ $statusMap[$booking['status_num']] ?? $booking['status_num'] }}',
@@ -344,7 +353,7 @@
                                                         hora_fin: '{{ \Carbon\Carbon::parse($booking['end_time'])->format('H:i') }}',
                                                         fecha: '{{ \Carbon\Carbon::parse($booking['start_time'])->format('Y-m-d') }}',
                                                         materia: '{{ $booking['subject_name'] }}',
-                                                        meeting_link: '{{ $booking['meeting_link'] ?? '' }}'
+                                                        meeting_link: '{{ $showLink ? ($booking['meeting_link'] ?? '') : '' }}'
                                                     })">
                                                     Estado: <b>{{ $statusMap[$booking['status_num']] ?? $booking['status_num'] }}</b><br>
                                                     {{ \Carbon\Carbon::parse($booking['start_time'])->format('h:i a') }} - {{ \Carbon\Carbon::parse($booking['end_time'])->format('h:i a') }}
