@@ -283,13 +283,12 @@ class IdentityVerification extends Component {
             $this->data['address']['lat'] = 0.0;
             $this->data['address']['long'] = 0.0;
             DB::beginTransaction();
-            //dd($this->data, "aver la data");  
+            //dd($this->data, "data");
             $userIdentity = $this->userIdentity->setUserIdentityVerification($this->data['identityInfo']);
             $this->userIdentity->setUserAddress($userIdentity?->id, $this->data['address']);
             DB::commit();
         } catch (\Illuminate\Validation\ValidationException $e) {
-            \Log::error('/log: error en la validación', ['errors' => $e->errors()]);
-            // Muestra los errores de validación detalladamente
+          
             dd($e->errors());
             DB::rollBack();
         }
@@ -302,21 +301,4 @@ class IdentityVerification extends Component {
         }
         dispatch(new SendNotificationJob('identityVerificationRequest', Auth::user(), $this->data));
     }
-
-
-    /* public function updatedFormCountry($value)
-{
-    // Este método se ejecuta automáticamente cuando cambia form.country
-    // $value contendrá el ID del país seleccionado
-    
-    // Por ejemplo, podrías cargar estados/provincias del país seleccionado
-     dd($value, "el valor del país");
-
-    if (!empty($value)) {
-        $this->states = State::where('country_id', $value)->get();
-    } else {
-        $this->states = [];
-    }
-} */
-
 }

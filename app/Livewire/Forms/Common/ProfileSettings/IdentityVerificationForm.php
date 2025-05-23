@@ -18,30 +18,30 @@ class IdentityVerificationForm extends Form
     public $image;
     public $identity;
     public $transcript;
-    public string $city             = '';
-    public string $name             = '';
-    public string $state            = '';
+    public string $city = '';
+    public string $name = '';
+    public string $state = '';
     public $dateOfBirth;
-    public string $country          = '';
-    public string $zipcode          = '';
-    public string $schoolId         = '';
-    public string $parentName       = '';
-    public string $schoolName       = '';
-    public string $parentPhone      = '';
-    public string $parentEmail      = '';
+    public string $country = '';
+    public string $zipcode = '';
+    public string $schoolId = '';
+    public string $parentName = '';
+    public string $schoolName = '';
+    public string $parentPhone = '';
+    public string $parentEmail = '';
     public $identificationCard;
-    public string $address          = '';
+    public string $address = '';
     public $enableGooglePlaces;
-    public $countryName             = '';
+    public $countryName = '';
 
 
     private ?IdentityStoreRequest $instructorRequest = null;
 
     public function boot()
     {
-        $this->user                 = Auth::user();
-        $this->instructorRequest    = new IdentityStoreRequest();
-        $this->enableGooglePlaces   = setting('_api.enable_google_places') ?? '0';
+        $this->user = Auth::user();
+        $this->instructorRequest = new IdentityStoreRequest();
+        $this->enableGooglePlaces = setting('_api.enable_google_places') ?? '0';
     }
 
     public function rules(): array
@@ -60,30 +60,55 @@ class IdentityVerificationForm extends Form
     {
         $rules = $this->rules();
         if ($hasState) {
-            $rules['state']          = 'required|string';
+            $rules['state'] = 'required|string';
         }
-             
+
         $this->beforeValidation(['image', 'transcript', 'identificationCard']);
         $this->validate($rules);
-       
-        
-    
 
-        if (!empty($this->image)) {
-            $imageName               = $this->image->getClientOriginalName();
-            $personalPhoto           = $this->image->storeAs('identity_photo', $imageName, 'public');
+
+
+
+
+
+        if ($this->image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            $filename = time() . '_' . $this->image->getClientOriginalName();
+            $tempPath = $this->image->storeAs('temp', $filename);
+
+            $destinationPath = public_path('storage/identity_photo');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0775, true);
+            }
+            rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
+
+            $personalPhoto = 'identity_photo/' . $filename; // <--- SOLO identity_photo/
         }
 
-        if (!empty($this->identificationCard)) {
-            $imageName               = $this->identificationCard->getClientOriginalName();
-            $identificationCard      = $this->identificationCard->storeAs('identity_photo', $imageName, 'public');
+        if ($this->identificationCard instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            $filename = time() . '_' . $this->identificationCard->getClientOriginalName();
+            $tempPath = $this->identificationCard->storeAs('temp', $filename);
+
+            $destinationPath = public_path('storage/identity_photo');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0775, true);
+            }
+            rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
+
+            $identificationCard = 'identity_photo/' . $filename; // <--- SOLO identity_photo/
         }
 
-        if (!empty($this->transcript)) {
-            $imageName               = $this->transcript->getClientOriginalName();
-            $transcript              = $this->transcript->storeAs('identity_photo', $imageName, 'public');
-        }
+        if ($this->transcript instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            $filename = time() . '_' . $this->transcript->getClientOriginalName();
+            $tempPath = $this->transcript->storeAs('temp', $filename);
 
+            $destinationPath = public_path('storage/identity_photo');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0775, true);
+            }
+            rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
+
+            $transcript = 'identity_photo/' . $filename; // <--- SOLO identity_photo/
+        }
         try {
             $dob = \Carbon\Carbon::createFromFormat('F-d-Y', $this->dateOfBirth)->format('Y-m-d');
         } catch (\Carbon\Exceptions\InvalidFormatException $e) {
@@ -91,34 +116,34 @@ class IdentityVerificationForm extends Form
         }
 
         $identityInfo = [
-            'name'                   => $this->name,
-            'personal_photo'         => !empty($this->image) ? $personalPhoto : null,
-            'user_id'                => Auth::user()->id,
-            'dob'                    => $dob,
-            'attachments'            => $this->user->hasRole('tutor') && !empty($this->identificationCard) ? $identificationCard : null,
-            'school_id'              => $this->user->hasRole('student') ? $this->schoolId    : null,
-            'school_name'            => $this->user->hasRole('student') ? $this->schoolName  : null,
-            'transcript'             => $this->user->hasRole('student') && !empty($this->transcript) ? $transcript : null,
-            'parent_name'            => $this->user->hasRole('student') ? $this->parentName  : null,
-            'parent_email'           => $this->user->hasRole('student') ? $this->parentEmail : null,
-            'parent_phone'           => $this->user->hasRole('student') ? $this->parentPhone : null,
+            'name' => $this->name,
+            'personal_photo' => !empty($this->image) ? $personalPhoto : null,
+            'user_id' => Auth::user()->id,
+            'dob' => $dob,
+            'attachments' => $this->user->hasRole('tutor') && !empty($this->identificationCard) ? $identificationCard : null,
+            'school_id' => $this->user->hasRole('student') ? $this->schoolId : null,
+            'school_name' => $this->user->hasRole('student') ? $this->schoolName : null,
+            'transcript' => $this->user->hasRole('student') && !empty($this->transcript) ? $transcript : null,
+            'parent_name' => $this->user->hasRole('student') ? $this->parentName : null,
+            'parent_email' => $this->user->hasRole('student') ? $this->parentEmail : null,
+            'parent_phone' => $this->user->hasRole('student') ? $this->parentPhone : null,
         ];
 
         $address = [
-            'country_id'             => $this->country,
-            'state_id'               => !empty($this->state) ? $this->state : null,
-            'city'                   => $this->city ?? null,
-            'address'                => $this->address,
-            'zipcode'                => $this->enableGooglePlaces != '1' ? $this->zipcode  : null,
-            'lat'                    => $this->enableGooglePlaces == '1' ? $this->lat  : 0,
-            'long'                   => $this->enableGooglePlaces == '1' ? $this->lng  : 0,
+            'country_id' => $this->country,
+            'state_id' => !empty($this->state) ? $this->state : null,
+            'city' => $this->city ?? null,
+            'address' => $this->address,
+            'zipcode' => $this->enableGooglePlaces != '1' ? $this->zipcode : null,
+            'lat' => $this->enableGooglePlaces == '1' ? $this->lat : 0,
+            'long' => $this->enableGooglePlaces == '1' ? $this->lng : 0,
         ];
-        
-        
+
+
 
         return [
-            'identityInfo'          => $identityInfo,
-            'address'               => $address,
+            'identityInfo' => $identityInfo,
+            'address' => $address,
         ];
     }
 

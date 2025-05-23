@@ -54,22 +54,36 @@
                                     @endphp
                                     
                                    <div class="d-flex justify-content-center mb-4" style="position: relative; display: inline-block;">
-    <img class="rounded-xl d-block mx-auto" 
+         <img class="rounded-xl d-block mx-auto" 
          src="{{ $tutorInfo['image'] }}"
          alt="{{ $tutor->profile->full_name }}"
          style="border-radius: 16px; width: 150px; height: 150px; object-fit: cover;">
     
-    @if($tutor->userSubjectSlots && $tutor->userSubjectSlots->count() > 0)
-        <div style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 20px; background-color: #28a745; border-radius: 50%; border: 2px solid white;"></div>
-    @else
-        <div style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 20px; background-color:gray; border-radius: 50%; border: 2px solid white;"></div>
-    @endif
+            @php
+                $now = \Carbon\Carbon::now();
+                $isAvailableNow = false;
+                if($tutor->userSubjectSlots && $tutor->userSubjectSlots->count() > 0) {
+                    foreach($tutor->userSubjectSlots as $slot) {
+                        $slotDate = \Carbon\Carbon::parse($slot->date);
+                        if ($slotDate->isSameDay($now)) {
+                            // Detecta si start_time y end_time ya tienen fecha
+                            $start = (strlen($slot->start_time) > 8) ? \Carbon\Carbon::parse($slot->start_time) : \Carbon\Carbon::parse($slot->date.' '.$slot->start_time);
+                            $end = (strlen($slot->end_time) > 8) ? \Carbon\Carbon::parse($slot->end_time) : \Carbon\Carbon::parse($slot->date.' '.$slot->end_time);
+                            if ($now->between($start, $end)) {
+                                $isAvailableNow = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            @endphp
+            @if($isAvailableNow)
+                <div style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 20px; background-color: #28a745; border-radius: 50%; border: 2px solid white;"></div>
+            @else
+                <div style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 20px; background-color:gray; border-radius: 50%; border: 2px solid white;"></div>
+            @endif
 </div>
                                         
-
-
-
-
 
 
 
@@ -109,7 +123,7 @@
                                             @endphp
                                             <figure class="am-tutorvone_img">
                                                 <img src="{{ $userImage }}" class="am-user_image" alt="{{ $tutor->profile->full_name }}" />
-                                                <span @class(['am-userstaus', 'am-userstaus_online' => $tutor->is_online])></span>
+                                               {{--  <span @class(['am-userstaus', 'am-userstaus_online' => $tutor->is_online])></span> --}}
                                             </figure>
                                             <div class="am-tutorsearch_user_name">
                                                 <h3>

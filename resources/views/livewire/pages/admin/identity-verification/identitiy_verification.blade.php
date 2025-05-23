@@ -42,8 +42,6 @@
                                     <th>{{ __('#' )}}</th>
                                     <th>{{ __('general.name' )}}</th>
                                     <th>{{ __('identity.country')}}</th>
-                                    <th>{{ __('identity.gaurdian_info' )}}</th>
-                                    <th>{{ __('identity.school_info' )}}</th>
                                     <th>{{ __('identity.identity_document' )}}</th>
                                     <th>{{ __('identity.status' )}}</th>
                                     <th>{{__('identity.action' )}}</th>
@@ -56,40 +54,70 @@
                                         <td data-label="{{ __('Name' )}}">
                                             <div class="tb-varification_userinfo">
                                                 <strong class="tb-adminhead__img">
-                                                    @if (!empty($single?->personal_photo) && Storage::disk(getStorageDisk())->exists($single?->personal_photo))
-                                                    <img src="{{ resizedImage($single?->personal_photo,34,34) }}" alt="{{$single?->personal_photo}}" />
-                                                    @else
-                                                        <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png',34,34) }}" alt="{{ $single?->personal_photo }}" />
-                                                    @endif
+                                                @php
+                                                 //dd($single?->personal_photo, "aver");
+                                                @endphp 
+                                                
+                                                   <div x-data="{ showPhotoModal: false }">
+    @if (!empty($single?->personal_photo) && file_exists(public_path('storage/' . $single?->personal_photo)))
+        <img src="{{ asset('storage/' . $single?->personal_photo) }}" width="34" height="34" alt="{{$single?->personal_photo}}" style="cursor:pointer;" @click="showPhotoModal = true" />
+        <template x-if="showPhotoModal">
+            <div style="position:fixed; inset:0; z-index:1050; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.7);">
+                <div class="position-relative w-100 d-flex justify-content-center align-items-center" style="max-width:1000px;">
+                    <img src="{{ asset('storage/' . $single?->personal_photo) }}" class="img-fluid" style="min-height:60vh; max-height:90vh; width:auto; max-width:90vw; object-fit:contain; border-radius:10px; box-shadow:0 0 20px #000; background:#fff;" />
+                    <button @click="showPhotoModal = false" type="button" class="btn-close position-absolute top-0 end-0 m-3 bg-white rounded-circle p-2" aria-label="Close"></button>
+                </div>
+                <div @click="showPhotoModal = false" style="position:fixed; inset:0;"></div>
+            </div>
+        </template>
+    @else
+        <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : asset('placeholder.png') }}" width="34" height="34" alt="{{ $single?->personal_photo }}" />
+    @endif
+</div>
                                                 </strong>
                                                 <span>{{ $single->name }}</span>
                                             </div>
                                         </td>
                                         <td data-label="{{ __('identity.country' )}}"><span>{{ $single?->address?->country?->name ? $single?->address?->country?->name : '-' }}</span></td>
-                                        <td data-label="{{ __('identity.gaurdian_info' )}}">
+                                       <!--  <td data-label="{{ __('identity.gaurdian_info' )}}">
                                             <span>
                                                 {{ $single?->parent_name ?? '-' }} <br>
                                                 {{ $single?->parent_phone}} <br>
                                                 {{ $single?->parent_email}}<br>
                                                 {{$single->parent_verified_at && "Verified"}}
                                             </span>
-                                        </td>
-                                        <td data-label="{{ __('identity.school_info' )}}">
-                                            <span>
-                                                {{ $single?->school_id ?? '-' }} <br>
-                                                {{ $single?->school_name}}
-                                            </span>
-                                        </td>
+                                        </td> -->
+                                        
     
                                         <td data-label="{{ __('identity.identity_document' )}}">
                                             <strong class="tb-adminhead__img">
-                                                @if (!empty($single?->attachments) && Storage::disk(getStorageDisk())->exists($single?->attachments))
-                                                <img src="{{ resizedImage($single?->attachments,34,34) }}" alt="{{$single?->attachments}}" />
-                                                @elseif (!empty($single?->transcript) && Storage::disk(getStorageDisk())->exists($single?->transcript))
-                                                <img src="{{ resizedImage($single?->transcript,34,34) }}" alt="{{$single?->transcript}}" />
-                                                @else
-                                                    <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png',34,34) }}" alt="{{ $single?->attachments }}" />
-                                                @endif
+                                                <div x-data="{ showModal: false }">
+                                                    @if (!empty($single?->attachments) && file_exists(public_path('storage/' . $single?->attachments)))
+                                                        <img src="{{ asset('storage/' . $single?->attachments) }}" width="34" height="34" alt="{{$single?->attachments}}" style="cursor:pointer;" @click="showModal = true" />
+                                                        <template x-if="showModal">
+                                                            <div style="position:fixed; inset:0; z-index:1050; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.7);">
+                                                                <div class="position-relative w-100 d-flex justify-content-center align-items-center" style="max-width:1000px;">
+                                                                    <img src="{{ asset('storage/' . $single?->attachments) }}" class="img-fluid" style="min-height:60vh; max-height:90vh; width:auto; max-width:90vw; object-fit:contain; border-radius:10px; box-shadow:0 0 20px #000; background:#fff;" />
+                                                                    <button @click="showModal = false" type="button" class="btn-close position-absolute top-0 end-0 m-3 bg-white rounded-circle p-2" aria-label="Close"></button>
+                                                                </div>
+                                                                <div @click="showModal = false" style="position:fixed; inset:0;"></div>
+                                                            </div>
+                                                        </template>
+                                                    @elseif (!empty($single?->transcript) && file_exists(public_path('storage/' . $single?->transcript)))
+                                                        <img src="{{ asset('storage/' . $single?->transcript) }}" width="34" height="34" alt="{{$single?->transcript}}" style="cursor:pointer;" @click="showModal = true" />
+                                                        <template x-if="showModal">
+                                                            <div style="position:fixed; inset:0; z-index:1050; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.7);">
+                                                                <div class="position-relative w-100 d-flex justify-content-center align-items-center" style="max-width:1000px;">
+                                                                    <img src="{{ asset('storage/' . $single?->transcript) }}" class="img-fluid" style="min-height:60vh; max-height:90vh; width:auto; max-width:90vw; object-fit:contain; border-radius:10px; box-shadow:0 0 20px #000; background:#fff;" />
+                                                                    <button @click="showModal = false" type="button" class="btn-close position-absolute top-0 end-0 m-3 bg-white rounded-circle p-2" aria-label="Close"></button>
+                                                                </div>
+                                                                <div @click="showModal = false" style="position:fixed; inset:0;"></div>
+                                                            </div>
+                                                        </template>
+                                                    @else
+                                                        <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : asset('placeholder.png') }}" width="34" height="34" alt="{{ $single?->attachments }}" />
+                                                    @endif
+                                                </div>
                                             </strong>
                                         </td>
                                         <td data-label="{{ __('identity.status' )}}">
