@@ -9,12 +9,11 @@ class BookingStatus implements CastsAttributes
 {
 
     public static $statuses = [
-        'active'      => 1,
-        'rescheduled' => 2,
-        'refunded'    => 3,
-        'reserved'    => 4,
-        'completed'   => 5,
-        'disputed'    => 6,
+        'Aceptado'      => 1,
+        'Pendiente'     => 2,
+        'No completado' => 3,
+        'Rechazado'     => 4,
+        'Completado'    => 5,
     ];
 
     /**
@@ -24,7 +23,8 @@ class BookingStatus implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        return array_search($value, self::$statuses) ?: $value;
+        $map = array_flip(self::$statuses);
+        return $map[$value] ?? $value;
     }
 
     /**

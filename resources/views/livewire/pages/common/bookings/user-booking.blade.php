@@ -174,28 +174,27 @@
             <div wire:loading.class="d-none" class="am-booking-calander_body" wire:target="switchShow,jumpToDate,nextBookings,previousBookings,filter">
                 <div class="tab-content">
                     @php
-                        //dd('para el push);
                         $statusColors = [
                             'pendiente' => '#FACC15', // amarillo
-                            'rechazado' => '#EF4444', // rojo
                             'aceptado' => '#22C55E', // verde
                             'no_completado' => '#64748B', // gris
+                            'no completado' => '#64748B',
+                            'rechazado' => '#FF9800', // naranja
                             'completado' => '#3B82F6', // azul
                         ];
-                        $statusTranslations = [
-                            'active' => 'Activo',
-                            'rescheduled' => 'Reprogramada',
-                            'refunded' => 'Reembolsada',
-                            'reserved' => 'Reservada',
-                            'completed' => 'Completada',
-                            'disputed' => 'En disputa',
-                        ];
+                        
                         $statusMap = [
-                            1 => 'Pendiente',
-                            2 => 'Observada',
-                            3 => 'Aceptada',
-                            4 => 'Completada',
-                            5 => 'No completada',
+                            1 => 'Aceptado',
+                            2 => 'Pendiente',
+                            3 => 'No completado',
+                            4 => 'Observado',
+                            5 => 'Completado',
+                            'pendiente' => 'Pendiente',
+                            'aceptado' => 'Aceptado',
+                            'no_completado' => 'No completado',
+                            'no completado' => 'No completado',
+                            'rechazado' => 'Rechazado',
+                            'completado' => 'Completado',
                         ];
                     @endphp
                     @if($showBy == 'daily')
