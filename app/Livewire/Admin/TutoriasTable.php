@@ -7,6 +7,8 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Log;
 use App\Services\ZoomService;
+use App\Mail\SessionBookingMail;
+use Illuminate\Support\Facades\Mail;
 
 class TutoriasTable extends Component
 {
@@ -104,28 +106,33 @@ class TutoriasTable extends Component
                 }
 
                 // Enviar correo al estudiante
-                $notifyService = new \App\Services\NotificationService();
                 $studentProfile = $tutoria->student->profile;
                 $studentName = $studentProfile ? ($studentProfile->first_name . ' ' . $studentProfile->last_name) : '';
-                $studentTemplate = $notifyService->parseEmailTemplate('sessionBooking', 'student', [
-                    'userName' => $studentName,
-                    'bookingDetails' => "Fecha: " . date('d/m/Y H:i', strtotime($tutoria->start_time)) . "<br>Enlace de Zoom: " . $tutoria->meeting_link
-                ]);
                 $studentUser = $tutoria->student?->user;
                 if ($studentUser) {
-                    $studentUser->notify(new \App\Notifications\EmailNotification($studentTemplate));
+                    Mail::to($studentUser->email)->send(new SessionBookingMail([
+                        'userName' => $studentName,
+                        'sessionDate' => date('d/m/Y', strtotime($tutoria->start_time)),
+                        'sessionTime' => date('H:i', strtotime($tutoria->start_time)),
+                        'meetingLink' => $tutoria->meeting_link,
+                        'role' => 'Tutor',
+                        'oppositeName' => $tutoria->tutor?->profile?->first_name . ' ' . $tutoria->tutor?->profile?->last_name,
+                    ]));
                 }
 
                 // Enviar correo al tutor
                 $tutorProfile = $tutoria->tutor->profile;
                 $tutorName = $tutorProfile ? ($tutorProfile->first_name . ' ' . $tutorProfile->last_name) : '';
-                $tutorTemplate = $notifyService->parseEmailTemplate('sessionBooking', 'tutor', [
-                    'userName' => $tutorName,
-                    'bookingDetails' => "Fecha: " . date('d/m/Y H:i', strtotime($tutoria->start_time)) . "<br>Enlace de Zoom: " . $tutoria->meeting_link
-                ]);
                 $tutorUser = $tutoria->tutor?->user;
                 if ($tutorUser) {
-                    $tutorUser->notify(new \App\Notifications\EmailNotification($tutorTemplate));
+                    Mail::to($tutorUser->email)->send(new SessionBookingMail([
+                        'userName' => $tutorName,
+                        'sessionDate' => date('d/m/Y', strtotime($tutoria->start_time)),
+                        'sessionTime' => date('H:i', strtotime($tutoria->start_time)),
+                        'meetingLink' => $tutoria->meeting_link,
+                        'role' => 'Estudiante',
+                        'oppositeName' => $studentName,
+                    ]));
                 }
             }
             $tutoria->save();
