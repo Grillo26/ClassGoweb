@@ -20,15 +20,14 @@
                         
                         
                         <div class="am-tutordetail_user">
-                                <figure class="am-tutorvone_img">
-                                    @if (!empty($tutor?->profile?->image) &&
-                                    Storage::disk(getStorageDisk())->exists($tutor?->profile?->image))
-                                        <img src="{{ resizedImage($tutor?->profile?->image,80,80) }}" alt="{{$tutor?->profile?->full_name}}" />
-                                    @else 
-                                        <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 80, 80) }}" alt="{{ $tutor->profile?->full_name }}" />
-                                    @endif
-                                    <span @class(['am-userstaus','am-userstaus_online'=> $tutor?->is_online])></span>
-                                </figure>
+                               <figure class="am-tutorvone_img">
+    @if (!empty($tutor?->profile?->image) && file_exists(public_path('storage/' . $tutor?->profile?->image)))
+        <img src="{{ asset('storage/' . $tutor?->profile?->image) }}" alt="{{ $tutor?->profile?->full_name }}" />
+    @else 
+        <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 80, 80) }}" alt="{{ $tutor->profile?->full_name }}" />
+    @endif
+    <span @class(['am-userstaus','am-userstaus_online'=> $tutor?->is_online])></span>
+</figure>
                                 <div class="am-tutordetail_user_name">
                                     <h3>
                                         {{ $tutor?->profile?->full_name }}

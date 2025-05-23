@@ -127,12 +127,23 @@ class ManageAccount extends Component
 
             // Si ya tiene un QR registrado, eliminar la imagen anterior
             if ($existingPayout && $existingPayout->img_qr) {
-                Storage::disk('public')->delete($existingPayout->img_qr);
+                $imgPath = $existingPayout->img_qr;
+                if (strpos($imgPath, 'storage/') === 0) {
+                    $imgPath = substr($imgPath, 8); // Quita 'storage/'
+                }
+                Storage::disk('public')->delete($imgPath);
                 //Log::info("Imagen QR anterior eliminada: " . $existingPayout->img_qr);
             }
 
             // Guardar la nueva imagen y obtener la ruta
-            $path = $this->qrImage->store('qr_codes', 'public');
+            $filename = time() . '_' . $this->qrImage->getClientOriginalName();
+            $tempPath = $this->qrImage->storeAs('temp', $filename);
+            $destinationPath = public_path('storage/qr_codes');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0775, true);
+            }
+            rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
+            $path = 'qr_codes/' . $filename;
 
             if (!$path) {
                 throw new \Exception(__('tutor.qr_upload_failed'));
@@ -153,7 +164,7 @@ class ManageAccount extends Component
             //Log::info("Código QR guardado en la base de datos para el usuario: " . Auth::id());
 
             // Actualizar la variable de la vista
-            $this->currentQRPath = $path;
+            $this->currentQRPath = 'storage/' . $path;
 
             // Enviar mensaje de éxito
             $this->dispatch('showAlertMessage', [
@@ -200,9 +211,14 @@ class ManageAccount extends Component
                 'qrImage' => 'image|max:2048', // Solo imágenes, máximo 2MB
             ]);
 
-            // Guardar la imagen en storage
-            $path = $this->qrImage->store('qr_codes', 'public');
-            $data['img_qr'] = $path; // Agregar la ruta de la imagen al array de datos
+            $filename = time() . '_' . $this->qrImage->getClientOriginalName();
+            $tempPath = $this->qrImage->storeAs('temp', $filename);
+            $destinationPath = public_path('storage/qr_codes');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0775, true);
+            }
+            rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
+            $data['img_qr'] = 'storage/qr_codes/' . $filename;
         }
 
         $payout = $this->payoutService->addPayoutDetail(Auth::user()->id, $this->form->current_method, $data);
