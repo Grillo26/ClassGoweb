@@ -52,17 +52,35 @@ class TutoriasTable extends Component
 
     public function abrirModalTutoria($id, $status)
     {
+        $map = [
+            1 => 'aceptado',
+            2 => 'pendiente',
+            3 => 'no_completado',
+            4 => 'rechazado',
+            5 => 'completado',
+        ];
         $this->modalTutoriaId = $id;
-        $this->modalStatus = $status;
+        $this->modalStatus = $map[$status] ?? 'pendiente';
     }
 
     public function updateStatus()
     {
         $tutoria = SlotBooking::find($this->modalTutoriaId);
         if ($tutoria) {
-            $tutoria->status = $this->modalStatus;
-            // Si el nuevo estado es 'aceptado', crear reunión Zoom
-            if ($this->modalStatus === 'aceptado') {
+            $estados = [
+                'aceptado'      => 1,
+                'pendiente'     => 2,
+                'no_completado' => 3,
+                'rechazado'     => 4,
+                'completado'    => 5,
+            ];
+            $nuevoStatus = $this->modalStatus;
+            if (!is_numeric($nuevoStatus)) {
+                $nuevoStatus = $estados[strtolower($nuevoStatus)] ?? 2;
+            }
+            $tutoria->status = $nuevoStatus;
+            // Si el nuevo estado es 'Aceptada' (3), crear reunión Zoom y enviar correos
+            if ($nuevoStatus == 1) {
                 $zoomService = new ZoomService();
                 $startTime = $tutoria->start_time ? date('c', strtotime($tutoria->start_time)) : null;
                 $duration = null;
@@ -71,10 +89,6 @@ class TutoriasTable extends Component
                     $end = strtotime($tutoria->end_time);
                     $duration = 20;
                 }
-
-                //dd($startTime, $duration,);
-                //dd('para pushear
-                // ');
 
                 $meetingData = [
                     'host_email' => $tutoria->tutor?->email,
@@ -87,6 +101,31 @@ class TutoriasTable extends Component
                 $zoomResponse = $zoomService->createMeeting($meetingData);
                 if ($zoomResponse['status'] && !empty($zoomResponse['data']['join_url'])) {
                     $tutoria->meeting_link = $zoomResponse['data']['join_url'];
+                }
+
+                // Enviar correo al estudiante
+                $notifyService = new \App\Services\NotificationService();
+                $studentProfile = $tutoria->student->profile;
+                $studentName = $studentProfile ? ($studentProfile->first_name . ' ' . $studentProfile->last_name) : '';
+                $studentTemplate = $notifyService->parseEmailTemplate('sessionBooking', 'student', [
+                    'userName' => $studentName,
+                    'bookingDetails' => "Fecha: " . date('d/m/Y H:i', strtotime($tutoria->start_time)) . "<br>Enlace de Zoom: " . $tutoria->meeting_link
+                ]);
+                $studentUser = $tutoria->student?->user;
+                if ($studentUser) {
+                    $studentUser->notify(new \App\Notifications\EmailNotification($studentTemplate));
+                }
+
+                // Enviar correo al tutor
+                $tutorProfile = $tutoria->tutor->profile;
+                $tutorName = $tutorProfile ? ($tutorProfile->first_name . ' ' . $tutorProfile->last_name) : '';
+                $tutorTemplate = $notifyService->parseEmailTemplate('sessionBooking', 'tutor', [
+                    'userName' => $tutorName,
+                    'bookingDetails' => "Fecha: " . date('d/m/Y H:i', strtotime($tutoria->start_time)) . "<br>Enlace de Zoom: " . $tutoria->meeting_link
+                ]);
+                $tutorUser = $tutoria->tutor?->user;
+                if ($tutorUser) {
+                    $tutorUser->notify(new \App\Notifications\EmailNotification($tutorTemplate));
                 }
             }
             $tutoria->save();
