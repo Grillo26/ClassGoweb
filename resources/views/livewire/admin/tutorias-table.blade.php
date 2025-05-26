@@ -47,6 +47,34 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $statusColors = [
+                                        1 => '#22C55E', // aceptado
+                                        2 => '#FACC15', // pendiente
+                                        3 => '#64748B', // no_completado
+                                        4 => '#FF9800', // rechazado/observado
+                                        5 => '#3B82F6', // completado
+                                        'pendiente' => '#FACC15',
+                                        'aceptado' => '#22C55E',
+                                        'no_completado' => '#64748B',
+                                        'rechazado' => '#FF9800',
+                                        'completado' => '#3B82F6',
+                                        'no completado' => '#64748B',
+                                    ];
+                                    $statusMap = [
+                                        1 => 'Aceptado',
+                                        2 => 'Pendiente',
+                                        3 => 'No completado',
+                                        4 => 'Observado', // o 'Rechazado' según tu lógica
+                                        5 => 'Completado',
+                                        'pendiente' => 'Pendiente',
+                                        'rechazado' => 'Observado',
+                                        'aceptado' => 'Aceptado',
+                                        'no_completado' => 'No completado',
+                                        'no completado' => 'No completado',
+                                        'completado' => 'Completado',
+                                    ];
+                                @endphp
                                 @foreach($tutorias as $tutoria)
                                 <tr>
                                     <td style="text-align: center;">{{ $tutoria->id }}</td>
@@ -56,19 +84,12 @@
                                     <td style="text-align: center;">{{ \Carbon\Carbon::parse($tutoria->start_time)->format('H:i') }}</td>
                                     <td style="text-align: center;">{{ \Carbon\Carbon::parse($tutoria->end_time)->format('H:i') }}</td>
                                     <td style="text-align: center;">
-                                        <em class="tk-project-tag {{
-                                            $tutoria->status == 'aceptado' ? 'tk-hourly-tag' :
-                                            ($tutoria->status == 'pendiente' ? 'tk-fixed-tag' :
-                                            ($tutoria->status == 'rechazado' ? 'tk-canceled' :
-                                            ($tutoria->status == 'completado' ? 'tk-success-tag' : 'tk-drafted')))
-                                        }}"
-                                        style="cursor:pointer; display: inline-flex; align-items: center; gap: 7px;"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalEstadoTutoria"
-                                        wire:click="abrirModalTutoria({{ $tutoria->id }}, '{{ $tutoria->status }}')">
-                                        <span class="estado-dot estado-dot-{{ $tutoria->status }}"></span>
-                                        <span>{{ ucfirst($tutoria->status) }}</span>
-                                        </em>
+                                        <span style="display:inline-block; min-width:110px; text-align:center; font-weight:600; color:#222; background:{{ $statusColors[is_numeric($tutoria->status) ? intval($tutoria->status) : str_replace(' ', '_', strtolower($tutoria->status))] ?? '#FACC15' }}; border-radius:16px; padding:6px 18px; font-size:15px; letter-spacing:0.5px; box-shadow:0 1px 4px rgba(0,0,0,0.04); cursor:pointer;"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalEstadoTutoria"
+                                            wire:click="abrirModalTutoria({{ $tutoria->id }}, '{{ $tutoria->status }}')">
+                                            {{ $statusMap[is_numeric($tutoria->status) ? intval($tutoria->status) : str_replace(' ', '_', strtolower($tutoria->status))] ?? 'Pendiente' }}
+                                        </span>
                                     </td>
                                     <td style="text-align: center;">
                                         <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
@@ -110,10 +131,10 @@
                 </div>
                 <div class="modal-body">
                     <select wire:model="modalStatus" class="form-control">
-                        <option value="pendiente">Pendiente</option>
-                        <option value="rechazado">Rechazado</option>
                         <option value="aceptado">Aceptado</option>
+                        <option value="pendiente">Pendiente</option>
                         <option value="no_completado">No completado</option>
+                        <option value="rechazado">Observado</option>
                         <option value="completado">Completado</option>
                     </select>
                 </div>

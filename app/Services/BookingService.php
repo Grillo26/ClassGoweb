@@ -545,7 +545,7 @@ class BookingService
             'booked_at'     => parseToUTC(now()),
             'start_time'    => $slot->start_time,
             'end_time'      => $slot->end_time,
-            'status'        => 'reserved'
+            'status'        => 2 // Estado Pendiente
         ]);
         $reservedUpto = (int) (setting('_lernen.booking_reserved_time') ?? 30);
 
@@ -572,7 +572,7 @@ class BookingService
             'end_time'             => $endDateTime,     // Hora de fin
             'meeting_link'         => null,             // Link nulo al crear
             'subject_id'           => $subjectId,       // Usar el subject_id recibido
-            'status'               => 'active'          // Estado de la reserva
+            'status'               => 2                 // Estado Pendiente
         ]);
 
         return $slotBooking;

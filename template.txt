@@ -1,0 +1,7 @@
+a:4:{s:4:"info";s:173:"{userName} - Nombre destinatario <br> {sessionDate} - Fecha <br> {sessionTime} - Hora <br> {meetingLink} - Enlace Zoom <br> {oppositeName} - Nombre opuesto <br> {role} - Rol";s:7:"subject";s:59:"🕒 Recordatorio de tu reunión agendada – {sessionDate}";s:8:"greeting";s:16:"Hola {userName},";s:7:"content";s:370:"Hola {userName},<br>
+Te recordamos que tienes una reunión programada a través de ClassGo. A continuación, te compartimos los detalles:<br>
+📅 Fecha: {sessionDate}<br>
+🕒 Hora: {sessionTime}<br>
+🎥 Enlace de Zoom: {meetingLink}<br>
+👤 {role}: {oppositeName}<br>
+Por favor, asegúrate de ingresar unos minutos antes del inicio para verificar tu conexión.";}

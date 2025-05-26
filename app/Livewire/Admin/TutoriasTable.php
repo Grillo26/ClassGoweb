@@ -7,6 +7,8 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Log;
 use App\Services\ZoomService;
+use App\Mail\SessionBookingMail;
+use Illuminate\Support\Facades\Mail;
 
 class TutoriasTable extends Component
 {
@@ -52,17 +54,35 @@ class TutoriasTable extends Component
 
     public function abrirModalTutoria($id, $status)
     {
+        $map = [
+            1 => 'aceptado',
+            2 => 'pendiente',
+            3 => 'no_completado',
+            4 => 'rechazado',
+            5 => 'completado',
+        ];
         $this->modalTutoriaId = $id;
-        $this->modalStatus = $status;
+        $this->modalStatus = $map[$status] ?? 'pendiente';
     }
 
     public function updateStatus()
     {
         $tutoria = SlotBooking::find($this->modalTutoriaId);
         if ($tutoria) {
-            $tutoria->status = $this->modalStatus;
-            // Si el nuevo estado es 'aceptado', crear reunión Zoom
-            if ($this->modalStatus === 'aceptado') {
+            $estados = [
+                'aceptado'      => 1,
+                'pendiente'     => 2,
+                'no_completado' => 3,
+                'rechazado'     => 4,
+                'completado'    => 5,
+            ];
+            $nuevoStatus = $this->modalStatus;
+            if (!is_numeric($nuevoStatus)) {
+                $nuevoStatus = $estados[strtolower($nuevoStatus)] ?? 2;
+            }
+            $tutoria->status = $nuevoStatus;
+            // Si el nuevo estado es 'Aceptada' (3), crear reunión Zoom y enviar correos
+            if ($nuevoStatus == 1) {
                 $zoomService = new ZoomService();
                 $startTime = $tutoria->start_time ? date('c', strtotime($tutoria->start_time)) : null;
                 $duration = null;
@@ -71,10 +91,6 @@ class TutoriasTable extends Component
                     $end = strtotime($tutoria->end_time);
                     $duration = 20;
                 }
-
-                //dd($startTime, $duration,);
-                //dd('para pushear
-                // ');
 
                 $meetingData = [
                     'host_email' => $tutoria->tutor?->email,
@@ -87,6 +103,36 @@ class TutoriasTable extends Component
                 $zoomResponse = $zoomService->createMeeting($meetingData);
                 if ($zoomResponse['status'] && !empty($zoomResponse['data']['join_url'])) {
                     $tutoria->meeting_link = $zoomResponse['data']['join_url'];
+                }
+
+                // Enviar correo al estudiante
+                $studentProfile = $tutoria->student->profile;
+                $studentName = $studentProfile ? ($studentProfile->first_name . ' ' . $studentProfile->last_name) : '';
+                $studentUser = $tutoria->student?->user;
+                if ($studentUser) {
+                    Mail::to($studentUser->email)->send(new SessionBookingMail([
+                        'userName' => $studentName,
+                        'sessionDate' => date('d/m/Y', strtotime($tutoria->start_time)),
+                        'sessionTime' => date('H:i', strtotime($tutoria->start_time)),
+                        'meetingLink' => $tutoria->meeting_link,
+                        'role' => 'Tutor',
+                        'oppositeName' => $tutoria->tutor?->profile?->first_name . ' ' . $tutoria->tutor?->profile?->last_name,
+                    ]));
+                }
+
+                // Enviar correo al tutor
+                $tutorProfile = $tutoria->tutor->profile;
+                $tutorName = $tutorProfile ? ($tutorProfile->first_name . ' ' . $tutorProfile->last_name) : '';
+                $tutorUser = $tutoria->tutor?->user;
+                if ($tutorUser) {
+                    Mail::to($tutorUser->email)->send(new SessionBookingMail([
+                        'userName' => $tutorName,
+                        'sessionDate' => date('d/m/Y', strtotime($tutoria->start_time)),
+                        'sessionTime' => date('H:i', strtotime($tutoria->start_time)),
+                        'meetingLink' => $tutoria->meeting_link,
+                        'role' => 'Estudiante',
+                        'oppositeName' => $studentName,
+                    ]));
                 }
             }
             $tutoria->save();
