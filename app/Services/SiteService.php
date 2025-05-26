@@ -6,43 +6,51 @@ use App\Models\Country;
 use App\Models\Language;
 use App\Models\Menu;
 use App\Models\Rating;
-use App\Models\Setting;
 use App\Models\CountryState;
 use App\Models\MenuItem;
-use App\Models\SlotBooking;
 use App\Models\User;
-use App\Models\UserSubjectSlot;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class SiteService {
 
+// Consulta principal para obtener tutores
 public function getTutors($data = array()) {
     try {
+        // Selecciona todos los usuarios que tengan el rol 'tutor'
         $instructors = User::select('users.*')
             ->whereHas('roles', fn($query) => $query->whereName('tutor'));
 
-        $instructors->with(['subjects', 'languages:id,name', 'address.country', 'profile','userSubjectSlots']);
+        // Carga relaciones necesarias para mostrar información del tutor
+        $instructors->with([
+            'subjects', // Materias que enseña
+            'languages:id,name', // Idiomas
+            'address.country', // País de la dirección
+            'profile', // Perfil del usuario
+            'userSubjectSlots' // Slots de materiasp
+        ]);
 
+        // Solo tutores con perfil verificado y selecciona campos específicos del perfil
         $instructors->withWhereHas('profile', function ($query) {
             $query->select('id', 'verified_at', 'user_id', 'first_name', 'last_name', 'image', 'gender', 'tagline', 'description', 'slug', 'intro_video');
             $query->whereNotNull('verified_at'); // Solo tutores verificados
         });
-        // Agregar conteos y promedios básicos
+        // Agrega promedios y conteos de reviews y estudiantes activos
         $instructors->withAvg('reviews as avg_rating', 'rating')
             ->withCount('reviews as total_reviews')
             ->withCount(['bookingSlots as active_students' => function($query){
                 $query->whereStatus('active');
             }]);
 
-        // Aplicar filtros solo si están presentes
+        // Filtro por grupo de materias si está presente
         if (!empty($data['group_id'])) {
             $instructors->whereHas('groups', function ($query) use ($data) {
                 $query->where('subject_group_id', $data['group_id']);
             });
         }
 
+        // Filtro por palabra clave en nombre o apellido
         if (!empty($data['keyword'])) {
             $keyword = '%' . $data['keyword'] . '%';
             $instructors->where(function($query) use ($keyword) {
@@ -53,17 +61,20 @@ public function getTutors($data = array()) {
             });
         }
 
-        // Ordenar por fecha de creación por defecto
+        // Ordena por fecha de creación descendente (más nuevos primero)
         $instructors->orderBy('users.created_at', 'desc');
 
+        // Log para debug: muestra la consulta SQL generada y los filtros recibidos
         \Log::info('SQL Query:', [
             'query' => $instructors->toSql(),
             'bindings' => $instructors->getBindings(),
             'data' => $data
         ]);
 
+        // Paginación, por defecto 10 por página
         $result = $instructors->paginate(!empty($data['per_page']) ? $data['per_page'] : 10);
         
+        // Log para debug: muestra el total de resultados y la página actual
         \Log::info('Query results:', [
             'total' => $result->total(),
             'current_page' => $result->currentPage(),
@@ -73,6 +84,7 @@ public function getTutors($data = array()) {
         return $result;
 
     } catch (\Exception $e) {
+        // Log de error si algo falla
         \Log::error('Error in getTutors:', [
             'message' => $e->getMessage(),
             'trace' => $e->getTraceAsString()
@@ -85,11 +97,7 @@ public function getTutors($data = array()) {
     public function getRecommendedTutors($filters = [])
     {
         $tutors = User::select('id')->role('tutor');
-        // $tutors->with(['subjects' => function ($query) {
-        //     $query->withCount(['slots as sessions' => fn($query) => $query->where('end_time', '>=', now())]);
-        //     $query->with('subject:id,name');
-        // }, 'languages:id,name']);
-
+        
         $tutors->with(['address' => function ($query) {
             $query->select('id','addressable_id','addressable_type','country_id')
                   ->with(['country' => function ($countryQuery) {
@@ -115,13 +123,6 @@ public function getTutors($data = array()) {
         return $tutors->get()->take(!empty($filters['total']) ? $filters['total'] : 10);
     }
 
-    // public function getActiveUsers($slug) {
-    //     $slots = UserSubjectSlot::select('id','start_time','spaces','total_booked')
-    //     ->whereHas('subjectGroupSubjects', function($groupSubjects) {
-    //         $groupSubjects->select('id','user_subject_group_id');
-    //         $groupSubjects->whereHas('userSubjectGroup', fn($query)=>$query->select('id','user_id')->whereUserId($this->user->id));
-    //     })->get();
-    // }
 
     public function getUserRole($slug) {
         return User::whereHas('profile', function ($query) use ($slug) {
@@ -276,10 +277,6 @@ public function getTutors($data = array()) {
         ->where('id', '!=', $user->id)
         ->withAvg('reviews as avg_rating', 'rating')
         ->withCount('reviews as total_reviews')
-      /*   ->withCount(['bookingSlots as active_students' => function($query) {
-            $query->whereStatus('active')
-            ->withCount(['slot as total_sessions']);
-        }]) */
         ->get()->take(4);
     }
 

@@ -77,6 +77,8 @@ class SearchTutor extends Component
 
     public function mount($filters = [])
     {
+
+        //dd($filters, "filters");
         try {
             $this->repeatItems = !empty($this->filters['per_page']) 
                 ? $this->filters['per_page'] 
