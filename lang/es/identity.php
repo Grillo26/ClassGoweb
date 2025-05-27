@@ -54,4 +54,6 @@ return [
     'action' => 'Acción',
     'profile_photo'=> 'Foto de perfil',
     'profile_intro_video' => 'Video de introducción',
+    'default_profile_photo' => 'logo de perfil predeterminado',
+    'default_profile_intro_video' => 'video de introducción predeterminado',
 ];
