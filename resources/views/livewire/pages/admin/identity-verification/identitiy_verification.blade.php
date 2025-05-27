@@ -180,7 +180,7 @@
                                             </a>
                                             @else
                                             <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : asset('placeholder.png') }}"
-                                                width="34" height="34" alt="{{ $single?->profile->image }}" />
+                                                width="34" height="34"alt="{{ __('identity.default_profile_photo' )}}" />
                                             @endif
                                         </strong>
                                        {{--  <span>{{ $single->name }}</span> --}}
@@ -218,7 +218,7 @@
                                                 </template>
                                                 @else
                                                 <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : asset('placeholder.png') }}"
-                                                    width="34" height="34" alt="{{ $single?->profile->intro_video }}" />
+                                                    width="34" height="34" alt="{{ __('identity.default_profile_video' )}}" />
                                                 @endif
                                             </div>
                                         </strong>
