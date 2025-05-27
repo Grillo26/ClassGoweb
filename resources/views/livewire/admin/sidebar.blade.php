@@ -93,13 +93,7 @@ new class extends Component
                     'admin.invoices' => __('invoices')
                 ],
             ],
-            [
-                'title' =>  __('admin/sidebar.bookings'),
-                'icon'  => 'icon-file-text',
-                'routes' => [
-                    'admin.bookings' => __('bookings')
-                ],
-            ],
+            
             [
                 'title' =>  __('sidebar.transaction_payment'),
                 'icon'  => 'icon-credit-card',
@@ -150,7 +144,7 @@ new class extends Component
         }
 
         $this->menuItems[] = [
-            'title' =>  __('sidebar.tutorias'),
+            'title' =>  __('sidebar.bookings'),
             'icon'  => 'icon-book-open',
             'routes' => [
                 'admin.tutorias.index' => __('sidebar.tutorias'),

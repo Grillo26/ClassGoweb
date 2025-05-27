@@ -73,24 +73,15 @@ return [
     'basic_info' => 'Proporcione su informacion personal a continuación para completar su perfil',
     'email' => 'Correo electrónico',
     'phone_number' => 'Número de teléfono',
-    'gender' => 'Género',
-    'native_language' => 'Lengua materna',
-    'description' => 'Descripción',
-    'tagline' => 'Eslogan',
     'profile_picture' => 'Foto de perfil',
-    'intro_video' => 'Vídeo de introducción',
     'upload_image' => 'Subir imagen',
     'upload_video' => 'Subir video',
     'upload_resume' => 'Subir currículum',
     'upload_social_media' => 'Subir redes sociales',
     'upload_other' => 'Subir otros',
-    'upload_other' => 'Subir otros',
     'allowed_formats' => 'Formatos permitidos',
     'max' => 'Máximo',
-    'upload_image' => 'Subir imagen',
     'other_languages' => 'Otros idiomas',
     'remove' => 'Eliminar',
-    
-    
 ];
 

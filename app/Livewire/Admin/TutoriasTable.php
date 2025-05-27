@@ -104,7 +104,6 @@ class TutoriasTable extends Component
                 if ($zoomResponse['status'] && !empty($zoomResponse['data']['join_url'])) {
                     $tutoria->meeting_link = $zoomResponse['data']['join_url'];
                 }
-
                 // Enviar correo al estudiante
                 $studentProfile = $tutoria->student->profile;
                 $studentName = $studentProfile ? ($studentProfile->first_name . ' ' . $studentProfile->last_name) : '';
@@ -119,7 +118,6 @@ class TutoriasTable extends Component
                         'oppositeName' => $tutoria->tutor?->profile?->first_name . ' ' . $tutoria->tutor?->profile?->last_name,
                     ]));
                 }
-
                 // Enviar correo al tutor
                 $tutorProfile = $tutoria->tutor->profile;
                 $tutorName = $tutorProfile ? ($tutorProfile->first_name . ' ' . $tutorProfile->last_name) : '';

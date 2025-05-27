@@ -259,6 +259,8 @@
                     let newUrl = `${window.location.pathname}?${params.toString()}`;
                     window.history.replaceState({}, '', newUrl);
                     clearFilters(clearFilter);
+                    console.log('Filtros enviados a Livewire:', filter_record);
+
                     Livewire.dispatch('tutorFilters', {filters: filter_record});
                 }
 

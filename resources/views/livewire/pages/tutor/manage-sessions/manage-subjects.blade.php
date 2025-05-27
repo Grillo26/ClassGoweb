@@ -53,10 +53,10 @@
                         <img src="{{ asset('images/subjects.png') }}" alt="No records" style="max-width: 120px; margin-bottom: 15px;">
                         <h3 style="color: #004558; margin-bottom: 10px; font-size: 18px;">{{ __('general.no_record_title') }}</h3>
                         <p style="color: #666; margin-bottom: 20px; font-size: 14px;">{{ __('general.no_record_desc') }}</p>
-                        <button class="am-btn" @click="search = ''; $nextTick(() => $wire.call('addNewSubjectGroup'))" wire:target="addNewSubjectGroup">
+                        {{-- <button class="am-btn" @click="search = ''; $nextTick(() => $wire.call('addNewSubjectGroup'))" wire:target="addNewSubjectGroup">
                             {{ __('subject.add_new_subject') }}
                             <i class="am-icon-plus-01"></i>
-                        </button>
+                        </button> --}}
                     </div>
                 @else
                     @foreach ($filteredGroups as $index => $group)
@@ -179,9 +179,7 @@
 
         <!-- Modals crear o editar -->
         <div wire:ignore.self class="modal am-modal fade am-subject_modal" id="subject_modal" data-bs-backdrop="static">
-            <div class="modal-dialog modal-dialog-centered">
-                
-                
+            <div class="modal-dialog modal-dialog-centered"> 
                  <div class="modal-content">
                        <!-- Modal  Header-->
                     <div class="am-modal-header">
@@ -199,8 +197,9 @@
 
                      <!-- Modal formulario -->
                     <div class="am-modal-body">
-                       
                     <form class="am-themeform am-modal-form">
+
+                           
                             <fieldset>
                                 <div @class(['form-group', 'am-invalid'=> $errors->has('form.subject_id')])>
                                     <label class="am-label am-important2" for="subjects">
@@ -222,82 +221,18 @@
                                     <x-input-error field_name="form.subject_id" />
                                 </div>
 
-
+                              @php
+                             //dd($form->description);    
+                             @endphp
 
                                 <div @class(['form-group', 'am-invalid'=> $errors->has('form.description')])>
-                                       
                                   <x-input-label class="am-important2" for="introduction" :value="__('subject.breif_introduction')" />
-                                    <div class="am-custom-editor" wire:ignore>
-                                        <textarea id="subject_desc" class="form-control" placeholder="{{ __('subject.add_introduction') }}" wire:model.defer="form.description"></textarea>
+                                    <div class="am-custom-editor">
+                                        <textarea id="subject_desc" class="form-control" placeholder="{{ __('subject.add_introduction') }}" wire:model="form.description"></textarea>
                                         <span class="characters-count"></span>
                                     </div>
                                     <x-input-error field_name="form.description" />
                                 </div>
-
-
-
-                                 {{--  
-                                <div class="form-group">
-                                    <x-input-label for="Profile1" :value="__('general.upload_image')" />
-                                    <div class="am-uploadoption" x-data="{isUploading:false}" wire:key="uploading-profile-{{ time() }}">
-
-
-
-                                        <div class="tk-draganddrop"
-                                            x-bind:class="{ 'am-dragfile' : isDragging, 'am-uploading' : isUploading }"
-                                            x-on:drop.prevent="isUploading = true; isDragging = false"
-                                            wire:drop.prevent="$upload('form.image', $event.dataTransfer.files[0])">
-                                            <x-text-input
-                                                name="file"
-                                                type="file"
-                                                id="at_upload_cover_photo"
-                                                x-ref="file_upload"
-                                                accept="{{ !empty($allowImgFileExt) ?  join(',', array_map(function($ex){return('.'.$ex);}, $allowImgFileExt)) : '*' }}"
-                                                x-on:change="isUploading = true; $wire.upload('form.image', $refs.file_upload.files[0])" />
-
-                                            <label for="at_upload_cover_photo" class="am-uploadfile">
-                                                <span class="am-dropfileshadow">
-                                                    <svg class="am-border-svg ">
-                                                        <rect width="100%" height="100%" rx="12"></rect>
-                                                    </svg>
-                                                    <i class="am-icon-plus-02"></i>
-                                                    <span class="am-uploadiconanimation">
-                                                        <i class="am-icon-upload-03"></i>
-                                                    </span>
-                                                    {{ __('general.drop_file_here') }}
-                                                </span>
-                                                <em>
-                                                    <i class="am-icon-export-03"></i>
-                                                </em>
-                                                <span>{{ __('general.drop_file') }} <i>{{ __('general.click_here_file') }}</i> {{ __('general.to_upload') }} <em>{{ allowFileExt($allowImgFileExt)  }} ({{ __('general.max') .$allowImageSize.'MB' }})</em></span>
-                                            </label>
-                                        </div>
-
-
-
-                                        @if(!empty($form->image))
-                                        <div class="am-uploadedfile">
-                                            @if( !empty($form->image) && method_exists($form->image,'temporaryUrl'))
-                                            <img src="{{ $form->image->temporaryUrl() }}">
-                                            @else
-                                            <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : url(Storage::url($form->image)) }}">
-                                            @endif
-
-                                            @if ( !empty($form->image) && method_exists($form->image,'getClientOriginalName'))
-                                            <span>{{ $form->image->getClientOriginalName() }}</span>
-                                            @else
-                                            <span>{{ basename(parse_url(url(Storage::url($form->image)), PHP_URL_PATH)) }}</span>
-                                            @endif
-
-                                            <a href="#" wire:click.prevent="removeImage" class="am-delitem">
-                                                <i class="am-icon-trash-02"></i>
-                                            </a>
-                                        </div>
-                                        @endif
-                                        <x-input-error field_name="form.image" />
-                                    </div>
-                                </div>
-                                --}}
 
                                 <div class="form-group am-mt-10 am-form-btn-wrap">
                                     <button class="am-btn" wire:click.prevent="saveNewSubject" wire:target="saveNewSubject" wire:loading.class="am-btn_disable">{{ __('general.save_update') }} </button>

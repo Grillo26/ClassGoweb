@@ -52,4 +52,6 @@ return [
     'reject' => 'Rechazar',
     'status' => 'Estado',
     'action' => 'Acción',
+    'profile_photo'=> 'Foto de perfil',
+    'profile_intro_video' => 'Video de introducción',
 ];

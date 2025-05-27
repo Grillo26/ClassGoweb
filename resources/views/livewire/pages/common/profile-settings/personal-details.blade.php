@@ -130,18 +130,18 @@
                 <!-- Tagline -->
                 <div class="row align-items-center mb-4">
                     <div class="col-md-3 col-12 mb-2 mb-md-0">
-                        <label style="color:white;" for="tagline" class="form-label m-0">
+                        <label style="color:white;" for="slug" class="form-label m-0">
                             {{ __('profile.tagline') }}
                         </label>
                     </div>
                     <div class="col-md-9 col-12">
                         <input type="text"
-                            id="tagline"
+                            id="slug"
                             class="form-control bg-white text-black"
-                            wire:model="tagline"
+                            wire:model="slug"
                             placeholder="{{ __('profile.tagline_placeholder') }}">
                     </div>
-                    @error('gender') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    @error('slug') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     <div class="border-bottom border-1 border-gray-200 w-100 mt-2"></div>
 
                 </div>
@@ -176,8 +176,8 @@
                         <div class="position-relative" style="max-width: 400px;">
                             <div class="custom-dropdown" tabindex="0">
                                 <div class="custom-dropdown-toggle bg-white w-100 text-start p-2 rounded" onclick="this.parentNode.classList.toggle('open')" id="nativeDropdownLabel">
-                                    {{ $native_language ? $native_language : __('Selecciona un idioma') }}
-                                </div>
+    {{ $native_language ? __('lenguajes.' . $native_language) : __('Selecciona un idioma') }}
+</div>
                                 <div class="custom-dropdown-menu bg-white border rounded shadow-sm mt-1 p-2" style="display:none; max-height: 300px; overflow-y: auto; position: absolute; width: 100%; z-index: 10;">
                                     <input type="text" class="form-control mb-2" placeholder="Buscar idioma..." onkeyup="filterNativeLanguage(this)">
                                     <div id="native-languages-list">
@@ -188,7 +188,7 @@
                                         @foreach($languages as $id => $name)
                                         <div class="form-check px-3 py-2">
                                             <input class="form-check-input" type="radio" name="native_language" wire:model="native_language" value="{{ $name }}" id="lang{{ $id }}" onchange="closeNativeDropdown(this)">
-                                            <label class="form-check-label" for="lang{{ $id }}">{{ $name }}</label>
+                                            <label class="form-check-label" for="lang{{ $id }}">{{ __('lenguajes.' . $name) }}</label>
                                         </div>
                                         @endforeach
                                     </div>
@@ -252,7 +252,7 @@
                                     @if(!in_array($id, $user_languages) && $id != $native_language)
                                     <div class="form-check px-3 py-2">
                                         <input class="form-check-input" type="checkbox" wire:model.live="selected_languages" value="{{ $id }}" id="lang{{ $id }}">
-                                        <label class="form-check-label" for="lang{{ $id }}">{{ $name }}</label>
+                                        <label class="form-check-label" for="lang{{ $id }}">{{ __('lenguajes.' . $name) }}</label>
                                     </div>
                                     @endif
                                 @endforeach
@@ -286,7 +286,7 @@
                     @foreach($user_languages as $langId)
                     @if(isset($languages[$langId]))
                     <div class="badge bg-primary p-2 d-flex align-items-center" style="font-size: 0.9rem;">
-                        <span class="text-white">{{ $languages[$langId] }}</span>
+                        <span class="text-white">{{ __('lenguajes.' . $languages[$langId]) }}</span>
                         <button type="button"
                             class="btn-close btn-close-white ms-2"
                             style="font-size: 0.7rem;"

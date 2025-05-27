@@ -21,7 +21,23 @@ class Profile extends Model {
      *
      * @var array
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id',
+        'first_name',
+        'last_name',
+        'slug',
+        'phone_number',
+        'gender',
+        'description',
+        'native_language',
+        'image',
+        'intro_video',
+        'recommend_tutor',
+        'verified_at',
+        'feature_expired_at',
+    ];
+
+    protected $table = 'profiles';
 
     /**
      * Get the attributes that should be cast.

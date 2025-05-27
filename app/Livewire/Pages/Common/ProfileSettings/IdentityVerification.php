@@ -23,7 +23,8 @@ use Livewire\WithFileUploads;
  * Permite a los usuarios cargar información y documentos para verificar su identidad.
  * Gestiona la lógica de selección de país, estados, subida de archivos y notificaciones.
  */
-class IdentityVerification extends Component {
+class IdentityVerification extends Component
+{
 
     use WithFileUploads;
     /**
@@ -100,7 +101,7 @@ class IdentityVerification extends Component {
      * Tamaño máximo de imagen permitido (MB)
      * @var string
      */
-    public $allowImageSize  = '';
+    public $allowImageSize = '';
     /**
      * Datos procesados del formulario
      * @var mixed
@@ -144,9 +145,9 @@ class IdentityVerification extends Component {
      */
     public function boot()
     {
-        $this->userIdentity     = new IdentityService(Auth::user());
-        $this->profileService   = new ProfileService(Auth::user()->id);
-        $this->user             = Auth::user();
+        $this->userIdentity = new IdentityService(Auth::user());
+        $this->profileService = new ProfileService(Auth::user()->id);
+        $this->user = Auth::user();
     }
 
     /**
@@ -154,7 +155,7 @@ class IdentityVerification extends Component {
      */
     public function loadData()
     {
-        $this->isLoading            = false;
+        $this->isLoading = false;
         $this->dispatch('loadPageJs');
     }
 
@@ -164,23 +165,24 @@ class IdentityVerification extends Component {
      */
     public function mount()
     {
-        $this->activeRoute       = Route::currentRouteName();
-        $this->profile           = $this->profileService->getUserProfile();
-        $this->countries         = Country::get(['id','name']) ?? [];;
-        $this->emailTemplate      = setting('_lernen.for_role') ?? (object)['status' => 'both'];
-        $image_file_ext          = setting('_general.allowed_image_extensions') ?? 'jpg,png';
-        $image_file_size         = (int) (setting('_general.max_image_size') ?? '5');
-        $this->allowImageSize    = !empty( $image_file_size ) ? $image_file_size : '5';
-        $this->allowImgFileExt   = !empty( $image_file_ext ) ?  explode(',', $image_file_ext) : [];
-        $this->fileExt           = fileValidationText($this->allowImgFileExt);
+        $this->activeRoute = Route::currentRouteName();
+        $this->profile = $this->profileService->getUserProfile();
+        $this->countries = Country::get(['id', 'name']) ?? [];
+        ;
+        $this->emailTemplate = setting('_lernen.for_role') ?? (object) ['status' => 'both'];
+        $image_file_ext = setting('_general.allowed_image_extensions') ?? 'jpg,png';
+        $image_file_size = (int) (setting('_general.max_image_size') ?? '5');
+        $this->allowImageSize = !empty($image_file_size) ? $image_file_size : '5';
+        $this->allowImgFileExt = !empty($image_file_ext) ? explode(',', $image_file_ext) : [];
+        $this->fileExt = fileValidationText($this->allowImgFileExt);
 
         // Si el perfil no está completo, redirige y muestra error
-        if(Auth::user()->profile?->created_at == Auth::user()->profile?->updated_at){
+        if (Auth::user()->profile?->created_at == Auth::user()->profile?->updated_at) {
             Session::flash('error', __('general.incomplete_profile_error'));
-            return $this->redirect(route(Auth::user()->role.'.profile.personal-details'), navigate:true);
+            return $this->redirect(route(Auth::user()->role . '.profile.personal-details'), navigate: true);
         }
 
-        $this->dispatch('initSelect2', target: '.am-select2' );
+        $this->dispatch('initSelect2', target: '.am-select2');
     }
 
     /**
@@ -193,17 +195,17 @@ class IdentityVerification extends Component {
     public function updatedForm($value, $key)
     {
 
-        
-        if( $key == 'countryName' ) {
-            $country = Country::where('short_code',$value)->select('id')->first();
-            $this->form->country =  $country?->id;
-            
-        } elseif( in_array($key, ['image', 'identificationCard','transcript']) ) {
-            $entro= 'asdhvasjdasdas';
+
+        if ($key == 'countryName') {
+            $country = Country::where('short_code', $value)->select('id')->first();
+            $this->form->country = $country?->id;
+
+        } elseif (in_array($key, ['image', 'identificationCard', 'transcript'])) {
+            $entro = 'asdhvasjdasdas';
             $mimeType = $value->getMimeType();
             $type = explode('/', $mimeType);
-          
-            if($type[0] != 'image') {
+
+            if ($type[0] != 'image') {
                 $this->dispatch('showAlertMessage', type: `error`, message: __('validation.invalid_file_type', ['file_types' => fileValidationText($this->allowImgFileExt)]));
                 $this->form->{$key} = null;
                 return;
@@ -221,23 +223,23 @@ class IdentityVerification extends Component {
     public function render()
     {
         $this->states = null;
-        $this->identity         = $this->userIdentity->getUserIdentityVerification();
-        if(!empty($this->form->country)){
-/*             dd( $this->states =$this->userIdentity->countryStates($this->form->country)
-           ,"se seleccionó un país"); */
-            $this->states =$this->userIdentity->countryStates($this->form->country);
-            if($this->states->isNotEmpty()){
+        $this->identity = $this->userIdentity->getUserIdentityVerification();
+        if (!empty($this->form->country)) {
+            /*             dd( $this->states =$this->userIdentity->countryStates($this->form->country)
+                       ,"se seleccionó un país"); */
+            $this->states = $this->userIdentity->countryStates($this->form->country);
+            if ($this->states->isNotEmpty()) {
                 //dd($this->states, "hay estados");
                 $this->hasStates = true;
-                $this->dispatch('initSelect2', target: '#country_state' );
+                $this->dispatch('initSelect2', target: '#country_state');
             } else {
                 $this->hasStates = false;
             }
         }
         $enableGooglePlaces = '0';
         \Log::info('Valor de enableGooglePlaces:', ['value' => $enableGooglePlaces]);
-        $googleApiKey           = setting('_api.google_places_api_key');
-        return view('livewire.pages.common.profile-settings.identity-verification',compact('enableGooglePlaces','googleApiKey'));
+        $googleApiKey = setting('_api.google_places_api_key');
+        return view('livewire.pages.common.profile-settings.identity-verification', compact('enableGooglePlaces', 'googleApiKey'));
     }
 
     /**
@@ -247,9 +249,9 @@ class IdentityVerification extends Component {
     public function removeMedia($type)
     {
         match ($type) {
-            'personal_photo'        => $this->form->removePhoto(),
-            'identificationCard'    => $this->form->removeIdentificationCard(),
-            'transcript'            => $this->form->removeTranscript()
+            'personal_photo' => $this->form->removePhoto(),
+            'identificationCard' => $this->form->removeIdentificationCard(),
+            'transcript' => $this->form->removeTranscript()
         };
     }
 
@@ -263,7 +265,7 @@ class IdentityVerification extends Component {
         $this->userIdentity->deleteUserAddress($this->identity->id);
         $this->userIdentity->deleteUserIdentityVerification();
         $this->form->reset();
-        $this->dispatch('initSelect2', target: '.am-select2' );
+        $this->dispatch('initSelect2', target: '.am-select2');
     }
 
     /**
@@ -275,8 +277,8 @@ class IdentityVerification extends Component {
     {
         $this->data = $this->form->updateInfo($this->hasStates);
         $response = isDemoSite();
-        if( $response ){
-            $this->dispatch('showAlertMessage', type: 'error', title:  __('general.demosite_res_title') , message: __('general.demosite_res_txt'));
+        if ($response) {
+            $this->dispatch('showAlertMessage', type: 'error', title: __('general.demosite_res_title'), message: __('general.demosite_res_txt'));
             return;
         }
         try {
@@ -287,15 +289,28 @@ class IdentityVerification extends Component {
             $userIdentity = $this->userIdentity->setUserIdentityVerification($this->data['identityInfo']);
             $this->userIdentity->setUserAddress($userIdentity?->id, $this->data['address']);
             DB::commit();
+            try {
+                $adminEmail =env('MAIL_FROM_ADDRESS');
+                $user = Auth::user();
+                $contenido = "El usuario {$user->profile->first_name} - {$user->profile->last_name}  ({$user->email}) ha hecho una solicitud de verificación de identidad.";
+                \Mail::raw($contenido, function ($message) use ($adminEmail) {
+                    $message->to($adminEmail)
+                        ->subject('Nueva solicitud de verificación de identidad');
+                });
+            } catch (\Exception $e) {
+                \Log::error('Error al enviar correo de solicitud de verificación: ' . $e->getMessage());
+            }
+
+
         } catch (\Illuminate\Validation\ValidationException $e) {
-          
+
             dd($e->errors());
             DB::rollBack();
         }
         $this->data['identityInfo']['gender'] = $this->profile?->gender;
         $this->data['identityInfo']['email'] = Auth::user()->email;
         $this->data['identityInfo']['role'] = Auth::user()->role;
-        dispatch(new SendNotificationJob('identityVerificationRequest',User::admin(), $this->data)); 
+        dispatch(new SendNotificationJob('identityVerificationRequest', User::admin(), $this->data));
         if (Auth::user()->hasRole('student') && $this->emailTemplate?->status !== 'both') {
             return;
         }

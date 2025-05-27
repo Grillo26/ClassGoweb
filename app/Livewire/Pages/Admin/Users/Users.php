@@ -392,4 +392,41 @@ class Users extends Component
         $this->dispatch('toggleModel', id: 'tb-add-user', action: 'hide');
         $this->resetInputfields();
     }
+
+    /**
+     * Anonimiza el perfil del usuario, reemplazando los datos por valores genéricos.
+     * Puede ser llamado por el admin para ocultar datos indebidos.
+     */
+    public function anonymizeProfile($userId)
+    {
+        $user = User::with('profile')->find($userId);
+        if ($user && $user->profile) {
+            $user->profile->image = null;
+            $user->profile->intro_video = null;
+            $user->profile->description = 'Perfil anonimizado por el administrador.';
+            $user->profile->save();
+
+            // Enviar correo notificando el cambio de perfil al usuario
+            try {
+                $fechaHora = now()->format('d/m/Y H:i');
+                $contenido = "Hola {$user->profile->full_name},\n\n";
+                $contenido .= "Hemos detectado que tu perfil no cumple con nuestras políticas de uso. Por este motivo, algunos de tus datos han sido eliminados o modificados por el equipo de administración.\n\n";
+                $contenido .= "Te recomendamos revisar tu perfil y asegurarte de que toda la información cumpla con nuestras normas y términos de uso.\n\n";
+                $contenido .= "Fecha de la acción: {$fechaHora}\n\n";
+                $contenido .= "Si tienes dudas o consideras que se trata de un error, por favor contáctanos respondiendo a este correo.\n\n";
+                $contenido .= "Atentamente,\nEquipo de ClassGo";
+                \Mail::raw($contenido, function($message) use ($user) {
+                    $message->to($user->email)
+                        ->subject('Advertencia: Modificación de tu perfil en ClassGo');
+                });
+            } catch (\Exception $e) {
+                Log::error('Error al enviar correo de anonimización de perfil: ' . $e->getMessage());
+            }
+
+            $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: 'Perfil anonimizado correctamente.');
+        } else {
+            $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: 'No se encontró el perfil para anonimizar.');
+        }
+
+    }
 }

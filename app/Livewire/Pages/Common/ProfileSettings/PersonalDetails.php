@@ -32,7 +32,7 @@ class PersonalDetails extends Component
     public $email = '';
     public $phone_number = '';
     public $gender = 'No especificado'; // Cambiado a string para evitar problemas de validación
-    public $tagline = '';
+    public $slug = '';
     public $description = '';
     public $country = '';
     public $state = '';
@@ -130,7 +130,7 @@ class PersonalDetails extends Component
         $this->phone_number = $profile?->phone_number ?? '';
         // Ahora el valor de género es int, lo pasamos tal cual
         $this->gender = $this->normalizeGender($profile?->gender ?? 3);
-        $this->tagline = $profile?->tagline ?? '';
+        $this->slug = $profile?->slug ?? '';
         $this->description = $profile?->description ?? '';
         $this->image = $profile?->image ?? '';
         $this->intro_video = $profile?->intro_video ?? '';
@@ -221,12 +221,13 @@ class PersonalDetails extends Component
 
             // El valor de género ya es int desde el front
             //dd($this->gender);
+            //dd($this->slug, "slug");
             $profileData = [
                 'first_name' => $this->first_name,
                 'last_name' => $this->last_name,
                 'phone_number' => $this->phone_number,
                 'gender' => $this->gender,
-                'tagline' => $this->tagline,
+                'slug' => $this->slug,
                 'description' => $this->description,
                 'native_language' => $this->native_language,
             ];
@@ -271,6 +272,24 @@ class PersonalDetails extends Component
             $this->profileService->setUserProfile($profileData);
             // Guardar los IDs de idiomas directamente
             $this->profileService->storeUserLanguages($this->user_languages);
+
+            // Enviar correo notificando el cambio de perfil
+            try {
+                $user = Auth::user();
+                $fechaHora = now()->format('d/m/Y H:i');
+                $contenido = "El usuario {$user->name} ({$user->email}) ha actualizado su perfil el {$fechaHora}.\n\nDatos actualizados:\n";
+                foreach ($profileData as $key => $value) {
+                    $contenido .= ucfirst(str_replace('_', ' ', $key)) . ': ' . $value . "\n";
+                }
+                \Mail::raw($contenido, function($message) use ($user) {
+                    $message->to(env('MAIL_FROM_ADDRESS') )
+                        ->subject('Notificación de actualización de perfil');
+                });
+                
+            } catch (\Exception $e) {
+                Log::error('Error al enviar correo de actualización de perfil: ' . $e->getMessage());
+            }
+
             $this->dispatch('showAlertMessage', type: 'success', message: __('general.success_message'));
         } catch (\Exception $e) {
             Log::error('Error al actualizar perfil: ' . $e->getMessage());

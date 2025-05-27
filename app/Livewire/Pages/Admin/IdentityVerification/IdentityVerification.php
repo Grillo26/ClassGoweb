@@ -19,21 +19,22 @@ use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 
-class IdentityVerification extends Component {
+class IdentityVerification extends Component
+{
     use WithPagination;
 
-    public      UserForm $form;
-    public      $search             = '';
-    public      $sortby             = 'desc';
-    public      $user_id            = '';
-    public      $verification       = 'non_verified';
-    public      $user;
+    public UserForm $form;
+    public $search = '';
+    public $sortby = 'desc';
+    public $user_id = '';
+    public $verification = 'non_verified';
+    public $user;
 
     private ?IdentityService $userIdentity = null;
     public function boot()
     {
-        $this->userIdentity     = new IdentityService(Auth::user());
-        $this->user         = Auth::user();
+        $this->userIdentity = new IdentityService(Auth::user());
+        $this->user = Auth::user();
     }
 
     #[Layout('layouts.admin-app')]
@@ -43,7 +44,7 @@ class IdentityVerification extends Component {
             'address' => function ($query) {
                 $query->with('country');
             },
-            'profile:id,user_id,verified_at'
+            'profile:id,user_id,verified_at,image,intro_video'
         ]);
         if (!empty($this->verification)) {
             if ($this->verification === 'verified') {
@@ -58,12 +59,14 @@ class IdentityVerification extends Component {
             });
         }
         $users = $users->orderBy('id', $this->sortby)->paginate(setting('_general.per_page_opt') ?? 10);
+
+        //dd($users,"que tanto devuevle");
         return view('livewire.pages.admin.identity-verification.identitiy_verification', compact('users'));
     }
 
     public function mount()
     {
-        $this->dispatch('initSelect2', target: '.am-select2' );
+        $this->dispatch('initSelect2', target: '.am-select2');
     }
 
 
@@ -78,40 +81,44 @@ class IdentityVerification extends Component {
     public function verifiedTemplate($params = [])
     {
         $response = isDemoSite();
-        if( $response ){
-            $this->dispatch('showAlertMessage', type: 'error', title:  __('general.demosite_res_title') , message: __('general.demosite_res_txt'));
+        if ($response) {
+            $this->dispatch('showAlertMessage', type: 'error', title: __('general.demosite_res_title'), message: __('general.demosite_res_txt'));
             return;
         }
 
         $date = now();
         if (!empty($params['id'])) {
-            $adminExists = User::whereHas('roles', function($query) {
+            $adminExists = User::whereHas('roles', function ($query) {
                 $query->where('name', 'admin');
             })->where('id', $params['id'])->exists();
 
-            if ($adminExists ) {
+            if ($adminExists) {
                 $this->dispatch('showAlertMessage', [
-                    'type'      => 'error',
-                    'title'     => __('admin/general.error_title'),
-                    'message'   => __('admin/general.not_allowed')
+                    'type' => 'error',
+                    'title' => __('admin/general.error_title'),
+                    'message' => __('admin/general.not_allowed')
                 ]);
                 return;
             } else {
-                  if($params['type'] == 'accepted'){
+                if ($params['type'] == 'accepted') {
                     Profile::where('user_id', $params['id'])->update(['verified_at' => $date]);
-                  }
-                  $userIdentityVerification  =  UserIdentityVerification::where('user_id', $params['id'])->first();
-                  $userIdentityVerification->status = $params['type'];
-                  $userIdentityVerification->save();
-                  if($params['type'] == 'accepted'){
-                        dispatch(new SendNotificationJob('identityVerificationApproved', $userIdentityVerification->user, ['name'=>$userIdentityVerification?->name]));
-                    } else {
-                        dispatch(new SendNotificationJob('identityVerificationRejected', $userIdentityVerification->user, ['name'=>$userIdentityVerification?->name]));
-                  }
-                  if($params['type'] == 'rejected'){
+                }
+                $userIdentityVerification = UserIdentityVerification::where('user_id', $params['id'])->first();
+                $userIdentityVerification->status = $params['type'];
+                $userIdentityVerification->save();
+
+              
+
+
+                if ($params['type'] == 'accepted') {
+                    dispatch(new SendNotificationJob('identityVerificationApproved', $userIdentityVerification->user, ['name' => $userIdentityVerification?->name]));
+                } else {
+                    dispatch(new SendNotificationJob('identityVerificationRejected', $userIdentityVerification->user, ['name' => $userIdentityVerification?->name]));
+                }
+                if ($params['type'] == 'rejected') {
                     $userIdentityVerification->address()->delete();
                     $userIdentityVerification->delete();
-                  }
+                }
             }
         }
     }
@@ -124,15 +131,15 @@ class IdentityVerification extends Component {
             return;
         }
 
-        $adminExists = User::whereHas('roles', function($query) {
+        $adminExists = User::whereHas('roles', function ($query) {
             $query->where('name', 'admin');
         })->where('id', $userId)->exists();
 
         if ($adminExists) {
             $this->dispatch('showAlertMessage', [
-                'type'      => 'error',
-                'title'     => __('admin/general.error_title'),
-                'message'   => __('admin/general.not_allowed')
+                'type' => 'error',
+                'title' => __('admin/general.error_title'),
+                'message' => __('admin/general.not_allowed')
             ]);
             return;
         }
@@ -155,9 +162,9 @@ class IdentityVerification extends Component {
         }
 
         $this->dispatch('showAlertMessage', [
-            'type'      => 'success',
-            'title'     => __('general.success_title'),
-            'message'   => __('general.status_updated_successfully')
+            'type' => 'success',
+            'title' => __('general.success_title'),
+            'message' => __('general.status_updated_successfully')
         ]);
     }
 

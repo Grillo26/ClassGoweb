@@ -25,7 +25,6 @@ class ManageSubjects extends Component
     public SubjectForm $form;
     protected $subjectService;
     public $activeRoute;
-    public $selectedGroup = 'Ciencias Exactas'; // Valor por defecto
     public $perPage = 10; // Número de elementos por página
     public $currentPage = 1;
     public $searchQuery = '';
@@ -95,7 +94,7 @@ class ManageSubjects extends Component
                 'image'        => $this->form->image,
             ], [
                 'subject_id'   => 'required|integer',
-                'description'  => 'required|string|min:20|max:255',
+                'description'  => 'nullable|string|max:255',
                 'image'        => 'nullable|image|max:' . ($this->allowImageSize * 1024),
             ])->validate();
             //modo demo
@@ -255,6 +254,7 @@ class ManageSubjects extends Component
             $this->form->image = $userSubject->image;
             $subject = $this->subjectService->getSubjectbyId($userSubject->subject_id);
 
+            //dd($this->form->description);
             $result = [
                 [
                     'id' => '',

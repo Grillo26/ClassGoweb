@@ -108,8 +108,8 @@ class TutorSessions extends Component
         if (Auth::check()) {
             $this->timezone = getUserTimezone();
         }
-        $currency  = setting('_general.currency');
-        $currency_detail  = !empty($currency)  ? currencyList($currency) : array();
+        $currency = setting('_general.currency');
+        $currency_detail = !empty($currency) ? currencyList($currency) : array();
         if (!empty($currency_detail['symbol'])) {
             $this->currency_symbol = $currency_detail['symbol'];
         }
@@ -122,7 +122,7 @@ class TutorSessions extends Component
      */
     public function showSlotDetail($id)
     {
-        $this->currentSlot =  $this->bookingService->getSlotDetail($id);
+        $this->currentSlot = $this->bookingService->getSlotDetail($id);
         $this->dispatch('toggleModel', id: 'slot-detail', action: 'show');
     }
 
@@ -310,7 +310,7 @@ class TutorSessions extends Component
      */
     public function estudianteReserva($slotId)
     {
-        
+
         $this->subjectError = '';
         if (empty($this->selectedSubject)) {
             $this->subjectError = 'Debes seleccionar una materia.';
@@ -375,6 +375,26 @@ class TutorSessions extends Component
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
+
+
+                    $student = Auth::user();
+                    $fechaHora = now()->format('d/m/Y H:i');
+                    $contenido = "Se ha registrado una nueva reserva de tutoría el {$fechaHora}.\n\n";
+                    $contenido .= "Detalles de la reserva:\n";
+                    $contenido .= "Estudiante: {$student->name} ({$student->email})\n";
+                    $contenido .= "Tutor: {$this->user?->profile?->full_name}\n";
+                    $contenido .= "Materia: {$this->selectedSubject}\n";
+                    $contenido .= "Horario: " . parseToUserTz($slot->start_time, $this->timezone)->format('d/m/Y H:i') . " - " . parseToUserTz($slot->end_time, $this->timezone)->format('H:i') . "\n";
+                    $contenido .= "Precio: {$this->currency_symbol}" . number_format($sessionFee, 2) . "\n\n";
+                    $contenido .= "Por favor, revise el panel de administración para más detalles.";
+
+
+                    \Mail::raw($contenido, function ($message) {
+                        $message->to(env('MAIL_FROM_ADDRESS'))
+                            ->subject('Nueva reserva de tutoría registrada');
+                    });
+
+
                 } catch (\Exception $e) {
                     Log::error('Error al guardar el comprobante: ' . $e->getMessage());
                     $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: 'Error al guardar el comprobante de pago.');
@@ -428,9 +448,9 @@ class TutorSessions extends Component
             $this->isCurrent = true;
         }
         $startDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $start, $this->timezone);
-        $endDate   = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $end, $this->timezone);
-        $this->dateRange['start_date']  = parseToUTC($startDate);
-        $this->dateRange['end_date']    = parseToUTC($endDate);
+        $endDate = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $end, $this->timezone);
+        $this->dateRange['start_date'] = parseToUTC($startDate);
+        $this->dateRange['end_date'] = parseToUTC($endDate);
         $this->selectedDate = $this->currentDate->copy()->toDateString();
     }
 
@@ -498,9 +518,9 @@ class TutorSessions extends Component
                 $this->dispatch('showAlertMessage', type: `error`, message: __('general.not_allowed'));
             }
         } else {
-            $this->dispatch('showAlertMessage', type: 'error',  message: __('general.login_error'));
+            $this->dispatch('showAlertMessage', type: 'error', message: __('general.login_error'));
         }
-    } 
+    }
 
     /**
      * Envía una solicitud de sesión al tutor.

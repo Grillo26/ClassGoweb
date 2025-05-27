@@ -98,10 +98,13 @@
                                 <td data-label="{{ __('Name' )}}">
                                     <div class="tb-varification_userinfo">
                                         <strong class="tb-adminhead__img">
-                                            @if (!empty($single->profile->image) && Storage::disk(getStorageDisk())->exists($single->profile->image))
-                                                <img src="{{ resizedImage($single->profile->image,34,34) }}" alt="{{$single->profile->image}}" />
+                                         
+                                          
+                                         
+                                         @if (!empty($single->profile->image) && file_exists(public_path('storage/' . $single->profile->image)))
+                                                <img src="{{ asset('storage/' . $single->profile->image) }}" alt="{{ $single->profile->image }}" />
                                             @else
-                                                <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 34, 34) }}" alt="{{ $single->profile->image }}" />
+                                                   <img src="{{ setting('_general.default_avatar_for_user') ? asset('storage/' . setting('_general.default_avatar_for_user')[0]['path']) : asset('images/placeholder.png') }}" alt="{{ $single->profile->image }}" />   
                                             @endif
                                         </strong>
                                         <span>{{ $single->profile->full_name }}</span>
@@ -163,6 +166,12 @@
                                         <i @click="$wire.dispatch('showConfirm', { id : {{ $single->id }}, action : 'impersonate-user' })" class="icon-eye"></i>
                                         @endif
                                     </div> 
+                                    <div class="am-custom-tooltip am-tooltip-textimp">
+                                        <span class="am-tooltip-text">
+                                            <span>Anonimizar perfil</span>
+                                        </span>
+                                        <i @click="$wire.anonymizeProfile({{ $single->id }})" class="icon-user-x"></i>
+                                    </div>
                                 </td>
                             </tr>
                             @endforeach
