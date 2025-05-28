@@ -34,6 +34,7 @@ class IdentityVerification extends Component
     public function boot()
     {
         $this->userIdentity = new IdentityService(Auth::user());
+        
         $this->user = Auth::user();
     }
 
@@ -44,8 +45,8 @@ class IdentityVerification extends Component
             'address' => function ($query) {
                 $query->with('country');
             },
-            'profile:id,user_id,verified_at,image,intro_video'
         ]);
+
         if (!empty($this->verification)) {
             if ($this->verification === 'verified') {
                 $users = $users->whereNotNull('parent_verified_at');
@@ -58,9 +59,13 @@ class IdentityVerification extends Component
                 $sub_query->whereFullText('name', $this->search);
             });
         }
-        $users = $users->orderBy('id', $this->sortby)->paginate(setting('_general.per_page_opt') ?? 10);
 
-        //dd($users,"que tanto devuevle");
+        $users = $users->orderBy('id', $this->sortby)->paginate(setting('_general.per_page_opt') ?? 10);
+        // Cargar el profile manualmente usando el user_id
+        foreach ($users as $user) {
+            $user->profile = Profile::where('user_id', $user->user_id)->first();
+        }
+       
         return view('livewire.pages.admin.identity-verification.identitiy_verification', compact('users'));
     }
 
@@ -108,7 +113,7 @@ class IdentityVerification extends Component
                 $userIdentityVerification->save();
 
               
-
+     
 
                 if ($params['type'] == 'accepted') {
                     dispatch(new SendNotificationJob('identityVerificationApproved', $userIdentityVerification->user, ['name' => $userIdentityVerification?->name]));

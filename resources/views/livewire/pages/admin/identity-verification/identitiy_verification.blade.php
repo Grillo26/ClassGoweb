@@ -170,13 +170,16 @@
                                 <td>
                                     <span class="tb-varification_userinfo">
                                         <strong class="tb-adminhead__img">
-
+                                         {{--  @php
+                                             dd($single, "image");
+                                            @endphp   --}}
+                                           
                                             @if (!empty($single?->profile->image) && file_exists(public_path('storage/'
                                             . $single?->profile->image)))
                                             <a href="{{ asset('storage/' . $single?->profile->image) }}"
                                                 target="_blank">
                                                 <img src="{{ asset('storage/' . $single?->profile->image) }}" width="34"
-                                                    height="34" alt="{{$single?->profile->image}}" />
+                                                    height="34" alt="{{__('identity.default_profile_video')}}" />
                                             </a>
                                             @else
                                             <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : asset('placeholder.png') }}"

@@ -304,7 +304,7 @@ class IdentityVerification extends Component
 
         } catch (\Illuminate\Validation\ValidationException $e) {
 
-            dd($e->errors());
+            //dd($e->errors());
             DB::rollBack();
         }
         $this->data['identityInfo']['gender'] = $this->profile?->gender;

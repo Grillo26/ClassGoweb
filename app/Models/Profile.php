@@ -21,7 +21,7 @@ class Profile extends Model {
      *
      * @var array
      */
-    protected $fillable = [
+     protected $fillable = [
         'user_id',
         'first_name',
         'last_name',
