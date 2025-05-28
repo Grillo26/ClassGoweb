@@ -29,7 +29,7 @@ class ProfileResource extends JsonResource
             'full_name'             => $this?->full_name,
             'short_name'            => $this?->short_name,
             'slug'                  => $this->whenHas('slug'),
-            'image'                 => $this->profile_image,
+            'image'                 => !empty($this->profile_image) ? url('storage/thumbnails/' . $this->profile_image) : null,
             'description'           => $this->whenHas('description'),
             'tagline'               => $this->whenHas('tagline'),
             'address'               => $this->whenLoaded('user', function () {
