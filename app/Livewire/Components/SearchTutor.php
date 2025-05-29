@@ -10,6 +10,7 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Models\Subject;
 
 // #[Lazy]
 class SearchTutor extends Component
@@ -23,12 +24,12 @@ class SearchTutor extends Component
     public $repeatItems = 10;
     public $message;
     public $recepientId, $threadId;
+    public $subjectGroups = [];
+    public $subjects = [];
+    public $group_id;
+    public $subject_id = [];
     private $siteService;
     private $userService;
-
-    private $libre;
-
-
 
     public function boot(SiteService $siteService) {
         $this->siteService = $siteService;
@@ -40,6 +41,45 @@ class SearchTutor extends Component
     {
         $repeatItems = !empty($this->filters['per_page']) ? $this->filters['per_page'] : (setting('_general.per_page_opt') ?? 10);
         return view('skeletons.tutor-fullpage-list', compact('repeatItems'));
+   
+    }
+
+    public function mount($filters = [])
+    {
+        $this->subjectGroups = \App\Models\SubjectGroup::all();
+        $this->group_id = $filters['group_id'] ?? null;
+        $this->subject_id = $filters['subject_id'] ?? [];
+        $this->filters = $filters;
+        $this->isLoadPage = true;
+        $this->updateSubjects();
+        $this->repeatItems = !empty($this->filters['per_page']) 
+            ? $this->filters['per_page'] 
+            : (setting('_general.per_page_opt') ?? 10);
+        if(Auth::user()?->role == 'student'){
+            $this->allowFavAction = true;
+        }
+    }
+
+    public function updatedGroupId()
+    {
+        
+        $this->filters['group_id'] = $this->group_id;
+        $this->filters['subject_id'] = [];
+        $this->subject_id = [];
+        $this->updateSubjects();
+        $this->resetPage();
+        $this->dispatch('subjectsUpdated');
+    }
+
+    public function updateSubjects()
+    {
+        if ($this->group_id) {
+            $this->subjects = Subject::where('subject_group_id', $this->group_id)->get();
+            //dd($this->subjects, "aver cuales son las subjects");
+        } else {
+            $this->subjects = [];
+        }
+        $this->dispatch('subjectsUpdated');
     }
 
     public function render()
@@ -47,8 +87,8 @@ class SearchTutor extends Component
         $favouriteTutors = array();
         $tutors = [];
         try {
+            $this->filters['group_id'] = $this->group_id;
             $tutors = $this->siteService->getTutors($this->filters);
-           // dd($tutors, "tutores");
             if ($this->allowFavAction){
                 $favouriteTutors = $this->userService->getFavouriteUsers()
                     ->get(['favourite_user_id'])
@@ -56,14 +96,18 @@ class SearchTutor extends Component
                     ->toArray();
             }
         } catch (\Exception $e) {
-            //Log::error('Error loading tutors:', ['error' => $e->getMessage()]);
+            \Log::error('Error loading tutors:', ['error' => $e->getMessage()]);
         } 
         $this->dispatch('initVideoJs');
-        return view('livewire.components.search-tutor', compact('tutors', 'favouriteTutors'));
+        //dd($this->filters);
+        return view('livewire.components.search-tutor', [
+            'tutors' => $tutors,
+            'favouriteTutors' => $favouriteTutors,
+            'subjects' => $this->subjects,
+            'subjectGroups' => $this->subjectGroups,
+            'filters' => $this->filters
+        ]);
     }
-
-
-
 
     public function loadPage()
     {
@@ -75,30 +119,10 @@ class SearchTutor extends Component
         }
     }
 
-    public function mount($filters = [])
-    {
-
-        //dd($filters, "filters");
-        try {
-            $this->repeatItems = !empty($this->filters['per_page']) 
-                ? $this->filters['per_page'] 
-                : (setting('_general.per_page_opt') ?? 10);
-            
-            $this->filters = $filters;
-            $this->isLoadPage = true;
-            //Log::info('Component mounted with filters:', ['filters' => $filters]);
-
-            if(Auth::user()?->role == 'student'){
-                $this->allowFavAction = true;
-            }
-        } catch (\Exception $e) {
-            //Log::error('Error in mount:', ['error' => $e->getMessage()]);
-        }
-    }
-
     #[On('tutorFilters')]
     public function applyFilter($filters)
     {
+ 
         $this->resetPage();
         $this->filters = $filters;
     }
@@ -139,4 +163,14 @@ class SearchTutor extends Component
             $this->reset('message');
         }
     }
+
+
+    #[On('clearAllFilters')]
+    public function clearAllFilters()
+{
+    $this->filters = [];
+    $this->group_id = null;
+    $this->subjects = [];
+    $this->resetPage();
+}
 }

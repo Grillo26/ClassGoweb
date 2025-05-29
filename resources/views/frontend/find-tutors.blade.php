@@ -23,18 +23,22 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <div class="am-searchfilter_tabs">
+                    <div class=" am-searchfilter_tabs ">
                     
-                        <div class="am-clearfilterbtn d-none">
-                            <a href="javascript:void(0);" id="clear_filters">{{ __('general.clear_all_filter') }}
-                                <i class="am-icon-multiply-02"></i>
+                        <div class="am-clearfilterbtn d-none" style="background-color: #ff9800; border-radius: 6px; padding: 4px 12px;">
+                            <a href="javascript:void(0);" id="clear_filters" style="color: #fff; font-weight: bold;">
+                                {{ __('general.clear_all_filter') }}
+                                
                             </a>
                         </div>
                     </div>
+
+                   
                     <div class="am-searchfilter">
-                        <div class="am-searchfilter_item">
+                         {{-- <div class="am-searchfilter_item">
                             <span class="am-searchfilter_title">{{ __('subject.subject_group') }}</span>
                             <span class="am-select">
+                               
                                 <select id="group_id" class="am-select2" data-searchable="true"
                                     data-class="am-filter-dropdown"
                                     data-placeholder="{{ __('subject.choose_subject_group') }}">
@@ -44,23 +48,27 @@
                                         'selected' : '' }}>{{ $group->name }}</option>
                                     @endforeach
                                 </select>
+
                             </span>
-                        </div>
-                        <div class="am-searchfilter_item">
+                        </div>  --}}
+
+
+                       
+                     {{--    <div class="am-searchfilter_item">
                             <span class="am-searchfilter_title">{{ __('subject.choose_subject_label') }}</span>
                             <span class="am-select">
+                                
                                 <select id="subject_id" class="am-select2" multiple data-searchable="true"
                                     data-class="am-filter-dropdown"
                                     data-placeholder="{{ __('subject.choose_subject_label') }}">
+                                    
                                     <option> </option>
                                     @foreach ($subjects as $subject)
-                                        @if($subject->subject)
-                                            <option value="{{ $subject->subject_id }}" {{ in_array($subject->subject_id, $filters['subject_id'] ?? []) ? 'selected' : '' }}>{{ $subject->subject->name }}</option>
-                                        @endif
+                                        <option value="{{ $subject->id }}" {{ in_array($subject->id, $filters['subject_id'] ?? []) ? 'selected' : '' }}>{{ $subject->name }}</option>
                                     @endforeach
                                 </select>
                             </span>
-                        </div>
+                        </div>  --}}
                      
                          <!-- <div class="am-searchfilter_item">
                             <span class="am-searchfilter_title">{{ __('general.tutor_location') }}</span>
@@ -206,8 +214,10 @@
                     $('#language_id')?.val(null)?.trigger('change');
                     $('#clear_filters').parent().addClass('d-none');
                     applySearchFilter(false);
+                    Livewire.dispatch('clearAllFilters');
                     let newUrl = `${window.location.pathname}`;
                     window.history.replaceState({}, '', newUrl);
+
                 });
 
                 jQuery(document).on('click', '.am-session-tab',function (e){
@@ -267,6 +277,7 @@
                 function clearFilters(clearFilter = true) {
                     const allClear = !Object.values(filter_record).some(value => value?.length > 0 );
                     $('#clear_filters').parent().toggleClass('d-none', allClear || !clearFilter);
+                    
                 }
             });
 </script>

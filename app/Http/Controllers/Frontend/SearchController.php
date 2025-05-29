@@ -19,6 +19,7 @@ class SearchController extends Controller
         $subjects = $service->getSubjects(Auth::id())->filter(function($item) {
             return $item->subject !== null;
         })->sortBy(fn($item) => $item->subject->name)->values();
+        //dd($subjects);
         $helpContent = setting('_tutor');
         $countries = [];
         $languages = (new SiteService)->getLanguages();
