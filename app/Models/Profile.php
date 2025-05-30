@@ -103,7 +103,24 @@ class Profile extends Model {
 
      public function profileImage(): Attribute {
         return Attribute::make(
-            get: fn () => !empty($this->image) && Storage::disk(getStorageDisk())->exists($this->image) ? url(Storage::url($this->image)) : (setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : url(Storage::url('placeholder.png')))
+            get: function () {
+                $imagePath = public_path('storage/' . $this->image);
+                if (!empty($this->image) && file_exists($imagePath)) {
+                    // Usar la función resizedImage para devolver la URL de la miniatura
+                    $url_generada = resizedImage($this->image, 36, 36);
+                } else {
+                    $url_generada = setting('_general.default_avatar_for_user') 
+                        ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) 
+                        : resizedImage('placeholder.png', 36, 36);
+                }
+                \Log::info('ProfileImage accessor', [
+                    'profile_id' => $this->id,
+                    'image_db' => $this->image,
+                    'image_path' => $imagePath,
+                    'url_generada' => $url_generada,
+                ]);
+                return $url_generada;
+            }
         );
     }
 

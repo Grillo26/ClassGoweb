@@ -15,6 +15,12 @@ class ProfileResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // Log para depuración de la ruta del video de introducción
+        \Log::info('IntroVideo accessor', [
+            'profile_id' => $this->id,
+            'intro_video_db' => $this->intro_video,
+            'url_generada' => !empty($this->intro_video) ? url(Storage::url($this->intro_video)) : null,
+        ]);
         return [
             'id'                    => $this->whenHas('id'),
             'verified_at'           => $this->whenHas('verified_at'),

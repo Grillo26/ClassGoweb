@@ -20,6 +20,11 @@ class ProfileResource extends JsonResource
             'full_name'             => $this?->full_name,
             'slug'                  => $this->whenHas('slug'),
             'image'                 => $this->profile_image,
+            'intro_video'           => !empty($this->intro_video) 
+                                        ? url(str_replace(' ', '%20', \Storage::url($this->intro_video))) 
+                                        : null,
+            'description'           => $this->whenHas('description'),
+            'tagline'               => $this->whenHas('tagline'),
         ];
     }
 }

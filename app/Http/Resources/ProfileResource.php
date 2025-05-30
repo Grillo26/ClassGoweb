@@ -14,6 +14,12 @@ class ProfileResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // Log para depuración de la ruta de la imagen
+        \Log::info('Ruta generada para imagen de perfil', [
+            'profile_id' => $this->id,
+            'profile_image' => $this->profile_image,
+            'url_generada' => !empty($this->profile_image) ? url('storage/thumbnails/' . str_replace(' ', '%20', $this->profile_image)) : null,
+        ]);
         return [
             'id'                    => $this->whenHas('id'),
             'user_id'               => $this->whenHas('user_id'),
@@ -29,7 +35,7 @@ class ProfileResource extends JsonResource
             'full_name'             => $this?->full_name,
             'short_name'            => $this?->short_name,
             'slug'                  => $this->whenHas('slug'),
-            'image'                 => !empty($this->profile_image) ? url('storage/thumbnails/' . $this->profile_image) : null,
+            'image'                 => !empty($this->profile_image) ? url('storage/thumbnails/' . str_replace(' ', '%20', $this->profile_image)) : null,
             'description'           => $this->whenHas('description'),
             'tagline'               => $this->whenHas('tagline'),
             'address'               => $this->whenLoaded('user', function () {
