@@ -20,12 +20,11 @@
         @include('skeletons.tutor-list')
     </div>
     @else
-    {{-- Limita la altura del dropdown de select2 a 5 opciones --}}
-
+   
     <div class="am-searchfilter">
         <div class="am-searchfilter_item" style="max-height:80px;">
             <span class="am-searchfilter_title" style="max-height: 50px">{{ __('subject.subject_group') }}</span>
-            <span class="am-select" style="max-height:50px;width:100%;display:block;">
+            <span class="am-select" >
                 <select id="group_id" class="am-select2" data-searchable="true" data-class="am-filter-dropdown"
                     data-placeholder="{{ __('subject.choose_subject_group') }}" wire:model="group_id">
                     <option value=""> </option>
@@ -40,19 +39,15 @@
 
 
 
-        <div class="am-searchfilter_item" style="margin-bottom: 1rem; max-height: 80px;">
-           {{--  @php
-                     dd($subjects,"dasddasdsads");
-                    @endphp --}}
+        <div class="am-searchfilter_item" >
+         
             <span class="am-searchfilter_title" style="max-height: 50px">{{ __('subject.choose_subject_label') }}</span>
             <span class="am-select" style="max-height:50px;width:100%;display:block;">
                 <select id="subject_id" class="am-select2" data-searchable="true" data-class="am-filter-dropdown"
-                    data-placeholder="{{ __('subject.choose_subject') }}" multiple wire:model.live="subject_id"
-                    style="display:none;">
+                    data-placeholder="{{ __('subject.choose_subject') }}" wire:model="subject_id">
                     <option value=""></option>
-                    
                     @foreach ($subjects as $subject)
-                    <option value="{{ $subject->id }}" {{ in_array($subject->id, $subject_id ?? []) ? 'selected' : '' }}>
+                    <option value="{{ $subject->id }}" {{ $subject->id == ($subject_id ?? '') ? 'selected' : '' }}>
                         {{ $subject->name }}
                     </option>
                     @endforeach
@@ -465,30 +460,25 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Función para inicializar Select2
     function initializeSelect2() {
         $('#subject_id').select2({
             placeholder: '{{ __("subject.choose_subject") }}',
             allowClear: true,
             width: '100%',
             dropdownCssClass: 'am-filter-dropdown',
-            maximumSelectionLength: 10, // Limitar selecciones si es necesario
+            dropdownParent: $('#subject_id').parent()
         });
 
-        // Manejar cambios en Select2 y sincronizar con Livewire
         $('#subject_id').on('change', function() {
-            let selectedValues = $(this).val() || [];
-            @this.set('subject_id', selectedValues);
+            let selectedValue = $(this).val();
+            @this.set('subject_id', selectedValue);
         });
     }
 
-    // Inicializar cuando el DOM esté listo
     initializeSelect2();
 
-    // Re-inicializar cuando Livewire actualice el componente
     document.addEventListener('livewire:updated', function() {
         setTimeout(function() {
-            // Destruir Select2 existente si existe
             if ($('#subject_id').hasClass('select2-hidden-accessible')) {
                 $('#subject_id').select2('destroy');
             }
@@ -496,62 +486,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
     });
 
-    // Re-inicializar cuando cambie el grupo (subjects se actualizan)
     Livewire.on('subjectsUpdated', function() {
         setTimeout(function() {
             if ($('#subject_id').hasClass('select2-hidden-accessible')) {
                 $('#subject_id').select2('destroy');
             }
-            $('#subject_id').select2({
-                placeholder: '{{ __("subject.choose_subject") }}',
-                allowClear: true,
-                width: '100%',
-                dropdownCssClass: 'am-filter-dropdown',
-                maximumSelectionLength: 10,
-            });
-        }, 250); // Aumenta el timeout para asegurar que el DOM esté listo
+            initializeSelect2();
+        }, 250);
     });
 });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        function initializeSelect2() {
-            $('#subject_id').select2({
-                placeholder: '{{ __("subject.choose_subject") }}',
-                allowClear: true,
-                width: '100%',
-                dropdownCssClass: 'am-filter-dropdown',
-                maximumSelectionLength: 10,
-                dropdownParent: $('#subject_id').parent(),
-            });
-            // Mostrar el select solo cuando select2 esté listo
-            $('#subject_id').next('.select2').on('mousedown', function() {
-                $('#subject_id').show();
-            });
-            // Ocultar el select nativo cuando se cierra el dropdown
-            $('#subject_id').on('select2:close', function() {
-                $('#subject_id').hide();
-            });
-            // Ocultar el select nativo por defecto
-            $('#subject_id').hide();
-        }
-        initializeSelect2();
-        document.addEventListener('livewire:updated', function() {
-            setTimeout(function() {
-                if ($('#subject_id').hasClass('select2-hidden-accessible')) {
-                    $('#subject_id').select2('destroy');
-                }
-                initializeSelect2();
-            }, 100);
-        });
-        Livewire.on('subjectsUpdated', function() {
-            setTimeout(function() {
-                if ($('#subject_id').hasClass('select2-hidden-accessible')) {
-                    $('#subject_id').select2('destroy');
-                }
-                initializeSelect2();
-            }, 250);
-        });
-    });
 </script>
 @endpush

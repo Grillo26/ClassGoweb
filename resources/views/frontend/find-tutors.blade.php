@@ -24,21 +24,22 @@
             <div class="row">
                 <div class="col-12">
                     <div class=" am-searchfilter_tabs ">
-                    
-                        <div class="am-clearfilterbtn d-none" style="background-color: #ff9800; border-radius: 6px; padding: 4px 12px;">
+
+                        <div class="am-clearfilterbtn d-none"
+                            style="background-color: #ff9800; border-radius: 6px; padding: 4px 12px;">
                             <a href="javascript:void(0);" id="clear_filters" style="color: #fff; font-weight: bold;">
                                 {{ __('general.clear_all_filter') }}
-                                
+
                             </a>
                         </div>
                     </div>
 
-                   
+
                     <div class="am-searchfilter">
-                         {{-- <div class="am-searchfilter_item">
+                        {{-- <div class="am-searchfilter_item">
                             <span class="am-searchfilter_title">{{ __('subject.subject_group') }}</span>
                             <span class="am-select">
-                               
+
                                 <select id="group_id" class="am-select2" data-searchable="true"
                                     data-class="am-filter-dropdown"
                                     data-placeholder="{{ __('subject.choose_subject_group') }}">
@@ -50,27 +51,28 @@
                                 </select>
 
                             </span>
-                        </div>  --}}
+                        </div> --}}
 
 
-                       
-                     {{--    <div class="am-searchfilter_item">
+
+                        {{-- <div class="am-searchfilter_item">
                             <span class="am-searchfilter_title">{{ __('subject.choose_subject_label') }}</span>
                             <span class="am-select">
-                                
+
                                 <select id="subject_id" class="am-select2" multiple data-searchable="true"
                                     data-class="am-filter-dropdown"
                                     data-placeholder="{{ __('subject.choose_subject_label') }}">
-                                    
+
                                     <option> </option>
                                     @foreach ($subjects as $subject)
-                                        <option value="{{ $subject->id }}" {{ in_array($subject->id, $filters['subject_id'] ?? []) ? 'selected' : '' }}>{{ $subject->name }}</option>
+                                    <option value="{{ $subject->id }}" {{ in_array($subject->id, $filters['subject_id']
+                                        ?? []) ? 'selected' : '' }}>{{ $subject->name }}</option>
                                     @endforeach
                                 </select>
                             </span>
-                        </div>  --}}
-                     
-                         <!-- <div class="am-searchfilter_item">
+                        </div> --}}
+
+                        <!-- <div class="am-searchfilter_item">
                             <span class="am-searchfilter_title">{{ __('general.tutor_location') }}</span>
                             <span class="am-select">
                                 @if(!empty(setting('_api.google_places_api_key')))
@@ -89,30 +91,27 @@
                             </span>
                         </div>-->
                     </div>
-                     <div class="am-searchfilteritems">
-                        <div class="am-searchfilter_left">
-                            <div class="am-searchinput">
-                                <input type="text" value="{{ $filters['keyword'] ?? '' }}"
-                                    placeholder="{{ __('general.search_by_keyword') }}" class="form-control" id="keyword">
-                                <span class="am-searchinput_icon">
-                                    <i class="am-icon-search-02"></i>
-                                </span>
+                    <div style="width:100%;margin-left: 10px">
+                        <div style="display:flex; width:100%;">
+                            <div style="flex:1; width:100%;">
+                                <div style="position:relative; width:40%;">
+                                    <input type="text" value="{{ $filters['keyword'] ?? '' }}"
+                                        placeholder="{{ __('general.search_by_keyword') }}" class="form-control"
+                                        id="keyword" style="width:100%; min-width:200px; flex:1; padding-right:44px;">
+                                    <span
+                                        style="position:absolute; right:16px; top:50%; transform:translateY(-50%); display:flex; align-items:center; pointer-events:none; height:100%;">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="9" cy="9" r="7" stroke="#888" stroke-width="2" />
+                                            <line x1="14.4142" y1="14" x2="18" y2="17.5858" stroke="#888"
+                                                stroke-width="2" stroke-linecap="round" />
+                                        </svg>
+                                    </span>
+                                </div>
                             </div>
-                            <span class="am-select">
-                                <span class="am-select_title">{{ __('general.sort_by') }}:</span>
-                                <select class="am-select2" id="sort_by" data-searchable="false"
-                                    data-class="am-sort_dp_option" data-placeholder="{{ __('general.sort_by') }}">
-                                    <option> </option>
-                                    <option value="newest" {{ (($filters['sort_by'] ?? '') == 'newest' ? 'selected' : '') }}>{{ __('general.newest_first') }}</option>
-                                    <option value="oldest" {{ (($filters['sort_by'] ?? '') == 'oldest' ? 'selected' : '') }}>{{ __('general.oldest_first') }}</option>
-                                    <option value="asc" {{ (($filters['sort_by'] ?? '') == 'asc' ? 'selected' : '') }}>{{ __('general.sort_by_a_z') }}</option>
-                                    <option value="desc" {{ (($filters['sort_by'] ?? '') == 'desc' ? 'selected' : '') }}>{{ __('general.sort_by_z_a') }}</option>
-                                </select>
-                            </span>
-                          
                         </div>
                     </div>
-                   
+
                 </div>
             </div>
         </div>
@@ -129,9 +128,9 @@
                 !empty(setting('_lernen.or_section_description'))
                 )
                 <div class="col-12 col-lg-4 col-xl-3">
-                  
+
                     <img src="{{ asset('images/Tugo_With_Glasses.png') }}" alt="Tugo" class="fixed-image">
-                    
+
                 </div>
                 @endif
             </div>
@@ -147,7 +146,9 @@
 @push('scripts')
 <script src="{{ asset('js/video.min.js') }}"></script>
 @if( !empty(setting('_api.google_places_api_key')))
-<script async src="https://maps.googleapis.com/maps/api/js?key={{ setting('_api.google_places_api_key') }}&libraries=places&loading=async&callback=initializePlaceApi"></script>
+<script async
+    src="https://maps.googleapis.com/maps/api/js?key={{ setting('_api.google_places_api_key') }}&libraries=places&loading=async&callback=initializePlaceApi">
+</script>
 @endif
 <script>
     document.addEventListener('DOMContentLoaded', function () {

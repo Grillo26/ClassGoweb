@@ -51,7 +51,8 @@ public function getTutors($data = array()) {
         if (!empty($data['subject_id'])) {
             // Si hay materias seleccionadas, filtra solo por esas materias
             $tutors->whereHas('subjects', function ($query) use ($data) {
-                $query->whereIn('subjects.id', $data['subject_id']);
+                $subjectIds = is_array($data['subject_id']) ? $data['subject_id'] : [$data['subject_id']];
+                $query->whereIn('subjects.id', $subjectIds);
             });
         } elseif (!empty($data['group_id'])) {
             // Si no hay materias pero sí grupo, filtra por grupo

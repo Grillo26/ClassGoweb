@@ -27,7 +27,7 @@ class SearchTutor extends Component
     public $subjectGroups = [];
     public $subjects = [];
     public $group_id;
-    public $subject_id = [];
+    public $subject_id = null;
     private $siteService;
     private $userService;
 
@@ -48,7 +48,7 @@ class SearchTutor extends Component
     {
         $this->subjectGroups = \App\Models\SubjectGroup::all();
         $this->group_id = $filters['group_id'] ?? null;
-        $this->subject_id = $filters['subject_id'] ?? [];
+        $this->subject_id = $filters['subject_id'] ?? null;
         $this->filters = $filters;
         $this->isLoadPage = true;
         $this->updateSubjects();
@@ -62,10 +62,9 @@ class SearchTutor extends Component
 
     public function updatedGroupId()
     {
-        
         $this->filters['group_id'] = $this->group_id;
-        $this->filters['subject_id'] = [];
-        $this->subject_id = [];
+        $this->filters['subject_id'] = null;
+        $this->subject_id = null;
         $this->updateSubjects();
         $this->resetPage();
         $this->dispatch('subjectsUpdated');
@@ -87,7 +86,9 @@ class SearchTutor extends Component
         $favouriteTutors = array();
         $tutors = [];
         try {
+            //dd($this->filters, "aver cuales son los filters");
             $this->filters['group_id'] = $this->group_id;
+            $this->filters['subject_id'] = $this->subject_id;
             $tutors = $this->siteService->getTutors($this->filters);
             if ($this->allowFavAction){
                 $favouriteTutors = $this->userService->getFavouriteUsers()
