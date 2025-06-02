@@ -262,7 +262,7 @@
     "isEntry": true
   },
   "public/css/main.css": {
-    "file": "assets/main-CpbxwR4j.css",
+    "file": "assets/main-BzQH6W_2.css",
     "src": "public/css/main.css",
     "isEntry": true
   },
@@ -333,10 +333,6 @@
   "public/images/flags_responsive.png": {
     "file": "assets/flags_responsive-BN6qSpi9.png",
     "src": "public/images/flags_responsive.png"
-  },
-  "public/images/login/Fondo-hero.png": {
-    "file": "assets/Fondo-hero-CnZPnGxb.png",
-    "src": "public/images/login/Fondo-hero.png"
   },
   "public/images/login/fondo-login.png": {
     "file": "assets/fondo-login-Tiv4XKI9.png",
