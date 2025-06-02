@@ -67,18 +67,21 @@ class SearchTutor extends Component
         $this->subject_id = null;
         $this->updateSubjects();
         $this->resetPage();
-        $this->dispatch('subjectsUpdated');
+    }
+
+    public function updatedSubjectId()
+    {
+        $this->filters['subject_id'] = $this->subject_id;
+        $this->resetPage();
     }
 
     public function updateSubjects()
     {
         if ($this->group_id) {
             $this->subjects = Subject::where('subject_group_id', $this->group_id)->get();
-            //dd($this->subjects, "aver cuales son las subjects");
         } else {
             $this->subjects = [];
         }
-        $this->dispatch('subjectsUpdated');
     }
 
     public function render()
