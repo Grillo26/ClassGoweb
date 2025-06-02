@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\TutorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SubjectSlotController;
+use App\Http\Controllers\Api\AlianzaController;
 
 
 /*
@@ -90,6 +91,7 @@ Route::get('subject-groups',                                   [BookingControlle
 Route::get('subjects',                                         [BookingController::class,'getSubjects']);
 
 Route::get('settings',                                         [OptionBuilderController::class, 'getOpSettings']);
+Route::get('alianzas',                                          [AlianzaController::class, 'index']);
 Route::fallback(function () {
     return response()->json([
         'message' => __('general.api_url_not_found'),
