@@ -22,37 +22,25 @@
     @else
    
     <div class="am-searchfilter">
-        <div class="am-searchfilter_item" style="max-height:80px;">
-            <span class="am-searchfilter_title" style="max-height: 50px">{{ __('subject.subject_group') }}</span>
-            <span class="am-select" >
-                <select id="group_id" class="am-select2" data-searchable="true" data-class="am-filter-dropdown"
-                    data-placeholder="{{ __('subject.choose_subject_group') }}" wire:model="group_id">
-                    <option value=""> </option>
-                    @foreach ($subjectGroups as $group)
-                    <option value="{{ $group->id }}" {{ $group->id == ($filters['group_id'] ?? '') ? 'selected' : ''
-                        }}>{{ $group->name }}</option>
-                    @endforeach
-                </select>
-            </span>
+        <div class="mb-3">
+            <label class="form-label">{{ __('subject.subject_group') }}</label>
+            <input type="text" class="form-control mb-2" placeholder="{{ __('general.search') }}" onkeyup="filterSelectOptions('group_id', this.value)">
+            <select id="group_id" class="form-select" wire:model="group_id">
+                <option value="">{{ __('subject.choose_subject_group') }}</option>
+                @foreach ($subjectGroups as $group)
+                    <option value="{{ $group->id }}">{{ $group->name }}</option>
+                @endforeach
+            </select>
         </div>
-
-
-
-
-        <div class="am-searchfilter_item" >
-         
-            <span class="am-searchfilter_title" style="max-height: 50px">{{ __('subject.choose_subject_label') }}</span>
-            <span class="am-select" style="max-height:50px;width:100%;display:block;">
-                <select id="subject_id" class="am-select2" data-searchable="true" data-class="am-filter-dropdown"
-                    data-placeholder="{{ __('subject.choose_subject') }}" wire:model="subject_id">
-                    <option value=""></option>
-                    @foreach ($subjects as $subject)
-                    <option value="{{ $subject->id }}" {{ $subject->id == ($subject_id ?? '') ? 'selected' : '' }}>
-                        {{ $subject->name }}
-                    </option>
-                    @endforeach
-                </select>
-            </span>
+        <div class="mb-3">
+            <label class="form-label">{{ __('subject.choose_subject_label') }}</label>
+            <input type="text" class="form-control mb-2" placeholder="{{ __('general.search') }}" onkeyup="filterSelectOptions('subject_id', this.value)">
+            <select id="subject_id" class="form-select" wire:model="subject_id">
+                <option value="">{{ __('subject.choose_subject') }}</option>
+                @foreach ($subjects as $subject)
+                    <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                @endforeach
+            </select>
         </div>
     </div>
 
@@ -435,65 +423,135 @@
 
 
 @push('styles')
+<style>
+.select2-custom {
+    position: relative;
+    width: 100%;
+    font-family: inherit;
+}
+.select2-selection {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 36px 8px 12px;
+    background: #fff;
+    cursor: pointer;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+}
+.select2-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    color: #888;
+    pointer-events: none;
+}
+.select2-dropdown {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 110%;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    z-index: 100;
+    padding: 8px 0 0 0;
+    min-width: 100%;
+}
+.select2-search {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #eee;
+    padding: 8px 12px;
+    font-size: 15px;
+    outline: none;
+    background: #fafbfc;
+    border-radius: 4px 4px 0 0;
+    margin-bottom: 4px;
+}
+.select2-results {
+    max-height: 220px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.select2-results li {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background 0.15s;
+}
+.select2-results li.selected,
+.select2-results li:hover {
+    background: #f0f4fa;
+    color: #1a73e8;
+}
+.no-results {
+    color: #888;
+    padding: 8px 12px;
+    font-style: italic;
+}
+</style>
 
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 @endpush
 
-
 @push('scripts')
+<!-- jQuery y Select2 JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-            document.addEventListener('toggleFavIcon', (event) => {
-                $(`#toggleFavourite-${event.detail.userId}`).toggleClass('active');
-            })
-            document.addEventListener('initVideoJs', (event) => {
-                setTimeout(() => {
-                    jQuery('.video-js').each((index, item) => {
-                        item.onloadeddata =  function(){
-                            videojs(item);
-                        }
-                    })
-                }, event.detail.timeout ?? 500);
-            });
-        });
-</script>
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    function initializeSelect2() {
-        $('#subject_id').select2({
-            placeholder: '{{ __("subject.choose_subject") }}',
-            allowClear: true,
-            width: '100%',
-            dropdownCssClass: 'am-filter-dropdown',
-            dropdownParent: $('#subject_id').parent()
-        });
-
-        $('#subject_id').on('change', function() {
-            let selectedValue = $(this).val();
-            @this.set('subject_id', selectedValue);
-        });
-    }
-
-    initializeSelect2();
-
-    document.addEventListener('livewire:updated', function() {
-        setTimeout(function() {
-            if ($('#subject_id').hasClass('select2-hidden-accessible')) {
-                $('#subject_id').select2('destroy');
-            }
-            initializeSelect2();
-        }, 100);
+function initSelect2() {
+    $('#group_id').select2({
+        theme: 'bootstrap-5',
+        placeholder: '{{ __('subject.choose_subject_group') }}',
+        allowClear: true,
+        width: '100%'
     });
-
-    Livewire.on('subjectsUpdated', function() {
-        setTimeout(function() {
-            if ($('#subject_id').hasClass('select2-hidden-accessible')) {
-                $('#subject_id').select2('destroy');
-            }
-            initializeSelect2();
-        }, 250);
+    $('#subject_id').select2({
+        theme: 'bootstrap-5',
+        placeholder: '{{ __('subject.choose_subject') }}',
+        allowClear: true,
+        width: '100%'
     });
+    // Sincronizar con Livewire
+    $('#group_id').on('change', function () {
+        @this.set('group_id', $(this).val());
+    });
+    $('#subject_id').on('change', function () {
+        @this.set('subject_id', $(this).val());
+    });
+}
+
+// Inicializar al cargar
+$(document).ready(function () {
+    initSelect2();
 });
+// Reinicializar tras cada actualización de Livewire
+window.addEventListener('livewire:update', function () {
+    setTimeout(initSelect2, 100);
+});
+
+function filterSelectOptions(selectId, searchText) {
+    const select = document.getElementById(selectId);
+    const options = select.getElementsByTagName('option');
+    const searchLower = searchText.toLowerCase();
+    for (let i = 0; i < options.length; i++) {
+        if (i === 0) { // Siempre mostrar el placeholder
+            options[i].style.display = '';
+            continue;
+        }
+        const text = options[i].text.toLowerCase();
+        options[i].style.display = text.includes(searchLower) ? '' : 'none';
+    }
+}
 </script>
 @endpush
