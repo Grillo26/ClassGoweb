@@ -68,13 +68,11 @@
                                     <div wire:ignore.self id="heading-{{ $group?->id }}">
                                         <h3
                                             @click="open = !open"
-                                             @touchend="open = !open"
-                                              :class="{'am-subject-title': true, 'collapsed': !open}"
+                                            :class="{'am-subject-title': true, 'collapsed': !open}"
                                             style="cursor:pointer; color:black;  gap: 8px; ;  border-radius: 6px; padding: 10px 16px; font-size: 1.1rem; font-weight: 600; transition: background 0.2s; user-select: none;"
                                             aria-expanded="false"
                                         >
                                             {{ $group->name }}
-
                                         </h3>
                                     </div>
                                     <div wire:ignore.self id="collapse-{{ $group?->id }}" x-show="open" style="padding:0;">
@@ -83,34 +81,34 @@
 
                                             
                                             @if($userSubjects->isNotEmpty())
-                                            <div class="am-user-subjects" style="width: 90%; margin: 0 auto;">
+                                            <div class="am-user-subjects container-fluid">
                                                 @foreach($userSubjects as $userSubject)
-                                                @if($userSubject['subject']['subject_group_id'] == $group->id)
-                                                <div class="am-subject-item" style="display: flex; align-items: center; background-color: #fff; border-radius: 8px; margin-bottom: 12px; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                                                    <!-- Info principal a la izquierda -->
-                                                    <div class="am-subject-info" style="flex: 1; min-width: 0;">
-                                                        <h2 style="color: #004558; font-size: 16px; margin: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $userSubject['subject']['name'] }}</h2>
-                                                        @if($userSubject['description'])
-                                                        <p style="color: #555; margin: 5px 0 0 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $userSubject['description'] }}</p>
-                                                        @endif
-                                                    </div>
-                                                    <!-- Acciones a la derecha -->
-                                                    <div class="am-subject-actions" style="display: flex; gap: 10px; flex-shrink: 0; margin-left: 20px;">
-                                                        <!-- Botón Editar -->
-                                                        <a href="javascript:void(0);" @click="$wire.editUserSubject({{ $userSubject['id'] }})"
-                                                            style="display: flex; align-items: center; justify-content: center; color: #004558; text-decoration: none; padding: 5px 10px; border: 1px solid #004558; border-radius: 4px;">
-                                                            <i class="am-icon-pencil-02"></i>
-                                                            <span style="margin-left: 5px;">{{ __('general.edit') }}</span>
-                                                        </a>
-                                                        <!-- Botón Eliminar -->
-                                                        <a href="javascript:void(0);" @click="$wire.dispatch('showConfirm', { subjectId: {{ $userSubject['id'] }}, action : 'delete-user-subject' })"
-                                                            style="display: flex; align-items: center; justify-content: center; color: #d9534f; text-decoration: none; padding: 5px 10px; border: 1px solid #d9534f; border-radius: 4px;">
-                                                            <i class="am-icon-trash-02"></i>
-                                                            <span style="margin-left: 5px;">{{ __('general.delete') }}</span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                @endif
+                                                    @if($userSubject['subject']['subject_group_id'] == $group->id)
+                                                        <div class="am-subject-item row align-items-center bg-white rounded mb-3 py-3 px-2 shadow-sm">
+                                                            <!-- Info principal a la izquierda -->
+                                                            <div class="am-subject-info col-12 col-md-8 mb-2 mb-md-0">
+                                                                <h2 class="text-black fw-semibold fs-6 text-truncate m-0">{{ $userSubject['subject']['name'] }}</h2>
+                                                                @if($userSubject['description'])
+                                                                    <p class="text-secondary mt-1 mb-0 small text-truncate">{{ $userSubject['description'] }}</p>
+                                                                @endif
+                                                            </div>
+                                                            <!-- Acciones a la derecha -->
+                                                            <div class="am-subject-actions col-12 col-md-4 d-flex gap-2 justify-content-md-end mt-2 mt-md-0">
+                                                                <!-- Botón Editar -->
+                                                                <a href="javascript:void(0);" @click="$wire.editUserSubject({{ $userSubject['id'] }})"
+                                                                    class="btn btn-outline-primary d-flex align-items-center">
+                                                                    <i class="am-icon-pencil-02"></i>
+                                                                    <span class="ms-2">{{ __('general.edit') }}</span>
+                                                                </a>
+                                                                <!-- Botón Eliminar -->
+                                                                <a href="javascript:void(0);" @click="$wire.dispatch('showConfirm', { subjectId: {{ $userSubject['id'] }}, action : 'delete-user-subject' })"
+                                                                    class="btn btn-outline-danger d-flex align-items-center">
+                                                                    <i class="am-icon-trash-02"></i>
+                                                                    <span class="ms-2">{{ __('general.delete') }}</span>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    @endif
                                                 @endforeach
                                             </div>
                                             @endif

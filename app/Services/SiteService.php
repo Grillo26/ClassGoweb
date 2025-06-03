@@ -19,11 +19,12 @@ class SiteService {
 public function getTutors($data = array()) {
     try {
         // Selecciona todos los usuarios que tengan el rol 'tutor'
-        $instructors = User::select('users.*')
+        $tutors = User::select('users.*')
             ->whereHas('roles', fn($query) => $query->whereName('tutor'));
 
+         //dd($instructors->toSql());
         // Carga relaciones necesarias para mostrar información del tutor
-        $instructors->with([
+        $tutors->with([
             'subjects', // Materias que enseña
             'languages:id,name', // Idiomas
             'address.country', // País de la dirección
@@ -32,47 +33,57 @@ public function getTutors($data = array()) {
         ]);
 
         // Solo tutores con perfil verificado y selecciona campos específicos del perfil
-        $instructors->withWhereHas('profile', function ($query) {
+        $tutors->withWhereHas('profile', function ($query) {
             $query->select('id', 'verified_at', 'user_id', 'first_name', 'last_name', 'image', 'gender', 'tagline', 'description', 'slug', 'intro_video');
             $query->whereNotNull('verified_at'); // Solo tutores verificados
         });
+
+          
+
         // Agrega promedios y conteos de reviews y estudiantes activos
-        $instructors->withAvg('reviews as avg_rating', 'rating')
+        $tutors->withAvg('reviews as avg_rating', 'rating')
             ->withCount('reviews as total_reviews')
             ->withCount(['bookingSlots as active_students' => function($query){
                 $query->whereStatus('active');
             }]);
 
-        // Filtro por grupo de materias si está presente
-        if (!empty($data['group_id'])) {
-            $instructors->whereHas('groups', function ($query) use ($data) {
-                $query->where('subject_group_id', $data['group_id']);
+        // Filtro por grupo de materias o por materias específicas
+        if (!empty($data['subject_id'])) {
+            // Si hay materias seleccionadas, filtra solo por esas materias
+            $tutors->whereHas('subjects', function ($query) use ($data) {
+                $subjectIds = is_array($data['subject_id']) ? $data['subject_id'] : [$data['subject_id']];
+                $query->whereIn('subjects.id', $subjectIds);
+            });
+        } elseif (!empty($data['group_id'])) {
+            // Si no hay materias pero sí grupo, filtra por grupo
+            $tutors->whereHas('userSubjects.subject.group', function ($query) use ($data) {
+                $query->where('id', $data['group_id']);
             });
         }
 
         // Filtro por palabra clave en nombre o apellido
         if (!empty($data['keyword'])) {
             $keyword = '%' . $data['keyword'] . '%';
-            $instructors->where(function($query) use ($keyword) {
+            $tutors->where(function($query) use ($keyword) {
                 $query->whereHas('profile', function ($q) use ($keyword) {
                     $q->where('first_name', 'like', $keyword)
                       ->orWhere('last_name', 'like', $keyword);
                 });
             });
         }
-
         // Ordena por fecha de creación descendente (más nuevos primero)
-        $instructors->orderBy('users.created_at', 'desc');
+        $tutors->orderBy('users.created_at', 'desc');
 
         // Log para debug: muestra la consulta SQL generada y los filtros recibidos
         \Log::info('SQL Query:', [
-            'query' => $instructors->toSql(),
-            'bindings' => $instructors->getBindings(),
+            'query' => $tutors->toSql(),
+            'bindings' => $tutors->getBindings(),
             'data' => $data
         ]);
 
+      
         // Paginación, por defecto 10 por página
-        $result = $instructors->paginate(!empty($data['per_page']) ? $data['per_page'] : 10);
+        $result = $tutors->paginate(!empty($data['per_page']) ? $data['per_page'] : 10);
         
         // Log para debug: muestra el total de resultados y la página actual
         \Log::info('Query results:', [
@@ -85,6 +96,7 @@ public function getTutors($data = array()) {
 
     } catch (\Exception $e) {
         // Log de error si algo falla
+       
         \Log::error('Error in getTutors:', [
             'message' => $e->getMessage(),
             'trace' => $e->getTraceAsString()

@@ -9,7 +9,30 @@
                             <div class="am-tutorsearch_user">
                                 <figure class="am-tutorvone_img">
                                     <img src="{{ asset('storage/' . $singleTutor->profile->image) }}" alt="Profile image">
-                                    <span class="am-userstaus am-userstaus_online"></span>
+                                    @php
+                                        $now = \Carbon\Carbon::now();
+                                        $isAvailableNow = false;
+                                        if($singleTutor->userSubjectSlots && $singleTutor->userSubjectSlots->count() > 0) {
+                                            foreach($singleTutor->userSubjectSlots as $slot) {
+                                                $slotDate = \Carbon\Carbon::parse($slot->date);
+                                                if ($slotDate->isSameDay($now)) {
+                                                    $start = (strlen($slot->start_time) > 8) ? \Carbon\Carbon::parse($slot->start_time) :
+                                                    \Carbon\Carbon::parse($slot->date.' '.$slot->start_time);
+                                                    $end = (strlen($slot->end_time) > 8) ? \Carbon\Carbon::parse($slot->end_time) :
+                                                    \Carbon\Carbon::parse($slot->date.' '.$slot->end_time);
+                                                    if ($now->between($start, $end)) {
+                                                        $isAvailableNow = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    @endphp
+                                    @if($isAvailableNow)
+                                        <div style="position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; background-color: #28a745; border-radius: 50%; border: 2px solid white;"></div>
+                                    @else
+                                        <div style="position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; background-color: gray; border-radius: 50%; border: 2px solid white;"></div>
+                                    @endif
                                 </figure>
                                 <div class="am-tutorsearch_user_name">
                                     <h3>
