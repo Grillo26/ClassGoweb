@@ -5,10 +5,10 @@
     <div class="am-dbbox_content am-invoicelist">
         <div class="am-dbbox_title">
             @slot('title')
-            {{ __('invoices.invoices') }}
+            {{ __('invoices.tutorials') }}
             @endslot
-            <h2>{{ __('invoices.invoices') }}</h2>
-            <div class="am-dbbox_title_sorting">
+            <h2>{{ __('invoices.tutorials') }}</h2>
+            {{-- <div class="am-dbbox_title_sorting">
                 <em>{{ __('invoices.filter_by') }}</em>
                 <span class="am-select" wire:ignore>
                     <select data-componentid="@this" data-live="true" class="am-select2" id="status"
@@ -20,20 +20,19 @@
                             }}</option>
                     </select>
                 </span>
-            </div>
+            </div> --}}
         </div>
         <div class="am-invoicetable">
             <table class="am-table @if(setting('_general.table_responsive') == 'yes') am-table-responsive @endif">
                 <thead>
                     <tr>
-                        <th>{{ __('booking.id') }}</th>
-                        <th>{{ __('booking.date') }}</th>
+                        <th>{{ __('booking.start_date') }}</th>
+                        <th>{{ __('booking.end_date') }}</th>
                         <!--  <th>{{ __('booking.transaction_id') }}</th>-->
 
                         @role('tutor')
                         <th>{{ __('booking.student_name') }}</th>
-                        <th> Estado</th>
-                        <!--  <th>{{ __('booking.tutor_payout') }}</th>-->
+                        <th>{{__('booking.status') }} </th>
                         @elserole('student')
                         <th>{{ __('booking.tutor_name') }}</th>
                         <th>Estado</th>
@@ -46,47 +45,24 @@
                     @foreach($tutorias_completadas as $order)
 
 
-                   
+
                     <tr>
                         <td data-label="{{ __('booking.id') }}"><span>{{ $order?->start_time }}</span></td>
                         <td data-label="{{ __('booking.id') }}"><span>{{ $order?->end_time }}</span></td>
 
 
                         @role('student')
+                       
+
+
                         <td data-label="{{ __('booking.tutor_name' )}}">
-                            <div class="tb-varification_userinfo">
-                                @if($order?->orderable_type == \Modules\Courses\Models\Course::class)
-                                <strong class="tb-adminhead__img">
-                                    @if (!empty($order?->orderable?->instructor?->profile?->image) &&
-                                    Storage::disk(getStorageDisk())->exists($order?->orderable?->instructor?->profile?->image))
-                                    <img src="{{ resizedImage($order?->orderable?->instructor?->profile?->image,34,34) }}"
-                                        alt="{{$order?->orderable?->instructor?->profile?->image}}" />
-                                    @else
-                                    <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 34, 34) }}"
-                                        alt="{{ $order?->orderable?->instructor?->profile?->image }}" />
-                                    @endif
-                                </strong>
-                                <span>{{ $order?->orderable?->instructor?->profile?->first_name }}</span>
-                                @elseif($order?->orderable_type == App\Models\SlotBooking::class)
-                                <strong class="tb-adminhead__img">
-                                    @if (!empty($order?->orderable?->tutor?->image) &&
-                                    Storage::disk(getStorageDisk())->exists($order?->orderable?->tutor?->image))
-                                    <img src="{{ resizedImage($order?->orderable?->tutor?->image,34,34) }}"
-                                        alt="{{$order?->orderable?->tutor?->image}}" />
-                                    @else
-                                    <img src="{{ setting('_general.default_avatar_for_user') ? url(Storage::url(setting('_general.default_avatar_for_user')[0]['path'])) : resizedImage('placeholder.png', 34, 34) }}"
-                                        alt="{{ $order?->orderable?->tutor?->image }}" />
-                                    @endif
-                                </strong>
-                                <span>{{ $order?->orderable?->tutor?->first_name }}</span>
-                                @else
-                                <span>-</span>
-                                @endif
-                            </div>
+                          
+                            <span>
+                                {{$order->tutor->first_name }} - {{$order->tutor->last_name}}
+                            </span> 
                         </td>
-                        <td data-label="{{ __('booking.amount') }}">
-                            <span>{!! formatAmount($order?->price) !!}</span>
-                        </td>
+
+                         
                         @elserole('tutor')
                         <td>
                             <span>
@@ -95,12 +71,23 @@
                         </td>
 
                         @endrole
-                        <td data-label="{{ __('booking.status' )}}">
-                            <div class="am-status-tag">
-                                <em
-                                    class="tk-project-tag-two {{ $order?->orders?->status == 'complete' ? 'tk-hourly-tag' : 'tk-fixed-tag' }}">{{
-                                    $order?->orders?->status}}</em>
-                            </div>
+                        <td data-label="{{ __('booking.status') }}">
+                            @php
+                            $status = $order['status'] ?? $order->status ?? '';
+                            // Normaliza el status por si acaso
+                            $status = ucfirst(strtolower($status));
+                            $statusClass = match($status) {
+                            'Aceptado' => 'bg-primary text-white',
+                            'Pendiente' => 'bg-warning text-dark',
+                            'No completado' => 'bg-danger text-white',
+                            'Rechazado' => 'bg-secondary text-white',
+                            'Completado' => 'bg-success text-white',
+                            default => 'bg-secondary text-white',
+                            };
+                            @endphp
+                            <span class="tk-project-tag-two {{ $statusClass }}">
+                                {{ $status }}
+                            </span>
                         </td>
 
                     </tr>

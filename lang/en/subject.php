@@ -18,4 +18,5 @@ return [
     'subject_group' => 'Subject group',
     'choose_subject_group' => 'Choose subject group',
     'choose_subject_label' => 'Choose subject',
+    'show_only_with_subjects' => 'mis grupos y materias',
 ];

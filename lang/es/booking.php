@@ -24,4 +24,6 @@ return [
     'session_count' => ':count sesión',
     'course_count' => ':count curso',
     'courses_count' => ':count cursos',
+    'start_date' => 'Fecha de inicio',
+    'end_date' => 'Fecha de finalización',
 ];

@@ -156,4 +156,11 @@ return [
     'per_course' => '/course',
     'make_default_method' => 'Make Default Method',
     'setup_bank_account' => 'Setup Bank Account',
+    'view_booking' => 'View booking',
+    'confirm_booking' => 'Confirm booking',
+    'cancel' => 'Cancel',
+    'select_subject' => 'Select subject',
+    'select_hour' => 'Select hour',
+    'confirm' => 'Confirm',
+    'upload_image' => 'Upload image',
 ];

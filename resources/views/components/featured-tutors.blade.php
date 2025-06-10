@@ -5,7 +5,9 @@
                 @if($singleTutor->profile->verified_at !== null)
                     <li class="splide__slide">
                         <div class="am-tutor-feature">
+                            
                             <video autoplay muted loop class="video-js" src="{{ asset('storage/' . $singleTutor->profile->intro_video) }}" controls></video>
+                            
                             <div class="am-tutorsearch_user">
                                 <figure class="am-tutorvone_img">
                                     <img src="{{ asset('storage/' . $singleTutor->profile->image) }}" alt="Profile image">
@@ -36,6 +38,7 @@
                                 </figure>
                                 <div class="am-tutorsearch_user_name">
                                     <h3>
+                                         adsdas
                                         <a href="{{ route('tutor-detail',['slug' => $singleTutor->profile->slug]) }}">
                                             {{ $singleTutor->profile->first_name }} {{ $singleTutor->profile->last_name }}
                                         </a>

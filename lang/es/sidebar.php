@@ -57,7 +57,6 @@ return [
     'subjects' => 'Materias',
     'subject_groups' => 'Grupos de materias',
     'bookings' => 'Reservas',
-    'invoices' => 'Recibos',
     'certificates' => 'Certificados',
     'my_certificates' => 'Mis certificados',
     'upcomming_bookings' => 'Próximas Reservas',
@@ -73,5 +72,6 @@ return [
     'coupons' => 'Ofertas y cupones',
     'disputes_system' => 'Sistema de disputas',
     'manage-dispute' => 'Gestionar disputa',
-    
+    'history_tutorials' => 'Historial de Tutorias ',
+    'courses' => 'Cursos',
 ];

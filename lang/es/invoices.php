@@ -19,4 +19,5 @@ return [
     'invoice_total' => 'Total',
     'invoice_discount_code' => 'Código de descuento',
     'invoice_discount_amount' => 'Cantidad de descuento',
+    'tutorials' => 'Tutorías',
 ];

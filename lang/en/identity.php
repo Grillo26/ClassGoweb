@@ -52,4 +52,10 @@ return [
     'reject' => 'Reject',
     'status' => 'Status',
     'action' => 'Action',
+    'profile_photo' => 'Profile photo',
+    'profile_intro_video' => 'Introduction video',
+    'default_profile_photo' => 'Default profile logo',
+    'default_profile_intro_video' => 'Default introduction video',
+
+
 ];

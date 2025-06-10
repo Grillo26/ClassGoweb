@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'languages' => 'Idioma',
+    'add_language' => 'Adicionar novo idioma',
+    'update_language' => 'Atualizar idioma',
+    'added_msg' => 'Registro adicionado com sucesso',
+    'updated_msg' => 'Registro atualizado com sucesso',
+    'deleted_msg' => 'Registro excluído com sucesso',
+    'search_here' => 'Pesquise aqui',
+    'language_status' => 'Definir o status do idioma como',
+    'subject_groups' => 'Grupos de matérias',
+    'update_subject_group' => 'Atualizar grupo de matérias',
+    'add_subject_group' => 'Adicionar novo grupo de matérias',
+    'edit_subject_group' => 'Editar grupo de matérias',
+    'subject_group_status_desc' => 'Defina o status do grupo de matérias como',
+    'parent_subject_group_placeholder' => 'Selecionar grupo principal de matérias',
+    'select_parent_subject_group' => 'Selecionar grupo principal de matérias',
+    'subject_group_status' => 'Definir o status do grupo de matérias como',
+    'subjects' => 'Matérias',
+    'update_subject' => 'Atualizar matéria',
+    'add_subject' => 'Adicionar nova matéria',
+    'edit_subject' => 'Editar matéria',
+    'subject_status' => 'Definir o status da matéria como',
+];

@@ -376,7 +376,6 @@ return [
     'click_here_file' => 'haga clic aquí',
     'to_upload' => 'subir',
     'or' => 'o',
-    'reset_filters' => 'Reiniciar filtros',
     'max' => 'máximo:',
     'no_record_title' => '¡Aún no se ha añadido ningún registro!',
     'no_record_desc' => 'No hay registros disponibles para mostrar en este momento. Presione el botón a continuación para agregar uno nuevo.',
@@ -478,4 +477,5 @@ return [
     '500_title' => '500 Error interno del servidor',
     'previous' => 'anterior',
     'next' => 'siguiente',
+    'reset_filters' => 'Reiniciar filtros',
 ];

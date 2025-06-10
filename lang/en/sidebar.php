@@ -71,4 +71,5 @@ return [
     'coupons' => 'Deals & Coupons',
     'disputes_system' => 'Disputes system',
     'manage-dispute' => 'Manage dispute',
+    'history_tutorials' => 'history tutorials',
 ];

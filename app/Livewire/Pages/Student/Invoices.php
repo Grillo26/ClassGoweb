@@ -36,7 +36,7 @@ class Invoices extends Component
     {
         $this->dispatch('initSelect2', target: '.am-select2');
         $this->tutorias_completadas= $this->slotBookingService->getSlotBookingByUserId();
-       // dd($this->tutorias_completadas);
+        //dd($this->tutorias_completadas);
         
 
         // Asignar el perfil del estudiante

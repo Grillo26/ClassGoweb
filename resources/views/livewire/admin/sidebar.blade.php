@@ -45,8 +45,13 @@ new class extends Component
                     'admin.taxonomy.languages' => __('sidebar.languages'),
                     'admin.taxonomy.subjects' => __('sidebar.subjects'),
                     'admin.taxonomy.subject-groups' => __('sidebar.subject_groups'),
+                    'admin.taxonomy.courses' => __('sidebar.courses'),
                 ],
             ],
+
+
+
+
             [
                 'title' =>  __('sidebar.translation_settings'),
                 'icon'  => 'icon-globe',
@@ -54,6 +59,9 @@ new class extends Component
                     'ltu.translation.index' => __('sidebar.languages')
                 ],
             ],
+
+
+
 /*
             [
                 'title' => __('sidebar.manage_packages'),
