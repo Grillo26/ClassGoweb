@@ -50,7 +50,7 @@ class AuthController extends Controller
             $user = Auth::user();
             $user->load([
                 'profile:id,user_id,first_name,last_name,gender,recommend_tutor,intro_video,native_language,verified_at,slug,image,tagline,description,created_at,updated_at',
-                'address:country_id,state_id,city,address,zipcode',
+                'address:country_id,state_id,city,address',
                 'roles',
                 'userWallet:id,user_id,amount'
             ]);
