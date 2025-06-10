@@ -26,6 +26,7 @@ class FeaturedTutors extends Component
     {
         $siteService            = new SiteService();
         $featuredTutors         = $siteService->featuredTutors();
+        //dd($featuredTutors);
         return view('components.featured-tutors', compact('featuredTutors'));
     }
 }

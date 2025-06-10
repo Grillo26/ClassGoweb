@@ -8,6 +8,7 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * ds
      */
     public function up(): void
     {
@@ -15,6 +16,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('instructor_name');
+            $table->string('video_url')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

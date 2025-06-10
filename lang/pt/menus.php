@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'menu_management' => 'Gerenciamento de Menu',
+    'add_new_menu' => 'Adicionar novo menu',
+    'edit_menu' => 'Editar menu',
+    'pages' => 'Páginas',
+    'custom' => 'Personalizado',
+    'select_all_pages' => 'Selecionar todas as páginas',
+    'add_to_menu' => 'Adicionar ao menu',
+    'custom_url' => 'URL personalizada',
+    'enter_url' => 'Digite a URL',
+    'add_label' => 'Adicionar rótulo',
+    'menu_title' => 'Título do menu',
+    'select_menu' => 'Selecione um menu para editar',
+    'select_all_menu' => 'Selecionar todo o menu',
+    'remove_selected_menu' => 'Remover menu selecionado',
+    'delete_menu' => 'Excluir menu',
+    'save_menu' => 'Salvar menu',
+    'add_header_menu' => 'Adicionar este menu ao cabeçalho',
+    'add_footer_menu' => 'Adicionar este menu ao rodapé',
+    'menu_position' => 'Selecionar a posição do menu',
+    'no_menu_items_found' => 'Nenhum item de menu foi adicionado ainda',
+    'menu_label' => 'Rótulo do menu',
+    'add_menu_items' => 'Por favor, adicione itens ao menu antes de salvar',
+    'select_menu_err' => 'Por favor, selecione um menu',
+    'menu_arrange' => 'Arraste os itens na ordem que preferir. Clique na seta à direita do item para revelar opções de configuração adicionais.',
+];

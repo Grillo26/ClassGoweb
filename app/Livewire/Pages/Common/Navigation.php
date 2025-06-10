@@ -103,14 +103,14 @@ class Navigation extends Component
               //  'icon'  => '<i class="am-icon-dollar"></i>',
               //  'accessibility' => ['tutor'],
             //],
-            [
+           /*  [
                 'studentSortOrder' => 10,
                 'route' => 'student.billing-detail',
                 'onActiveRoute' => ['student.billing-detail'],
                 'title' => __('sidebar.billing_detail'),
                 'icon'  => '<i class="am-icon-ongoing"></i>',
                 'accessibility' => ['student'],
-            ],
+            ], */
             [
                 'studentSortOrder' => 9,
                 'route' => 'student.favourites',
@@ -134,7 +134,7 @@ class Navigation extends Component
                 'studentSortOrder' => 11,
                 'route' => $this->role.'.invoices',
                 'onActiveRoute' => ['student.invoices','tutor.invoices','tutor.invoice.show','student.invoice.show'],
-                'title' => __('sidebar.invoices'),
+                'title' => __('sidebar.history_tutorials'),
                 'icon'  => '<i class="am-icon-invoices-01"></i>',
                 'accessibility' => ['student', 'tutor'],
             ],

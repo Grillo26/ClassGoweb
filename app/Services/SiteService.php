@@ -292,26 +292,53 @@ public function getTutors($data = array()) {
         ->get()->take(4);
     }
 
+
+    /**
+     * Summary of featuredTutors
+     */
     public function featuredTutors(){
-        $featuredTutors = User::select('id')->role('tutor')
-                        ->withWhereHas(
-                            'profile', function ($query) {
-                                $query->select('id', 'user_id', 'slug', 'tagline', 'verified_at', 'first_name', 'last_name', 'image', 'intro_video', 'description');
-                                $query->whereNotNull('verified_at');
-                            })
-                        ->with(['address' => function ($query) {
-                                $query->with('state', 'country');
-                            },
-                            'educations',
-                            'subjects',
-                        ])->withCount(['bookingSlots as active_students' => function($query){
-                            $query->whereStatus('active');
-                        }])
-                        ->withAvg('reviews as avg_rating', 'rating')
-                        ->withCount('reviews as total_reviews')
-                        // ->take(10)
-                        ->inRandomOrder()
-                        ->get();
+        $featuredTutors = User::query()
+            ->select('id')
+            // Filtrar solo tutores por rol
+            ->whereHas('roles', function($q) {
+                $q->where('name', 'tutor');
+            })
+            // Solo tutores con perfil verificado
+            ->whereHas('profile', function ($query) {
+                $query->whereNotNull('verified_at');
+            })
+            ->with([
+                'profile:id,user_id,slug,tagline,verified_at,first_name,last_name,image,intro_video,description',
+                'address.state',
+                'address.country',
+                'educations',
+                'subjects',
+            ])
+            ->withCount([
+                'bookingSlots as active_students' => function($query){
+                    $query->whereStatus('active');
+                },
+                // Cuenta total de cursos asignados al tutor (CompanyCourseUser)
+                'companyCourseUsers',
+                // Cuenta de cursos completados por el tutor (status completed)
+                'companyCourseUsers as completed_courses_count' => function($query){
+                    $query->where('status', 'completed');
+                }
+            ])
+            ->withAvg('reviews as avg_rating', 'rating')
+            ->withCount('reviews as total_reviews')
+            // Orden especial: primero Gabriel Alpiry Hurtado si existe
+            ->orderByRaw(
+                "CASE WHEN EXISTS (
+                    SELECT 1 FROM profiles p WHERE p.user_id = users.id AND p.first_name = ? AND p.last_name = ?
+                ) THEN 0 ELSE 1 END",
+                ['Gabriel', 'Alpiry Hurtado']
+            )
+            // Luego los que completaron todos los cursos y tienen al menos uno
+            ->orderByRaw('CASE WHEN company_course_users_count > 0 AND completed_courses_count = company_course_users_count THEN 0 ELSE 1 END')
+            ->orderByDesc('completed_courses_count')
+            ->inRandomOrder()
+            ->get();
         return $featuredTutors;
     }
 

@@ -6,6 +6,7 @@ use App\Livewire\Pages\Admin\Blogs\Blogs;
 use App\Livewire\Pages\Admin\Blogs\CreateBlog;
 use App\Livewire\Pages\Admin\Blogs\UpdateBlog;
 use App\Livewire\Pages\Admin\Bookings\Bookings;
+use App\Livewire\Pages\Admin\CoursesCompany\Courses;
 use App\Livewire\Pages\Admin\Dispute\Dispute;
 use App\Livewire\Pages\Admin\Dispute\ManageDispute;
 use App\Livewire\Pages\Admin\EmailTemplates\EmailTemplates;
@@ -38,13 +39,17 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::get('/blogs/create', CreateBlog::class)->name('create-blog');
     Route::get('/blogs/update/{id}', UpdateBlog::class)->name('update-blog');
     Route::get('/blog-categories', BlogCategories::class)->name('blog-categories');
+    
+    
     Route::prefix('taxonomies')->name('taxonomy.')->group(function () {
         Route::get('languages', Languages::class)->name('languages');
         Route::get('subjects', Subjects::class)->name('subjects');
         Route::get('subject-groups', SubjectGroups::class)->name('subject-groups');
         Route::get('subjects', Subjects::class)->name('subjects');
         Route::get('subject-groups', SubjectGroups::class)->name('subject-groups');
+        Route::get('courses', Courses::class)->name('courses');
     });
+
     Route::get('commission-settings',   CommissionSettings::class)->name('commission-settings');
     Route::get('payment-methods',       PaymentMethods::class)->name('payment-methods');
     Route::get('withdraw-requests',     WithdrawRequest::class)->name('withdraw-requests');

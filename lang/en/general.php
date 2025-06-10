@@ -476,4 +476,7 @@ return [
     '403_heading' => 'Access Forbidden',
     '404_title' => '404 Not Found',
     '500_title' => '500 Internal Server Error',
+    'previous' => 'Previous',
+    'next' => 'Next',
+     'reset_filters' => 'Reset Filters',
 ];

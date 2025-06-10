@@ -22,13 +22,11 @@ class SlotBookingService implements interfaces\ISlotBookingService
             // Si es tutor, recupera el registro del usuario (estudiante) y su perfil
             return SlotBooking::with(['booker', 'booker.profile', 'subject', 'slot'])
                 ->where('tutor_id', $user->id)
-                ->where('status', 5)
                 ->get();
         } elseif ($user->hasRole('student')) {
             // Si es estudiante, recupera el registro del tutor y su perfil
-            return SlotBooking::with(['tutor', 'tutor.profile', 'subject', 'slot'])
+            return SlotBooking::with(['tutor' ,'subject', 'slot'])
                 ->where('student_id', $user->id)
-                ->where('status', 5)
                 ->get();
         }
         // Si no es ninguno, retorna colección vacía
