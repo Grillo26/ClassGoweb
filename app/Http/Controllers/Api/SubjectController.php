@@ -35,7 +35,8 @@ class SubjectController extends Controller
             }
         }
 
-        $subjects = $query->get();
+        $perPage = $request->get('per_page', 20); // Por defecto 20 por página
+        $subjects = $query->paginate($perPage);
         return $this->success($subjects, 'Materias obtenidas exitosamente');
     }
 
@@ -69,4 +70,4 @@ class SubjectController extends Controller
         );
         return strtr($string, $unwanted_array);
     }
-} 
+}
