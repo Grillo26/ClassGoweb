@@ -41,6 +41,7 @@ Route::post('register',                                         [AuthController:
 Route::post('forget-password',                                  [AuthController::class,'resetEmailPassword']);
 Route::get('recommended-tutors',                                [TutorController::class,'getRecommendedTutors']);
 Route::get('find-tutors',                                       [TutorController::class,'findTutots']);
+Route::get('verified-tutors', [\App\Http\Controllers\Api\TutorController::class, 'getVerifiedTutorsWithSubjects']);
 Route::get('tutor/{slug}',                                      [TutorController::class,'getTutorDetail']);
 Route::get('students-list',                                     [StudentController::class,'userList']);
 Route::get('student-reviews/{id}',                              [StudentController::class,'getStudentReviews']);
