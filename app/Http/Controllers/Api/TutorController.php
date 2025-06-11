@@ -11,6 +11,8 @@ use App\Http\Resources\TutorSlots\TutorSlotResource;
 use Carbon\Carbon;
 use App\Models\Profile;
 use App\Models\User;
+use App\Models\UserSubject;
+use App\Models\Subject;
 use App\Services\BookingService;
 use App\Services\ProfileService;
 use App\Services\SiteService;
@@ -18,6 +20,8 @@ use App\Services\UserService;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class TutorController extends Controller
@@ -26,9 +30,7 @@ class TutorController extends Controller
 
     public function __construct()
     {
-
         $token = request()->bearerToken();
-
         $sanctumToken = PersonalAccessToken::findToken($token) ?? null;
 
         if (!empty($sanctumToken) && $sanctumToken->expires_at && Carbon::parse($sanctumToken->expires_at)->isFuture()) {
@@ -45,13 +47,69 @@ class TutorController extends Controller
 
     public function findTutots(Request $request)
     {
-        $data               = $request->all();
-        $findTutors         = (new SiteService)->getTutors($data);
-        $tutorsCollection   = $findTutors->getCollection();
-        $tutors             =  $this->getFavouriateTutors($tutorsCollection);
-        $findTutors         = $findTutors->setCollection($tutors);
+        try {
+            // Log de los parámetros recibidos
+            Log::info('Parámetros de búsqueda:', [
+                'keyword' => $request->keyword,
+                'subject_id' => $request->subject_id
+            ]);
 
-        return $this->success(data: new TutorCollection($findTutors));
+            // Consulta base
+            $query = User::whereHas('roles', function($q) {
+                $q->where('name', 'tutor');
+            })->with(['profile', 'subjects'])
+              ->whereHas('profile', function($q) {
+                  $q->whereNotNull('verified_at');
+              });
+
+            // Log de la consulta SQL
+            Log::info('SQL Query:', [
+                'sql' => $query->toSql(),
+                'bindings' => $query->getBindings()
+            ]);
+
+            // Si hay parámetros de búsqueda, aplicar filtros
+            if ($request->filled('keyword') || $request->filled('subject_id')) {
+                $query->whereHas('profile', function($q) {
+                    $q->whereNotNull('verified_at');
+                });
+
+                // Búsqueda por keyword en materias
+                if ($request->filled('keyword')) {
+                    $keyword = trim($request->keyword);
+                    $query->whereHas('subjects', function($q) use ($keyword) {
+                        $q->where('name', 'LIKE', "%{$keyword}%");
+                    });
+                }
+
+                // Búsqueda por subject_id
+                if ($request->filled('subject_id')) {
+                    $query->whereHas('subjects', function($q) use ($request) {
+                        $q->where('subject_id', $request->subject_id);
+                    });
+                }
+            }
+
+            // Ordenar por el nombre del tutor (usando el perfil relacionado)
+            $query->join('profiles', 'users.id', '=', 'profiles.user_id')
+                  ->orderBy('profiles.first_name', 'asc')
+                  ->select('users.*');
+
+            // Log del conteo de resultados
+            $count = $query->count();
+            Log::info('Número de tutores encontrados: ' . $count);
+
+            $tutors = $query->paginate(10);
+            $tutors->getCollection()->transform(function ($tutor) {
+                return $this->getFavouriateTutors($tutor);
+            });
+            // No volver a paginar una colección, solo devolver la paginación original
+            return $this->success(data: new TutorCollection($tutors));
+
+        } catch (\Exception $e) {
+            Log::error('Error en findTutots: ' . $e->getMessage());
+            return $this->error(message: 'Error al buscar tutores: ' . $e->getMessage());
+        }
     }
 
     public function getTutorDetail($slug)
@@ -134,8 +192,8 @@ class TutorController extends Controller
     public function slotDetail($id)
     {
         $bookingService  = new BookingService();
-        $currentSlot     = $bookingService->getSlotDetail($id);
-        return $this->success(data: new TutorSlotResource($currentSlot));
+       // $currentSlot     = $bookingService->getSlotDetail($id);
+        //return $this->success(data: new TutorSlotResource($currentSlot));
     }
 
     public function getFavouriateTutors($tutors)

@@ -42,7 +42,7 @@ class FindTutorResource extends JsonResource
             'subjects'                       => $this->whenLoaded('subjects', function () {
                 $subjectResources = [];
                 foreach ($this->subjects as $sub) {
-                    $subjectResources[] = new SubjectResource($sub->subject);
+                    $subjectResources[] = new SubjectResource($sub);
                 }
                 return $subjectResources;
             }),
