@@ -38,7 +38,7 @@
                                 </figure>
                                 <div class="am-tutorsearch_user_name">
                                     <h3>
-                                         adsdas
+                                         
                                         <a href="{{ route('tutor-detail',['slug' => $singleTutor->profile->slug]) }}">
                                             {{ $singleTutor->profile->first_name }} {{ $singleTutor->profile->last_name }}
                                         </a>

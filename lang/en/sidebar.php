@@ -72,4 +72,6 @@ return [
     'disputes_system' => 'Disputes system',
     'manage-dispute' => 'Manage dispute',
     'history_tutorials' => 'history tutorials',
+    'discover_tutor_text1' => 'Discover an online tutor',
+    'discover_tutor_text2' => 'skilled for your studies',
 ];

@@ -163,4 +163,5 @@ return [
     'select_hour' => 'Select hour',
     'confirm' => 'Confirm',
     'upload_image' => 'Upload image',
+    'save_to_my_list' => 'Save to my list',
 ];

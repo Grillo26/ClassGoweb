@@ -165,4 +165,5 @@ return [
     'select_hour' => 'Selecionar hora',
     'confirm' => 'Confirmar',
     'upload_image' => 'Enviar imagem',
+    'save_to_my_list' => 'Salvar na minha lista',
 ];

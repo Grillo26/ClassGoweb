@@ -79,7 +79,7 @@
                                 <x-input-error field_name="amount" />
                             </div>
                             <div class="form-group am-form-btns">
-                                <button wire:target="addWithdarwals" wire:loading.class="am-btn_disable" wire:click="addWithdarwals" type="button" class="am-btn">{{ __('tutor.save_update') }}</button>
+                                <button wire:target="addWithdarwals" wire:loading.class="am-btn_disable" wire:click="addWithdarwals" type="button" class="am-btn">{{ __('tutor.save_update') }} </button>
                             </div>
                         </fieldset>
                     </form>

@@ -1,115 +1,322 @@
 <div>
     <main class="tb-main tb-subject-wrap">
-        <div class="container-fluid py-4">
-            <div class="row">
-                <!-- Columna izquierda - Formulario -->
-                <div class="col-lg-4 col-md-12 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            @if($editMode)
-                            <h5>{{ __('taxonomy.update_subject') }}</h5>
-                            @else
-                            <h5>{{ __('taxonomy.add_subject') }}</h5>
-                            @endif
-                        </div>
-                        <div class="card-body">
-                            <form wire:submit.prevent="save">
-                                <div class="mb-3">
-                                    <label class="form-label">Nombre del curso</label>
-                                    <input type="text" class="form-control" wire:model.defer="name">
-                                    @error('name') <span class="text-danger">{{ $message }}</span> @enderror
+        <div class="row">
+            <div class="col-lg-4 col-md-12 tb-md-40">
+                <div class="tb-dbholder tb-packege-setting">
+                    <div class="tb-dbbox tb-dbboxtitle">
+                        @if($editMode)
+                            <h5>{{ __('taxonomy.update_course') }}</h5>
+                        @else
+                            <h5>{{ __('taxonomy.add_course') }}</h5>
+                        @endif
+                    </div>
+                    <div class="tb-dbbox">
+                        <form class="tk-themeform">
+                            <fieldset>
+                                <div class="tk-themeform__wrap">
+                                    <div class="form-group">
+                                        <label class="tb-label">{{ __('general.name') }}</label>
+                                        <input type="text" class="form-control @error('name') tk-invalid @enderror" wire:model="name" required placeholder="{{ __('general.name') }}">
+                                        @error('name')
+                                            <div class="tk-errormsg">
+                                                <span>{{ $message }}</span>
+                                            </div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="tb-label">{{ __('general.instructor') }}</label>
+                                        <input type="text" class="form-control @error('instructor_name') tk-invalid @enderror" wire:model="instructor_name" required>
+                                        @error('instructor_name')
+                                            <div class="tk-errormsg">
+                                                <span>{{ $message }}</span>
+                                            </div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="tb-label">{{ __('general.description') }}</label>
+                                        <textarea class="form-control" placeholder="{{ __('general.description') }}" wire:model="description"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="tb-label">{{ __('general.video') }}</label>
+                                        <input type="text" class="form-control @error('video_url') tk-invalid @enderror" wire:model="video_url" placeholder="Pega el enlace del video">
+                                        @error('video_url')
+                                            <div class="tk-errormsg">
+                                                <span>{{ $message }}</span>
+                                            </div>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Botón para abrir el modal de preguntas -->
+                                    <div class="mb-3">
+                                        <button type="button" class="btn btn-outline-primary" wire:click="openQuestionModal">Agregar Pregunta de Examen</button>
+                                    </div>
+                                    <!-- Tabla de preguntas agregadas -->
+                                    @if(!empty($exam_questions))
+                                        <div class="mb-4">
+                                            <h5>Preguntas agregadas</h5>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Pregunta</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($exam_questions as $i => $q)
+                                                        <tr>
+                                                            <td>{{ $q['question'] }}</td>
+                                                            </td>
+                                                            <td><button type="button" class="btn btn-sm btn-danger" wire:click="removeExamQuestion({{ $i }})">Eliminar</button></td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @endif
+
+                                    <!-- Modal de preguntas de examen -->
+                                    <div class="modal fade @if($showQuestionModal) show d-block @endif" tabindex="-1" style="@if($showQuestionModal) display:block; background:rgba(0,0,0,0.5); @else display:none; @endif" role="dialog">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Agregar Pregunta de Examen</h5>
+                                                    <button type="button" class="btn-close" wire:click="closeQuestionModal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label>Pregunta</label>
+                                                        <input type="text" class="form-control" wire:model.defer="question_text">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Tipo</label>
+                                                        <select class="form-control" wire:model.defer="question_type" wire:change="resetQuestionOptions">
+                                                            <option value="opcion_unica">Opción única</option>
+                                                            <option value="abierta">Abierta</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Puntaje</label>
+                                                        <input type="number" class="form-control" wire:model.defer="question_score">
+                                                    </div>
+                                                    @if($question_type === 'opcion_unica')
+                                                        <div class="mb-3 d-flex align-items-end">
+                                                            <div class="flex-grow-1">
+                                                                <label>Agregar opción</label>
+                                                                <input type="text" class="form-control" wire:model.defer="question_option_input" placeholder="Escribe la opción">
+                                                            </div>
+                                                            <div class="ms-2">
+                                                                <button type="button" class="btn btn-success" wire:click="addOption">Añadir</button>
+                                                            </div>
+                                                        </div>
+                                                        @if(!empty($question_options_list))
+                                                            <div class="mb-3">
+                                                                <label>Opciones agregadas:</label>
+                                                                <ol>
+                                                                    @foreach($question_options_list as $idx => $opt)
+                                                                        <li>
+                                                                            {{ $opt }}
+                                                                            <button type="button" class="btn btn-link btn-sm text-danger" wire:click="removeOption({{ $idx }})">Eliminar</button>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ol>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label>Respuesta Correcta (número de opción)</label>
+                                                                <select class="form-control" wire:model.defer="question_correct">
+                                                                    <option value="">Selecciona la opción correcta</option>
+                                                                    @foreach($question_options_list as $idx => $opt)
+                                                                        <option value="{{ $idx+1 }}">Opción {{ $idx+1 }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        @endif
+                                                    @else
+                                                        <div class="mb-3">
+                                                            <label>Respuesta Correcta</label>
+                                                            <input type="text" class="form-control" wire:model.defer="question_correct">
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" wire:click="closeQuestionModal">Cancelar</button>
+                                                    <button type="button" class="btn btn-primary" wire:click="addExamQuestion">Agregar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group tb-dbtnarea">
+                                        <a href="javascript:void(0);" wire:click.prevent="save" class="tb-btn">
+                                            @if($editMode)
+                                                {{ __('general.update') }}
+                                            @else
+                                                {{ __('general.add_now') }}
+                                            @endif
+                                        </a>
+                                        @if($editMode)
+                                            <a href="javascript:void(0);" wire:click.prevent="resetForm" class="tb-btn tb-btnsecondary">{{ __('general.cancel') }}</a>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Instructor</label>
-                                    <input type="text" class="form-control" wire:model.defer="instructor_name">
-                                    @error('instructor_name') <span class="text-danger">{{ $message }}</span> @enderror
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-12 tb-md-60">
+                <div class="tb-dhb-mainheading">
+                    <h4>{{ __('general.courses') }}</h4>
+                    <div class="tb-sortby">
+                        <form class="tb-themeform tb-displistform">
+                            <fieldset>
+                                <div class="tb-themeform__wrap">
+                                    {{--  <div class="tb-actionselect">
+                                        <a href="javascript:;" class="tb-btn btnred {{ $selectedCourses ? '' : 'd-none' }}" wire:click="deleteSelected">{{ __('general.delete_selected') }}</a>
+                                    </div> --}}
+                                    <div class="tb-actionselect">
+                                        <div class="tb-select">
+                                            <select wire:model.live="sortby" class="form-control tk-select2">
+                                                <option value="asc">{{ __('general.asc') }}</option>
+                                                <option value="desc">{{ __('general.desc') }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="tb-actionselect">
+                                        <div class="tb-select">
+                                            <select wire:model.live="perPage" class="form-control tk-select2">
+                                                @foreach($perPageOptions as $opt)
+                                                    <option value="{{$opt}}">{{$opt}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group tb-inputicon tb-inputheight">
+                                        <i class="icon-search"></i>
+                                        <input type="text" class="form-control" wire:model.live.debounce.500ms="search" autocomplete="off" placeholder="{{ __('general.search_here') }}">
+                                    </div>
                                 </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Descripcion</label>
-                                    <input type="text" class="form-control" wire:model.defer="description">
-                                    @error('description') <span class="text-danger">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Video</label>
-                                    <input type="file" class="form-control" wire:model="video_file" accept="video/*">
-                                    @error('video_file') <span class="text-danger">{{ $message }}</span> @enderror
-                                </div>
-                                <button type="submit" class="btn btn-primary">
-                                    {{ $editMode ? 'Actualizar' : 'Crear' }}
-                                </button>
-                                @if($editMode)
-                                <button type="button" class="btn btn-secondary ms-2"
-                                    wire:click="resetForm">Cancelar</button>
-                                @endif
-                            </form>
-                        </div>
+                            </fieldset>
+                        </form>
                     </div>
                 </div>
 
-                <!-- Columna derecha - Tabla -->
-                <div class="col-lg-8 col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Lista de Cursos</h5>
-                        </div>
-                        <div class="card-body p-0">
-                            <!-- Eliminé un div table-responsive duplicado -->
-                            <div class="table-responsive" style="overflow-x: auto;">
-                                <table class="table table-striped align-middle mb-0"
-                                    style="table-layout: fixed; width: 100%;">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th style="width: 5%" class="text-nowrap">ID</th>
-                                            <th style="width: 15%" class="text-nowrap">Nombre</th>
-                                            <th style="width: 15%" class="text-nowrap">Instructor</th>
-                                            <th style="width: 30%" class="text-nowrap">Descripción</th>
-                                            <th style="width: 15%" class="text-nowrap">Video</th>
-                                            <th style="width: 20%" class="text-nowrap">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($courses as $course)
-                                        <tr>
-                                            <td class="text-truncate" style="max-width: 60px;">{{ $course->id }}</td>
-                                            <td class="text-truncate" style="max-width: 150px;">{{ $course->name }}</td>
-                                            <td class="text-truncate" style="max-width: 150px;">{{
-                                                $course->instructor_name }}</td>
-                                            <td class="text-truncate" style="max-width: 250px;">{{ $course->description
-                                                }}</td>
-                                            <td class="text-truncate" style="max-width: 120px;">
-                                                @if($course->video_url)
-                                                <a href="{{ Storage::url($course->video_url) }}" target="_blank"
-                                                    class="btn btn-outline-primary btn-sm">Ver video</a>
-                                                @else
-                                                <span class="text-muted">Sin video</span>
-                                                @endif
-                                            </td>
-                                            <td class="text-truncate" style="max-width: 180px;">
-                                                <div class="d-flex gap-2 flex-wrap">
-                                                    <button class="btn btn-warning btn-sm"
-                                                        wire:click="edit({{ $course->id }})">Editar</button>
-                                                    <button class="btn btn-danger btn-sm"
-                                                        wire:click="delete({{ $course->id }})"
-                                                        onclick="return confirm('¿Seguro que deseas eliminar este curso?')">Eliminar</button>
+                <div class="tb-disputetable tb-pageslanguage">
+                    @if(!empty($courses) && $courses->count() > 0)
+                        <table class="table tb-table tb-dbholder @if(setting('_general.table_responsive') == 'yes') tb-table-responsive @endif">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <div class="tb-checkbox">
+                                            <input id="checkAll" wire:model.lazy="selectAll" type="checkbox">
+                                            <label for="checkAll">{{ __('general.name') }}</label>
+                                        </div>
+                                    </th>
+                                    <th>{{ __('general.instructor') }}</th>
+                                    <th>{{ __('general.description') }}</th>
+                                    <th>{{ __('general.actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($courses as $course)
+                                    <tr>
+                                        <td data-label="{{ __('general.name') }}">
+                                            <div class="tb-checkboxwithimg">
+                                                <div class="tb-checkbox">
+                                                    <input id="course_id{{ $course->id }}" wire:model.lazy="selectedCourses" value="{{ $course->id }}" type="checkbox">
+                                                    <label for="course_id{{ $course->id }}">
+                                                        <span>{!! $course->name !!}</span>
+                                                    </label>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="6" class="text-center py-4">No hay cursos registrados.</td>
-                                        </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-
-                            </div>
-                            <div class="p-3 border-top">
-                                {{ $courses->links() }}
-                            </div>
-                        </div>
-                    </div>
+                                            </div>
+                                        </td>
+                                        <td data-label="{{ __('general.instructor') }}"><span>{{ $course->instructor_name }}</span></td>
+                                        <td data-label="{{ __('general.description') }}"><span>{!! Str::limit($course->description, 50) !!}</span></td>
+                                        <td data-label="{{ __('general.actions') }}">
+                                            <ul class="tb-action-icon">
+                                                <li><a href="javascript:void(0);" wire:click.prevent="edit({{ $course->id }})"><i class="icon-edit-3"></i></a></li>
+                                                <li><a href="javascript:void(0);" wire:click.prevent="delete({{ $course->id }})" class="tb-delete"><i class="icon-trash-2"></i></a></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        {{ $courses->links('pagination.custom') }}
+                    @else
+                        <x-no-record :image="asset('images/empty.png')" :title="__('general.no_record_title')"/>
+                    @endif
                 </div>
             </div>
         </div>
     </main>
+
+    <div class="modal fade @if($showQuestionModal) show d-block @endif" tabindex="-1" style="@if($showQuestionModal) display:block; background:rgba(0,0,0,0.5); @else display:none; @endif" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Pregunta de Examen</h5>
+                    <button type="button" class="btn-close" wire:click="closeQuestionModal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Pregunta</label>
+                        <input type="text" class="form-control" wire:model.defer="question_text">
+                    </div>
+                    <div class="mb-3">
+                        <label>Tipo</label>
+                        <select class="form-control" wire:model.defer="question_type" wire:change="resetQuestionOptions">
+                            <option value="opcion_unica">Opción única</option>
+                            <option value="abierta">Abierta</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Puntaje</label>
+                        <input type="number" class="form-control" wire:model.defer="question_score">
+                    </div>
+                    @if($question_type === 'opcion_unica')
+                        <div class="mb-3 d-flex align-items-end">
+                            <div class="flex-grow-1">
+                                <label>Agregar opción</label>
+                                <input type="text" class="form-control" wire:model.defer="question_option_input" placeholder="Escribe la opción">
+                            </div>
+                            <div class="ms-2">
+                                <button type="button" class="btn btn-success" wire:click="addOption">Añadir</button>
+                            </div>
+                        </div>
+                        @if(!empty($question_options_list))
+                            <div class="mb-3">
+                                <label>Opciones agregadas:</label>
+                                <ol>
+                                    @foreach($question_options_list as $idx => $opt)
+                                        <li>
+                                            {{ $opt }}
+                                            <button type="button" class="btn btn-link btn-sm text-danger" wire:click="removeOption({{ $idx }})">Eliminar</button>
+                                        </li>
+                                    @endforeach
+                                </ol>
+                            </div>
+                            <div class="mb-3">
+                                <label>Respuesta Correcta (número de opción)</label>
+                                <select class="form-control" wire:model.defer="question_correct">
+                                    <option value="">Selecciona la opción correcta</option>
+                                    @foreach($question_options_list as $idx => $opt)
+                                        <option value="{{ $idx+1 }}">Opción {{ $idx+1 }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
+                    @else
+                        <div class="mb-3">
+                            <label>Respuesta Correcta</label>
+                            <input type="text" class="form-control" wire:model.defer="question_correct">
+                        </div>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" wire:click="closeQuestionModal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" wire:click="addExamQuestion">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

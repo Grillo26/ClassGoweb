@@ -74,4 +74,5 @@ return [
     'manage-dispute' => 'Gerenciar disputa',
     'history_tutorials' => 'Histórico de tutorias',
     'courses' => 'Cursos',
+   
 ];
