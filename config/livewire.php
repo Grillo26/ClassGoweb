@@ -63,6 +63,8 @@ return [
     |
     */
 
+      'max_upload_size' => 1024*50,
+
     'temporary_file_upload' => [
         'disk' => 'local',        // Example: 'local', 's3'              | Default: 'default'
         'rules' => ['max:500000'],       // Example: ['file', 'mimes:png,jpg']  | Default: ['required', 'file', 'max:12288'] (12MB)
@@ -158,4 +160,6 @@ return [
     */
 
     'pagination_theme' => 'tailwind',
+
+   
 ];

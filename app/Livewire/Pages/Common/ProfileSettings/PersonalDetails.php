@@ -34,19 +34,9 @@ class PersonalDetails extends Component
     public $gender = 'No especificado'; // Cambiado a string para evitar problemas de validación
     public $slug = '';
     public $description = '';
-    public $country = '';
-    public $state = '';
-    public $city = '';
-    public $address = '';
-    public $lat = '';
-    public $long = '';
     public $native_language = '';
     public $user_languages = [];
     public $selected_languages = [];
-
-    // Add this property to your PersonalDetails class
-    public $selected_language = '';
-
     // Archivos
     public $image;
     public $intro_video;
@@ -54,17 +44,14 @@ class PersonalDetails extends Component
     public $isUploadingVideo = false;
     public $imageName = '';
     public $videoName = '';
-
     // Estados
     public $isLoading = true;
     public $hasStates = false;
     public $activeRoute = false;
-
-    // Configuración
     public $allowImgFileExt = ['jpg', 'png'];
     public $allowVideoFileExt = ['mp4', 'mov', 'avi', 'wmv', 'm4v'];
     public $maxImageSize = 3; // MB
-    public $maxVideoSize = 500; // MB
+    public $maxVideoSize = 50; // MB
     public $enableGooglePlaces = false;
 
     /**
@@ -104,8 +91,6 @@ class PersonalDetails extends Component
         $this->enableGooglePlaces = setting('_api.enable_google_places') == '1';
         $this->allowImgFileExt = explode(',', setting('_general.allowed_image_extensions') ?? 'jpg,png');
         $this->allowVideoFileExt = explode(',', setting('_general.allowed_video_extensions') ?? 'mp4');
-        $this->maxImageSize = (int)(setting('_general.max_image_size') ?? 3);
-        $this->maxVideoSize = (int)(setting('_general.max_video_size') ?? 20);
     }
 
     /**
@@ -114,34 +99,21 @@ class PersonalDetails extends Component
     private function loadUserData(): void
     {
         $profile = $this->profileService->getUserProfile();
-        $address = $this->profileService->getUserAddress();
-        
         // Consulta directa a user_languages para el usuario actual
         $userLanguages = UserLanguage::where('user_id', Auth::id())
             ->pluck('language_id')
             ->toArray();
-            
         $this->user_languages = $userLanguages;
-       // dd($this->user_languages, "user_languages"); // Debug: Ver los idiomas cargados
-        // Carga datos básicos
         $this->first_name = $profile?->first_name ?? '';
         $this->last_name = $profile?->last_name ?? '';
         $this->email = Auth::user()?->email;
         $this->phone_number = $profile?->phone_number ?? '';
-        // Ahora el valor de género es int, lo pasamos tal cual
         $this->gender = $this->normalizeGender($profile?->gender ?? 3);
         $this->slug = $profile?->slug ?? '';
         $this->description = $profile?->description ?? '';
         $this->image = $profile?->image ?? '';
         $this->intro_video = $profile?->intro_video ?? '';
         $this->native_language = $profile?->native_language ?? '';
-        // Carga datos de ubicación
-        $this->country = $address?->country_id ?? '';
-        $this->state = $address?->state_id ?? '';
-        $this->city = $address?->city ?? '';
-        $this->address = $address?->address ?? '';
-        $this->lat = $address?->lat ?? '';
-        $this->long = $address?->long ?? '';
     }
 
     /**
@@ -149,9 +121,9 @@ class PersonalDetails extends Component
      */
     private function normalizeGender($value)
     {
-        // Si ya es int válido, retorna tal cual
         $valid = [1, 2, 3];
-        if (in_array($value, $valid, true)) return $value;
+        if (in_array($value, $valid, true))
+            return $value;
         // Si viene como string, mapea
         $map = [
             'male' => 1,
@@ -174,12 +146,10 @@ class PersonalDetails extends Component
             $states = null;
             $countries = Country::orderBy('name')->get();
             $languages = Language::get(['id', 'name'])->pluck('name', 'id');
-         
             if (!empty($this->country)) {
                 $states = $this->profileService->countryStates($this->country);
                 $this->hasStates = $states->isNotEmpty();
             }
-
             return view('livewire.pages.common.profile-settings.personal-details', [
                 'countries' => $countries,
                 'states' => $states,
@@ -196,6 +166,9 @@ class PersonalDetails extends Component
         }
     }
 
+
+
+
     /**
      * Actualiza la información del perfil
      */
@@ -203,25 +176,23 @@ class PersonalDetails extends Component
     {
         try {
             $this->ensureProfileService();
-
-            // Validación temporal sin los campos de ubicación
-            /* $this->validate([
-                'first_name' => 'required|string|max:255',
-                'last_name' => 'required|string|max:255',
-                'phone_number' => 'nullable|string|max:20',
-                'gender' => 'required|in:male,female,not_specified',
-                'native_language' => 'required|string|max:255',
-                'user_languages' => 'required|array',
+            $this->validate([
+                'first_name' => 'required|string|max:100',
+                'last_name' => 'required|string|max:100',
+                'phone_number' => 'required|string|max:20',
                 'description' => 'required|string|max:500',
-            ]); */ 
-
-            // Actualiza datos del perfilt
-            //dd($this->phone_number);
-
+                'native_language' => 'required|integer|exists:languages,id',
+            ], [
+                // Mensajes personalizados (opcional)
+            ], [
+                'first_name' => __('profile.first_name'),
+                'last_name' => __('profile.last_name'),
+                'phone_number' => __('profile.phone_number'),
+                'description' => __('profile.description'),
+                'native_lenguage'=> __('profile.native_language'),
+            ]);
 
             // El valor de género ya es int desde el front
-            //dd($this->gender);
-            //dd($this->slug, "slug");
             $profileData = [
                 'first_name' => $this->first_name,
                 'last_name' => $this->last_name,
@@ -231,35 +202,26 @@ class PersonalDetails extends Component
                 'description' => $this->description,
                 'native_language' => $this->native_language,
             ];
-
-           if ($this->image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            if ($this->image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
                 // Guardar temporalmente en storage
                 $filename = time() . '_' . $this->image->getClientOriginalName();
                 $tempPath = $this->image->storeAs('temp', $filename);
-
                 // Mover a public/profile_images
                 $destinationPath = public_path('storage/profile_images');
-               
                 if (!file_exists($destinationPath)) {
                     mkdir($destinationPath, 0755, true);
                 }
                 rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
-
                 $profileData['image'] = 'profile_images/' . $filename;
-
                 // Generar miniatura de la imagen
                 if (!empty($profileData['image'])) {
-                  
                     $this->dispatch('update_image', image: resizedImage($profileData['image'], 36, 36));
-                
-                }    
-            } 
-            
+                }
+            }
             if ($this->intro_video instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
                 // Guardar temporalmente en storage
                 $filename = time() . '_' . $this->intro_video->getClientOriginalName();
                 $tempPath = $this->intro_video->storeAs('temp', $filename);
-
                 // Mover a public/storage/profile_videos
                 $destinationPath = public_path('storage/profile_videos');
                 if (!file_exists($destinationPath)) {
@@ -267,12 +229,9 @@ class PersonalDetails extends Component
                 }
                 rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
                 $profileData['intro_video'] = 'profile_videos/' . $filename;
-            }   
-            // Guarda los datos
-            $this->profileService->setUserProfile($profileData);
-            // Guardar los IDs de idiomas directamente
-            $this->profileService->storeUserLanguages($this->user_languages);
-
+            }
+            $this->profileService->setUserProfile($profileData);// Guarda los datos
+            $this->profileService->storeUserLanguages($this->user_languages);// Guardar los IDs de idiomas directamente
             // Enviar correo notificando el cambio de perfil
             try {
                 $user = Auth::user();
@@ -281,16 +240,19 @@ class PersonalDetails extends Component
                 foreach ($profileData as $key => $value) {
                     $contenido .= ucfirst(str_replace('_', ' ', $key)) . ': ' . $value . "\n";
                 }
-                \Mail::raw($contenido, function($message) use ($user) {
-                    $message->to(env('MAIL_FROM_ADDRESS') )
+                \Mail::raw($contenido, function ($message) use ($user) {
+                    $message->to(env('MAIL_FROM_ADDRESS'))
                         ->subject('Notificación de actualización de perfil');
                 });
-                
+
             } catch (\Exception $e) {
                 Log::error('Error al enviar correo de actualización de perfil: ' . $e->getMessage());
             }
 
             $this->dispatch('showAlertMessage', type: 'success', message: __('general.success_message'));
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Relanzar la excepción para que Livewire muestre los errores en el formulario automáticamente
+            throw $e;
         } catch (\Exception $e) {
             Log::error('Error al actualizar perfil: ' . $e->getMessage());
             $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_message'));
@@ -313,45 +275,49 @@ class PersonalDetails extends Component
         ];
         return $map[$value] ?? 3;
     }
-
-    /**
-     * Maneja la carga de archivos
-     */
-    public function upload($field, $file)
+    public function updatedIntroVideo($value)
     {
+
+        $this->isUploadingVideo = true;
         try {
-            if ($field === 'image') {
-                $this->isUploadingImage = true;
-                $this->validate([
-                    'image' => 'image|max:' . ($this->maxImageSize * 1024) . '|mimes:' . implode(',', $this->allowImgFileExt)
-                ], [
-                    'image.image' => 'El archivo debe ser una imagen válida.',
-                    'image.max' => 'La imagen no debe superar ' . $this->maxImageSize . 'MB.',
-                    'image.mimes' => 'La imagen debe ser de tipo: ' . implode(', ', $this->allowImgFileExt)
-                ]);
-                $this->imageName = $file->getClientOriginalName();
-            } else if ($field === 'intro_video') {
-                $this->isUploadingVideo = true;
-                $this->validate([
-                    'intro_video' => 'file|max:' . ($this->maxVideoSize * 1024) . '|mimes:' . implode(',', $this->allowVideoFileExt)
-                ], [
-                    'intro_video.file' => 'El archivo debe ser un video válido.',
-                    'intro_video.max' => 'El video no debe superar ' . $this->maxVideoSize . 'MB.',
-                    'intro_video.mimes' => 'El video debe ser de tipo: ' . implode(', ', $this->allowVideoFileExt)
-                ]);
-                $this->videoName = $file->getClientOriginalName();
-            }
+            $this->validate([
+                'intro_video' => 'file|max:' . ($this->maxVideoSize * 1024) . '|mimes:' . implode(',', $this->allowVideoFileExt)
+            ], [
+                'intro_video.file' => 'El archivo debe ser un video válido.',
+                'intro_video.mimes' => 'El video debe ser de tipo: ' . implode(', ', $this->allowVideoFileExt)
+            ]);
+            $this->videoName = $value->getClientOriginalName();
         } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::error('Error de validación al cargar archivo: ' . $e->getMessage());
-            $this->dispatch('showAlertMessage', type: 'error', message: $e->validator->errors()->first());
-        } catch (\Exception $e) {
-            Log::error('Error al cargar archivo: ' . $e->getMessage());
-            $this->dispatch('showAlertMessage', type: 'error', message: __('general.error_uploading_file'));
+            $this->videoName = '';
+            $this->intro_video = null;
+            $this->addError('intro_video', $e->validator->errors()->first('intro_video'));
         } finally {
-            $this->isUploadingImage = false;
             $this->isUploadingVideo = false;
         }
     }
+
+    public function updatedImage($value)
+    {
+        $this->isUploadingImage = true;
+        try {
+            $this->validate([
+                'image' => 'image|max:' . ($this->maxImageSize * 1024) . '|mimes:' . implode(',', $this->allowImgFileExt)
+            ], [
+                'image.image' => 'El archivo debe ser una imagen válida.',
+                'image.max' => 'La imagen no debe superar ' . $this->maxImageSize . 'MB.',
+                'image.mimes' => 'La imagen debe ser de tipo: ' . implode(', ', $this->allowImgFileExt)
+            ]);
+            $this->imageName = $value->getClientOriginalName();
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->imageName = '';
+            $this->image = null;
+            $this->addError('image', $e->validator->errors()->first('image'));
+        } finally {
+            $this->isUploadingImage = false;
+        }
+    }
+
+
 
     /**
      * Elimina archivos multimedia

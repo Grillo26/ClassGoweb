@@ -70,19 +70,20 @@ return [
     'description_text' => 'Proporcione su formación académica para ayudarnos a evaluar sus calificaciones.',
     'resume_highlights' => 'Aspectos destacados del currículum',
     'social_profile_placeholder' => 'Introduzca :profile_name :type',
-    'basic_info' => 'Provide your personal information below to complete your profile',
+    'basic_info' => 'Proporcionar información básica para completar su perfil',
     'email' => 'Email',
     'phone_number' => 'Phone number',
     'profile_picture' => 'Profile photo',
-    'upload_image' => 'Upload image',
-    'upload_video' => 'Upload video',
+    'upload_image' => 'Cargar Imagen',
+    'upload_video' => 'Cargar Video',
     'upload_resume' => 'Upload resume',
     'upload_social_media' => 'Upload social media',
     'upload_other' => 'Upload other',
-    'allowed_formats' => 'Allowed formats',
+    'allowed_formats' => 'Formatos permitidos:',
     'max' => 'Maximum',
     'other_languages' => 'Other languages',
-    'remove' => 'Remove',
+    'remove' => 'Eliminar',
+    
 
 ];
 
