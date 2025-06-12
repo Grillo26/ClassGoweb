@@ -181,7 +181,6 @@ class PersonalDetails extends Component
                 'last_name' => 'required|string|max:100',
                 'phone_number' => 'required|string|max:20',
                 'description' => 'required|string|max:500',
-                'native_language' => 'required|integer|exists:languages,id',
             ], [
                 // Mensajes personalizados (opcional)
             ], [
@@ -189,7 +188,6 @@ class PersonalDetails extends Component
                 'last_name' => __('profile.last_name'),
                 'phone_number' => __('profile.phone_number'),
                 'description' => __('profile.description'),
-                'native_lenguage'=> __('profile.native_language'),
             ]);
 
             // El valor de género ya es int desde el front
