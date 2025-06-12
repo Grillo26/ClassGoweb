@@ -229,4 +229,51 @@ class TutorController extends Controller
             return $this->success(data: $states,message: __('api.states_fetched_successfully'));
         }
     }
+
+    /**
+     * API: Obtener tutores verificados con materias registradas y filtros estrictos
+     * GET /api/verified-tutors
+     */
+    public function getVerifiedTutorsWithSubjects(Request $request)
+    {
+        try {
+            $query = User::whereHas('roles', function($q) {
+                    $q->where('name', 'tutor');
+                })
+                ->whereHas('profile', function($q) {
+                    $q->whereNotNull('verified_at');
+                })
+                ->whereHas('subjects') // Solo tutores con materias registradas
+                ->with(['profile', 'subjects']);
+
+            // Filtro por keyword (solo en nombre de la materia)
+            if ($request->filled('keyword')) {
+                $keyword = trim($request->keyword);
+                $query->whereHas('subjects', function($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            }
+
+            // Filtro por subject_id
+            if ($request->filled('subject_id')) {
+                $query->whereHas('subjects', function($q) use ($request) {
+                    $q->where('subjects.id', $request->subject_id);
+                });
+            }
+
+            // Ordenar por nombre del tutor
+            $query->join('profiles', 'users.id', '=', 'profiles.user_id')
+                  ->orderBy('profiles.first_name', 'asc')
+                  ->select('users.*');
+
+            $tutors = $query->paginate(10); // Paginado
+            $tutors->getCollection()->transform(function ($tutor) {
+                return $this->getFavouriateTutors($tutor);
+            });
+            return $this->success(data: new \App\Http\Resources\FindTutors\TutorCollection($tutors));
+        } catch (\Exception $e) {
+            Log::error('Error en getVerifiedTutorsWithSubjects: ' . $e->getMessage());
+            return $this->error(message: 'Error al buscar tutores verificados: ' . $e->getMessage());
+        }
+    }
 }
