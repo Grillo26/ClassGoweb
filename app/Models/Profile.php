@@ -35,6 +35,7 @@ class Profile extends Model {
         'recommend_tutor',
         'verified_at',
         'feature_expired_at',
+       
     ];
 
     protected $table = 'profiles';

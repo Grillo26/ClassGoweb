@@ -296,47 +296,47 @@ public function getTutors($data = array()) {
     /**
      * Summary of featuredTutors
      */
-    public function featuredTutors(){
+  public function featuredTutors(){
         $featuredTutors = User::query()
             ->select('id')
-            // Filtrar solo tutores por rol
             ->whereHas('roles', function($q) {
                 $q->where('name', 'tutor');
             })
-            // Solo tutores con perfil verificado
             ->whereHas('profile', function ($query) {
                 $query->whereNotNull('verified_at');
             })
+            // Solo tutores con al menos un registro en companyCourseUsers
+            ->whereHas('companyCourseUsers')
             ->with([
                 'profile:id,user_id,slug,tagline,verified_at,first_name,last_name,image,intro_video,description',
                 'address.state',
                 'address.country',
                 'educations',
                 'subjects',
+                'userSubjectSlots'
             ])
             ->withCount([
                 'bookingSlots as active_students' => function($query){
                     $query->whereStatus('active');
                 },
-                // Cuenta total de cursos asignados al tutor (CompanyCourseUser)
                 'companyCourseUsers',
-                // Cuenta de cursos completados por el tutor (status completed)
                 'companyCourseUsers as completed_courses_count' => function($query){
                     $query->where('status', 'completed');
                 }
             ])
             ->withAvg('reviews as avg_rating', 'rating')
             ->withCount('reviews as total_reviews')
-            // Orden especial: primero Gabriel Alpiry Hurtado si existe
+            // Gabriel Alpiry Hurtado siempre primero
             ->orderByRaw(
-                "CASE WHEN EXISTS (
-                    SELECT 1 FROM profiles p WHERE p.user_id = users.id AND p.first_name = ? AND p.last_name = ?
-                ) THEN 0 ELSE 1 END",
+                "CASE WHEN EXISTS (\n                SELECT 1 FROM profiles p WHERE p.user_id = users.id AND p.first_name = ? AND p.last_name = ?\n            ) THEN 0 ELSE 1 END",
                 ['Gabriel', 'Alpiry Hurtado']
             )
-            // Luego los que completaron todos los cursos y tienen al menos uno
+            // Luego los que tienen todos sus cursos en completed
             ->orderByRaw('CASE WHEN company_course_users_count > 0 AND completed_courses_count = company_course_users_count THEN 0 ELSE 1 END')
+            // Luego por la cantidad de cursos completados
             ->orderByDesc('completed_courses_count')
+            // Luego por la cantidad total de companyCourseUsers
+            ->orderByDesc('company_course_users_count')
             ->inRandomOrder()
             ->get();
         return $featuredTutors;

@@ -227,6 +227,19 @@ class PersonalDetails extends Component
                 }
                 rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
                 $profileData['intro_video'] = 'profile_videos/' . $filename;
+               
+               
+               
+           /*      $thumbnailName = pathinfo($filename, PATHINFO_FILENAME) . '.jpg';
+                $thumbnailPath = public_path('storage/profile_videos/thumbnails/' . $thumbnailName);
+                if (!file_exists(dirname($thumbnailPath))) {
+                    mkdir(dirname($thumbnailPath), 0755, true);
+                }
+                $videoFullPath = $destinationPath . '/' . $filename;
+                // Extrae el frame del segundo 1
+                exec("ffmpeg -i \"$videoFullPath\" -ss 00:00:01.000 -vframes 1 \"$thumbnailPath\"");
+                $profileData['intro_video_thumbnail'] = 'profile_videos/thumbnails/' . $thumbnailName; */
+           
             }
             $this->profileService->setUserProfile($profileData);// Guarda los datos
             $this->profileService->storeUserLanguages($this->user_languages);// Guardar los IDs de idiomas directamente
@@ -249,7 +262,6 @@ class PersonalDetails extends Component
 
             $this->dispatch('showAlertMessage', type: 'success', message: __('general.success_message'));
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Relanzar la excepción para que Livewire muestre los errores en el formulario automáticamente
             throw $e;
         } catch (\Exception $e) {
             Log::error('Error al actualizar perfil: ' . $e->getMessage());
