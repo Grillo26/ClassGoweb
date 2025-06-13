@@ -59,11 +59,9 @@
                             <ul class="am-tutorsearch_info">
                                
                                 <li>
-                                    <div class="am-tutorsearch_info_icon"><i class="am-icon-star-01"></i></div>
-                                    <span>{{ number_format($singleTutor->avg_rating, 1) }}<em>/5.0 ({{ $singleTutor->total_reviews == 1 ? __('general.review_count') : __('general.reviews_count', ['count' => $singleTutor->total_reviews] ) }})</em></span>
-
+                                    <div class="am-tutorsearch_info_icon"><i class="am-icon-book"></i></div>
+                                    <span>{{ $singleTutor->completed_courses_count }}/{{ $singleTutor->company_course_users_count }} cursos completados</span>
                                 </li>
-                                
                             </ul>
                             <a href="{{ route('tutor-detail', ['slug' => $singleTutor->profile->slug]) }}" class="am-white-btn">{{ __('general.profile') }}</a>
                         </div>
