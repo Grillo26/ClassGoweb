@@ -276,4 +276,39 @@ class TutorController extends Controller
             return $this->error(message: 'Error al buscar tutores verificados: ' . $e->getMessage());
         }
     }
+
+    /**
+     * API: Obtener la ruta de la foto de perfil de los tutores verificados
+     * GET /api/verified-tutors-photos
+     */
+    public function getVerifiedTutorsPhotos(Request $request)
+    {
+        try {
+            $tutors = \App\Models\User::whereHas('roles', function($q) {
+                    $q->where('name', 'tutor');
+                })
+                ->whereHas('profile', function($q) {
+                    $q->whereNotNull('verified_at');
+                })
+                ->with(['profile' => function($q) {
+                    $q->select('id', 'user_id', 'image');
+                }])
+                ->get();
+
+            $result = $tutors->map(function($tutor) {
+                $rutaBD = $tutor->profile ? $tutor->profile->image : null;
+                $url = $rutaBD ? url('public/storage/' . $rutaBD) : null;
+                return [
+                    'id' => $tutor->id,
+                    'profile_image' => $url,
+                    'profile_image_db_path' => $rutaBD
+                ];
+            });
+
+            return $this->success($result, 'Fotos de perfil de tutores verificados obtenidas exitosamente');
+        } catch (\Exception $e) {
+            \Log::error('Error en getVerifiedTutorsPhotos: ' . $e->getMessage());
+            return $this->error(message: 'Error al obtener fotos de tutores verificados: ' . $e->getMessage());
+        }
+    }
 }

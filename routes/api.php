@@ -95,6 +95,7 @@ Route::get('subjects',                                         [BookingControlle
 Route::get('settings',                                         [OptionBuilderController::class, 'getOpSettings']);
 Route::get('alianzas',                                          [AlianzaController::class, 'index']);
 Route::get('all-subjects', [SubjectController::class, 'index']);
+Route::get('verified-tutors-photos', [\App\Http\Controllers\Api\TutorController::class, 'getVerifiedTutorsPhotos']);
 Route::fallback(function () {
     return response()->json([
         'message' => __('general.api_url_not_found'),
