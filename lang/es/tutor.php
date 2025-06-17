@@ -11,7 +11,7 @@ return [
     'upload_qr_code' => 'Agregar QR',
     'session' => 'Sesión',
     'per_session' => '/sesión',
-    'sessions' => 'Sesiones',
+    'sessions' => 'Materias',
     'similar_tutors' => 'Tutores similares',
     'send_message' => 'Enviar mensaje',
     'book_session' => 'Reserva una sesión',
