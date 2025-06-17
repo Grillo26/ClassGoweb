@@ -49,11 +49,11 @@
                                             {{-- <span class="flag flag-{{ strtolower($singleTutor->address->country->short_code) }}"></span> --}}
                                         @endif
                                     </h3>
-                                    <span>
+                                    {{-- <span>
                                         @foreach ($singleTutor->educations as $singleEducation)
                                             {{ $singleEducation->course_title }}
                                         @endforeach
-                                    </span>
+                                    </span> --}}
                                 </div>
                             </div>
                             <ul class="am-tutorsearch_info">

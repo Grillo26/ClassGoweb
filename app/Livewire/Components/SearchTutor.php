@@ -11,6 +11,7 @@ use Livewire\Attributes\Renderless;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Subject;
+use \Carbon\Carbon;
 
 // #[Lazy]
 class SearchTutor extends Component
@@ -30,8 +31,10 @@ class SearchTutor extends Component
     public $subject_id = null;
     private $siteService;
     private $userService;
+    private $isAvailableNow = false;
 
-    public function boot(SiteService $siteService) {
+    public function boot(SiteService $siteService)
+    {
         $this->siteService = $siteService;
         $user = Auth::user();
         $this->userService = new UserService($user);
@@ -41,7 +44,6 @@ class SearchTutor extends Component
     {
         $repeatItems = !empty($this->filters['per_page']) ? $this->filters['per_page'] : (setting('_general.per_page_opt') ?? 10);
         return view('skeletons.tutor-fullpage-list', compact('repeatItems'));
-   
     }
 
     public function mount($filters = [])
@@ -52,10 +54,10 @@ class SearchTutor extends Component
         $this->filters = $filters;
         $this->isLoadPage = true;
         $this->updateSubjects();
-        $this->repeatItems = !empty($this->filters['per_page']) 
-            ? $this->filters['per_page'] 
+        $this->repeatItems = !empty($this->filters['per_page'])
+            ? $this->filters['per_page']
             : (setting('_general.per_page_opt') ?? 10);
-        if(Auth::user()?->role == 'student'){
+        if (Auth::user()?->role == 'student') {
             $this->allowFavAction = true;
         }
     }
@@ -93,23 +95,23 @@ class SearchTutor extends Component
             $this->filters['group_id'] = $this->group_id;
             $this->filters['subject_id'] = $this->subject_id;
             $tutors = $this->siteService->getTutors($this->filters);
-            if ($this->allowFavAction){
+            $this->isAviable($tutors);
+            if ($this->allowFavAction) {
                 $favouriteTutors = $this->userService->getFavouriteUsers()
                     ->get(['favourite_user_id'])
-                    ?->pluck('favourite_user_id')
+                        ?->pluck('favourite_user_id')
                     ->toArray();
             }
         } catch (\Exception $e) {
             \Log::error('Error loading tutors:', ['error' => $e->getMessage()]);
-        } 
+        }
         $this->dispatch('initVideoJs');
-        //dd($this->filters);
         return view('livewire.components.search-tutor', [
             'tutors' => $tutors,
             'favouriteTutors' => $favouriteTutors,
             'subjects' => $this->subjects,
             'subjectGroups' => $this->subjectGroups,
-            'filters' => $this->filters
+            'filters' => $this->filters,
         ]);
     }
 
@@ -126,27 +128,26 @@ class SearchTutor extends Component
     #[On('tutorFilters')]
     public function applyFilter($filters)
     {
- 
         $this->resetPage();
         $this->filters = $filters;
     }
 
     public function updatingPage()
     {
-        $this->dispatch('initVideoJs', timeout:1000);
+        $this->dispatch('initVideoJs', timeout: 1000);
     }
 
     #[Renderless]
     public function toggleFavourite($userId)
     {
         $response = isDemoSite();
-        if( $response ){
-            $this->dispatch('showAlertMessage', type: 'error', title:  __('general.demosite_res_title') , message: __('general.demosite_res_txt'));
+        if ($response) {
+            $this->dispatch('showAlertMessage', type: 'error', title: __('general.demosite_res_title'), message: __('general.demosite_res_txt'));
             return;
         }
-        if ( $this->allowFavAction){
+        if ($this->allowFavAction) {
             $isFavourite = $this->userService->isFavouriteUser($userId);
-            if($isFavourite){
+            if ($isFavourite) {
                 $this->userService->removeFromFavourite($userId);
             } else {
                 $this->userService->addToFavourite($userId);
@@ -163,7 +164,7 @@ class SearchTutor extends Component
         $this->validate($messageReq->rules(), $messageReq->messages());
         $threadInfo = sendMessage($this->recepientId, Auth::user()->id, $this->message);
         $this->threadId = $threadInfo->getData(true)['data']['message']['threadId'] ?? null;
-        if($threadInfo){
+        if ($threadInfo) {
             $this->reset('message');
         }
     }
@@ -171,10 +172,38 @@ class SearchTutor extends Component
 
     #[On('clearAllFilters')]
     public function clearAllFilters()
+    {
+        $this->filters = [];
+        $this->group_id = null;
+        $this->subjects = [];
+        $this->resetPage();
+    }
+
+
+   
+public function isAviable($tutors): void
 {
-    $this->filters = [];
-    $this->group_id = null;
-    $this->subjects = [];
-    $this->resetPage();
+    $now = Carbon::now();
+    foreach ($tutors as $tutor) {
+        $isAvailableNow = false;
+        if ($tutor->userSubjectSlots && $tutor->userSubjectSlots->count() > 0) {
+            foreach ($tutor->userSubjectSlots as $slot) {
+                $slotDate = Carbon::parse($slot->date);
+                if ($slotDate->isSameDay($now)) {
+                    $start = (strlen($slot->start_time) > 8) ? Carbon::parse($slot->start_time) :
+                        Carbon::parse($slot->date . ' ' . $slot->start_time);
+                    $end = (strlen($slot->end_time) > 8) ? Carbon::parse($slot->end_time) :
+                        Carbon::parse($slot->date . ' ' . $slot->end_time);
+                    if ($now->between($start, $end)) {
+                        $isAvailableNow = true;
+                        break;
+                    }
+                }
+            }
+        }
+        $tutor->is_available_now = $isAvailableNow;
+    }
 }
+
+
 }

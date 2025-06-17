@@ -20,29 +20,33 @@
         @include('skeletons.tutor-list')
     </div>
     @else
-   
+
     <div class="am-searchfilter">
         <div class="mb-3">
             <label class="form-label">{{ __('subject.subject_group') }}</label>
-            <input type="text" class="form-control mb-2" placeholder="{{ __('general.search') }}" onkeyup="filterSelectOptions('group_id', this.value)">
+            <input type="text" class="form-control mb-2" placeholder="{{ __('general.search') }}"
+                onkeyup="filterSelectOptions('group_id', this.value)">
             <select id="group_id" class="form-select" wire:model="group_id">
                 <option value="">{{ __('subject.choose_subject_group') }}</option>
                 @foreach ($subjectGroups as $group)
-                    <option value="{{ $group->id }}">{{ $group->name }}</option>
+                <option value="{{ $group->id }}">{{ $group->name }}</option>
                 @endforeach
             </select>
         </div>
         <div class="mb-3">
             <label class="form-label">{{ __('subject.choose_subject_label') }}</label>
-            <input type="text" class="form-control mb-2" placeholder="{{ __('general.search') }}" onkeyup="filterSelectOptions('subject_id', this.value)">
+            <input type="text" class="form-control mb-2" placeholder="{{ __('general.search') }}"
+                onkeyup="filterSelectOptions('subject_id', this.value)">
             <select id="subject_id" class="form-select" wire:model="subject_id">
                 <option value="">{{ __('subject.choose_subject') }}</option>
                 @foreach ($subjects as $subject)
-                    <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                <option value="{{ $subject->id }}">{{ $subject->name }}</option>
                 @endforeach
             </select>
         </div>
     </div>
+
+
 
     <div class="d-none tutors-skeleton" wire:target="filters" wire:loading.class.remove="d-none">
         @include('skeletons.tutor-list')
@@ -50,8 +54,9 @@
     <div wire:loading.class="d-none" wire:target="filters" class="am-tutorlist">
         @if($tutors->isNotEmpty())
         <div class="am-tutorsearch">
+            {{-- for de tutores  --}}
             @foreach ($tutors as $tutor)
-            @php
+           @php
             $tutorInfo['name'] = $tutor->profile->full_name;
             $tutorInfo['id'] = $tutor?->id;
             if (!empty($tutor->profile->image) && Storage::disk(getStorageDisk())->exists($tutor->profile->image)) {
@@ -62,6 +67,8 @@
             url('storage/profile_images/placeholder.png');
             }
             @endphp
+
+            {{-- si el tutor tiene imagen de perfil --}}
             @if(!empty($tutor?->profile?->image))
             <div class="am-tutorsearch_card" id="profile-{{ $tutor->id }}">
                 <div class="am-tutorsearch_video">
@@ -78,33 +85,11 @@
                     $tutorInfo['image'] = url('storage/profile_images/placeholder.png');
                     }
                     @endphp
-
                     <div class="d-flex justify-content-center mb-4" style="position: relative; display: inline-block;">
                         <img class="rounded-xl d-block mx-auto" src="{{ $tutorInfo['image'] }}"
                             alt="{{ $tutor->profile->full_name }}"
                             style="border-radius: 16px; width: 150px; height: 150px; object-fit: cover;">
-
-                        @php
-                        $now = \Carbon\Carbon::now();
-                        $isAvailableNow = false;
-                        if($tutor->userSubjectSlots && $tutor->userSubjectSlots->count() > 0) {
-                        foreach($tutor->userSubjectSlots as $slot) {
-                        $slotDate = \Carbon\Carbon::parse($slot->date);
-                        if ($slotDate->isSameDay($now)) {
-                        // Detecta si start_time y end_time ya tienen fecha
-                        $start = (strlen($slot->start_time) > 8) ? \Carbon\Carbon::parse($slot->start_time) :
-                        \Carbon\Carbon::parse($slot->date.' '.$slot->start_time);
-                        $end = (strlen($slot->end_time) > 8) ? \Carbon\Carbon::parse($slot->end_time) :
-                        \Carbon\Carbon::parse($slot->date.' '.$slot->end_time);
-                        if ($now->between($start, $end)) {
-                        $isAvailableNow = true;
-                        break;
-                        }
-                        }
-                        }
-                        }
-                        @endphp
-                        @if($isAvailableNow)
+                        @if($tutor->is_available_now)
                         <div
                             style="position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 20px; background-color: #28a745; border-radius: 50%; border: 2px solid white;">
                         </div>
@@ -115,14 +100,8 @@
                         @endif
                     </div>
 
-
-
-
-
+                    {{-- botones de reserva y enviar mensaje al tutor  --}}
                     <div class="am-tutorsearch_btns">
-
-
-
                         <a href="{{ route('tutor-detail',['slug' => $tutor->profile->slug]).'#availability' }}"
                             class="am-white-btn">{{ __('tutor.book_session') }}<i
                                 class="am-icon-calender-duration"></i></a>
@@ -142,12 +121,14 @@
                             class="am-likebtn"><i class="am-icon-heart-01"></i></a>
                         @endif
                     </div>
+
+
+
+
                 </div>
                 <div class="am-tutorsearch_content">
                     <div class="am-tutorsearch_head">
                         <div class="am-tutorsearch_user">
-
-
                             @php
                             $imagePath = public_path('storage/profile_images/' . basename($tutor?->profile?->image));
                             $imagePath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $imagePath);
@@ -163,26 +144,14 @@
                             <figure class="am-tutorvone_img">
                                 <img src="{{ $userImage }}" class="am-user_image"
                                     alt="{{ $tutor->profile->full_name }}" />
-                                {{-- <span @class(['am-userstaus', 'am-userstaus_online'=> $tutor->is_online])></span>
-                                --}}
                             </figure>
                             <div class="am-tutorsearch_user_name">
                                 <h3>
                                     <a href="{{ route('tutor-detail',['slug' => $tutor->profile->slug]) }}">{{
                                         $tutor->profile->full_name }}</a>
-
-
                                     @if($tutor?->profile?->verified_at)
                                     <x-frontend.verified-tooltip />
                                     @endif
-                                    {{--
-                                    @if(!empty($tutor?->address?->country?->short_code))
-                                    <span
-                                        class="flag flag-{{ strtolower($tutor?->address?->country?->short_code) }}"></span>
-                                    @endif
-                                    --}}
-
-
                                 </h3>
                                 @if($tutor->profile->tagline)
                                 <span>
@@ -191,14 +160,6 @@
                                 @endif
                             </div>
                         </div>
-
-                        {{--
-                        <div class="am-tutorsearch_fee">
-                            <span>{{ __('tutor.session_fee') }}</span>
-                            <strong>{{ formatAmount($tutor->min_price) }}<em>/{{ __('tutor.session') }}</em></strong>
-                        </div>
-
-                        --}}
                     </div>
                     <ul class="am-tutorsearch_info">
                         <li>
@@ -208,34 +169,30 @@
                                     $tutor->total_reviews] ) }})</em></span>
                         </li>
                         <li>
-                            <div class="am-tutorsearch_info_icon"><i class="am-icon-user-group"></i></div>
-                            <span>{{$tutor->active_students}} <em>{{ $tutor->active_students == '1' ?
-                                    __('tutor.active_student') : __('tutor.active_students') }}</em></span>
-                        </li>
-                        <li>
                             <div class="am-tutorsearch_info_icon"><i class="am-icon-menu-2"></i></div>
                             <span>{{ $tutor->subjects->count() }} <em>{{ $tutor->subjects->count() == 1 ?
                                     __('tutor.session') : __('tutor.sessions') }}</em></span>
                         </li>
+
                         <li>
                             <div class="am-tutorsearch_info_icon"><i class="am-icon-language-1"></i></div>
                             <span> {{ __('tutor.language_know') }}</span>
                             <div class="wa-tags-list">
                                 <ul>
                                     @foreach ($tutor?->languages->slice(0, 3) as $index => $lan)
-                                    <li><span>{{ ucfirst( $lan->name )}}</span></li>
+                                    <li> <span>{{ __('lenguajes.' . $lan->name) }}</span></li>
                                     @endforeach
                                 </ul>
+
                                 @if($tutor?->languages?->count() > 3)
                                 <div class="am-more am-custom-tooltip">
                                     <span class="am-tooltip-text">
                                         @php
-                                        $tutorLanguages = $tutor?->languages->slice(3,
-                                        $tutor?->languages?->count() - 1);
+                                        $tutorLanguages = $tutor?->languages->slice(3,$tutor?->languages?->count() - 1);
                                         @endphp
                                         @if (!empty($tutorLanguages))
                                         @foreach ($tutorLanguages as $lan)
-                                        <span>{{ ucfirst( $lan->name )}}</span>
+                                        <span>{{ __('lenguajes' .$lan->name) }}</span>
                                         @endforeach
                                         @endif
                                     </span>
@@ -245,6 +202,7 @@
                             </div>
                         </li>
                     </ul>
+
                     @if(!empty($tutor->profile->description))
                     <div class="am-toggle-text">
                         <div class="am-addmore">
@@ -266,6 +224,13 @@
                     @endif
                 </div>
             </div>
+            
+
+
+
+            
+            
+            {{-- si el tutor no tiene imagen de perfil  --}}
             @else
             <div class="am-tutorsearch_card am-tutorsearch_novideo" id="profile-{{ $tutor->id }}">
                 <div class="am-tutorsearch_content">
@@ -294,11 +259,7 @@
                                         $tutor->profile->full_name }}</a>
                                     @if($tutor?->profile?->verified_at)
                                     <x-frontend.verified-tooltip />
-                                    @endif
-                                    @if(!empty($tutor?->address?->country?->short_code))
-                                    <span
-                                        class="flag flag-{{ strtolower($tutor?->address?->country?->short_code) }}"></span>
-                                    @endif
+                                    @endif 
                                 </h3>
                                 @if($tutor->profile->tagline)
                                 <span>
@@ -306,10 +267,6 @@
                                 </span>
                                 @endif
                             </div>
-                        </div>
-                        <div class="am-tutorsearch_fee">
-                            <span>{{ __('tutor.session_fee') }}</span>
-                            <strong>{{ formatAmount($tutor->min_price) }}<em>/{{ __('tutor.session') }}</em></strong>
                         </div>
                     </div>
                     <ul class="am-tutorsearch_info">
@@ -401,6 +358,9 @@
                 </div>
             </div>
             @endif
+
+
+
             @endforeach
             <div class="am-pagination am-pagination_two">
                 {{ $tutors->links('pagination.pagination', data:['scrollTo'=>false]) }}
@@ -423,85 +383,12 @@
 
 
 @push('styles')
-<style>
-.select2-custom {
-    position: relative;
-    width: 100%;
-    font-family: inherit;
-}
-.select2-selection {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px 36px 8px 12px;
-    background: #fff;
-    cursor: pointer;
-    min-height: 38px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 15px;
-}
-.select2-arrow {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 13px;
-    color: #888;
-    pointer-events: none;
-}
-.select2-dropdown {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 110%;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 0 0 4px 4px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    z-index: 100;
-    padding: 8px 0 0 0;
-    min-width: 100%;
-}
-.select2-search {
-    width: 100%;
-    border: none;
-    border-bottom: 1px solid #eee;
-    padding: 8px 12px;
-    font-size: 15px;
-    outline: none;
-    background: #fafbfc;
-    border-radius: 4px 4px 0 0;
-    margin-bottom: 4px;
-}
-.select2-results {
-    max-height: 220px;
-    overflow-y: auto;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-.select2-results li {
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 15px;
-    transition: background 0.15s;
-}
-.select2-results li.selected,
-.select2-results li:hover {
-    background: #f0f4fa;
-    color: #1a73e8;
-}
-.no-results {
-    color: #888;
-    padding: 8px 12px;
-    font-style: italic;
-}
-</style>
 
 <!-- Select2 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ asset('css/livewire/components/search-tutor.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css"
+    rel="stylesheet" />
 @endpush
 
 @push('scripts')
@@ -509,7 +396,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-function initSelect2() {
+    function initSelect2() {
     $('#group_id').select2({
         theme: 'bootstrap-5',
         placeholder: '{{ __('subject.choose_subject_group') }}',

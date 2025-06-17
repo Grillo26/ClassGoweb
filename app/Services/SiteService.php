@@ -258,6 +258,7 @@ public function getTutors($data = array()) {
                     ->toTree();
             });
         }
+        //dd($header_menu, "entonces por aca llega");   
         return $header_menu;
     }
 
