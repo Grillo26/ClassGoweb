@@ -75,6 +75,13 @@ class Navigation extends Component
                 'icon'  => '<i class="am-icon-user-01"></i>',
                 'accessibility' => ['tutor','student'],
             ],
+
+
+
+
+
+
+
             // [
             //     'route' => 'student.tuition-settings',
             //     'onActiveRoute' => ['student.tuition-settings'],
@@ -148,7 +155,18 @@ class Navigation extends Component
                 'accessibility' => ['student', 'tutor'],
                 'disableNavigate' => true,
             ],
-            [
+            
+              [
+                'tutorSortOrder' => 10,
+                'studentSortOrder' => 1,
+                'route' => $this->role.'.profile.courses',
+                'onActiveRoute' => [ 'tutor.profile.resume',$this->role.'.profile.account-settings','tutor.profile.resume.education','tutor.profile.resume.experience','tutor.profile.resume.certificate', 'student.profile.contacts', $this->role.'.profile.personal-details', $this->role.'.profile.identification'],
+                'title' => 'Cursos',
+                'icon'  => '<i class="am-icon-user-01"></i>',
+                'accessibility' => ['tutor','student'],
+            ],
+
+            /* [
                 'tutorSortOrder' => 11,
                 'studentSortOrder' => 12,
                 'route' => $this->role.'.disputes',
@@ -157,7 +175,7 @@ class Navigation extends Component
                 'icon'  => '<i class="am-icon-dispute-1"></i>',
                 'accessibility' => ['student', 'tutor'],
                 'disableNavigate' => true,
-            ]
+            ] */
         ];
 
         if(\Nwidart\Modules\Facades\Module::has('forumwise') && \Nwidart\Modules\Facades\Module::isEnabled('forumwise')){

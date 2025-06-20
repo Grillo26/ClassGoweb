@@ -21,8 +21,10 @@ use App\Livewire\Pages\Student\CertificateList;
 use App\Livewire\Pages\Student\Favourite\Favourites;
 use App\Livewire\Pages\Student\Invoices;
 use App\Livewire\Pages\Student\RescheduleSession;
+
 use App\Livewire\Pages\Tutor\ManageAccount\ManageAccount;
 use App\Livewire\Pages\Tutor\ManageSessions\ManageSubjects;
+use App\Livewire\Pages\Tutor\CompanyCourses\Courses;
 use App\Http\Controllers\PaymentController;
 
 use App\Livewire\Pages\Tutor\ManageSessions\MyCalendar;
@@ -60,6 +62,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
             Route::prefix('profile')->name('profile.')->group(function () {
                 Route::get('personal-details', PersonalDetails::class)->name('personal-details');
                 Route::get('account-settings',  AccountSettings::class)->name('account-settings');
+                Route::get('courses',Courses::class)->name('courses');
                 Route::prefix('resume')->name('resume.')->group(function () {
                     Route::get('education', Resume::class)->name('education');
                     Route::get('experience', Resume::class)->name('experience');
