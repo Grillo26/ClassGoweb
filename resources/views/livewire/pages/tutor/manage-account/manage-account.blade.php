@@ -454,12 +454,14 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-    // Verifica si la URL tiene el parámetro ?verified=1
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('verified') === '1') {
-        // Muestra el modal (ajusta el ID según tu modal)
-        $('#verifiedModal').modal('show');
-    }
-});
+        // Verifica si la URL tiene el parámetro ?verified=1
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('verified') === '1') {
+            const modal = document.getElementById('verifiedModal');
+            if (modal) {
+                $('#verifiedModal').modal('show');
+            }
+        }
+    });
 </script>
 @endpush
