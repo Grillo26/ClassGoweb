@@ -451,7 +451,7 @@
     }
 </script>
 
-@push('scripts')
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Verifica si la URL tiene el parámetro ?verified=1
