@@ -51,7 +51,11 @@ class TutorController extends Controller
             // Log de los parámetros recibidos
             Log::info('Parámetros de búsqueda:', [
                 'keyword' => $request->keyword,
-                'subject_id' => $request->subject_id
+                'tutor_name' => $request->tutor_name,
+                'group_id' => $request->group_id,
+                'min_courses' => $request->min_courses,
+                'min_rating' => $request->min_rating,
+                'page' => $request->page
             ]);
 
             // Consulta base
@@ -62,32 +66,49 @@ class TutorController extends Controller
                   $q->whereNotNull('verified_at');
               });
 
-            // Log de la consulta SQL
-            Log::info('SQL Query:', [
-                'sql' => $query->toSql(),
-                'bindings' => $query->getBindings()
-            ]);
-
-            // Si hay parámetros de búsqueda, aplicar filtros
-            if ($request->filled('keyword') || $request->filled('subject_id')) {
-                $query->whereHas('profile', function($q) {
-                    $q->whereNotNull('verified_at');
+            // Filtro por keyword (búsqueda en nombre de materia)
+            if ($request->filled('keyword')) {
+                $keyword = trim($request->keyword);
+                $query->whereHas('subjects', function($q) use ($keyword) {
+                    $q->where('name', 'LIKE', "%{$keyword}%");
                 });
+            }
 
-                // Búsqueda por keyword en materias
-                if ($request->filled('keyword')) {
-                    $keyword = trim($request->keyword);
-                    $query->whereHas('subjects', function($q) use ($keyword) {
-                        $q->where('name', 'LIKE', "%{$keyword}%");
+            // Filtro por tutor_name (búsqueda en nombre del tutor)
+            if ($request->filled('tutor_name')) {
+                $tutorName = trim($request->tutor_name);
+                $query->whereHas('profile', function($q) use ($tutorName) {
+                    $q->where(function($subQ) use ($tutorName) {
+                        $subQ->where('first_name', 'LIKE', "%{$tutorName}%")
+                             ->orWhere('last_name', 'LIKE', "%{$tutorName}%")
+                             ->orWhere(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', "%{$tutorName}%");
                     });
-                }
+                });
+            }
 
-                // Búsqueda por subject_id
-                if ($request->filled('subject_id')) {
-                    $query->whereHas('subjects', function($q) use ($request) {
-                        $q->where('subject_id', $request->subject_id);
-                    });
-                }
+            // Filtro por group_id (categoría de materia)
+            if ($request->filled('group_id')) {
+                $query->whereHas('subjects', function($q) use ($request) {
+                    $q->where('subject_group_id', $request->group_id);
+                });
+            }
+
+            // Filtro por min_courses (número mínimo de cursos completados)
+            if ($request->filled('min_courses')) {
+                $minCourses = (int) $request->min_courses;
+                $query->whereHas('reviews', function($q) use ($minCourses) {
+                    $q->where('status', 'completed');
+                }, '>=', $minCourses);
+            }
+
+            // Filtro por min_rating (calificación mínima)
+            if ($request->filled('min_rating')) {
+                $minRating = (float) $request->min_rating;
+                $query->whereHas('reviews', function($q) use ($minRating) {
+                    $q->select('tutor_id')
+                      ->groupBy('tutor_id')
+                      ->havingRaw('AVG(rating) >= ?', [$minRating]);
+                });
             }
 
             // Ordenar por el nombre del tutor (usando el perfil relacionado)
@@ -99,11 +120,16 @@ class TutorController extends Controller
             $count = $query->count();
             Log::info('Número de tutores encontrados: ' . $count);
 
-            $tutors = $query->paginate(10);
+            // Paginación
+            $perPage = 10; // Puedes hacer esto configurable
+            $page = $request->filled('page') ? (int) $request->page : 1;
+            
+            $tutors = $query->paginate($perPage, ['*'], 'page', $page);
+            
             $tutors->getCollection()->transform(function ($tutor) {
                 return $this->getFavouriateTutors($tutor);
             });
-            // No volver a paginar una colección, solo devolver la paginación original
+
             return $this->success(data: new TutorCollection($tutors));
 
         } catch (\Exception $e) {
