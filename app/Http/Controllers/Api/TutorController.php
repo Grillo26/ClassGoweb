@@ -96,7 +96,7 @@ class TutorController extends Controller
             // Filtro por min_courses (número mínimo de cursos completados)
             if ($request->filled('min_courses')) {
                 $minCourses = (int) $request->min_courses;
-                $query->whereHas('reviews', function($q) use ($minCourses) {
+                $query->whereHas('companyCourseUsers', function($q) use ($minCourses) {
                     $q->where('status', 'completed');
                 }, '>=', $minCourses);
             }
