@@ -100,9 +100,36 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
         return $this->hasMany(UserSubjectGroup::class)->orderBy('sort_order');
     }
 
-    public function reviews(): HasMany
+    /**
+     * Reseñas que recibe el usuario (como tutor)
+     */
+    public function receivedReviews(): HasMany
     {
-        return $this->hasMany(Rating::class, 'tutor_id');
+        return $this->hasMany(UserReview::class, 'user_id');
+    }
+
+    /**
+     * Reseñas que hace el usuario (como estudiante)
+     */
+    public function givenReviews(): HasMany
+    {
+        return $this->hasMany(UserReview::class, 'reviewer_id');
+    }
+
+    /**
+     * Relación muchos a muchos con reseñas (recibidas)
+     */
+    public function reviews()
+    {
+        return $this->belongsToMany(Review::class, 'user_reviews', 'user_id', 'review_id');
+    }
+
+    /**
+     * Relación muchos a muchos con reseñas (dadas)
+     */
+    public function reviewsGiven()
+    {
+        return $this->belongsToMany(Review::class, 'user_reviews', 'reviewer_id', 'review_id');
     }
 
     public function role(): Attribute

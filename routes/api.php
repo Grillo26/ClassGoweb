@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SubjectSlotController;
 use App\Http\Controllers\Api\AlianzaController;
 use App\Http\Controllers\Api\SubjectController;
+use App\Http\Controllers\Api\ReviewController;
 
 
 /*
@@ -86,6 +87,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::Delete('payout-method',                              [PayoutController::class,'removePayoutMethod']);
     Route::apiResource('booking-cart',                          CartController::class);
     Route::post('checkout',                                     [CheckoutController::class,'addCheckoutDetails']);
+
+    Route::get('reviews', [ReviewController::class, 'index']);
+    Route::get('reviews/received', [ReviewController::class, 'getReceivedReviews']);
+    Route::get('reviews/given', [ReviewController::class, 'getUserReviews']);
+    Route::post('reviews', [ReviewController::class, 'store']);
+    Route::get('reviews/{id}', [ReviewController::class, 'show']);
+    Route::put('reviews/{id}', [ReviewController::class, 'update']);
+    Route::delete('reviews/{id}', [ReviewController::class, 'destroy']);
+    Route::get('reviews/stats/{userId}', [ReviewController::class, 'getStats']);
 });
 
 Route::get('country-states',                                    [TutorController::class,'getStates']);
@@ -96,6 +106,7 @@ Route::get('settings',                                         [OptionBuilderCon
 Route::get('alianzas',                                          [AlianzaController::class, 'index']);
 Route::get('all-subjects', [SubjectController::class, 'index']);
 Route::get('verified-tutors-photos', [\App\Http\Controllers\Api\TutorController::class, 'getVerifiedTutorsPhotos']);
+
 Route::fallback(function () {
     return response()->json([
         'message' => __('general.api_url_not_found'),
