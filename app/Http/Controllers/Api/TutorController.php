@@ -127,7 +127,10 @@ class TutorController extends Controller
             $tutors = $query->paginate($perPage, ['*'], 'page', $page);
             
             $tutors->getCollection()->transform(function ($tutor) {
-                return $this->getFavouriateTutors($tutor);
+                $tutor = $this->getFavouriateTutors($tutor);
+                // Agregar el conteo de cursos completados
+                $tutor->completed_courses_count = $tutor->getCompletedCoursesCount();
+                return $tutor;
             });
 
             return $this->success(data: new TutorCollection($tutors));

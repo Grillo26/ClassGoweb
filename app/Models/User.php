@@ -298,6 +298,16 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
 
     }
 
+    /**
+     * Get the count of completed courses for the user.
+     */
+    public function getCompletedCoursesCount(): int
+    {
+        return $this->companyCourseUsers()
+            ->where('status', 'completed')
+            ->count();
+    }
+
     public function userSubjects(): HasMany
     {
         return $this->hasMany(UserSubject::class);

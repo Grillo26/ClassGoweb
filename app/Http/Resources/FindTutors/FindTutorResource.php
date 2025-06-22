@@ -26,6 +26,7 @@ class FindTutorResource extends JsonResource
             }),
             'active_students'                => $this->whenHas('active_students'),
             'total_reviews'                  => $this->whenHas('total_reviews'),
+            'completed_courses_count'        => $this->whenHas('completed_courses_count'),
             'is_online'                      => $this?->is_online,
             'sessions'                       => $this->whenLoaded('subjects', function () {
                 $totalSessions = 0;
