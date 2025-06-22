@@ -85,6 +85,7 @@ class PayoutService
         $payoutDetail = UserPayoutMethod::where('user_id', $userId)
             ->where('payout_method', $payoutMethod)
             ->first();
+        // dd($payoutDetail, "Payout Detail");   
         if ($payoutDetail) {
             $payoutDetail->delete();
             return $payoutDetail;
