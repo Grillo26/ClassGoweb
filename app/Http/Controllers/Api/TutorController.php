@@ -104,11 +104,14 @@ class TutorController extends Controller
             // Filtro por min_rating (calificación mínima)
             if ($request->filled('min_rating')) {
                 $minRating = (float) $request->min_rating;
-                $query->whereHas('reviews', function($q) use ($minRating) {
-                    $q->select('tutor_id')
-                      ->groupBy('tutor_id')
-                      ->havingRaw('AVG(rating) >= ?', [$minRating]);
-                });
+                // Solo aplicar filtro si min_rating es mayor que 0
+                if ($minRating > 0) {
+                    $query->whereHas('reviews', function($q) use ($minRating) {
+                        $q->select('tutor_id')
+                          ->groupBy('tutor_id')
+                          ->havingRaw('AVG(rating) >= ?', [$minRating]);
+                    });
+                }
             }
 
             // Ordenar por el nombre del tutor (usando el perfil relacionado)
@@ -331,11 +334,14 @@ class TutorController extends Controller
             // Filtro por min_rating (calificación mínima)
             if ($request->filled('min_rating')) {
                 $minRating = (float) $request->min_rating;
-                $query->whereHas('reviews', function($q) use ($minRating) {
-                    $q->select('tutor_id')
-                      ->groupBy('tutor_id')
-                      ->havingRaw('AVG(rating) >= ?', [$minRating]);
-                });
+                // Solo aplicar filtro si min_rating es mayor que 0
+                if ($minRating > 0) {
+                    $query->whereHas('reviews', function($q) use ($minRating) {
+                        $q->select('tutor_id')
+                          ->groupBy('tutor_id')
+                          ->havingRaw('AVG(rating) >= ?', [$minRating]);
+                    });
+                }
             }
 
             // Ordenar por el nombre del tutor (usando el perfil relacionado)
