@@ -266,40 +266,102 @@ class TutorController extends Controller
     public function getVerifiedTutorsWithSubjects(Request $request)
     {
         try {
-            $query = User::whereHas('roles', function($q) {
-                    $q->where('name', 'tutor');
-                })
-                ->whereHas('profile', function($q) {
-                    $q->whereNotNull('verified_at');
-                })
-                ->whereHas('subjects') // Solo tutores con materias registradas
-                ->with(['profile', 'subjects']);
+            // Log de los parámetros recibidos
+            Log::info('Parámetros de búsqueda verified-tutors:', [
+                'keyword' => $request->keyword,
+                'tutor_name' => $request->tutor_name,
+                'group_id' => $request->group_id,
+                'subject_id' => $request->subject_id,
+                'min_courses' => $request->min_courses,
+                'min_rating' => $request->min_rating,
+                'page' => $request->page
+            ]);
 
-            // Filtro por keyword (solo en nombre de la materia)
+            // Consulta base - Solo tutores verificados con materias registradas
+            $query = User::whereHas('roles', function($q) {
+                $q->where('name', 'tutor');
+            })->with(['profile', 'subjects'])
+              ->whereHas('profile', function($q) {
+                  $q->whereNotNull('verified_at');
+              })
+              ->whereHas('subjects'); // Solo tutores con materias registradas
+
+            // Filtro por keyword (búsqueda en nombre de materia)
             if ($request->filled('keyword')) {
                 $keyword = trim($request->keyword);
                 $query->whereHas('subjects', function($q) use ($keyword) {
-                    $q->where('name', 'like', "%{$keyword}%");
+                    $q->where('name', 'LIKE', "%{$keyword}%");
                 });
             }
 
-            // Filtro por subject_id
+            // Filtro por tutor_name (búsqueda en nombre del tutor)
+            if ($request->filled('tutor_name')) {
+                $tutorName = trim($request->tutor_name);
+                $query->whereHas('profile', function($q) use ($tutorName) {
+                    $q->where(function($subQ) use ($tutorName) {
+                        $subQ->where('first_name', 'LIKE', "%{$tutorName}%")
+                             ->orWhere('last_name', 'LIKE', "%{$tutorName}%")
+                             ->orWhere(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', "%{$tutorName}%");
+                    });
+                });
+            }
+
+            // Filtro por group_id (categoría de materia)
+            if ($request->filled('group_id')) {
+                $query->whereHas('subjects', function($q) use ($request) {
+                    $q->where('subject_group_id', $request->group_id);
+                });
+            }
+
+            // Filtro por subject_id (materia específica)
             if ($request->filled('subject_id')) {
                 $query->whereHas('subjects', function($q) use ($request) {
                     $q->where('subjects.id', $request->subject_id);
                 });
             }
 
-            // Ordenar por nombre del tutor
+            // Filtro por min_courses (número mínimo de cursos completados)
+            if ($request->filled('min_courses')) {
+                $minCourses = (int) $request->min_courses;
+                $query->whereHas('companyCourseUsers', function($q) use ($minCourses) {
+                    $q->where('status', 'completed');
+                }, '>=', $minCourses);
+            }
+
+            // Filtro por min_rating (calificación mínima)
+            if ($request->filled('min_rating')) {
+                $minRating = (float) $request->min_rating;
+                $query->whereHas('reviews', function($q) use ($minRating) {
+                    $q->select('tutor_id')
+                      ->groupBy('tutor_id')
+                      ->havingRaw('AVG(rating) >= ?', [$minRating]);
+                });
+            }
+
+            // Ordenar por el nombre del tutor (usando el perfil relacionado)
             $query->join('profiles', 'users.id', '=', 'profiles.user_id')
                   ->orderBy('profiles.first_name', 'asc')
                   ->select('users.*');
 
-            $tutors = $query->paginate(10); // Paginado
+            // Log del conteo de resultados
+            $count = $query->count();
+            Log::info('Número de tutores verificados encontrados: ' . $count);
+
+            // Paginación
+            $perPage = 10; // Puedes hacer esto configurable
+            $page = $request->filled('page') ? (int) $request->page : 1;
+            
+            $tutors = $query->paginate($perPage, ['*'], 'page', $page);
+            
             $tutors->getCollection()->transform(function ($tutor) {
-                return $this->getFavouriateTutors($tutor);
+                $tutor = $this->getFavouriateTutors($tutor);
+                // Agregar el conteo de cursos completados
+                $tutor->completed_courses_count = $tutor->getCompletedCoursesCount();
+                return $tutor;
             });
+
             return $this->success(data: new \App\Http\Resources\FindTutors\TutorCollection($tutors));
+
         } catch (\Exception $e) {
             Log::error('Error en getVerifiedTutorsWithSubjects: ' . $e->getMessage());
             return $this->error(message: 'Error al buscar tutores verificados: ' . $e->getMessage());
