@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained('users');
             $table->foreignId('tutor_id')->constrained('users');
-            $table->foreignId('user_subject_slot_id')->constrained();
             $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();
             $table->double('session_fee');

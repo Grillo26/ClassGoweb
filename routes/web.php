@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Frontend\SearchController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Impersonate;
 use App\Http\Controllers\OpenAiController;
 use App\Http\Controllers\SiteController;
@@ -42,6 +43,9 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::get('/blogs', Blogs::class)->name('blogs');
     Route::get('/blog/{slug}', BlogDetails::class)->name('blog-details');
     Route::view('/subscriptions-page', 'subscriptions-page');
+    Route::get('/home', [HomeController::class, 'index']);
+
+    
     
     Route::middleware(['auth', 'verified', 'onlineUser'])->group(function () {
         Route::post('/openai/submit', [OpenAiController::class, 'submit'])->name('openai.submit');
@@ -76,6 +80,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
                 Route::get('session-detail/{date}', SessionDetail::class)->name('session-detail');
                 Route::get('upcoming-bookings',     UserBooking::class)->name('upcoming-bookings');
             });
+            
             Route::get('invoices', Invoices::class)->name('invoices');
             Route::get('disputes', Dispute::class)->name('disputes');
             Route::get('manage-dispute/{id}', ManageDispute::class)->name('manage-dispute');
