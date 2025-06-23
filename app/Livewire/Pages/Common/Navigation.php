@@ -158,12 +158,11 @@ class Navigation extends Component
             
               [
                 'tutorSortOrder' => 10,
-                'studentSortOrder' => 1,
-                'route' => $this->role.'.profile.courses',
-                'onActiveRoute' => [ 'tutor.profile.resume',$this->role.'.profile.account-settings','tutor.profile.resume.education','tutor.profile.resume.experience','tutor.profile.resume.certificate', 'student.profile.contacts', $this->role.'.profile.personal-details', $this->role.'.profile.identification'],
+                'route' => 'tutor.profile.courses',
+                'onActiveRoute' => [ 'tutor.profile.courses'],
                 'title' => 'Cursos',
                 'icon'  => '<i class="am-icon-user-01"></i>',
-                'accessibility' => ['tutor','student'],
+                'accessibility' => ['tutor'],
             ],
 
             /* [

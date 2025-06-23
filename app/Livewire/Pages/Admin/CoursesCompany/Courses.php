@@ -98,16 +98,12 @@ class Courses extends Component
 
     public function addExamQuestion()
     {
-        if ($this->question_type === 'opcion_unica') {
-            $options = $this->question_options_list;
-            $correct = $this->question_correct;
-        } else {
-            $options = null;
-            $correct = $this->question_correct;
-        }
+        // Solo permitimos preguntas de opción única
+        $options = $this->question_options_list;
+        $correct = $this->question_correct;
         $this->exam_questions[] = [
             'question' => $this->question_text,
-            'type' => $this->question_type,
+            'type' => 'opcion_unica',
             'score' => $this->question_score,
             'options' => $options,
             'correct_answer' => $correct,
@@ -143,6 +139,22 @@ class Courses extends Component
                 'description' => $this->description,
                 'video_url' => $this->video_url,
             ]);
+            // Actualizar preguntas del examen
+            $exam = $course->exams()->first();
+            if ($exam) {
+                $exam->questions()->delete(); // Elimina las preguntas anteriores
+                if (!empty($this->exam_questions)) {
+                    foreach ($this->exam_questions as $q) {
+                        $exam->questions()->create([
+                            'question' => $q['question'],
+                            'type' => $q['type'],
+                            'score' => $q['score'],
+                            'options' => $q['options'],
+                            'correct_answer' => $q['correct_answer'],
+                        ]);
+                    }
+                }
+            }
         } else {
             $course = CompanyCourse::create([
                 'name' => $this->name,
@@ -187,7 +199,18 @@ class Courses extends Component
             $this->course_id = $course->id;
             $this->name = $course->name;
             $this->instructor_name = $course->instructor_name;
+            $this->description = $course->description;
+            $this->video_url = $course->video_url;
             $this->editMode = true;
+            $this->exam_questions = $course->exams->first()->questions->map(function ($question) {
+                return [
+                    'question' => $question->question,
+                    'type' => $question->type,
+                    'score' => $question->score,
+                    'options' => $question->options,
+                    'correct_answer' => $question->correct_answer,
+                ];
+            })->toArray();
         } else {
             session()->flash('error', 'Course not found.');
         }

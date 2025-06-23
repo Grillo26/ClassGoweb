@@ -7,7 +7,7 @@
                         @if($editMode)
                             <h5>{{ __('taxonomy.update_course') }}</h5>
                         @else
-                            <h5>{{ __('taxonomy.add_course') }}</h5>
+                            <h5>{{ __('courses.add_course') }}</h5>
                         @endif
                     </div>
                     <div class="tb-dbbox">
@@ -15,8 +15,8 @@
                             <fieldset>
                                 <div class="tk-themeform__wrap">
                                     <div class="form-group">
-                                        <label class="tb-label">{{ __('general.name') }}</label>
-                                        <input type="text" class="form-control @error('name') tk-invalid @enderror" wire:model="name" required placeholder="{{ __('general.name') }}">
+                                        <label class="tb-label">{{ __('courses.name') }}</label>
+                                        <input type="text" class="form-control @error('name') tk-invalid @enderror" wire:model="name" required placeholder="{{ __('courses.name') }}">
                                         @error('name')
                                             <div class="tk-errormsg">
                                                 <span>{{ $message }}</span>
@@ -24,7 +24,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label class="tb-label">{{ __('general.instructor') }}</label>
+                                        <label class="tb-label">{{ __('courses.instructor') }}</label>
                                         <input type="text" class="form-control @error('instructor_name') tk-invalid @enderror" wire:model="instructor_name" required>
                                         @error('instructor_name')
                                             <div class="tk-errormsg">
@@ -37,7 +37,7 @@
                                         <textarea class="form-control" placeholder="{{ __('general.description') }}" wire:model="description"></textarea>
                                     </div>
                                     <div class="form-group">
-                                        <label class="tb-label">{{ __('general.video') }}</label>
+                                        <label class="tb-label">{{ __('courses.video') }}</label>
                                         <input type="text" class="form-control @error('video_url') tk-invalid @enderror" wire:model="video_url" placeholder="Pega el enlace del video">
                                         @error('video_url')
                                             <div class="tk-errormsg">
@@ -48,7 +48,7 @@
 
                                     <!-- Botón para abrir el modal de preguntas -->
                                     <div class="mb-3">
-                                        <button type="button" class="btn btn-outline-primary" wire:click="openQuestionModal">Agregar Pregunta de Examen</button>
+                                        <button type="button" class="btn btn-outline-primary" wire:click="openQuestionModal"> {{__('courses.add_question')}} </button>
                                     </div>
                                     <!-- Tabla de preguntas agregadas -->
                                     @if(!empty($exam_questions))
@@ -148,13 +148,13 @@
                                     <div class="form-group tb-dbtnarea">
                                         <a href="javascript:void(0);" wire:click.prevent="save" class="tb-btn">
                                             @if($editMode)
-                                                {{ __('general.update') }}
+                                                {{ __('courses.update') }}
                                             @else
-                                                {{ __('general.add_now') }}
+                                                {{ __('courses.add_now') }}
                                             @endif
                                         </a>
                                         @if($editMode)
-                                            <a href="javascript:void(0);" wire:click.prevent="resetForm" class="tb-btn tb-btnsecondary">{{ __('general.cancel') }}</a>
+                                            <a href="javascript:void(0);" wire:click.prevent="resetForm" class="tb-btn tb-btnsecondary">{{ __('courses.cancel') }}</a>
                                         @endif
                                     </div>
                                 </div>
@@ -165,19 +165,19 @@
             </div>
             <div class="col-lg-8 col-md-12 tb-md-60">
                 <div class="tb-dhb-mainheading">
-                    <h4>{{ __('general.courses') }}</h4>
+                    <h4>{{ __('courses.courses') }}</h4>
                     <div class="tb-sortby">
                         <form class="tb-themeform tb-displistform">
                             <fieldset>
                                 <div class="tb-themeform__wrap">
                                     {{--  <div class="tb-actionselect">
-                                        <a href="javascript:;" class="tb-btn btnred {{ $selectedCourses ? '' : 'd-none' }}" wire:click="deleteSelected">{{ __('general.delete_selected') }}</a>
+                                        <a href="javascript:;" class="tb-btn btnred {{ $selectedCourses ? '' : 'd-none' }}" wire:click="deleteSelected">{{ __('courses.delete_selected') }}</a>
                                     </div> --}}
                                     <div class="tb-actionselect">
                                         <div class="tb-select">
                                             <select wire:model.live="sortby" class="form-control tk-select2">
-                                                <option value="asc">{{ __('general.asc') }}</option>
-                                                <option value="desc">{{ __('general.desc') }}</option>
+                                                <option value="asc">{{ __('courses.asc') }}</option>
+                                                <option value="desc">{{ __('courses.desc') }}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -192,7 +192,7 @@
                                     </div>
                                     <div class="form-group tb-inputicon tb-inputheight">
                                         <i class="icon-search"></i>
-                                        <input type="text" class="form-control" wire:model.live.debounce.500ms="search" autocomplete="off" placeholder="{{ __('general.search_here') }}">
+                                        <input type="text" class="form-control" wire:model.live.debounce.500ms="search" autocomplete="off" placeholder="{{ __('courses.search_here') }}">
                                     </div>
                                 </div>
                             </fieldset>
@@ -202,16 +202,16 @@
 
                 <div class="tb-disputetable tb-pageslanguage">
                     @if(!empty($courses) && $courses->count() > 0)
-                        <table class="table tb-table tb-dbholder @if(setting('_general.table_responsive') == 'yes') tb-table-responsive @endif">
+                        <table class="table tb-table tb-dbholder @if(setting('_courses.table_responsive') == 'yes') tb-table-responsive @endif">
                             <thead>
                                 <tr>
                                     <th>
                                         <div class="tb-checkbox">
                                             <input id="checkAll" wire:model.lazy="selectAll" type="checkbox">
-                                            <label for="checkAll">{{ __('general.name') }}</label>
+                                            <label for="checkAll">{{ __('courses.name') }}</label>
                                         </div>
                                     </th>
-                                    <th>{{ __('general.instructor') }}</th>
+                                    <th>{{ __('courses.instructor') }}</th>
                                     <th>{{ __('general.description') }}</th>
                                     <th>{{ __('general.actions') }}</th>
                                 </tr>
@@ -219,7 +219,7 @@
                             <tbody>
                                 @foreach($courses as $course)
                                     <tr>
-                                        <td data-label="{{ __('general.name') }}">
+                                        <td data-label="{{ __('courses.name') }}">
                                             <div class="tb-checkboxwithimg">
                                                 <div class="tb-checkbox">
                                                     <input id="course_id{{ $course->id }}" wire:model.lazy="selectedCourses" value="{{ $course->id }}" type="checkbox">
@@ -229,7 +229,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td data-label="{{ __('general.instructor') }}"><span>{{ $course->instructor_name }}</span></td>
+                                        <td data-label="{{ __('courses.instructor') }}"><span>{{ $course->instructor_name }}</span></td>
                                         <td data-label="{{ __('general.description') }}"><span>{!! Str::limit($course->description, 50) !!}</span></td>
                                         <td data-label="{{ __('general.actions') }}">
                                             <ul class="tb-action-icon">
@@ -243,13 +243,15 @@
                         </table>
                         {{ $courses->links('pagination.custom') }}
                     @else
-                        <x-no-record :image="asset('images/empty.png')" :title="__('general.no_record_title')"/>
+                        <x-no-record :image="asset('images/empty.png')" :title="__('courses.no_record_title')"/>
                     @endif
                 </div>
             </div>
         </div>
     </main>
 
+
+    {{-- modal de preguntas  --}}
     <div class="modal fade @if($showQuestionModal) show d-block @endif" tabindex="-1" style="@if($showQuestionModal) display:block; background:rgba(0,0,0,0.5); @else display:none; @endif" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -266,7 +268,7 @@
                         <label>Tipo</label>
                         <select class="form-control" wire:model.defer="question_type" wire:change="resetQuestionOptions">
                             <option value="opcion_unica">Opción única</option>
-                            <option value="abierta">Abierta</option>
+                            {{-- <option value="abierta">Abierta</option> --}}
                         </select>
                     </div>
                     <div class="mb-3">
@@ -305,11 +307,11 @@
                                 </select>
                             </div>
                         @endif
-                    @else
+                   {{--  @else
                         <div class="mb-3">
                             <label>Respuesta Correcta</label>
                             <input type="text" class="form-control" wire:model.defer="question_correct">
-                        </div>
+                        </div> --}}
                     @endif
                 </div>
                 <div class="modal-footer">
