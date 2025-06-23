@@ -72,7 +72,7 @@
                             </span>
                         </div> --}}
 
-                        <!-- <div class="am-searchfilter_item">
+                        {{-- <<div class="am-searchfilter_item">
                             <span class="am-searchfilter_title">{{ __('general.tutor_location') }}</span>
                             <span class="am-select">
                                 @if(!empty(setting('_api.google_places_api_key')))
@@ -89,7 +89,7 @@
                                 </select>
                                 @endif
                             </span>
-                        </div>-->
+                        </div> --}}
                     </div>
                     <div style="width:100%;margin-left: 10px">
                         <div style="display:flex; width:100%;">
