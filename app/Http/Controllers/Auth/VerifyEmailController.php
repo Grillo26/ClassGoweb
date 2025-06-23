@@ -20,6 +20,17 @@ class VerifyEmailController extends Controller
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
+            // Si el usuario es tutor, asignar todos los cursos existentes
+            $user = $request->user();
+            if ($user->roles()->where('name', 'tutor')->exists()) {
+                $courses = \App\Models\CompanyCourse::all();
+                foreach ($courses as $course) {
+                    // Solo crear la relación si no existe
+                    if (!$course->users()->where('user_id', $user->id)->exists()) {
+                        $course->users()->attach($user->id, ['status' => 'pending']);
+                    }
+                }
+            }
         }
 
         return redirect()->to($request->user()->redirect_after_login.'?verified=1');
