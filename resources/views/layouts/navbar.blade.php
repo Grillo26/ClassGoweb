@@ -6,5 +6,7 @@
         <li><a href="/work" class="hover:underline">Cómo Trabajamos</a></li>
         <li><a href="/ask" class="hover:underline">Preguntas</a></li>
         <li><a href="/blog" class="hover:underline">Blog</a></li>
+        <li><a href="/go" class="hover:underline">Empezar</a></li>
+        <li><a href="/more" class="hover:underline">+</a></li>
     </ul>
 </nav>
