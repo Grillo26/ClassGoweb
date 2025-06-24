@@ -21,6 +21,11 @@
             <input type="text" placeholder="Buscar tutor...">
             <button>Buscar Tutor</button>
         </div>
+        <div class="buttons-hero">
+            <div class="buttons-more">Buttons</div>
+            <div class="buttons-more">Buttons</div>
+            <div class="buttons-more">Buttons</div>
+        </div>
     </div>
 </section>
 

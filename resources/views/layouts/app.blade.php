@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
     @vite('resources/css/app.css')
 </head>
-<body class="bg-white text-gray-900">
+<body>
 
     @include('layouts.navbar')
 

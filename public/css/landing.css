@@ -1,10 +1,100 @@
-/* public/css/landing.css */
-body {
-    font-family: 'Segoe UI', sans-serif;
+@import '.responsive.css';
+
+/** TABLE OF CONTENTS
+------------------------------------------------------------/
+1 - Base
+        1.1 - Variables
+        1.2 - Base
+2 - Components
+        2.1 - NavBar
+        2.2 - Footer
+3 - Home
+        3.1 Hero Principal
+        3.2. Contadores
+        3.3. Tutores
+        3.4. Guia
+
+/// END TABLE OF CONTENTS **/
+
+/**--- 1.1 Variables --**/
+:root {
+    --primary-color: #023047;
+    --secundary-color: #219EBC;
+    --secundary-color2: #FCFAED;
+    --terciary-color: #8ECAE6;
+    --terciary-color2: #FB8500;
+    --font-family: 'Segoe UI', sans-serif;
+    --text-color: #350606;
+    --bg-color: #fff;
+    --max-width: 1200px;
+    --transition: all 0.3s ease;
+    --h1: 300px;
+}
+
+/** --- 1.2 Base --- **/
+*{
     margin: 0;
     padding: 0;
-    background-color: #fff;
+    box-sizing: border-box;
 }
+
+body {
+    font-family: var(--font-family);
+    color: var(--text-color);
+    background-color: var(--primary-color);
+    line-height: 1.6;
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+/* CONTENEDOR GENERAL */
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* CABECERAS */
+h1{
+    font-size: var(--h1);
+}
+
+h2, h3 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+p {
+    margin-bottom: 1rem;
+    color: #555;
+}
+
+/* BOTONES */
+button {
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+/* IMÁGENES RESPONSIVAS */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* LISTAS SIN ESTILO */
+ul {
+    list-style: none;
+}
+
+/* ENLACES */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/** --- Navbar --- **/
+/** --- Footer --- **/
+
 
 section {
     padding: 4rem 0;
