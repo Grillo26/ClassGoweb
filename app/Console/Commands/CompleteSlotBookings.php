@@ -24,7 +24,7 @@ class CompleteSlotBookings extends Command
     protected $description = 'Completa las reservas que han terminado';
 
     /**
-     * Execute the console command.
+     * Execute the console command. cambios 
      */
     public function handle()
     {
