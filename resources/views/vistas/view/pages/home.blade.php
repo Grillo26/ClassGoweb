@@ -10,7 +10,8 @@
 
         <!-- Columna izquierda: texto -->
         <div class="hero-text">
-            <h1>Aprende y Progresa con <br><span class="highlight">Tutorías en Línea</span></h1>
+            <h1 class="hero-title-arriba">Aprende y Progresa con</h1>
+            <h1 class="hero-title-abajo">Tutorías en Línea</h1>
             <p class="hero-subtext">
                 Alcanza tus metas con tutorías personalizadas de los mejores expertos.<br>
                 Conéctate con tutores dedicados para asegurar tu éxito.
@@ -19,7 +20,9 @@
             <!-- Buscador -->
             <div class="search-box">
                 <input type="text" placeholder="Buscar Tutor">
-                <button><img src="/images/search-icon.svg" alt="Buscar"></button>
+                <button>
+                    <i class="fa-solid fa-magnifying-glass icon-search"></i>
+                </button>
             </div>
         </div>
 

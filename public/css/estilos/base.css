@@ -45,6 +45,8 @@ a {
 /* CABECERAS */
 h1{
     font-size: var(--h1) !important;
+    letter-spacing: 2px; /* Aumenta o reduce espacio horizontal entre caracteres */
+
 }
 
 h2, h3 {
