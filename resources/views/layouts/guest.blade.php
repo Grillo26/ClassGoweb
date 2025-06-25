@@ -32,7 +32,7 @@
     </head>
     <body class="font-sans text-gray-900 antialiased @if( !empty(setting('_general.enable_rtl')) || !empty(session()->get('rtl')) ) am-rtl @endif">
         <main>
-        
+            {{ $slot }}
         </main>
         <x-popups />
         <script src="{{ asset('js/jquery.min.js') }}"></script>

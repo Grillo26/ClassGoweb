@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('vistas.view.layouts.app')
 
 @section('title', 'Class Go!')
 

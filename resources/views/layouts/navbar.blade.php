@@ -1,12 +1,33 @@
-<nav class="bg-sky-600 text-white px-8 py-4 flex justify-between items-center">
-     <ul class="flex space-x-6">
-        <img src="{{ asset('images/logoclassgo.png') }}" alt="Mascota">
-        <li><a href="/tutors" class="hover:underline">Tutores</a></li>
-        <li><a href="/about" class="hover:underline">Nosotros</a></li>
-        <li><a href="/work" class="hover:underline">Cómo Trabajamos</a></li>
-        <li><a href="/ask" class="hover:underline">Preguntas</a></li>
-        <li><a href="/blog" class="hover:underline">Blog</a></li>
-        <li><a href="/go" class="hover:underline">Empezar</a></li>
-        <li><a href="/more" class="hover:underline">+</a></li>
-    </ul>
-</nav>
+<header class="navbar">
+  <div class="navbar-container">
+
+    <!-- Logo -->
+   
+        <img src="{{ asset('images/logoclassgo.png') }}" class="nav-i" alt="Mascota">
+    
+
+    <!-- Enlaces -->
+    <nav class="navbar-links">
+      <ul>
+        <li><a href="#">Tutores</a></li>
+        <li><a href="#">Nosotros</a></li>
+        <li><a href="#">Cómo trabajamos</a></li>
+        <li><a href="#">Preguntas</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </nav>
+
+    <!-- Lado derecho -->
+    <div class="navbar-actions">
+      <select class="navbar-language">
+        <option selected>Español</option>
+        <option>English</option>
+      </select>
+      <button class="btn-outline">Empezar</button>
+      <div class="navbar-icon">
+        <img src="/images/user-icon.png" alt="Usuario">
+      </div>
+    </div>
+
+  </div>
+</header>

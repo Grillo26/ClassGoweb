@@ -61,7 +61,10 @@
         .catch(console.error);
     </script>
     <x-front.header :page="$page?? null"/>
-
+        <main class="am-main">
+            @yield('content')
+            {{ $slot ?? '' }}
+        </main>
     <x-popups />
     <x-front.footer :page="$page?? null" />
     @if(session('impersonated_name'))
