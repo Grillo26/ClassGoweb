@@ -19,10 +19,17 @@
 
             <!-- Buscador -->
             <div class="search-box">
-                <input type="text" placeholder="Buscar Tutor">
+                <input type="text" placeholder="Buscar Tutor...">
                 <button>
                     <i class="fa-solid fa-magnifying-glass icon-search"></i>
                 </button>
+            </div>
+
+            <!--Botones-->
+            <div class="hero-buttons">
+                <button><i class="fa-solid fa-bolt-lightning"></i>Tutor al Instante</button>
+                <button><i class="fa-solid fa-calendar"></i>Agendar Tutoría</button>
+                <button><i class="fa-solid fa-compass"></i>Explorar Tutores</button>
             </div>
         </div>
 
@@ -31,6 +38,7 @@
             <img src="{{ asset('images/Tugo_With_Glasses.png') }}" alt="Mascota ClassGo">
         </div>
 
+       
     </div>
 </section>
 
