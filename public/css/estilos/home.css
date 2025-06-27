@@ -9,6 +9,8 @@
     1.3 Buscador
     1.4 Botones
 2 - Contadores
+    2.1 Fondo Container
+    2.2 Contadores
 3 - Tutores destacados
 4 - Anuncio Potencial
 5 - Busca tutorias
@@ -21,7 +23,7 @@
 .hero {
   height: 100vh;
   width: 100%;
-  background: #073B4C;
+  background: var(--primary-color);
   background: linear-gradient(180deg, rgba(7, 59, 76, 1) 64%, rgba(24, 77, 94, 1) 77%, rgba(33, 158, 188, 1) 100%);
 }
 
@@ -93,7 +95,7 @@
 }
 
 .search-box button {
-  background-color: #219EBC;
+  background-color: var(--secundary-color);
   border: none;
   padding: 1rem;
   display: flex;
@@ -147,3 +149,58 @@
   box-shadow: none;
   transform: scale(0.98);
 }
+
+/**--- 2 Contadores --**/
+/**--- 2.1 Fondo --**/
+
+.info-container{
+  background-color: var(--bg-color);
+  border-radius: 5rem;
+  display: flex;
+  flex-flow: column wrap;
+}
+
+/**--- 2.1 Contadores --**/
+.counters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 50px 0;
+    text-align: center;
+}
+
+.counter-box {
+    position: relative;
+    padding: 0 20px;
+}
+
+.counter-box:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 70px;
+    width: 5px;
+    background-color: var(--secundary-color); /* línea azul entre contadores */
+}
+
+.counter-number {
+    font-size: 3em;
+    font-weight: var(--font-extrabold);
+    color: var(--primary-color);
+}
+
+.counter-number i {
+    color: var(--primary-color);
+    font-size: 30px;
+}
+
+.counter-box h1 {
+    font-size: 1rem !important;
+    color: var(--primary-color);
+    margin: 8px 0 0;
+    text-transform: none;
+}
+

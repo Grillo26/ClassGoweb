@@ -44,26 +44,27 @@
 
 
 <!-- CONTADORES INFO -->
-<section class="info container">
-    <!--CONTADORES-->
+<section class="info-container">
+    <!-- CONTADORES -->
     <div class="counters">
-        <div>
+        <div class="counter-box">
             <div class="counter-number">+500</div>
-            <p>Usuarios Registrados</p>
+            <h1>Usuarios registrados</h1>
         </div>
-        <div>
+        <div class="counter-box">
             <div class="counter-number">+230</div>
-            <p>Tutores Disponibles</p>
+            <h1>Tutores disponibles</h1>
         </div>
-        <div>
+        <div class="counter-box">
             <div class="counter-number">+230</div>
-            <p>Estudiantes Registrados</p>
+            <h1>Estudiantes registrados</h1>
         </div>
-        <div>
-            <div class="counter-number">4.5</div>
-            <p>En la App Store</p>
+        <div class="counter-box">
+            <div class="counter-number"><i class="fa fa-star"></i> 4,5</div>
+            <h1>En la App Store</h1>
         </div>
     </div>
+
     <!--TUTORES DESTACADOS-->
     <div class="outstanding-tutors">
         <h2 style="text-align: center;">Tutores Destacados</h2>
