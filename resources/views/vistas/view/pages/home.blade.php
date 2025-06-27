@@ -51,14 +51,19 @@
             <div class="counter-number">+500</div>
             <h1>Usuarios registrados</h1>
         </div>
+        <div class="box-sky">
+        </div>
         <div class="counter-box">
             <div class="counter-number">+230</div>
             <h1>Tutores disponibles</h1>
         </div>
+        <div class="box-sky"></div>
         <div class="counter-box">
             <div class="counter-number">+230</div>
             <h1>Estudiantes registrados</h1>
         </div>
+        <div class="box-sky"></div>
+
         <div class="counter-box">
             <div class="counter-number"><i class="fa fa-star"></i> 4,5</div>
             <h1>En la App Store</h1>
@@ -66,33 +71,36 @@
     </div>
 
     <!--TUTORES DESTACADOS-->
-    <div class="outstanding-tutors">
-        <h2 style="text-align: center;">Tutores Destacados</h2>
+    <div class="tutors-container">
+        <h1 class="over-text">Tutores Destacados</h1>
         <h1>Conoce a Nuestros Tutores Cuidadosamente Seleccionados</h1>
         <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p>
         <div class="tutors">
             <div class="tutors-card">
                 <div class="video-tutor">
-                    <img src="{{ asset('images/tutor1.jpg') }}" alt="Tutor">
+                    <img src="{{ asset('images/tutors/video1.gif') }}" alt="Tutor"> <!--Video cambiar-->
                 </div>
                 <div class="info">
                     <div class="info-header">
-                        <img src="{{ asset('images/tutor1.jpg') }}" alt="Tutor">
+                        <img src="{{ asset('images/tugo-negativo.png') }}" alt="Tutor">
                         <div class="info-name">
                             <div class="name">
                                 <h1>Norely Bonilla</h1>
                                 <img src="" alt=""> <!--Icono de verificación-->
                                 <img src="" alt=""><!--Bandera pais-->
                             </div>
+                            <div class="tutor">
+                                <h1><spam>Tutor:</spam> Adm. de Empresas</h1>
+                            </div>
                         </div>
                         <div class="icono-heart">
-                            <img src="" alt=""><!--Icono Corazon-->
+                            <i class="fa-solid fa-heart"></i>                    
                         </div>
                     </div>
                     <div class="info-resena">
                         <div class="info-puntuacion">
                             <div class="puntuacion-title">
-                                <img src="" alt=""><!--icono estrella-->
+                                <i class="fa fa-star"></i>
                                 <p>4.5</p>
                             </div>
                             <p>7 reseñas</p>
@@ -104,21 +112,131 @@
                     </div>
                     <div class="info-details">
                         <div>
-                            <img src="" alt=""><!--icono-->
+                            <i class="fa-solid fa-book-open"></i>
                             <p>Finanzas, Presupuesto, Estadística</p>
                         </div>
                         <div>
-                            <img src="" alt=""><!--icono-->
-                            <p>10 estudiantes activos ° 30 Clases</p>
+                            <i class="fa-solid fa-users"></i>
+                            <p>10 estudiantes activos · 30 Clases</p>
                         </div>
                         <div>
-                            <img src="" alt=""><!--icono-->
+                            <i class="fa-solid fa-language"></i>
                             <p>Ingles</p>
                         </div>
                     </div>
                     <div class="info-buttons">
-                        <button>Ver Perfil</button>
-                        <button>Reservar</button>
+                        <button class="button1">Ver Perfil</button>
+                        <button class="button2">Reservar</button>
+                    </div>
+                </div>
+            </div> <!--End card-->
+
+             <div class="tutors-card">
+                <div class="video-tutor">
+                    <img src="{{ asset('images/tutors/video1.gif') }}" alt="Tutor"> <!--Video cambiar-->
+                </div>
+                <div class="info">
+                    <div class="info-header">
+                        <img src="{{ asset('images/tugo-negativo.png') }}" alt="Tutor">
+                        <div class="info-name">
+                            <div class="name">
+                                <h1>Norely Bonilla</h1>
+                                <img src="" alt=""> <!--Icono de verificación-->
+                                <img src="" alt=""><!--Bandera pais-->
+                            </div>
+                            <div class="tutor">
+                                <h1><spam>Tutor:</spam> Adm. de Empresas</h1>
+                            </div>
+                        </div>
+                        <div class="icono-heart">
+                            <i class="fa-solid fa-heart"></i>                    
+                        </div>
+                    </div>
+                    <div class="info-resena">
+                        <div class="info-puntuacion">
+                            <div class="puntuacion-title">
+                                <i class="fa fa-star"></i>
+                                <p>4.5</p>
+                            </div>
+                            <p>7 reseñas</p>
+                        </div>
+                        <div class="info-price">
+                            <p class="price-title">Bs.15</p>
+                            <p class="price-details">Clases de 20 minutos</p>
+                        </div>
+                    </div>
+                    <div class="info-details">
+                        <div>
+                            <i class="fa-solid fa-book-open"></i>
+                            <p>Finanzas, Presupuesto, Estadística</p>
+                        </div>
+                        <div>
+                            <i class="fa-solid fa-users"></i>
+                            <p>10 estudiantes activos · 30 Clases</p>
+                        </div>
+                        <div>
+                            <i class="fa-solid fa-language"></i>
+                            <p>Ingles</p>
+                        </div>
+                    </div>
+                    <div class="info-buttons">
+                        <button class="button1">Ver Perfil</button>
+                        <button class="button2">Reservar</button>
+                    </div>
+                </div>
+            </div>
+
+             <div class="tutors-card">
+                <div class="video-tutor">
+                    <img src="{{ asset('images/tutors/video1.gif') }}" alt="Tutor"> <!--Video cambiar-->
+                </div>
+                <div class="info">
+                    <div class="info-header">
+                        <img src="{{ asset('images/tugo-negativo.png') }}" alt="Tutor">
+                        <div class="info-name">
+                            <div class="name">
+                                <h1>Norely Bonilla</h1>
+                                <img src="" alt=""> <!--Icono de verificación-->
+                                <img src="" alt=""><!--Bandera pais-->
+                            </div>
+                            <div class="tutor">
+                                <h1><spam>Tutor:</spam> Adm. de Empresas</h1>
+                            </div>
+                        </div>
+                        <div class="icono-heart">
+                            <i class="fa-solid fa-heart"></i>                    
+                        </div>
+                    </div>
+                    <div class="info-resena">
+                        <div class="info-puntuacion">
+                            <div class="puntuacion-title">
+                                <i class="fa fa-star"></i>
+                                <p>4.5</p>
+                            </div>
+                            <p>7 reseñas</p>
+                        </div>
+                        <div class="info-price">
+                            <p class="price-title">Bs.15</p>
+                            <p class="price-details">Clases de 20 minutos</p>
+                        </div>
+                    </div>
+                    <div class="info-details">
+                        <div>
+                            <i class="fa-solid fa-book-open"></i>
+                            <p>Finanzas, Presupuesto, Estadística</p>
+                        </div>
+                        <div>
+                            <i class="fa-solid fa-users"></i>
+                            <p>10 estudiantes activos · 30 Clases</p>
+                        </div>
+                        <div>
+                            <i class="fa-solid fa-language"></i>
+                            <p>Ingles</p>
+                        </div>
+                    </div>
+                    <div class="info-buttons">
+                        <button class="button1">Ver Perfil</button>
+                        <button class="button2">Reservar</button>
                     </div>
                 </div>
             </div>
