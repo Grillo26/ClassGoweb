@@ -203,8 +203,13 @@
     font-size: 3em;
     font-weight: var(--font-extrabold);
 }
+/**-- Clase Momentanea--**/
+.counter-numbe { 
+    font-size: 3em;
+    font-weight: var(--font-extrabold);
+}
 
-.counter-number i {
+.counter-numbe i {
     font-size: 30px;
 }
 
