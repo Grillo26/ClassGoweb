@@ -147,11 +147,18 @@ class BookingController extends Controller
     public function storePaymentSlotBooking(Request $request)
     {
         $validated = $request->validate([
-            'image_url' => 'required|string',
             'slot_booking_id' => 'required|exists:slot_bookings,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
         ]);
 
-        $paymentSlotBooking = \App\Models\PaymentSlotBooking::create($validated);
+        // Guardar la imagen en la carpeta especificada
+        $path = $request->file('image')->store('public/uploads/bookings');
+        $url = \Storage::url($path);
+
+        $paymentSlotBooking = \App\Models\PaymentSlotBooking::create([
+            'slot_booking_id' => $validated['slot_booking_id'],
+            'image_url' => $url,
+        ]);
         return response()->json($paymentSlotBooking, 201);
     }
 
