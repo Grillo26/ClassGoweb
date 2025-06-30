@@ -100,10 +100,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // Ruta para obtener el tiempo disponible del tutor
     
 });
+
+// Ruta para obtener el tiempo disponible del tutor (pública)
 Route::get('tutor/{id}/available-slots', [\App\Http\Controllers\Api\SubjectSlotController::class, 'getTutorAvailableSlots']);
 
-    // Ruta para obtener las tutorías del usuario autenticado (tutor o estudiante)
-    Route::get('user/bookings', [\App\Http\Controllers\Api\BookingController::class, 'getUpComingBooking']);
+// Ruta para obtener las tutorías del usuario autenticado (pública temporalmente)
+Route::get('user/bookings', [\App\Http\Controllers\Api\BookingController::class, 'getUpComingBooking']);
+
 Route::get('country-states',                                    [TutorController::class,'getStates']);
 Route::get('subject-groups',                                   [BookingController::class,'getSubjectGroups']);
 Route::get('subjects',                                         [BookingController::class,'getSubjects']);
