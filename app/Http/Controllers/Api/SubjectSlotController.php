@@ -34,7 +34,7 @@ class SubjectSlotController extends Controller
     protected function fetchUserSubjectSlots($userId, $date = null) {
         $slotsData = [];
 
-        $slots = UserSubjectSlot::select('id','start_time','end_time','spaces','session_fee','total_booked','description','meta_data')
+        $slots = UserSubjectSlot::select('id','start_time','end_time','duracion','date','user_id')
             ->withCount('bookings')
             ->with('students', fn($query) => $query->select('profiles.id','profiles.user_id', 'profiles.image')->limit(5))
             ->when($date, function ($slots) use ($date) {
