@@ -131,6 +131,9 @@ Route::get('user/{id}/bookings', [\App\Http\Controllers\Api\BookingController::c
 // Ruta para registrar una nueva tutoría (slot_booking)
 Route::post('slot-bookings', [\App\Http\Controllers\Api\BookingController::class, 'storeSlotBooking']);
 
+// Ruta para registrar un nuevo payment_slot_booking
+Route::post('payment-slot-bookings', [\App\Http\Controllers\Api\BookingController::class, 'storePaymentSlotBooking']);
+
 Route::fallback(function () {
     return response()->json([
         'message' => __('general.api_url_not_found'),

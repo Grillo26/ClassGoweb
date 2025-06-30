@@ -144,4 +144,15 @@ class BookingController extends Controller
         return response()->json($slotBooking, 201);
     }
 
+    public function storePaymentSlotBooking(Request $request)
+    {
+        $validated = $request->validate([
+            'image_url' => 'required|string',
+            'slot_booking_id' => 'required|exists:slot_bookings,id',
+        ]);
+
+        $paymentSlotBooking = \App\Models\PaymentSlotBooking::create($validated);
+        return response()->json($paymentSlotBooking, 201);
+    }
+
 }
