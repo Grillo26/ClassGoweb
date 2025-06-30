@@ -131,8 +131,8 @@ Route::get('user/{id}/bookings', [\App\Http\Controllers\Api\BookingController::c
 // Ruta para registrar una nueva tutoría (slot_booking)
 Route::post('slot-bookings', [\App\Http\Controllers\Api\BookingController::class, 'storeSlotBooking']);
 
-// Ruta para registrar un nuevo payment_slot_booking
-Route::post('payment-slot-bookings', [\App\Http\Controllers\Api\BookingController::class, 'storePaymentSlotBooking']);
+// Ruta para registrar un nuevo payment_slot_booking (renombrada para prueba)
+Route::post('test-payment-upload', [\App\Http\Controllers\Api\BookingController::class, 'storePaymentSlotBooking']);
 
 // Ruta de prueba para subida de archivos (sin lógica, solo para test de CSRF)
 Route::post('test-upload', function (\Illuminate\Http\Request $request) {
