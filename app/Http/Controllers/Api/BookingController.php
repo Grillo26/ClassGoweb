@@ -153,11 +153,12 @@ class BookingController extends Controller
 
         // Guardar la imagen en la carpeta especificada
         $path = $request->file('image')->store('public/uploads/bookings');
-        $url = \Storage::url($path);
+        // Obtener solo la ruta relativa sin 'public/'
+        $relativePath = str_replace('public/', '', $path);
 
         $paymentSlotBooking = \App\Models\PaymentSlotBooking::create([
             'slot_booking_id' => $validated['slot_booking_id'],
-            'image_url' => $url,
+            'image_url' => $relativePath,
         ]);
         return response()->json($paymentSlotBooking, 201);
     }
