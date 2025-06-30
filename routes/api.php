@@ -128,6 +128,9 @@ Route::get('reviews/stats/{userId}', [ReviewController::class, 'getStats']);
 // Ruta para obtener las tutorías de un usuario por su id (pública)
 Route::get('user/{id}/bookings', [\App\Http\Controllers\Api\BookingController::class, 'getUserBookingsById']);
 
+// Ruta para registrar una nueva tutoría (slot_booking)
+Route::post('slot-bookings', [\App\Http\Controllers\Api\BookingController::class, 'storeSlotBooking']);
+
 Route::fallback(function () {
     return response()->json([
         'message' => __('general.api_url_not_found'),

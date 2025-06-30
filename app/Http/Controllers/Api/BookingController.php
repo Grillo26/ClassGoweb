@@ -123,4 +123,25 @@ class BookingController extends Controller
         return response()->json($bookings);
     }
 
+    public function storeSlotBooking(Request $request)
+    {
+        $validated = $request->validate([
+            'student_id' => 'required|exists:users,id',
+            'tutor_id' => 'required|exists:users,id',
+            'user_subject_slot_id' => 'nullable|exists:user_subject_slots,id',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+            'session_fee' => 'required|numeric',
+            'booked_at' => 'nullable|date',
+            'calendar_event_id' => 'nullable|string',
+            'meeting_link' => 'nullable|string',
+            'status' => 'nullable|integer',
+            'meta_data' => 'nullable|array',
+            'subject_id' => 'nullable|exists:subjects,id'
+        ]);
+
+        $slotBooking = \App\Models\SlotBooking::create($validated);
+        return response()->json($slotBooking, 201);
+    }
+
 }
