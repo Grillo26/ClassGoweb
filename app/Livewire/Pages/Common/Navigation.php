@@ -126,6 +126,7 @@ class Navigation extends Component
                 'icon'  => '<i class="am-icon-heart-01"></i>',
                 'accessibility' => ['student'],
             ],
+            
 
             [ 
                 'studentSortOrder' => 4,
@@ -164,6 +165,7 @@ class Navigation extends Component
                 'icon'  => '<i class="am-icon-user-01"></i>',
                 'accessibility' => ['tutor'],
             ],
+            
 
             /* [
                 'tutorSortOrder' => 11,
@@ -175,6 +177,15 @@ class Navigation extends Component
                 'accessibility' => ['student', 'tutor'],
                 'disableNavigate' => true,
             ] */
+           /*<-----------PROMOCIOINES--------->*/ 
+           [
+                'studentSortOrder' => 11    ,
+                'route' => 'student.promociones',
+                'onActiveRoute' => ['student.promociones'],
+                'title' => 'Promociones',
+                'icon'  => '<i class="am-icon-invoices-01"></i>',
+                'accessibility' => ['student'],
+            ],
         ];
 
         if(\Nwidart\Modules\Facades\Module::has('forumwise') && \Nwidart\Modules\Facades\Module::isEnabled('forumwise')){

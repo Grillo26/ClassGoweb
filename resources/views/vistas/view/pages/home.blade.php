@@ -139,25 +139,44 @@
 </section>
 
 <!--GUIA PASO A PASO-->
-<section class="guide container">
-    <p>Una guía paso a paso</p>
+<section class="potencial-container">
+    <h1 class="over-text"><div class="linea"></div>Una guía paso a paso<div class="linea"></div></h1>
     <h1>Desbloquea Tu Potencial Con Pasos Sencillos</h1>
-    <p>Descubra como nuestra plataforma simplifica la búsqueda y reserva de los mejores tutores para mejorar sus habilidades y alcanzar objetivos de aprendizaje</p>
+    <p>Descubra cómo nuestra plataforma simplifica la búsqueda y reserva de los mejores tutores para mejorar sus habilidades y alcanzar sus objetivos de aprendizaje.</p>
     <div class="steps">
         <!--CARD-->
         <div class="steps-card">
-            <button>Paso 1</button>
-            <img src="" alt=""><!--Imagen Representativa-->
-            <h1>Incribete</h1>
+            <button class="numero-paso">Paso 1</button>
+            <img src="{{ asset('images/paso1.png') }}" alt="Pasos">
+            <h1>Inscríbete</h1>
             <p>Crea tu cuenta rápidamente para comenzar a utilizar nuestra plataforma</p>
             <button>Empezar</button>
-        </div>
+        </div> <!--FIN CARD-->
+        <!--CARD-->
+        <div class="steps-card">
+            <button class="numero-paso">Paso 2</button>
+            <img src="{{ asset('images/paso2.png') }}" alt="Pasos">
+            <h1>Encuentra un tutor</h1>
+            <p>Crea tu cuenta rápidamente para comenzar a utilizar nuestra plataforma</p>
+            <button>Empezar</button>
+        </div> <!--FIN CARD-->
+        <!--CARD-->
+        <div class="steps-card">
+            <button class="numero-paso">Paso 3</button>
+            <img src="{{ asset('images/paso3.png') }}" alt="Pasos">
+            <h1>Programar una Sesión</h1>
+            <p>Crea tu cuenta rápidamente para comenzar a utilizar nuestra plataforma</p>
+            <button>Empezar</button>
+        </div> <!--FIN CARD-->
+
         <!--COMIENZA TU JORNADA CARD-->
         <div class="go">
-            <img src="" alt=""><!--Icono-->
+            <button class="numero-paso">
+                <i class="fa-solid fa-person-running"></i>
+            </button>
             <h1>Comienza tu jornada</h1>
             <p>Comienza tu viaje educativo con nosotros. ¡Encuentra un tutor y reserva tu primera sesión hoy mismo!</p>
-            <button>Empeza ahora</button>
+            <button class="button-go">Empieza ahora</button>
         </div>
     </div>
 </section>
