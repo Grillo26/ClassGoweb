@@ -113,6 +113,14 @@ class BookingController extends Controller
         return $this->success(data: SubjectResource::collection($subjects));
     }
 
-
+    public function getUserBookingsById($id, Request $request)
+    {
+        // Buscar tutorías donde el usuario sea tutor o estudiante
+        $bookings = \App\Models\SlotBooking::where('tutor_id', $id)
+            ->orWhere('student_id', $id)
+            ->orderBy('start_time')
+            ->get();
+        return response()->json($bookings);
+    }
 
 }

@@ -116,6 +116,18 @@ Route::get('alianzas',                                          [AlianzaControll
 Route::get('all-subjects', [SubjectController::class, 'index']);
 Route::get('verified-tutors-photos', [\App\Http\Controllers\Api\TutorController::class, 'getVerifiedTutorsPhotos']);
 
+Route::get('reviews', [ReviewController::class, 'index']);
+Route::get('reviews/received', [ReviewController::class, 'getReceivedReviews']);
+Route::get('reviews/given', [ReviewController::class, 'getUserReviews']);
+Route::post('reviews', [ReviewController::class, 'store']);
+Route::get('reviews/{id}', [ReviewController::class, 'show']);
+Route::put('reviews/{id}', [ReviewController::class, 'update']);
+Route::delete('reviews/{id}', [ReviewController::class, 'destroy']);
+Route::get('reviews/stats/{userId}', [ReviewController::class, 'getStats']);
+
+// Ruta para obtener las tutorías de un usuario por su id (pública)
+Route::get('user/{id}/bookings', [\App\Http\Controllers\Api\BookingController::class, 'getUserBookingsById']);
+
 Route::fallback(function () {
     return response()->json([
         'message' => __('general.api_url_not_found'),
