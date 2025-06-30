@@ -32,8 +32,6 @@ class SubjectSlotController extends Controller
     }
 
     protected function fetchUserSubjectSlots($userId, $date = null) {
-        $slotsData = [];
-
         $slots = UserSubjectSlot::select('id','start_time','end_time','duracion','date','user_id')
             ->withCount('bookings')
             ->with('students', fn($query) => $query->select('profiles.id','profiles.user_id', 'profiles.image')->limit(5))
@@ -41,26 +39,10 @@ class SubjectSlotController extends Controller
                 $slots->where('start_time', '>=', $date['start_date']);
                 $slots->where('end_time', '<=', $date['end_date']);
             })
+            ->where('user_id', $userId)
             ->orderBy('start_time')
             ->get();
 
-        if ($slots->isNotEmpty()) {
-            foreach ($slots as $item) {
-                // $group = $item->subjectGroupSubjects?->userSubjectGroup?->group?->name;
-                // $subject  = $item?->subjectGroupSubjects?->subject;
-
-                // $slotsData[$group][$subject?->name]['slots'][] = $item;
-                // $slotsData[$group][$subject?->name]['info'] = [
-                //     'user_subject_id'       => $item?->subjectGroupSubjects?->id,
-                //     'user_subject_group_id' => $item?->subjectGroupSubjects?->user_subject_group_id,
-                //     'subject_id'            => $item?->subjectGroupSubjects?->subject_id,
-                //     'subject'               => $subject?->name,
-                //     'hour_rate'             => $item?->subjectGroupSubjects?->hour_rate,
-                //     'image'                 => $item?->subjectGroupSubjects?->image,
-                // ];
-            }
-        }
-
-        return $slotsData;
+        return $slots;
     }
 }
