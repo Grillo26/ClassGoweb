@@ -134,6 +134,14 @@ Route::post('slot-bookings', [\App\Http\Controllers\Api\BookingController::class
 // Ruta para registrar un nuevo payment_slot_booking
 Route::post('payment-slot-bookings', [\App\Http\Controllers\Api\BookingController::class, 'storePaymentSlotBooking']);
 
+// Ruta de prueba para subida de archivos (sin lógica, solo para test de CSRF)
+Route::post('test-upload', function (\Illuminate\Http\Request $request) {
+    if ($request->hasFile('file')) {
+        return response()->json(['ok' => true, 'filename' => $request->file('file')->getClientOriginalName()]);
+    }
+    return response()->json(['ok' => false, 'message' => 'No file uploaded']);
+});
+
 Route::fallback(function () {
     return response()->json([
         'message' => __('general.api_url_not_found'),
