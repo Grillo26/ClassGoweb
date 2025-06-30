@@ -96,6 +96,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('reviews/{id}', [ReviewController::class, 'update']);
     Route::delete('reviews/{id}', [ReviewController::class, 'destroy']);
     Route::get('reviews/stats/{userId}', [ReviewController::class, 'getStats']);
+
+    // Ruta para obtener el tiempo disponible del tutor
+    Route::get('tutor/{id}/available-slots', [\App\Http\Controllers\Api\SubjectSlotController::class, 'getTutorAvailableSlots']);
+
+    // Ruta para obtener las tutorías del usuario autenticado (tutor o estudiante)
+    Route::middleware('auth:sanctum')->get('user/bookings', [\App\Http\Controllers\Api\BookingController::class, 'getUpComingBooking']);
 });
 
 Route::get('country-states',                                    [TutorController::class,'getStates']);

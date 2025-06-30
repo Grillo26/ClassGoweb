@@ -24,6 +24,13 @@ class SubjectSlotController extends Controller
         return response()->json($slotsData);
     }
 
+    public function getTutorAvailableSlots($id, Request $request)
+    {
+        $date = $request->only(['start_date', 'end_date']);
+        $slotsData = $this->fetchUserSubjectSlots($id, $date);
+        return response()->json($slotsData);
+    }
+
     protected function fetchUserSubjectSlots($userId, $date = null) {
         $slotsData = [];
 
