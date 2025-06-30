@@ -151,10 +151,14 @@ class BookingController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
         ]);
 
-        // Guardar la imagen en la carpeta especificada
-        $path = $request->file('image')->store('public/uploads/bookings');
-        // Obtener solo la ruta relativa sin 'public/'
-        $relativePath = str_replace('public/', '', $path);
+        // Guardar la imagen directamente en public/storage/uploads/bookings con el nombre original
+        $originalName = $request->file('image')->getClientOriginalName();
+        $destinationPath = public_path('storage/uploads/bookings');
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+        $request->file('image')->move($destinationPath, $originalName);
+        $relativePath = 'uploads/bookings/' . $originalName;
 
         $paymentSlotBooking = \App\Models\PaymentSlotBooking::create([
             'slot_booking_id' => $validated['slot_booking_id'],
