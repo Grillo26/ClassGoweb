@@ -10,7 +10,8 @@
 
         <!-- Columna izquierda: texto -->
         <div class="hero-text">
-            <h1>Aprende y Progresa con <br><span class="highlight">Tutorías en Línea</span></h1>
+            <h1 class="hero-title-arriba">Aprende y Progresa con</h1>
+            <h1 class="hero-title-abajo">Tutorías en Línea</h1>
             <p class="hero-subtext">
                 Alcanza tus metas con tutorías personalizadas de los mejores expertos.<br>
                 Conéctate con tutores dedicados para asegurar tu éxito.
@@ -18,8 +19,17 @@
 
             <!-- Buscador -->
             <div class="search-box">
-                <input type="text" placeholder="Buscar Tutor">
-                <button><img src="/images/search-icon.svg" alt="Buscar"></button>
+                <input type="text" placeholder="Buscar Tutor...">
+                <button>
+                    <i class="fa-solid fa-magnifying-glass icon-search"></i>
+                </button>
+            </div>
+
+            <!--Botones-->
+            <div class="hero-buttons">
+                <button><i class="fa-solid fa-bolt-lightning"></i>Tutor al Instante</button>
+                <button><i class="fa-solid fa-calendar"></i>Agendar Tutoría</button>
+                <button><i class="fa-solid fa-compass"></i>Explorar Tutores</button>
             </div>
         </div>
 
@@ -28,31 +38,33 @@
             <img src="{{ asset('images/Tugo_With_Glasses.png') }}" alt="Mascota ClassGo">
         </div>
 
+       
     </div>
 </section>
 
 
 <!-- CONTADORES INFO -->
-<section class="info container">
-    <!--CONTADORES-->
+<section class="info-container">
+    <!-- CONTADORES -->
     <div class="counters">
-        <div>
+        <div class="counter-box">
             <div class="counter-number">+500</div>
-            <p>Usuarios Registrados</p>
+            <h1>Usuarios registrados</h1>
         </div>
-        <div>
+        <div class="counter-box">
             <div class="counter-number">+230</div>
-            <p>Tutores Disponibles</p>
+            <h1>Tutores disponibles</h1>
         </div>
-        <div>
+        <div class="counter-box">
             <div class="counter-number">+230</div>
-            <p>Estudiantes Registrados</p>
+            <h1>Estudiantes registrados</h1>
         </div>
-        <div>
-            <div class="counter-number">4.5</div>
-            <p>En la App Store</p>
+        <div class="counter-box">
+            <div class="counter-number"><i class="fa fa-star"></i> 4,5</div>
+            <h1>En la App Store</h1>
         </div>
     </div>
+
     <!--TUTORES DESTACADOS-->
     <div class="outstanding-tutors">
         <h2 style="text-align: center;">Tutores Destacados</h2>
