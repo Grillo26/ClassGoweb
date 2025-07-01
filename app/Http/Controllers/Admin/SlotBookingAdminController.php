@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\SlotBooking;
 use Illuminate\Http\Request;
+use function event;
+use function view;
+use function compact;
+use function redirect;
 
 class SlotBookingAdminController extends Controller
 {
@@ -37,6 +41,9 @@ class SlotBookingAdminController extends Controller
         $tutoria = SlotBooking::findOrFail($id);
         $tutoria->status = $request->status;
         $tutoria->save();
+
+        // Emitir evento para notificación en tiempo real
+        event(new \App\Events\SlotBookingStatusChanged($tutoria->id, $tutoria->status));
 
         return redirect()->route('admin.tutorias.index')->with('success', 'Estado actualizado');
     }
