@@ -113,6 +113,58 @@ class BookingController extends Controller
         return $this->success(data: SubjectResource::collection($subjects));
     }
 
+    public function getUserBookingsById($id, Request $request)
+    {
+        // Buscar tutorías donde el usuario sea tutor o estudiante
+        $bookings = \App\Models\SlotBooking::where('tutor_id', $id)
+            ->orWhere('student_id', $id)
+            ->orderBy('start_time')
+            ->get();
+        return response()->json($bookings);
+    }
 
+    public function storeSlotBooking(Request $request)
+    {
+        $validated = $request->validate([
+            'student_id' => 'required|exists:users,id',
+            'tutor_id' => 'required|exists:users,id',
+            'user_subject_slot_id' => 'nullable|exists:user_subject_slots,id',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+            'session_fee' => 'required|numeric',
+            'booked_at' => 'nullable|date',
+            'calendar_event_id' => 'nullable|string',
+            'meeting_link' => 'nullable|string',
+            'status' => 'nullable|integer',
+            'meta_data' => 'nullable|array',
+            'subject_id' => 'nullable|exists:subjects,id'
+        ]);
+
+        $slotBooking = \App\Models\SlotBooking::create($validated);
+        return response()->json($slotBooking, 201);
+    }
+
+    public function storePaymentSlotBooking(Request $request)
+    {
+        $validated = $request->validate([
+            'slot_booking_id' => 'required|exists:slot_bookings,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
+        ]);
+
+        // Guardar la imagen directamente en public/storage/uploads/bookings con un nombre aleatorio
+        $randomName = uniqid() . '_' . $request->file('image')->getClientOriginalName();
+        $destinationPath = public_path('storage/uploads/bookings');
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+        $request->file('image')->move($destinationPath, $randomName);
+        $relativePath = 'uploads/bookings/' . $randomName;
+
+        $paymentSlotBooking = \App\Models\PaymentSlotBooking::create([
+            'slot_booking_id' => $validated['slot_booking_id'],
+            'image_url' => $relativePath,
+        ]);
+        return response()->json($paymentSlotBooking, 201);
+    }
 
 }
