@@ -66,6 +66,12 @@
     color: white;
 }
 
+.buttons-card-inv{
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+}
+
 .inv-badge {
     background-color: var(--primary-color);
     color: white;
@@ -90,7 +96,22 @@
 }
 
 .inv-copy-button:hover {
+    background-color: #0477b1;
+}
+
+.compartir-button {
     background-color: var(--terciary-color2);
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.compartir-button:hover {
+    background-color: #8d4d04;
 }
 
 /*--------- 3 - Cupones Locales ----------*/

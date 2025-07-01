@@ -12,12 +12,7 @@
 <div class="am-dbbox am-invoicelist_wrap">
 
     <div class="am-dbbox_content am-invoicelist">
-        <div class="am-dbbox_title">
-            @slot('title')
-            {{ __('promociones') }}
-            @endslot
-            <h2>{{ __('Promociones') }}</h2>
-        </div>
+
     
         <!--Aquí va todo-->
         <div class="promociones-container">
@@ -57,8 +52,10 @@
                             <p>Obten descuento al compartir </p>
                         </div>
                     </div>
-
-                    <button class="inv-copy-button">Copiar Código</button>
+                    <div class="buttons-card-inv">
+                        <button class="inv-copy-button">Copiar Código</button>
+                        <button class="compartir-button">Compartir</button>
+                    </div>
                 </div>
             </div>
         </div>
