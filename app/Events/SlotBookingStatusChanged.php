@@ -3,34 +3,38 @@
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SlotBookingStatusChanged
+class SlotBookingStatusChanged implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, SerializesModels;
+
+    public $slotBookingId;
+    public $newStatus;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct($slotBookingId, $newStatus)
     {
-        //
+        $this->slotBookingId = $slotBookingId;
+        $this->newStatus = $newStatus;
     }
 
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
+     * @return \Illuminate\Broadcasting\Channel
      */
-    public function broadcastOn(): array
+    public function broadcastOn()
     {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
+        return new Channel('slot-bookings');
+    }
+
+    public function broadcastAs()
+    {
+        return 'SlotBookingStatusChanged';
     }
 }
