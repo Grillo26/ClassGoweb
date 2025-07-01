@@ -28,10 +28,14 @@
                     <!-- Este contenido será extraído de BD -->
                     @for($i = 0; $i < 10; $i++) 
                         <div class="cupon-item">
-                            <p class="cupon-fecha">Válido hasta el 30/07/2025</p>
-                            <p class="cupon-principal">Cupón {{ $i + 1 }}</p>
-                            <p class="cupon-detalle">Cupón válido para compras sobre Bs. 100</p>
-                            <span class="cupon-info-icon">i</span>
+                            <div class="cupon-text">
+                                <p class="cupon-fecha">Válido hasta el 30/07/2025</p>
+                                <p class="cupon-principal">Cupón {{ $i + 1 }}</p>
+                                <p class="cupon-detalle">Cupón válido para compras sobre Bs. 100</p>
+                            </div>
+                            <div class="cupon-accion">
+                                <button class="cupon-usar-btn">Usar</button>
+                            </div>
                         </div>
                     @endfor
                 </div>
