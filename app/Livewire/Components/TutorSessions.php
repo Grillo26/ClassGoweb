@@ -319,6 +319,16 @@ class TutorSessions extends Component
         $slot = UserSubjectSlot::find($slotId);
         if (!empty($slot)) {
             $sessionFee = $slot->session_fee ?? 15;
+
+            if (!Auth::check()) {
+                session()->put('url.intended', url()->current());
+                return redirect()->route('login');
+            }
+
+            /* if (!Auth::check()) {
+                return redirect()->route('login');
+            } */
+
             $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->selectedSubject, $this->selectedHour);
             $data = [
                 'id' => $bookedSlot->id,
@@ -387,10 +397,8 @@ class TutorSessions extends Component
                     $contenido .= "Horario: " . parseToUserTz($slot->start_time, $this->timezone)->format('d/m/Y H:i') . " - " . parseToUserTz($slot->end_time, $this->timezone)->format('H:i') . "\n";
                     $contenido .= "Precio: {$this->currency_symbol}" . number_format($sessionFee, 2) . "\n\n";
                     $contenido .= "Por favor, revise el panel de administración para más detalles.";
-
-
                     \Mail::raw($contenido, function ($message) {
-                        $message->to(env('MAIL_FROM_ADDRESS'))
+                        $message->to(env('MAIL_ADMIN'))
                             ->subject('Nueva reserva de tutoría registrada');
                     });
 

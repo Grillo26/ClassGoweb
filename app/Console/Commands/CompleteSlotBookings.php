@@ -32,15 +32,13 @@ class CompleteSlotBookings extends Command
         $now = Carbon::now();
         $bookings = SlotBooking::where('status', 1) // 1 = Active
             ->whereNotNull('end_time')
-            ->where('end_time', '<', $now->subMinutes(-2)) // end_time + 2 minutos
+            ->where('end_time', '<', $now->subMinutes(3)) // end_time + 2 minutos
             ->get();
-
         foreach ($bookings as $booking) {
             $booking->status = 5; // 5 = Completed
             $booking->save();
             Log::info("Reserva {$booking->id} completada");
         }
-        
         $this->info('Proceso de completar reservas finalizado');
     }
 }
