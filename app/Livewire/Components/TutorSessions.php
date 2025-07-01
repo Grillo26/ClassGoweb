@@ -319,6 +319,16 @@ class TutorSessions extends Component
         $slot = UserSubjectSlot::find($slotId);
         if (!empty($slot)) {
             $sessionFee = $slot->session_fee ?? 15;
+
+            if (!Auth::check()) {
+                session()->put('url.intended', url()->current());
+                return redirect()->route('login');
+            }
+
+            /* if (!Auth::check()) {
+                return redirect()->route('login');
+            } */
+
             $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->selectedSubject, $this->selectedHour);
             $data = [
                 'id' => $bookedSlot->id,
