@@ -74,4 +74,5 @@ return [
     'history_tutorials' => 'history tutorials',
     'discover_tutor_text1' => 'Discover an online tutor',
     'discover_tutor_text2' => 'skilled for your studies',
+    'promociones' => 'Promociones',
 ];

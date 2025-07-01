@@ -1,0 +1,174 @@
+@import './estilos/variables.css';
+
+
+/** TABLE OF CONTENTS
+------------------------------------------------------------/
+1 - Container Promociones
+2 - Card Invitación
+3 - Cupones locales
+------------------------------------------------------------*/
+
+.promociones-container{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+/*--------- 1 - Container de invitacion ----------*/
+.inv-container { 
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    background: none;
+    padding: 1rem;
+}
+
+/*--------- 2 - Card Invitación ----------*/
+
+.inv-box {
+    background-color: var(--secundary-color);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.inv-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+}
+
+.inv-code {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #111;
+    background-color: #f0f0f0;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    letter-spacing: 2px;
+}
+
+.inv-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: left;
+}
+
+.inv-step {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+    color: white;
+}
+
+.inv-badge {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.inv-copy-button {
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.inv-copy-button:hover {
+    background-color: var(--terciary-color2);
+}
+
+/*--------- 3 - Cupones Locales ----------*/
+.cupones-container {
+    margin: 0;
+    width: 500px;
+    padding: 2rem 1rem;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    border-radius: 20px;
+}
+
+.cupones-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #111;
+}
+
+.cupon-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-height: 300px; /* Altura máxima para scroll interno */
+    overflow-y: auto;
+    padding-right: 8px; /* espacio para el scroll */
+}
+
+.cupon-item {
+    position: relative;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.cupon-fecha {
+    font-size: 0.85rem;
+    color: #999;
+    margin-bottom: 0.25rem;
+}
+
+.cupon-principal {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #222;
+}
+
+.cupon-detalle {
+    font-size: 0.95rem;
+    color: #666;
+}
+
+.cupon-info-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #e02424;
+    border: 2px solid #e02424;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    text-align: center;
+    line-height: 18px;
+    background-color: #fff;
+}
+
+/* Estilos Scroll */
+.cupon-lista::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cupon-lista::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 6px;
+}
+
+.cupon-lista::-webkit-scrollbar-track {
+    background: transparent;
+}
