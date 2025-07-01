@@ -96,7 +96,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('reviews/{id}', [ReviewController::class, 'update']);
     Route::delete('reviews/{id}', [ReviewController::class, 'destroy']);
     Route::get('reviews/stats/{userId}', [ReviewController::class, 'getStats']);
+
+    // Ruta para obtener el tiempo disponible del tutor
+    
 });
+
+// Ruta para obtener el tiempo disponible del tutor (pública)
+Route::get('tutor/{id}/available-slots', [\App\Http\Controllers\Api\SubjectSlotController::class, 'getTutorAvailableSlots']);
+
+// Ruta para obtener las tutorías del usuario autenticado (pública temporalmente)
+Route::get('user/bookings', [\App\Http\Controllers\Api\BookingController::class, 'getUpComingBooking']);
 
 Route::get('country-states',                                    [TutorController::class,'getStates']);
 Route::get('subject-groups',                                   [BookingController::class,'getSubjectGroups']);
@@ -106,6 +115,26 @@ Route::get('settings',                                         [OptionBuilderCon
 Route::get('alianzas',                                          [AlianzaController::class, 'index']);
 Route::get('all-subjects', [SubjectController::class, 'index']);
 Route::get('verified-tutors-photos', [\App\Http\Controllers\Api\TutorController::class, 'getVerifiedTutorsPhotos']);
+
+Route::get('reviews', [ReviewController::class, 'index']);
+Route::get('reviews/received', [ReviewController::class, 'getReceivedReviews']);
+Route::get('reviews/given', [ReviewController::class, 'getUserReviews']);
+Route::post('reviews', [ReviewController::class, 'store']);
+Route::get('reviews/{id}', [ReviewController::class, 'show']);
+Route::put('reviews/{id}', [ReviewController::class, 'update']);
+Route::delete('reviews/{id}', [ReviewController::class, 'destroy']);
+Route::get('reviews/stats/{userId}', [ReviewController::class, 'getStats']);
+
+// Ruta para obtener las tutorías de un usuario por su id (pública)
+Route::get('user/{id}/bookings', [\App\Http\Controllers\Api\BookingController::class, 'getUserBookingsById']);
+
+// Ruta para registrar una nueva tutoría (slot_booking)
+Route::post('slot-bookings', [\App\Http\Controllers\Api\BookingController::class, 'storeSlotBooking']);
+
+// Ruta para registrar un nuevo payment_slot_booking (renombrada para prueba)
+Route::post('test-payment-upload', [\App\Http\Controllers\Api\BookingController::class, 'storePaymentSlotBooking']);
+
+
 
 Route::fallback(function () {
     return response()->json([
