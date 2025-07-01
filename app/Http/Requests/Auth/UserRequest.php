@@ -30,6 +30,8 @@ class UserRequest extends FormRequest {
             'userRole'           => 'required|string|min:3|max:255',
             'password'           => ['required',Rules\Password::defaults()],
             'confirm_password'   => ['required','same:password',Rules\Password::defaults()],
+            'codeI'               => 'requiered|string|max:8|exists:codes,code',
+            'code'               => 'required|string|max:8|unique:codes',
         ];
     }
 

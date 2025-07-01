@@ -34,6 +34,10 @@ use App\Livewire\Payouts;
 use App\Http\Controllers\GoogleMeetController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/nosotros',function () {
+    return view('vistas.view.pages.nosotros');
+}); 
+
 Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialController::class, 'callback'])->name('social.callback');
 Route::get('/pay-qr/{orderId}', [PaymentController::class, 'showQR'])->name('pay-qr');
