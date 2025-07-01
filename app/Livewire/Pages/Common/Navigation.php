@@ -179,11 +179,11 @@ class Navigation extends Component
             ] */
            /*<-----------PROMOCIOINES--------->*/ 
            [
-                'studentSortOrder' => 11    ,
-                'route' => 'student.promociones',
-                'onActiveRoute' => ['student.promociones'],
+                'studentSortOrder' => 11,
+                'route' => 'promociones',
+                'onActiveRoute' => ['promociones'],
                 'title' => 'Promociones',
-                'icon'  => '<i class="am-icon-invoices-01"></i>',
+                'icon'  => '<i class="am-icon-heart-01"></i>',
                 'accessibility' => ['student'],
             ],
         ];
