@@ -42,8 +42,17 @@ class SlotBookingAdminController extends Controller
         $tutoria->status = $request->status;
         $tutoria->save();
 
-        // Emitir evento para notificación en tiempo real
+        \Log::info('Antes de emitir evento SlotBookingStatusChanged', [
+            'id' => $tutoria->id,
+            'status' => $tutoria->status
+        ]);
+
         event(new \App\Events\SlotBookingStatusChanged($tutoria->id, $tutoria->status));
+
+        \Log::info('Después de emitir evento SlotBookingStatusChanged', [
+            'id' => $tutoria->id,
+            'status' => $tutoria->status
+        ]);
 
         return redirect()->route('admin.tutorias.index')->with('success', 'Estado actualizado');
     }
