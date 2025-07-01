@@ -172,8 +172,7 @@ class Courses extends Component
                 'title' => 'Examen de ' . $course->name,
                 'total_score' => 100,
             ]);
-            // Guardar preguntas del array exam_questions
-            //dd($this->exam_questions);
+           
             if (!empty($this->exam_questions)) {
                 foreach ($this->exam_questions as $q) {
                     $examn->questions()->create([

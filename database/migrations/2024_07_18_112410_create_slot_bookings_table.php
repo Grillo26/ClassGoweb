@@ -21,6 +21,7 @@ return new class extends Migration
             $table->double('session_fee');
             $table->timestamp('booked_at')->nullable();
             $table->string('calendar_event_id')->nullable();
+            //el 2 se toma como pendiente  
             $table->tinyInteger('status')->default(1)->comment('1-> Active, 2-> Rescheduled, 3-> Refunded, 4-> Reserved, 5-> Completed');
             $table->json('meta_data')->nullable();
         });
