@@ -1,3 +1,6 @@
+@php
+use Carbon\Carbon;
+@endphp
 <div class="am-dbbox am-invoicelist_wrap" wire:init="loadData">
     @if($isLoading)
     @include('skeletons.invoices')
@@ -66,9 +69,12 @@
                         @role('student')
                         <td>
                             @php
+                                
                                 $yaReclamo = $order->claims && $order->claims->count() > 0;
+                                $pasada_hora= now()->greaterThan(Carbon::parse($order->end_time)->addMinutes(2));
+                                //dd(!$pasada_hora, "aver ")
                             @endphp
-                            @if($order->status == "Aceptado"  && !$yaReclamo)
+                            @if($order->status == "Aceptado" && !$pasada_hora && !$yaReclamo)
                                 <button class="btn btn-warning" wire:click="openClaimModal({{ $order->id }})">Reclamar</button>
                             @elseif($yaReclamo)
                                 <span class="text-success">Reclamo enviado</span>
