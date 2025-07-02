@@ -19,29 +19,32 @@
         <div class="promociones-container">
             <div class="cupones-container">
                 <h1 class="cupones-title">Mis cupones</h1>
-
+                @if($cupones->isEmpty())
+                    <p class="text-gray-500">No tienes cupones activos.</p>
+                @else
                 <div class="cupon-lista">
                     <!-- Este contenido será extraído de BD -->
-                    @for($i = 0; $i < 3; $i++) 
+                    @foreach($cupones as $cupon)
                         <div class="cupon-item">
                             <div class="cupon-text">
-                                <p class="cupon-fecha">Válido hasta el 30/07/2025</p>
-                                <p class="cupon-principal">Cupón {{ $i + 1 }}</p>
-                                <p class="cupon-detalle">Cupón válido para compras sobre Bs. 100</p>
+                                <p class="cupon-principal">Obtubiste un descuento del: {{ $cupon->descuento }} %</p>
+                                <p class="cupon-detalle">Cupón válido hasta el {{ $cupon->fecha_caducidad ? \Carbon\Carbon::parse($cupon->fecha_caducidad)->format('d/m/Y') : 'Sin fecha' }}</p>
                             </div>
                             <div class="cupon-accion">
                                 <button class="cupon-usar-btn">Usar</button>
                             </div>
                         </div>
-                    @endfor
-                </div>
-
+                    @endforeach
+                    </div>
+                @endif
             </div>
             
             <div class="inv-container">
                 <div class="inv-box">
                     <h2 class="inv-title">Tu Código de Invitación</h2>
-                    <div class="inv-code" id="inv-code">4764040H</div>
+                    <div class="inv-code" id="inv-code">
+                        {{ $codigo->codigo ?? 'Sin código disponible' }}
+                    </div>
 
                     <div class="inv-steps">
                         <div class="inv-step">
@@ -65,8 +68,6 @@
             </div>
         </div>
     </div>
-    
-
 </div>
 
 @push('scripts')
