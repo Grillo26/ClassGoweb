@@ -27,11 +27,12 @@
                     @foreach($cupones as $cupon)
                         <div class="cupon-item">
                             <div class="cupon-text">
-                                <p class="cupon-principal">Obtubiste un descuento del: {{ $cupon->descuento }} %</p>
-                                <p class="cupon-detalle">Cupón válido hasta el {{ $cupon->fecha_caducidad ? \Carbon\Carbon::parse($cupon->fecha_caducidad)->format('d/m/Y') : 'Sin fecha' }}</p>
+                                <p class="cupon-fecha">Cupón válido hasta el {{ $cupon->fecha_caducidad ? \Carbon\Carbon::parse($cupon->fecha_caducidad)->format('d/m/Y') : 'Sin fecha' }}</p>
+                                <p class="cupon-principal">Obtubiste un descuento del {{ $cupon->descuento }}%</p>
+                                <p class="cupon-detalle">en tu próxima tutoría</p>
                             </div>
                             <div class="cupon-accion">
-                                <button class="cupon-usar-btn">Usar</button>
+                                <a href="{{ route('find-tutors')}}"> <button class="cupon-usar-btn">Usar</button></a>
                             </div>
                         </div>
                     @endforeach
