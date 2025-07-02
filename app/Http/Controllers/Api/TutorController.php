@@ -383,16 +383,21 @@ class TutorController extends Controller
     public function getVerifiedTutorsPhotos(Request $request)
     {
         try {
-            $tutors = \App\Models\User::whereHas('roles', function($q) {
-                    $q->where('name', 'tutor');
-                })
-                ->whereHas('profile', function($q) {
-                    $q->whereNotNull('verified_at');
-                })
-                ->with(['profile' => function($q) {
-                    $q->select('id', 'user_id', 'image');
-                }])
-                ->get();
+            $query = \App\Models\User::whereHas('roles', function($q) {
+                $q->where('name', 'tutor');
+            })
+            ->whereHas('profile', function($q) {
+                $q->whereNotNull('verified_at');
+            })
+            ->with(['profile' => function($q) {
+                $q->select('id', 'user_id', 'image');
+            }]);
+
+            if ($request->filled('tutor_id')) {
+                $query->where('id', $request->tutor_id);
+            }
+
+            $tutors = $query->get();
 
             $result = $tutors->map(function($tutor) {
                 $rutaBD = $tutor->profile ? $tutor->profile->image : null;
