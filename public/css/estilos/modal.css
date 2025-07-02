@@ -1,3 +1,4 @@
+
 .modal-compartir {
     display: none;
     position: fixed;
@@ -18,10 +19,12 @@
     box-shadow: 0 10px 25px rgba(0,0,0,0.25);
 }
 
-.modal-title {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+.modal-header{
+    display: flex;
+    flex-flow: column wrap;
+}
+.img-modal{
+    width: 80px;
 }
 
 .modal-redes {
@@ -52,8 +55,9 @@
     background-color: #1877F2;
 }
 
-.messenger {
-    background-color: #0084FF;
+.tiktok {
+    background-color: #EE1D52; /* rojo TikTok */
+    color: white;
 }
 
 .instagram {
