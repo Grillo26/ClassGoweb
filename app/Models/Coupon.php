@@ -17,4 +17,10 @@ class Coupon extends Model
     {
         return $this->hasMany(UserCoupon::class, 'coupon_id');
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_coupons')->withPivot('cantidad')->withTimestamps();
+    }
+
 }
