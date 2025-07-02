@@ -165,7 +165,7 @@ class Navigation extends Component
                 'accessibility' => ['tutor'],
             ],
 
-            [
+           /*  [
                 'studentSortOrder' => 7,
                 'route' => 'student.profile.claims',
                 'onActiveRoute' => [ 'student.profile.claims'],
@@ -173,7 +173,7 @@ class Navigation extends Component
                 'icon'  => '<i class="am-icon-user-01"></i>',
                 'accessibility' => ['student'],
             ],
-
+ */
             /* [
                 'tutorSortOrder' => 11,
                 'studentSortOrder' => 12,
