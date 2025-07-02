@@ -223,9 +223,11 @@ class TutorController extends Controller
 
     public function slotDetail($id)
     {
-        $bookingService  = new BookingService();
-       // $currentSlot     = $bookingService->getSlotDetail($id);
-        //return $this->success(data: new TutorSlotResource($currentSlot));
+        $booking = \App\Models\SlotBooking::with(['tutor', 'slot', 'subject'])->find($id);
+        if (!$booking) {
+            return $this->error(data: null, message: __('api.booking_not_found'), code: 404);
+        }
+        return $this->success(data: new \App\Http\Resources\SlotBookingResource($booking));
     }
 
     public function getFavouriateTutors($tutors)

@@ -47,6 +47,12 @@ class SlotBookingResource extends JsonResource
             'meta_data'                    => $this->whenHas('meta_data'),
             'tutor'                        => new ProfileResource($this->whenLoaded('tutor')),
             'slot'                         => new UserSlotResource($this->whenLoaded('slot')),
+            'subject' => $this->whenLoaded('subject', function () {
+                return [
+                    'id' => $this->subject?->id,
+                    'name' => $this->subject?->name,
+                ];
+            }),
         ];
     }
 }
