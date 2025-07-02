@@ -1,4 +1,5 @@
 @import './estilos/variables.css';
+@import './estilos/modal.css';
 
 
 /** TABLE OF CONTENTS
@@ -112,6 +113,31 @@
 
 .compartir-button:hover {
     background-color: #8d4d04;
+}
+
+/* Toast flotante */
+.inv-toast {
+    position: fixed; /* Cambiar de absolute a fixed */
+    bottom: 2rem;     /* Posicionarlo desde abajo */
+    right: 11rem;      /* O usa left: 50% + transform para centrar */
+    background-color: #10b981;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+    display: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    animation: fadeOut 3s forwards;
+}
+
+/* Animación de desaparición */
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; display: none; }
 }
 
 /*--------- 3 - Cupones Locales ----------*/
