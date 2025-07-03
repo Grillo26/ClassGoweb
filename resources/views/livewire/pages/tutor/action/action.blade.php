@@ -100,19 +100,26 @@ new #[Layout('layouts.app')] class extends Component
 }">
 
     <a href="{{ $this->navigate ? route('tutor-detail',['slug' => $tutor->profile->slug]).'#availability' : '#availability' }}" class="am-btn">{{ __('tutor.book_session') }}  <i class="am-icon-calender-duration"></i> </a>
-
     @role('student')
     <a href="javascript:void(0)" @click=" recepientId=@js($tutor->id); threadId=''; $nextTick(() => $wire.dispatch('toggleModel', {id: 'message-model-'+@js($tutor->id),action:'show'}) )" class="am-white-btn"> {{ __('tutor.send_message') }} <i class="am-icon-chat-03"></i></a>
+    <!--BOTON COMPARTIR-->
+    
     <a href="javascript:void(0);" wire:click="toggleFavourite({{ $tutor->id }})"
         class="am-likebtn tutor-favourite-{{ $tutor->id }} {{ $this->isFavourite ? 'active' : '' }}">
         <i class="am-icon-heart-01"></i>
     </a>
     @else
+    
     <a href="javascript:void(0);" onclick="Livewire.dispatch('showAlertMessage', {type: `error`, message: `{{ Auth::check() ?  __('general.not_allowed') : __('general.login_error') }}` })" class="am-white-btn">
         {{ __('tutor.send_message') }} <i class="am-icon-chat-03"></i></a>
+
+    <!--BOTON COMPARTIR-->
+    <a href="{{ $this->navigate ? route('tutor-detail',['slug' => $tutor->profile->slug]).'#availability' : '#availability' }}" class="am-btn">{{ __('tutor.share_profile') }}  <i class="am-icon-share-3"></i> </a>
+
     <a href="javascript:void(0);" onclick="Livewire.dispatch('showAlertMessage', {type: `error`, message: `{{ Auth::check() ?  __('general.not_allowed') : __('general.login_error') }}` })" class="am-likebtn"> 
         @if(empty($tutor?->profile?->intro_video)) {{ __('tutor.save_to_my_list') }} @endif<i class="am-icon-heart-01"></i> 
     </a>
+    
     @endrole
     @include('livewire.pages.tutor.action.message' )
 </div>
