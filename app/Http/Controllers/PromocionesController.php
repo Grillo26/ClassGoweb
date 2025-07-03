@@ -11,10 +11,7 @@ class PromocionesController extends Controller
     public function index(){
         $user = Auth::user();
 
-        // Obtener el primer código del usuario
-        $codigo = $user->codes()->where('estado', 'activo')->latest()->first(); // puedes ajustar a tu lógica
-
-        // Obtener los cupones como antes
+        $codigo = $user->codes()->where('estado', 'activo')->latest()->first();
         $cupones = $user->coupons;
         return view('livewire.pages.student.promociones', compact('codigo', 'cupones'));
     }

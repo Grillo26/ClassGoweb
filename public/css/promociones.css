@@ -13,6 +13,7 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
+    gap: 20px;
 }
 /*--------- 1 - Container de invitacion ----------*/
 .inv-container { 
@@ -20,7 +21,6 @@
     justify-content: center;
     align-items: start;
     background: none;
-    padding: 1rem;
 }
 
 /*--------- 2 - Card Invitación ----------*/
@@ -155,18 +155,45 @@
 .cupones-title {
     font-size: 1.25rem;
     font-weight: bold;
-    color: #111;
+    color: var(--primary-color);
+    margin: 0 auto;
 }
 
 .cupon-lista {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
-    max-height: 300px; /* Altura máxima para scroll interno */
+    gap: 1rem;
+    max-height: 300px;
     overflow-y: auto;
-    padding-right: 8px; /* espacio para el scroll */
+    padding-right: 8px;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: transparent transparent;
+    transition: scr ollbar-color 0.3s ease;
 }
 
+/* Mostrar el scroll al hacer hover */
+.cupon-lista:hover {
+    scrollbar-color: #ccc transparent; /* Firefox */
+}
+
+/* Estilo para Chrome, Edge y Safari */
+.cupon-lista::-webkit-scrollbar {
+    width: 6px;
+    background: transparent;
+}
+
+.cupon-lista:hover::-webkit-scrollbar {
+    background: transparent;
+}
+
+.cupon-lista::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 4px;
+}
+
+.cupon-lista:hover::-webkit-scrollbar-thumb {
+    background-color: #cccccc;
+}
 .cupon-item {
     display: flex;
     padding: 0.5rem;
@@ -177,18 +204,18 @@
 .cupon-fecha {
     font-size: 0.85rem;
     color: #999;
-    margin-bottom: 0.25rem;
 }
 
 .cupon-principal {
     font-size: 1.1rem;
     font-weight: bold;
-    color: #222;
+    color: var(--primary-color);
 }
 
 .cupon-detalle {
-    font-size: 0.95rem;
+    font-size: 0.80 rem;
     color: #666;
+    margin: 0;
 }
 
 /*-----Boton------*/

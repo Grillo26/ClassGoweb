@@ -6,10 +6,8 @@
         </div>
 
         <div class="modal-redes">
-            <a href="#" class="red-btn whatsapp" id="whatsapp-link" target="_blank">WhatsApp</a>
-            <a href="#" class="red-btn facebook" id="facebook-link" target="_blank">Facebook</a>
-            <a href="#" class="red-btn instagram" id="instagram-link" onclick="compartirCodigo()" target="_blank">Instagram</a>
-            <a href="#" class="red-btn tiktok" id="tiktok-link" target="_blank">TikTok</a>
+            <a href="#" class="red-btn whatsapp" id="whatsapp-link" target="_blank"><img src="{{ asset('images/whatsapp.png')}}" alt="">WhatsApp</a>
+            <a href="#" class="red-btn facebook" id="facebook-link" target="_blank"><img src="{{ asset('images/facebook.png')}}" alt="" srcset="">Facebook</a>
         </div>
 
         <div class="modal-footer">
@@ -36,32 +34,8 @@
             const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(urlRegistro)}&quote=${mensajeCodificado}`;
             document.getElementById('facebook-link').href = facebookUrl;
 
-            // Instagram 
-
-
-            // TikTok (no permite compartir directo por URL, solo redirigir a perfil o sugerencia de enlace)
-            const tiktokUrl = `https://www.tiktok.com/share?url=${encodeURIComponent(urlRegistro)}&text=${mensajeCodificado}`;
-            document.getElementById('tiktok-link').href = tiktokUrl;
         }
     });
-
-    function compartirCodigo() {
-        const codigo = document.getElementById('inv-code').innerText.trim();
-        const mensaje = `¡Instala nuestra app y obtén un descuento en tu próxima tutoría! Usa este código: ${codigo}`;
-        const url = `https://classgoapp.com/register?ref=${codigo}`;
-
-        if (navigator.share) {
-            navigator.share({
-                title: 'ClassGo',
-                text: mensaje,
-                url: url
-            })
-            .then(() => console.log('Contenido compartido exitosamente'))
-            .catch((error) => console.error('Error al compartir:', error));
-        } else {
-            alert('La función de compartir no es compatible con tu navegador');
-        }
-    }
 </script>
 
 
