@@ -11,6 +11,7 @@ class Code extends Model
         'descuento',
         'codigo',
         'user_id',
+        'estado',
         'fecha_caducidad',
     ];
 
