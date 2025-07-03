@@ -30,6 +30,29 @@ class SlotBookingStatusChanged implements ShouldBroadcast
      */
     public function broadcastOn()
     {
+        // Enviar notificación push si el estado es 'aceptada'
+        if ($this->newStatus === 'aceptada') {
+            $booking = \App\Models\SlotBooking::with(['tutor', 'booker'])->find($this->slotBookingId);
+            if ($booking) {
+                $fcmService = new \App\Services\FcmService();
+                // Notificar al tutor
+                if ($booking->tutor && $booking->tutor->user && $booking->tutor->user->fcm_token) {
+                    $fcmService->sendNotification(
+                        $booking->tutor->user->fcm_token,
+                        '¡Nueva tutoría aceptada!',
+                        'Tu sesión ha sido aceptada. Revisa los detalles en la app.'
+                    );
+                }
+                // Notificar al estudiante
+                if ($booking->booker && $booking->booker->fcm_token) {
+                    $fcmService->sendNotification(
+                        $booking->booker->fcm_token,
+                        '¡Tu tutoría fue aceptada!',
+                        'El tutor ha aceptado tu sesión. Revisa los detalles en la app.'
+                    );
+                }
+            }
+        }
         return new Channel('slot-bookings');
     }
 

@@ -38,7 +38,8 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     protected $fillable = [
         'email',
         'password',
-        'email_verified_at'
+        'email_verified_at',
+        'fcm_token',
     ];
 
     /**

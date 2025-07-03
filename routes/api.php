@@ -97,6 +97,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('reviews/{id}', [ReviewController::class, 'destroy']);
     Route::get('reviews/stats/{userId}', [ReviewController::class, 'getStats']);
 
+    Route::post('update-fcm-token', [AuthController::class, 'updateFcmToken']);
+
     // Ruta para obtener el tiempo disponible del tutor
     
 });

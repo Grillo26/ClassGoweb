@@ -143,4 +143,15 @@ class AuthController extends Controller
             return $this->success(message: __('api.user_logout_successfully'));
         }
     }
+
+    public function updateFcmToken(Request $request)
+    {
+        $request->validate([
+            'fcm_token' => 'required|string',
+        ]);
+        $user = auth()->user();
+        $user->fcm_token = $request->fcm_token;
+        $user->save();
+        return response()->json(['message' => 'FCM token actualizado correctamente']);
+    }
 }
