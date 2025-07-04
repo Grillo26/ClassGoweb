@@ -30,28 +30,34 @@ class SlotBookingStatusChanged implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        // Enviar notificación push si el estado es 'aceptada'
-        if ($this->newStatus === 'aceptada') {
-            $booking = \App\Models\SlotBooking::with(['tutor', 'booker'])->find($this->slotBookingId);
-            if ($booking) {
-                $fcmService = new \App\Services\FcmService();
-                // Notificar al tutor
-                if ($booking->tutor && $booking->tutor->user && $booking->tutor->user->fcm_token) {
-                    $fcmService->sendNotification(
-                        $booking->tutor->user->fcm_token,
-                        '¡Nueva tutoría aceptada!',
-                        'Tu sesión ha sido aceptada. Revisa los detalles en la app.'
-                    );
-                }
-                // Notificar al estudiante
-                if ($booking->booker && $booking->booker->fcm_token) {
-                    $fcmService->sendNotification(
-                        $booking->booker->fcm_token,
-                        '¡Tu tutoría fue aceptada!',
-                        'El tutor ha aceptado tu sesión. Revisa los detalles en la app.'
-                    );
-                }
+        \Log::info('SlotBookingStatusChanged: evento disparado', ['slotBookingId' => $this->slotBookingId, 'newStatus' => $this->newStatus]);
+        $booking = \App\Models\SlotBooking::with(['tutor', 'booker'])->find($this->slotBookingId);
+        if ($booking) {
+            $fcmService = new \App\Services\FcmService();
+            // Notificar al tutor
+            if ($booking->tutor && $booking->tutor->user && $booking->tutor->user->fcm_token) {
+                \Log::info('Enviando notificación FCM al tutor', ['user_id' => $booking->tutor->user->id, 'fcm_token' => $booking->tutor->user->fcm_token]);
+                $fcmService->sendNotification(
+                    $booking->tutor->user->fcm_token,
+                    'Estado de tutoría actualizado',
+                    'El estado de la sesión ha cambiado a: ' . $this->newStatus
+                );
+            } else {
+                \Log::warning('No se encontró fcm_token para el tutor', ['tutor' => $booking->tutor?->user?->id]);
             }
+            // Notificar al estudiante
+            if ($booking->booker && $booking->booker->fcm_token) {
+                \Log::info('Enviando notificación FCM al estudiante', ['user_id' => $booking->booker->id, 'fcm_token' => $booking->booker->fcm_token]);
+                $fcmService->sendNotification(
+                    $booking->booker->fcm_token,
+                    'Estado de tutoría actualizado',
+                    'El estado de la sesión ha cambiado a: ' . $this->newStatus
+                );
+            } else {
+                \Log::warning('No se encontró fcm_token para el estudiante', ['student' => $booking->booker?->id]);
+            }
+        } else {
+            \Log::warning('No se encontró la tutoría para enviar notificación', ['slotBookingId' => $this->slotBookingId]);
         }
         return new Channel('slot-bookings');
     }
