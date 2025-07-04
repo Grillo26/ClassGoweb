@@ -146,6 +146,7 @@ class AuthController extends Controller
 
     public function updateFcmToken(Request $request)
     {
+        \Log::info('Entró a updateFcmToken', $request->all());
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'fcm_token' => 'required|string',
