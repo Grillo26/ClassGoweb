@@ -37,6 +37,7 @@ class SlotBookingStatusChanged implements ShouldBroadcast
             'aceptada' => 'aceptada',
             'completada' => 'completada',
             'no-completada' => 'no_completada',
+            'no_completada' => 'no_completada',
             'pendiente' => 'pendiente',
             'rechazada_observada' => 'rechazada_observada',
         ];
