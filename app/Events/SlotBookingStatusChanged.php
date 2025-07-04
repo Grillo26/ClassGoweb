@@ -32,39 +32,39 @@ class SlotBookingStatusChanged implements ShouldBroadcast
     {
         \Log::info('SlotBookingStatusChanged: evento disparado', ['slotBookingId' => $this->slotBookingId, 'newStatus' => $this->newStatus]);
         $booking = \App\Models\SlotBooking::with(['tutor', 'booker'])->find($this->slotBookingId);
-        // Mapeo de estado a imagen
-        $imagenesPorEstado = [
-            'aceptada' => url('storage/notificaciones/aceptada.png'),
-            'completada' => url('storage/notificaciones/completada.jpeg'),
-            'no-completada' => url('storage/notificaciones/no-completada.jpeg'),
-            'pendiente' => url('storage/notificaciones/pendiente.jpeg'),
-            'rechazada-observada' => url('storage/notificaciones/rechazada-observada.jpeg'),
+        // Mapeo de estado a icono (nombre del recurso en drawable, sin extensión)
+        $iconosPorEstado = [
+            'aceptada' => 'aceptada',
+            'completada' => 'completada',
+            'no-completada' => 'no_completada',
+            'pendiente' => 'pendiente',
+            'rechazada_observada' => 'rechazada_observada',
         ];
-        $image = $imagenesPorEstado[$this->newStatus] ?? url('storage/notificaciones/pendiente.jpeg');
+        // Normalizar el estado para el mapeo
+        $estado = str_replace('-', '_', $this->newStatus);
+        $icon = $iconosPorEstado[$estado] ?? 'pendiente';
         if ($booking) {
             $fcmService = new \App\Services\FcmService();
             // Notificar al tutor
             if ($booking->tutor && $booking->tutor->user && $booking->tutor->user->fcm_token) {
-                \Log::info('Enviando notificación FCM al tutor', ['user_id' => $booking->tutor->user->id, 'fcm_token' => $booking->tutor->user->fcm_token, 'image' => $image]);
+                \Log::info('Enviando notificación FCM al tutor', ['user_id' => $booking->tutor->user->id, 'fcm_token' => $booking->tutor->user->fcm_token, 'icon' => $icon]);
                 $fcmService->sendNotification(
                     $booking->tutor->user->fcm_token,
                     'Estado de tutoría actualizado',
                     'El estado de la sesión ha cambiado a: ' . $this->newStatus,
-                    [],
-                    $image
+                    ['icon' => $icon]
                 );
             } else {
                 \Log::warning('No se encontró fcm_token para el tutor', ['tutor' => $booking->tutor?->user?->id]);
             }
             // Notificar al estudiante
             if ($booking->booker && $booking->booker->fcm_token) {
-                \Log::info('Enviando notificación FCM al estudiante', ['user_id' => $booking->booker->id, 'fcm_token' => $booking->booker->fcm_token, 'image' => $image]);
+                \Log::info('Enviando notificación FCM al estudiante', ['user_id' => $booking->booker->id, 'fcm_token' => $booking->booker->fcm_token, 'icon' => $icon]);
                 $fcmService->sendNotification(
                     $booking->booker->fcm_token,
                     'Estado de tutoría actualizado',
                     'El estado de la sesión ha cambiado a: ' . $this->newStatus,
-                    [],
-                    $image
+                    ['icon' => $icon]
                 );
             } else {
                 \Log::warning('No se encontró fcm_token para el estudiante', ['student' => $booking->booker?->id]);
