@@ -26,4 +26,4 @@ storage/app/google/credentials.json
 *.mp4 
 /reemplazos.txt
 /public/storage
-
+config/firebase/*.json
