@@ -38,7 +38,7 @@ class SlotBookingStatusChanged implements ShouldBroadcast
             'completada' => 'completada',
             'no-completada' => 'no_completada',
             'no_completada' => 'no_completada',
-            'pendiente' => 'pendiente',
+            'pendiente' => 'ic_stat_pendiente',
             'rechazada_observada' => 'rechazada_observada',
         ];
         // Normalizar el estado para el mapeo
