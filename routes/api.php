@@ -97,10 +97,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('reviews/{id}', [ReviewController::class, 'destroy']);
     Route::get('reviews/stats/{userId}', [ReviewController::class, 'getStats']);
 
-    Route::post('update-fcm-token', [AuthController::class, 'updateFcmToken']);
-
-    // Ruta para obtener el tiempo disponible del tutor
-    
 });
 
 // Ruta para obtener el tiempo disponible del tutor (pública)
@@ -136,7 +132,8 @@ Route::post('slot-bookings', [\App\Http\Controllers\Api\BookingController::class
 // Ruta para registrar un nuevo payment_slot_booking (renombrada para prueba)
 Route::post('test-payment-upload', [\App\Http\Controllers\Api\BookingController::class, 'storePaymentSlotBooking']);
 
-
+// Agregar la ruta fuera del grupo para que sea pública:
+Route::post('update-fcm-token', [AuthController::class, 'updateFcmToken']);
 
 Route::fallback(function () {
     return response()->json([
