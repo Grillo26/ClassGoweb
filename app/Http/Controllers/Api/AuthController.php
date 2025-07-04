@@ -147,9 +147,10 @@ class AuthController extends Controller
     public function updateFcmToken(Request $request)
     {
         $request->validate([
+            'user_id' => 'required|exists:users,id',
             'fcm_token' => 'required|string',
         ]);
-        $user = auth()->user();
+        $user = \App\Models\User::find($request->user_id);
         $user->fcm_token = $request->fcm_token;
         $user->save();
         return response()->json(['message' => 'FCM token actualizado correctamente']);
