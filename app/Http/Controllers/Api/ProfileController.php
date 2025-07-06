@@ -119,20 +119,25 @@ class ProfileController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
         ]);
 
-        // Guardar la imagen en storage/app/public/profile
+        // Guardar la imagen directamente en public/storage/profile_images
         $fileName = uniqid() . '_' . $request->file('image')->getClientOriginalName();
-        $path = $request->file('image')->storeAs('profile', $fileName, 'public');
+        $destinationPath = public_path('storage/profile_images');
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+        $request->file('image')->move($destinationPath, $fileName);
+        $relativePath = 'profile_images/' . $fileName;
 
         // Actualizar el campo image en el perfil
-        $user->profile->image = $path;
+        $user->profile->image = $relativePath;
         $user->profile->save();
 
-        $url = url('public/storage/' . $path);
+        $url = url('public/storage/' . $relativePath);
 
         return response()->json([
             'id' => $user->id,
             'profile_image' => $url,
-            'profile_image_db_path' => $path,
+            'profile_image_db_path' => $relativePath,
             'message' => 'Imagen de perfil actualizada correctamente'
         ]);
     }
