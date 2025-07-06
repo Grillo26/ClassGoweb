@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\ProfileService;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
@@ -104,6 +105,35 @@ class ProfileController extends Controller
             'id' => $user->id,
             'profile_image' => $url,
             'profile_image_db_path' => $rutaBD
+        ]);
+    }
+
+    public function updateProfileImage(Request $request, $id)
+    {
+        $user = \App\Models\User::with('profile')->find($id);
+        if (!$user || !$user->profile) {
+            return response()->json(['message' => 'Usuario o perfil no encontrado'], 404);
+        }
+
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
+        ]);
+
+        // Guardar la imagen en storage/app/public/profile
+        $fileName = uniqid() . '_' . $request->file('image')->getClientOriginalName();
+        $path = $request->file('image')->storeAs('profile', $fileName, 'public');
+
+        // Actualizar el campo image en el perfil
+        $user->profile->image = $path;
+        $user->profile->save();
+
+        $url = url('public/storage/' . $path);
+
+        return response()->json([
+            'id' => $user->id,
+            'profile_image' => $url,
+            'profile_image_db_path' => $path,
+            'message' => 'Imagen de perfil actualizada correctamente'
         ]);
     }
 }
