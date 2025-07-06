@@ -138,6 +138,8 @@ Route::post('update-fcm-token', [AuthController::class, 'updateFcmToken']);
 Route::get('user/{id}/profile-image', [ProfileController::class, 'getProfileImage']);
 Route::post('user/{id}/profile-image', [ProfileController::class, 'updateProfileImage']);
 
+Route::get('subject/{id}/name', [SubjectController::class, 'getSubjectName']);
+
 Route::fallback(function () {
     return response()->json([
         'message' => __('general.api_url_not_found'),
