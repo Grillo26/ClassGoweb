@@ -91,4 +91,19 @@ class ProfileController extends Controller
         $userProfile = $user->load(['profile', 'Languages', 'address']);
         return $this->success(message: __('api.profile_data_updated_successfully') ,data: new UserResource($userProfile),code: Response::HTTP_OK);
     }
+
+    public function getProfileImage($id)
+    {
+        $user = \App\Models\User::with('profile')->find($id);
+        if (!$user || !$user->profile) {
+            return response()->json(['message' => 'Usuario o perfil no encontrado'], 404);
+        }
+        $rutaBD = $user->profile->image ?? null;
+        $url = $rutaBD ? url('public/storage/' . $rutaBD) : null;
+        return response()->json([
+            'id' => $user->id,
+            'profile_image' => $url,
+            'profile_image_db_path' => $rutaBD
+        ]);
+    }
 }

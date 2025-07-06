@@ -135,6 +135,8 @@ Route::post('test-payment-upload', [\App\Http\Controllers\Api\BookingController:
 // Agregar la ruta fuera del grupo para que sea pública:
 Route::post('update-fcm-token', [AuthController::class, 'updateFcmToken']);
 
+Route::get('user/{id}/profile-image', [ProfileController::class, 'getProfileImage']);
+
 Route::fallback(function () {
     return response()->json([
         'message' => __('general.api_url_not_found'),
