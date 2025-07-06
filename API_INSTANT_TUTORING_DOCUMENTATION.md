@@ -5,21 +5,22 @@ Se ha implementado un nuevo filtro para el endpoint de búsqueda de tutores que 
 
 ## Endpoints Modificados
 
-### 1. Búsqueda de Tutores con Filtro Instantáneo
-**Endpoint:** `GET /api/find-tutors`
+### 1. Búsqueda de Tutores Verificados con Filtro Instantáneo
+**Endpoint:** `GET /api/verified-tutors`
 
 **Parámetros:**
 - `instant` (opcional): `true` para filtrar solo tutores disponibles ahora
 - `keyword` (opcional): Buscar por nombre de materia
 - `tutor_name` (opcional): Buscar por nombre del tutor
 - `group_id` (opcional): Filtrar por categoría de materia
+- `subject_id` (opcional): Filtrar por materia específica
 - `min_courses` (opcional): Número mínimo de cursos completados
 - `min_rating` (opcional): Calificación mínima
 - `page` (opcional): Número de página para paginación
 
 **Ejemplo de uso:**
 ```
-GET /api/find-tutors?instant=true&keyword=matemáticas&min_rating=4.5
+GET /api/verified-tutors?instant=true&keyword=matemáticas&min_rating=4.5
 ```
 
 **Respuesta cuando `instant=true`:**
@@ -131,9 +132,9 @@ Cuando se envía el parámetro `instant=true`, el sistema:
 
 ### Frontend - React/Vue
 ```javascript
-// Buscar tutores instantáneos
+// Buscar tutores verificados instantáneos
 const searchInstantTutors = async () => {
-    const response = await fetch('/api/find-tutors?instant=true');
+    const response = await fetch('/api/verified-tutors?instant=true');
     const data = await response.json();
     return data.data;
 };
@@ -151,7 +152,7 @@ const getTutorInstantSlots = async (tutorId) => {
 // Flutter/Dart
 Future<List<Tutor>> getInstantTutors() async {
     final response = await http.get(
-        Uri.parse('${baseUrl}/api/find-tutors?instant=true'),
+        Uri.parse('${baseUrl}/api/verified-tutors?instant=true'),
         headers: {'Authorization': 'Bearer $token'},
     );
     
@@ -161,7 +162,7 @@ Future<List<Tutor>> getInstantTutors() async {
             .map((tutor) => Tutor.fromJson(tutor))
             .toList();
     }
-    throw Exception('Error al obtener tutores instantáneos');
+    throw Exception('Error al obtener tutores verificados instantáneos');
 }
 ```
 
@@ -183,8 +184,8 @@ Future<List<Tutor>> getInstantTutors() async {
 
 ### Comandos de Testing
 ```bash
-# Probar endpoint de búsqueda
-curl "http://localhost:8000/api/find-tutors?instant=true"
+# Probar endpoint de búsqueda de tutores verificados
+curl "http://localhost:8000/api/verified-tutors?instant=true"
 
 # Probar endpoint de slots específicos
 curl "http://localhost:8000/api/tutor/1/instant-slots"

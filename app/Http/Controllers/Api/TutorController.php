@@ -316,6 +316,7 @@ class TutorController extends Controller
                 'subject_id' => $request->subject_id,
                 'min_courses' => $request->min_courses,
                 'min_rating' => $request->min_rating,
+                'instant' => $request->instant,
                 'page' => $request->page
             ]);
 
@@ -383,6 +384,25 @@ class TutorController extends Controller
                 }
             }
 
+            // Filtro para tutoría instantánea
+            if ($request->filled('instant') && $request->instant === 'true') {
+                $now = now();
+                $currentTime = $now->format('H:i:s');
+                $currentDate = $now->format('Y-m-d');
+                
+                // Filtrar tutores que tengan slots en la fecha y hora actual
+                $query->whereHas('userSubjectSlots', function($q) use ($currentTime, $currentDate) {
+                    $q->where('date', $currentDate)
+                      ->where('start_time', '<=', $currentTime)
+                      ->where('end_time', '>=', $currentTime);
+                });
+                
+                Log::info('Filtro de tutoría instantánea aplicado en verified-tutors', [
+                    'current_date' => $currentDate,
+                    'current_time' => $currentTime
+                ]);
+            }
+
             // Ordenar por el nombre del tutor (usando el perfil relacionado)
             $query->join('profiles', 'users.id', '=', 'profiles.user_id')
                   ->orderBy('profiles.first_name', 'asc')
@@ -398,10 +418,27 @@ class TutorController extends Controller
             
             $tutors = $query->paginate($perPage, ['*'], 'page', $page);
             
-            $tutors->getCollection()->transform(function ($tutor) {
+            $tutors->getCollection()->transform(function ($tutor) use ($request) {
                 $tutor = $this->getFavouriateTutors($tutor);
                 // Agregar el conteo de cursos completados
                 $tutor->completed_courses_count = $tutor->getCompletedCoursesCount();
+                
+                // Si es tutoría instantánea, agregar información de slots disponibles
+                if ($request->filled('instant') && $request->instant === 'true') {
+                    $now = now();
+                    $currentTime = $now->format('H:i:s');
+                    $currentDate = $now->format('Y-m-d');
+                    
+                    $availableSlots = $tutor->userSubjectSlots()
+                        ->where('date', $currentDate)
+                        ->where('start_time', '<=', $currentTime)
+                        ->where('end_time', '>=', $currentTime)
+                        ->get();
+                    
+                    $tutor->available_instant_slots = $availableSlots;
+                    $tutor->available_instant_slots_count = $availableSlots->count();
+                }
+                
                 return $tutor;
             });
 
