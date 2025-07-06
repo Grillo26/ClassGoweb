@@ -113,6 +113,7 @@ Route::get('settings',                                         [OptionBuilderCon
 Route::get('alianzas',                                          [AlianzaController::class, 'index']);
 Route::get('all-subjects', [SubjectController::class, 'index']);
 Route::get('verified-tutors-photos', [\App\Http\Controllers\Api\TutorController::class, 'getVerifiedTutorsPhotos']);
+Route::get('tutor/{id}/instant-slots', [\App\Http\Controllers\Api\TutorController::class, 'getInstantSlots']);
 
 Route::get('reviews', [ReviewController::class, 'index']);
 Route::get('reviews/received', [ReviewController::class, 'getReceivedReviews']);
