@@ -464,7 +464,7 @@ class TutorController extends Controller
                 $q->whereNotNull('verified_at');
             })
             ->with(['profile' => function($q) {
-                $q->select('id', 'user_id', 'image');
+                $q->select('id', 'user_id', 'image', 'first_name', 'last_name');
             }]);
 
             if ($request->filled('tutor_id')) {
@@ -476,8 +476,13 @@ class TutorController extends Controller
             $result = $tutors->map(function($tutor) {
                 $rutaBD = $tutor->profile ? $tutor->profile->image : null;
                 $url = $rutaBD ? url('public/storage/' . $rutaBD) : null;
+                $fullName = $tutor->profile ? trim($tutor->profile->first_name . ' ' . $tutor->profile->last_name) : 'N/A';
+                
                 return [
                     'id' => $tutor->id,
+                    'name' => $fullName,
+                    'first_name' => $tutor->profile ? $tutor->profile->first_name : null,
+                    'last_name' => $tutor->profile ? $tutor->profile->last_name : null,
                     'profile_image' => $url,
                     'profile_image_db_path' => $rutaBD
                 ];
