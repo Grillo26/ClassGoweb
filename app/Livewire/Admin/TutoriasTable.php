@@ -76,11 +76,14 @@ class TutoriasTable extends Component
                 'no_completado' => 3,
                 'rechazado'     => 4,
                 'completado'    => 5,
+                'cursando'      => 6,
             ];
+            \Log::info('Valor recibido en modalStatus:', ['modalStatus' => $this->modalStatus]);
             $nuevoStatus = $this->modalStatus;
             if (!is_numeric($nuevoStatus)) {
                 $nuevoStatus = $estados[strtolower($nuevoStatus)] ?? 2;
             }
+            \Log::info('Valor de status que se guardará:', ['nuevoStatus' => $nuevoStatus]);
             $tutoria->status = $nuevoStatus;
             // Si el nuevo estado es 'Aceptada' (3), crear reunión Zoom y enviar correos
             if ($nuevoStatus == 1) {
