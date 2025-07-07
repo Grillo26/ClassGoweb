@@ -126,6 +126,7 @@ class Navigation extends Component
                 'icon'  => '<i class="am-icon-heart-01"></i>',
                 'accessibility' => ['student'],
             ],
+            
 
             [ 
                 'studentSortOrder' => 4,
@@ -164,7 +165,17 @@ class Navigation extends Component
                 'icon'  => '<i class="am-icon-user-01"></i>',
                 'accessibility' => ['tutor'],
             ],
+            
 
+           /*  [
+                'studentSortOrder' => 7,
+                'route' => 'student.profile.claims',
+                'onActiveRoute' => [ 'student.profile.claims'],
+                'title' => 'Reclamos',
+                'icon'  => '<i class="am-icon-user-01"></i>',
+                'accessibility' => ['student'],
+            ],
+ */
             /* [
                 'tutorSortOrder' => 11,
                 'studentSortOrder' => 12,
@@ -175,6 +186,15 @@ class Navigation extends Component
                 'accessibility' => ['student', 'tutor'],
                 'disableNavigate' => true,
             ] */
+           /*<-----------PROMOCIOINES--------->*/ 
+           [
+                'studentSortOrder' => 11,
+                'route' => 'promociones',
+                'onActiveRoute' => ['promociones'],
+                'title' => 'Promociones',
+                'icon'  => '<i class="am-icon-heart-01"></i>',
+                'accessibility' => ['student'],
+            ],
         ];
 
         if(\Nwidart\Modules\Facades\Module::has('forumwise') && \Nwidart\Modules\Facades\Module::isEnabled('forumwise')){

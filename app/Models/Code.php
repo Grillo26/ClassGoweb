@@ -7,18 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Code extends Model
 {
     protected $fillable = [
-        'code',
-        'state',
-        'expiration_date',
+        'nombre',
+        'descuento',
+        'codigo',
         'user_id',
+        'estado',
+        'fecha_caducidad',
     ];
-    protected $casts = [
-        'state' => 'boolean',
-        'expiration_date' => 'date',
-    ];
+
+    
+
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
-            
 }

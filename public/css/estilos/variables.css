@@ -1,20 +1,24 @@
 :root {
+    /**-------COLORES----------**/
     --primary-color: #023047;
     --secundary-color: #219EBC;
-    --secundary-color2: #FCFAED;
+    --secundary-color2: #CDD6DA;
     --terciary-color: #8ECAE6;
     --terciary-color2: #FB8500;
-    --text-color: #350606;
     --bg-color: #fff;
     --max-width: 1200px;
     --transition: all 0.3s ease;
+    --footer-white: #d6f7fd;
 
-    --h1: 2rem;
+    /**-------FUENTES------*/
+    --h1: 2.3rem;
+    --h1-regular:1rem;
+    --p:1.1rem;
+    --line-height: 1.1em;
 
-    /*  Fuente */
     --font-family: 'Inter', sans-serif;
     --font-thin: 100;
-    --font-light: 300;
+    --font-light: 300
     --font-regular: 400;
     --font-medium: 500;
     --font-semibold: 600;

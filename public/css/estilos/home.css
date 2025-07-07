@@ -4,8 +4,15 @@
 ------------------------------------------------------------/
 
 1 - Hero Principal
+    1.1 Hero Text
+    1.2 Hero Mascota
+    1.3 Buscador
+    1.4 Botones
 2 - Contadores
+    2.1 Fondo Container
+    2.2 Contadores
 3 - Tutores destacados
+    3.1 Cards Tutores
 4 - Anuncio Potencial
 5 - Busca tutorias
 6 - Alianzas
@@ -17,8 +24,8 @@
 .hero {
   height: 100vh;
   width: 100%;
-  background: #073B4C;
-  background: linear-gradient(180deg, rgba(7, 59, 76, 1) 12%, rgba(7, 59, 76, 1) 46%, rgba(7, 59, 76, 1) 57%, rgba(21, 107, 138, 1) 94%, rgba(33, 158, 188, 1) 100%);  align-items: center;
+  background: var(--primary-color);
+  background: linear-gradient(180deg, rgba(7, 59, 76, 1) 64%, rgba(24, 77, 94, 1) 77%, rgba(33, 158, 188, 1) 100%);
 }
 
 .hero-container {
@@ -28,17 +35,18 @@
   padding-top: 8rem;
 }
 
+/**--- 1.1 - Hero Text --**/
 .hero-text {
   flex: 1;
   padding: 6rem 0 4rem 5rem;
   line-height: 1;
-  color: var(--secundary-color2);
+  color: white;
 }
 
 .hero-title-arriba{
   font-size: 3em !important;
   font-weight: var(--font-light);
-  color: var(--secundary-color2)
+  color: white;
 }
 .hero-title-abajo{
   font-size: 4em !important;
@@ -46,17 +54,32 @@
 }
 
 .hero-subtext {
-  font-size: 1.1rem;
+  font-size: var(--p);
   margin-top: 2rem;
   margin-bottom: 2rem;
   color: #e0f7fa;
-  line-height: 1.2em;
+  line-height:var(--line-height);
 
 }
 
+/**--- 1.2 - Hero Mascota --**/
+.hero-image {
+  flex: 1;
+  min-width: 280px;
+  text-align: right;
+  padding:4em 1em 0 0;
+}
+
+.hero-image img {
+  max-width: 480px;
+  width: 100%;
+  height: auto;
+}
+
+/**--- 1.3 - Hero Buscador --**/
 .search-box {
   display: flex;
-  max-width: 450px;
+  max-width: 480px;
   border-radius: 50px;
   overflow: hidden;
   background-color: white;
@@ -73,7 +96,7 @@
 }
 
 .search-box button {
-  background-color: #219EBC;
+  background-color: var(--secundary-color);
   border: none;
   padding: 1rem;
   display: flex;
@@ -88,15 +111,420 @@
   color: #e0f7fa;
 }
 
-.hero-image {
-  flex: 1;
-  min-width: 280px;
-  text-align: right;
-  padding:4em 1em 0 0;
+/**--- 1.4 Botones --**/
+.hero-buttons {
+  display: flex;
+  gap: 1rem; /* espacio entre botones */
+  flex-wrap: wrap; /* para que se acomoden en móviles */
+  justify-content: left; /* o 'flex-start' si los quieres alineados a la izquierda */
+  margin-top: 1.7rem;
 }
 
-.hero-image img {
-  max-width: 480px;
+.hero-buttons button {
+  padding: 0.75rem 0.7rem;
+  font-size: 0.9rem;
+  border: 1px solid white;
+  border-radius: 25px;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+}
+
+.hero-buttons button i{
+  padding-right: 0.5em;
+}
+
+.hero-buttons button:hover{
+  background-color: white;
+  color: var(--secundary-color);
+  box-shadow: 0 0 20px #010e1650;
+  transform: scale(1.1);
+}
+
+.hero-buttons button:active {
+  background-color: white;
+  transition: all 0.25s;
+  -webkit-transition: all 0.25s;
+  box-shadow: none;
+  transform: scale(0.98);
+}
+
+/**--- 2 Contadores --**/
+/**--- 2.1 Fondo --**/
+
+.info-container{
+  background-color: var(--bg-color);
+  border-top-left-radius: 5rem;
+  border-top-right-radius: 5rem;
+  display: flex;
+  margin-top: 10px;
+  flex-flow: column wrap;
+  box-shadow: 0px -10px #19849e ;
+  color: var(--primary-color);
+}
+
+/**--- 2.1 Contadores --**/
+.counters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 5rem 0;
+    text-align: center;
+}
+
+.counter-box {
+    display: flex;
+    flex-flow: column wrap;
+    padding: 0 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+/*.counter-box:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 70px;
+    width: 5px;
+    background-color: var(--secundary-color); /* línea azul entre contadores 
+}
+*/
+.box-sky{
+  background-color: var(--secundary-color);
+  height: 70px;
+  width: 5px;
+}
+
+.counter-number {
+    font-size: 3em;
+    font-weight: var(--font-extrabold);
+}
+/**-- Clase Momentanea--**/
+.counter-numbe { 
+    font-size: 3em;
+    font-weight: var(--font-extrabold);
+}
+
+.counter-numbe i {
+    font-size: 30px;
+}
+
+.counter-box h1 {
+    font-size: var(--h1-regular);
+    color: var(--primary-color);
+    text-transform: none;
+}
+
+/**--- 3 - Tutores Destacados --**/
+.tutors-container{
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  color: var(--primary-color);
+  padding: 2rem 0;
+}
+.over-text{
+  font-size: var(--h1-regular);
+}
+.tutors-container h1{
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+.linea{
+  background-color: var(--secundary-color);
+  height: 4px;
+  width: 50px;
+}
+/**---- 3.1 Cards Tutores ---**/
+.tutors{
+  margin: 3rem 0;
+  display: flex;
+  flex-flow: column row;
+  gap: 1.8rem;
+}
+.tutors-card {
+  width: 380px;
+  border: 2px solid var(--primary-color);
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 0.8rem;
+}
+
+.video-tutor img {
   width: 100%;
-  height: auto;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-header {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  padding-top: 0.5rem;
+}
+
+.info-header > img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.info-name {
+  flex-grow: 1;
+  padding-left: 0.5rem;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.tutor h1{
+ font-size:0.9rem ;
+ color: var(--secundary-color);
+ justify-content: initial;
+}
+
+.name h1 {
+  font-size: var(--h1-regular);
+  font-weight: bold;
+  color: var(--primary-color);
+  margin: 0;
+}
+.name i{
+  color: var(--secundary-color);
+  margin-left: 0.5rem;
+}
+
+.icono-heart i {
+  cursor: pointer;
+  color: var(--secundary-color);
+}
+
+.info-resena {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding: 0 4rem;
+}
+
+.info-puntuacion {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.puntuacion-title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: bold;
+  color: #002a3a;
+  
+}
+
+.info-puntuacion {
+  font-size: 0.75rem;
+  color: #666;
+  margin: 0;
+}
+
+.puntuacion-title p{
+  font-weight: bold;
+  font-size: 1rem !important;
+  color: #002a3a;
+  margin: 0;
+}
+
+.tutorias-title{
+  display: flex;
+  flex-flow: row wrap;
+  gap: 5px;
+  align-items: center;
+}
+
+.tutorias-title p {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #002a3a;
+  margin: 0;
+}
+
+.tutorias-details {
+  font-size: 0.75rem;
+  color: #666;
+  margin: 0;
+}
+
+.info-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 0.7rem;
+}
+
+.info-details div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #002a3a;
+}
+
+.info-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 0 0;
+}
+
+.info-buttons button {
+  flex: 1;
+  padding: 8px 12px;
+  font-weight: bold;
+}
+
+.info-buttons{
+  display: flex;
+  flex-flow: row wrap;
+  gap: 2rem;
+}
+
+.button1{
+  height: 40px;
+  font-size: 1rem;
+  color: white;
+  background-color: var(--terciary-color2);
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+.button2{
+  font-size: 1rem;
+  height: 40px;
+  color: white;
+  background-color: var(--primary-color);
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+/**--- 3 - Anuncio Potencial --**/
+.potencial-container{
+  height: 100vh;
+  width: 100%;
+  background: var(--primary-color);
+  color: white;
+}
+.potencial-container h1{
+  display:flex;
+  flex-flow: row wrap;
+  justify-content:center;
+  align-items: center;
+  gap: 12px;
+}
+
+/*---- Card Container----**/
+.steps{
+  display: flex;
+  flex-flow: row wrap;
+  padding: 3rem;
+  justify-content: space-between;
+
+}
+
+/**---- 3.1 Cards -----*/
+.steps-card{
+  background: var(--secundary-color2);
+  width: 300px;
+  height: 470px;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 10px;
+  color: var(--primary-color);
+  padding: 1rem;
+  border-radius: 20px;
+}
+.steps-card .numero-paso{
+  height: 40px;
+  width: 100px;
+  font-size: 1rem;
+  background-color: white;
+  border-radius: 20px;
+  border: none;
+  margin: 0 auto;
+  cursor: none;
+  color: var(--primary-color);
+}
+.steps-card img{
+  border-radius: 10px;
+}
+.steps-card h1{
+  line-height: 35px;
+}
+
+.steps-card button{
+  width: 100%;
+  height: 40px;
+  font-size: 1rem;
+  background-color: var(--terciary-color2);
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  color: white;  
+}
+.go{
+  background: var(--secundary-color);
+  width: 300px;
+  height: 470px;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  color: white;
+  padding: 1rem;
+  border-radius: 20px;
+  gap: 30px;
+}
+
+.go .numero-paso{
+  height: 50px;
+  width: 60px;
+  font-size: 1rem;
+  background-color: white;
+  border-radius: 20px;
+  border: none;
+  margin: 0 auto;
+  color: var(--primary-color);
+}
+.go .numero-paso i{
+  font-size: 2rem;
+}
+
+.go .button-go{
+  width: 100%;
+  height: 40px;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  color: white;  
 }

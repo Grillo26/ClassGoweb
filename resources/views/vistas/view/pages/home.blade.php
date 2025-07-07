@@ -19,10 +19,17 @@
 
             <!-- Buscador -->
             <div class="search-box">
-                <input type="text" placeholder="Buscar Tutor">
+                <input type="text" placeholder="Buscar Tutor...">
                 <button>
                     <i class="fa-solid fa-magnifying-glass icon-search"></i>
                 </button>
+            </div>
+
+            <!--Botones-->
+            <div class="hero-buttons">
+                <button><i class="fa-solid fa-bolt-lightning"></i>Tutor al Instante</button>
+                <button><i class="fa-solid fa-calendar"></i>Agendar Tutoría</button>
+                <button><i class="fa-solid fa-compass"></i>Explorar Tutores</button>
             </div>
         </div>
 
@@ -31,112 +38,145 @@
             <img src="{{ asset('images/Tugo_With_Glasses.png') }}" alt="Mascota ClassGo">
         </div>
 
+       
     </div>
 </section>
 
 
 <!-- CONTADORES INFO -->
-<section class="info container">
-    <!--CONTADORES-->
+<section class="info-container">
+    <!-- CONTADORES -->
     <div class="counters">
-        <div>
-            <div class="counter-number">+500</div>
-            <p>Usuarios Registrados</p>
+        <div class="counter-box">
+            <div class="counter-number" data-target="500">+0</div>
+            <h1>Usuarios registrados</h1>
         </div>
-        <div>
-            <div class="counter-number">+230</div>
-            <p>Tutores Disponibles</p>
+        <div class="box-sky">
         </div>
-        <div>
-            <div class="counter-number">+230</div>
-            <p>Estudiantes Registrados</p>
+        <div class="counter-box">
+            <div class="counter-number"data-target="230">+0</div>
+            <h1>Tutores disponibles</h1>
         </div>
-        <div>
-            <div class="counter-number">4.5</div>
-            <p>En la App Store</p>
+        <div class="box-sky"></div>
+        <div class="counter-box">
+            <div class="counter-number" data-target="230">0</div>
+            <h1>Estudiantes registrados</h1>
+        </div>
+        <div class="box-sky"></div>
+        <div class="counter-box">
+            <div class="counter-numbe"><i class="fa fa-star"></i>4.5</div>
+            <h1>En la App Store</h1>
         </div>
     </div>
+
     <!--TUTORES DESTACADOS-->
-    <div class="outstanding-tutors">
-        <h2 style="text-align: center;">Tutores Destacados</h2>
+    <div class="tutors-container">
+        
+        <h1 class="over-text"><div class="linea"></div>Tutores Destacados<div class="linea"></div></h1>
+        
         <h1>Conoce a Nuestros Tutores Cuidadosamente Seleccionados</h1>
         <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p>
         <div class="tutors">
             <div class="tutors-card">
                 <div class="video-tutor">
-                    <img src="{{ asset('images/tutor1.jpg') }}" alt="Tutor">
+                    <img src="{{ asset('images/tutors/video1.gif') }}" alt="Tutor"> <!--Video cambiar-->
                 </div>
                 <div class="info">
                     <div class="info-header">
-                        <img src="{{ asset('images/tutor1.jpg') }}" alt="Tutor">
+                        <img src="{{ asset('images/tugo-negativo.png') }}" alt="Tutor">
                         <div class="info-name">
                             <div class="name">
                                 <h1>Norely Bonilla</h1>
-                                <img src="" alt=""> <!--Icono de verificación-->
+                                <i class="fa-solid fa-circle-check"></i> <!--Check Verificación-->
                                 <img src="" alt=""><!--Bandera pais-->
+                            </div>
+                            <div class="tutor">
+                                <h1><spam>Tutor:</spam> Adm. de Empresas</h1>
                             </div>
                         </div>
                         <div class="icono-heart">
-                            <img src="" alt=""><!--Icono Corazon-->
+                            <i class="fa-solid fa-heart"></i>                    
                         </div>
                     </div>
                     <div class="info-resena">
                         <div class="info-puntuacion">
                             <div class="puntuacion-title">
-                                <img src="" alt=""><!--icono estrella-->
+                                <i class="fa fa-star"></i>
                                 <p>4.5</p>
                             </div>
                             <p>7 reseñas</p>
                         </div>
-                        <div class="info-price">
-                            <p class="price-title">Bs.15</p>
-                            <p class="price-details">Clases de 20 minutos</p>
+                        <div class="info-tutorias">
+                            <div class=tutorias-title>
+                                <i class="fa-solid fa-book"></i>
+                                <p class="price-title">10</p>
+                            </div>
+                            <p class="tutorias-details">Tutorías Realizadas</p>
                         </div>
                     </div>
                     <div class="info-details">
                         <div>
-                            <img src="" alt=""><!--icono-->
+                            <i class="fa-solid fa-book-open"></i>
                             <p>Finanzas, Presupuesto, Estadística</p>
                         </div>
                         <div>
-                            <img src="" alt=""><!--icono-->
-                            <p>10 estudiantes activos ° 30 Clases</p>
+                            <i class="fa-solid fa-users"></i>
+                            <p>10 estudiantes activos · 30 Clases</p>
                         </div>
                         <div>
-                            <img src="" alt=""><!--icono-->
+                            <i class="fa-solid fa-language"></i>
                             <p>Ingles</p>
                         </div>
                     </div>
                     <div class="info-buttons">
-                        <button>Ver Perfil</button>
-                        <button>Reservar</button>
+                        <button class="button2">Ver Perfil</button>
+                        <button class="button1">Reservar</button>
                     </div>
                 </div>
-            </div>
+            </div> <!--End card-->
         </div>
     </div>
 </section>
 
 <!--GUIA PASO A PASO-->
-<section class="guide container">
-    <p>Una guía paso a paso</p>
+<section class="potencial-container">
+    <h1 class="over-text"><div class="linea"></div>Una guía paso a paso<div class="linea"></div></h1>
     <h1>Desbloquea Tu Potencial Con Pasos Sencillos</h1>
-    <p>Descubra como nuestra plataforma simplifica la búsqueda y reserva de los mejores tutores para mejorar sus habilidades y alcanzar objetivos de aprendizaje</p>
+    <p>Descubra cómo nuestra plataforma simplifica la búsqueda y reserva de los mejores tutores para mejorar sus habilidades y alcanzar sus objetivos de aprendizaje.</p>
     <div class="steps">
         <!--CARD-->
         <div class="steps-card">
-            <button>Paso 1</button>
-            <img src="" alt=""><!--Imagen Representativa-->
-            <h1>Incribete</h1>
+            <button class="numero-paso">Paso 1</button>
+            <img src="{{ asset('images/paso1.png') }}" alt="Pasos">
+            <h1>Inscríbete</h1>
             <p>Crea tu cuenta rápidamente para comenzar a utilizar nuestra plataforma</p>
             <button>Empezar</button>
-        </div>
+        </div> <!--FIN CARD-->
+        <!--CARD-->
+        <div class="steps-card">
+            <button class="numero-paso">Paso 2</button>
+            <img src="{{ asset('images/paso2.png') }}" alt="Pasos">
+            <h1>Encuentra un tutor</h1>
+            <p>Crea tu cuenta rápidamente para comenzar a utilizar nuestra plataforma</p>
+            <button>Empezar</button>
+        </div> <!--FIN CARD-->
+        <!--CARD-->
+        <div class="steps-card">
+            <button class="numero-paso">Paso 3</button>
+            <img src="{{ asset('images/paso3.png') }}" alt="Pasos">
+            <h1>Programar una Sesión</h1>
+            <p>Crea tu cuenta rápidamente para comenzar a utilizar nuestra plataforma</p>
+            <button>Empezar</button>
+        </div> <!--FIN CARD-->
+
         <!--COMIENZA TU JORNADA CARD-->
         <div class="go">
-            <img src="" alt=""><!--Icono-->
+            <button class="numero-paso">
+                <i class="fa-solid fa-person-running"></i>
+            </button>
             <h1>Comienza tu jornada</h1>
             <p>Comienza tu viaje educativo con nosotros. ¡Encuentra un tutor y reserva tu primera sesión hoy mismo!</p>
-            <button>Empeza ahora</button>
+            <button class="button-go">Empieza ahora</button>
         </div>
     </div>
 </section>
@@ -174,4 +214,42 @@
     </div>
 </section>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const counters = document.querySelectorAll('.counter-number');
+
+    const animateCounter = (el) => {
+        const target = +el.getAttribute('data-target');
+        const isDecimal = el.getAttribute('data-decimal') === 'true';
+        let count = 0;
+        const step = isDecimal ? 0.1 : Math.ceil(target / 100);
+
+        const updateCounter = () => {
+            count += step;
+            if (count < target) {
+                el.innerHTML = isDecimal ? `<i class="fa fa-star"></i> ${count.toFixed(1)}` : `+${Math.floor(count)}`;
+                requestAnimationFrame(updateCounter);
+            } else {
+                el.innerHTML = isDecimal ? `<i class="fa fa-star"></i> ${target.toFixed(1)}` : `+${target}`;
+            }
+        };
+
+        updateCounter();
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                animateCounter(entry.target);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.6 });
+
+    counters.forEach(counter => observer.observe(counter));
+});
+</script>
+
+
 @endsection
+

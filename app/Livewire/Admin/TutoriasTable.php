@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Services\ZoomService;
 use App\Mail\SessionBookingMail;
 use Illuminate\Support\Facades\Mail;
+use App\Events\SlotBookingStatusChanged;
 
 class TutoriasTable extends Component
 {
@@ -134,6 +135,9 @@ class TutoriasTable extends Component
                 }
             }
             $tutoria->save();
+
+            // Emitir evento para notificación en tiempo real
+            event(new SlotBookingStatusChanged($tutoria->id, $tutoria->status));
         }
         $this->dispatch('cerrar-modal-tutoria');
     }

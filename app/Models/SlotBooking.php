@@ -104,4 +104,9 @@ class SlotBooking extends Model
     {
         return $this->hasOne(PaymentSlotBooking::class, 'slot_booking_id');
     }
+
+    public function claims(): HasMany
+    {
+        return $this->hasMany(Claim::class);
+    }
 }

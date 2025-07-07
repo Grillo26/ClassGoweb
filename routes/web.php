@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Frontend\SearchController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\Impersonate;
 use App\Http\Controllers\OpenAiController;
 use App\Http\Controllers\SiteController;
@@ -48,8 +49,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::get('/blog/{slug}', BlogDetails::class)->name('blog-details');
     Route::view('/subscriptions-page', 'subscriptions-page');
     Route::get('/home', [HomeController::class, 'index']);
-
-    
+    Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones');
     
     Route::middleware(['auth', 'verified', 'onlineUser'])->group(function () {
         Route::post('/openai/submit', [OpenAiController::class, 'submit'])->name('openai.submit');
@@ -60,8 +60,6 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
         Route::middleware('role:student')->get('checkout', Checkout::class)->name('checkout');
         Route::middleware('role:student')->get('thank-you/{id}', ThankYou::class)->name('thank-you');
         
-
-
         Route::middleware('role:tutor')->prefix('tutor')->name('tutor.')->group(function () {
             Route::get('dashboard', ManageAccount::class)->name('dashboard');
             Route::get('payouts', Payouts::class)->name('payouts');
