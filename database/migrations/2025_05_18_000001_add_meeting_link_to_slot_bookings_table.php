@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('slot_bookings', function (Blueprint $table) {
+            $table->text('meeting_link')->nullable()->after('user_subject_slot_id');
         });
     }
 

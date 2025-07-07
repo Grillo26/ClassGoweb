@@ -54,7 +54,8 @@ class Bookings extends Component
     public function render()
     {
         $orders = $this->orderService->getBookings($this->status, $this->search, $this->sortby, $this->selectedSubject, $this->selectedSubGroup);
-        return view('livewire.pages.admin.bookings.bookings', compact('orders'));
+       return view('livewire.pages.admin.bookings.bookings', compact('orders'));
+     
     }
 
     public function updated($propertyName)

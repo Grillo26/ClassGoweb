@@ -11,9 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payment_slot_bookings', function (Blueprint $table) {
+         Schema::create('payment_slot_bookings', function (Blueprint $table) {
             $table->id();
             $table->text('image_url');
+            $table->unsignedBigInteger('slot_booking_id'); // Declaración de la columna
+            $table->foreign('slot_booking_id')              // Clave foránea correctamente definida
+                  ->references('id')
+                  ->on('slot_bookings')
+                  ->onDelete('cascade');
             $table->timestamps();
         });
     }
