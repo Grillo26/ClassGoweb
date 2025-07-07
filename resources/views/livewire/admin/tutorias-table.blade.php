@@ -17,7 +17,7 @@
                                     <div class="tb-actionselect">
                                         <select wire:model.live="status" class="form-control">
                                             <option value="">Todos los estados</option>
-                                            @foreach(['pendiente','rechazado','aceptado','no_completado','completado'] as $estado)
+                                            @foreach(['pendiente','rechazado','aceptado','no_completado','completado','cursando'] as $estado)
                                                 <option value="{{ $estado }}">{{ ucfirst($estado) }}</option>
                                             @endforeach
                                         </select>
@@ -60,6 +60,7 @@
                                         'rechazado' => '#FF9800',
                                         'completado' => '#3B82F6',
                                         'no completado' => '#64748B',
+                                        'cursando' => '#4F8CFD', // color para cursando
                                     ];
                                     $statusMap = [
                                         1 => 'Aceptado',
@@ -73,6 +74,7 @@
                                         'no_completado' => 'No completado',
                                         'no completado' => 'No completado',
                                         'completado' => 'Completado',
+                                        'cursando' => 'Cursando', // mostrar Cursando
                                     ];
                                 @endphp
                                 @foreach($tutorias as $tutoria)
@@ -136,6 +138,7 @@
                         <option value="no_completado">No completado</option>
                         <option value="rechazado">Observado</option>
                         <option value="completado">Completado</option>
+                        <option value="cursando">Cursando</option>
                     </select>
                 </div>
                 <div class="modal-footer">

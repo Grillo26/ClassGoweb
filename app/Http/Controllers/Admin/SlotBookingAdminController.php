@@ -65,6 +65,7 @@ class SlotBookingAdminController extends Controller
             'aceptado' => 'Aceptado',
             'no_completado' => 'No completado',
             'completado' => 'Completado',
+            'cursando' => 'Cursando',
         ];
     }
 } 

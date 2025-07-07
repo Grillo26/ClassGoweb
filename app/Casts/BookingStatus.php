@@ -14,6 +14,7 @@ class BookingStatus implements CastsAttributes
         'No completado' => 3,
         'Rechazado'     => 4,
         'Completado'    => 5,
+        'Cursando'      => 6,
     ];
 
     /**
