@@ -30,7 +30,9 @@ class TutoriaStatusModal extends Component
     {
         $tutoria = SlotBooking::find($this->tutoriaId);
         if ($tutoria) {
-            $tutoria->status = $this->status;
+            $status = str_replace('_', ' ', $this->status);
+            $status = ucfirst(strtolower($status));
+            $tutoria->status = $status;
             $tutoria->save();
             $this->emit('tutoriaStatusUpdated');
         }
