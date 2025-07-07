@@ -14,6 +14,8 @@
 3 - Tutores destacados
     3.1 Cards Tutores
 4 - Anuncio Potencial
+    4.1 Card Container
+    4.2 Cards
 5 - Busca tutorias
 6 - Alianzas
 
@@ -429,56 +431,67 @@
 
 /**--- 3 - Anuncio Potencial --**/
 .potencial-container{
-  height: 100vh;
   width: 100%;
   background: var(--primary-color);
   color: white;
+  padding: 3rem;
 }
 .potencial-container h1{
   display:flex;
   flex-flow: row wrap;
   justify-content:center;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 /*---- Card Container----**/
 .steps{
   display: flex;
   flex-flow: row wrap;
-  padding: 3rem;
+  padding: 2rem;
   justify-content: space-between;
-
 }
 
 /**---- 3.1 Cards -----*/
 .steps-card{
   background: var(--secundary-color2);
-  width: 300px;
-  height: 470px;
+  width: 280px;
+  height: 450px;
   display: flex;
   flex-flow: column wrap;
-  gap: 10px;
+  gap: 16px;
   color: var(--primary-color);
   padding: 1rem;
   border-radius: 20px;
 }
 .steps-card .numero-paso{
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 40px;
   width: 100px;
   font-size: 1rem;
+  font-weight: var(--font-bold);
   background-color: white;
   border-radius: 20px;
   border: none;
   margin: 0 auto;
-  cursor: none;
   color: var(--primary-color);
 }
 .steps-card img{
   border-radius: 10px;
 }
 .steps-card h1{
-  line-height: 35px;
+  font-size: 1.7rem;
+  line-height: 30px;
+}
+
+.steps-card p{
+  font-size: 1rem;
+  color: var(--primary-color);
+  line-height: 1.2;
+  margin: 0 auto;
+  text-align: left;
 }
 
 .steps-card button{
@@ -493,18 +506,21 @@
 }
 .go{
   background: var(--secundary-color);
-  width: 300px;
-  height: 470px;
+  width: 280px;
+  height: 450px;
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
   color: white;
   padding: 1rem;
   border-radius: 20px;
-  gap: 30px;
+  gap: 25px;
 }
 
 .go .numero-paso{
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 50px;
   width: 60px;
   font-size: 1rem;

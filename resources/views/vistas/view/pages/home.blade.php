@@ -146,7 +146,7 @@
     <div class="steps">
         <!--CARD-->
         <div class="steps-card">
-            <button class="numero-paso">Paso 1</button>
+            <div class="numero-paso">Paso 1</div>
             <img src="{{ asset('images/paso1.png') }}" alt="Pasos">
             <h1>Inscríbete</h1>
             <p>Crea tu cuenta rápidamente para comenzar a utilizar nuestra plataforma</p>
@@ -154,26 +154,26 @@
         </div> <!--FIN CARD-->
         <!--CARD-->
         <div class="steps-card">
-            <button class="numero-paso">Paso 2</button>
+            <div class="numero-paso">Paso 2</div>
             <img src="{{ asset('images/paso2.png') }}" alt="Pasos">
             <h1>Encuentra un tutor</h1>
-            <p>Crea tu cuenta rápidamente para comenzar a utilizar nuestra plataforma</p>
-            <button>Empezar</button>
+            <p>Busca y selecciona entre tutores calificados según tus necesidades</p>
+            <button>Buscar Ahora</button>
         </div> <!--FIN CARD-->
         <!--CARD-->
         <div class="steps-card">
-            <button class="numero-paso">Paso 3</button>
+            <div class="numero-paso">Paso 3</div>
             <img src="{{ asset('images/paso3.png') }}" alt="Pasos">
             <h1>Programar una Sesión</h1>
-            <p>Crea tu cuenta rápidamente para comenzar a utilizar nuestra plataforma</p>
-            <button>Empezar</button>
+            <p>Reserva fácilmente un horario conveniente para tu Sesións</p>
+            <button>Empecemos</button>
         </div> <!--FIN CARD-->
 
         <!--COMIENZA TU JORNADA CARD-->
         <div class="go">
-            <button class="numero-paso">
+            <div class="numero-paso">
                 <i class="fa-solid fa-person-running"></i>
-            </button>
+            </div>
             <h1>Comienza tu jornada</h1>
             <p>Comienza tu viaje educativo con nosotros. ¡Encuentra un tutor y reserva tu primera sesión hoy mismo!</p>
             <button class="button-go">Empieza ahora</button>
