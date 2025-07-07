@@ -182,15 +182,11 @@
 </section>
 
 <!--HERO TUTORIAS Y ALIANZAS-->
-<section class="tutorias container">
+<section class="tutorias-container">
     <div class="tutorias">
-        <!-- Imagen -->
-        <div class="tutores-img">
-            <img src="{{ asset('images/Tugo_With_Glasses.png') }}" alt="Mascota">
-        </div>
         <!-- Texto -->
         <div class="tutores-text">
-            <p>¿Buscas tutorías personalizadas?</p>
+            <p class="tutores-text-encima">¿Buscas tutorías personalizadas?</p>
             <h1>En Classgo, te conectamos con los mejores tutores</h1>
             <p>Accede a sesiones cortas y prácticas, diseñadas por tutores expertos para ser pequeños salvavidas en el aprendizaje</p>
             <ul class="tutores-list">
@@ -198,16 +194,29 @@
                 <li>Tutores Expertos</li>
                 <li>Tarifas asequibles</li>
             </ul>
-            <button>Comienza Ahora</button>
+            <button class="button-comienza">Comienza Ahora</button>
+        </div>
+        <!-- Imagen -->
+        <div class="tutores-img">
+            <img src="{{ asset('images/tutorias.png') }}" alt="Mascota">
         </div>
     </div>
     <div class="alianzas">
-        <p>Juntos llegamos más lejos</p>
+        <h1 class="over-text"><div class="linea"></div>Juntos llegamos más lejos<div class="linea"></div></h1>
         <h1>Alianzas que potencian la educación</h1>
         <p>En ClassGo creemos en el poder de la colaboración para transformar el aprendizaje. Por eso, trabajamos junto a instituciones educativas, clubes y organizaciones comprometidas con la formación académica y el desarrollo personal.</p>
-        <div class="aliazas">
+        <div class="steps-alianzas">
+            <!-- Alianzas Cards DESDE BD -->
             <div class="alianzas-card">
-                <img src="" alt=""><!--img-->
+                <img src="{{ asset('images/alianzas.png')}}"><!--img-->
+                <p>Ingeniería Petrolera</p>
+            </div>
+            <div class="alianzas-card">
+                <img src="{{ asset('images/alianzas.png')}}"><!--img-->
+                <p>Ingeniería Petrolera</p>
+            </div>
+            <div class="alianzas-card">
+                <img src="{{ asset('images/alianzas.png')}}"><!--img-->
                 <p>Ingeniería Petrolera</p>
             </div>
         </div>

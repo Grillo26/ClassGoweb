@@ -17,7 +17,12 @@
     4.1 Card Container
     4.2 Cards
 5 - Busca tutorias
+    5.1 tutorias-container
+    5.2 texto izquierdo
+    5.3 imagen lado derecho
 6 - Alianzas
+    6.1 Alianzas Container
+    6.2 Cards Alianzas
 
 /// END TABLE OF CONTENTS 
 ------------------------------------------------------------/
@@ -543,4 +548,109 @@
   border-radius: 10px;
   border: none;
   color: white;  
+}
+
+/*-------5 Busca tutorias-----*/
+.tutorias-container{
+  background: white;
+  padding: 4rem 1rem;
+}
+/*---5.1 tutorias-container---*/    
+.tutorias{
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 2rem;
+  color: var(--primary-color);
+}
+/*---5.2 texto izquierdo---*/ 
+.tutores-text{
+  flex: 1;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+.tutores-text .tutores-text-encima{
+  font-size: 1.2rem;
+  font-weight: var(--font-bold);
+}
+.tutorias .tutores-text h1{
+  font-size: 2.4rem;
+  line-height: 40px;
+}
+.button-comienza{
+  width: 200px;
+  height: 50px;
+  font-size: 1rem;
+  background-color: var(--secundary-color);
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  color: white;  
+}
+/*---5.3 imagen lado derecho---*/
+.tutores-img img{
+  max-width: 900px;
+  border-radius: 10px;
+}
+.tutores-list{
+  margin-left: 2rem;
+}
+
+/*-----6 - Alianzas ---*/
+/*----6.1 Alianzas Container---*/
+.alianzas{
+  padding: 0 3rem;
+  color: var(--primary-color);
+  display: flex;
+  justify-content: center;
+  flex-flow: column wrap;
+}
+
+.alianzas h1{
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ----6.2 Cards Alianzas ----- */
+.steps-alianzas{
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  padding: 3rem 0;
+  gap: 30px;
+}
+
+.alianzas-card{
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.alianzas-card img{
+  width: 380px;
+  height: 290px;
+  border-radius: 20px;
+  box-shadow: 0px 5px var(--primary-color) ;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+.alianzas-card p{
+  font-size: 1rem;
+  font-weight: var(--font-bold);
+  color: var(--primary-color);
+  text-align: center;
+  margin: 0;
 }

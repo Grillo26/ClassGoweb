@@ -31,11 +31,6 @@ img {
     height: auto;
 }
 
-/* LISTAS SIN ESTILO */
-ul {
-    list-style: none;
-}
-
 /* ENLACES */
 a {
     text-decoration: none;
