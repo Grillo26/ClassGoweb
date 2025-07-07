@@ -4,13 +4,14 @@
             <div class="footer-info"><!--ClassGo Logo + info-->
                 <img src="{{ asset('images/logoclassgo.png') }}" alt="Mascota">
                 <div class="info-text">
-                    <i class="fa-solid fa-envelope"></i>
+                    <i class="fa-solid fa-envelope icon"></i>
                     <p>classgobol@gmail.com</p>
                 </div>
                 <div class="info-text">
-                    <i class="fa-brands fa-whatsapp"></i>
+                    <i class="fa-brands fa-whatsapp icon"></i>
                     <p>77573997</p>
                 </div>
+                <button class="btn-registrate">Registrate Gratis</button>
             </div>
             <div class="footer-about"> <!--List about-->
                 <div class="box">
@@ -51,7 +52,7 @@
             <div class="circle-icon"><i class="fa-brands fa-instagram"></i></div>
             <div class="circle-icon"><i class="fa-brands fa-whatsapp"></i></div>
         </div>
-        <hr class="linea">
+        <hr>
         <p class="derechos-reservados">© 2025 classgobol. Todos los derechos reservados.</p>
         
     </div>
