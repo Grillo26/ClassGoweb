@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\TutorController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Frontend\SearchController;
 use App\Http\Controllers\HomeController;
@@ -39,9 +40,11 @@ Route::get('/nosotros',function () {
     return view('vistas.view.pages.nosotros');
 }); 
 
+
 Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialController::class, 'callback'])->name('social.callback');
 Route::get('/pay-qr/{orderId}', [PaymentController::class, 'showQR'])->name('pay-qr');
+
 
 Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::get('find-tutors', [SearchController::class, 'findTutors'])->name('find-tutors');

@@ -23,6 +23,7 @@ return new class extends Migration
             //el 2 se toma como pendiente  
             $table->tinyInteger('status')->default(1)->comment('1-> Active, 2-> Rescheduled, 3-> Refunded, 4-> Reserved, 5-> Completed');
             $table->json('meta_data')->nullable();
+             $table->unsignedBigInteger('user_subject_slot_id');
         });
     }
 
