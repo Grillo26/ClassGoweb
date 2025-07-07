@@ -20,6 +20,7 @@ class TutoriaStatusModal extends Component
             'aceptado' => 'Aceptado',
             'no_completado' => 'No completado',
             'completado' => 'Completado',
+            'cursando' => 'Cursando',
         ];
         $this->tutoriaId = $tutoriaId;
         $this->status = $status;
