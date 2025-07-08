@@ -95,15 +95,17 @@ class ProfileController extends Controller
 
     public function getProfileImage($id)
     {
-        $user = \App\Models\User::find($id);
-        if (!$user) {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        $user = \App\Models\User::with('profile')->find($id);
+        if (!$user || !$user->profile) {
+            return response()->json(['message' => 'Usuario o perfil no encontrado'], 404);
         }
+        $rutaBD = $user->profile->image ?? null;
+        $url = $rutaBD ? url('public/storage/' . $rutaBD) : null;
         return response()->json([
             'id' => $user->id,
-            'profile_image' => $user->profile_image_url ?? null,
-            'profile_image_db_path' => $user->profile_image ?? null,
-            'name' => $user->name ?? ($user->profile->full_name ?? null),
+            'profile_image' => $url,
+            'profile_image_db_path' => $rutaBD,
+            'name' => $user->name ?? $user->profile->full_name ?? null,
             'email' => $user->email,
         ]);
     }
