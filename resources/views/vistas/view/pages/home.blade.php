@@ -76,70 +76,73 @@
         
         <h1>Conoce a Nuestros Tutores Cuidadosamente Seleccionados</h1>
         <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p>
-        <div class="tutors">
+        <div class="tutors" id="tutors-carousel">
+            @foreach($profiles as $profile) 
+            @foreach($subjectsByUser as $userId => $data)
+            
+            <div class="tutors-card">
 
-            @foreach($profiles as $profile)
-                @foreach($subjectsByUser as $userId => $data)
-                    <div class="tutors-card">
-                        <div class="video-tutor">
-                            <img src="{{ $profile->image ? asset('storage/' . $profile->image) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $profile->first_name }}">
-                            <img src="{{ $profile->intro_video ? asset}}> <!--Video cambiar-->
-                        </div>
-                        <div class="info">
-                            <div class="info-header">
-                                <img src="{{ $profile->image ? asset('storage/' . $profile->image) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $profile->first_name }}">
-                                <div class="info-name">
-                                    <div class="name">
-                                        <h1>{{ $profile->first_name}} {{ $profile->last_name}}</h1>
-                                        <i class="fa-solid fa-circle-check"></i> <!--Check Verificación-->
-                                        <img src="" alt=""><!--Bandera pais-->
-                                    </div>
-                                    <div class="tutor">
-                                        <h1><spam>Tutor:</spam>  {{ implode(', ', $data['grupos']) }}</h1>
-                                    </div>
-                                </div>
-                                <div class="icono-heart">
-                                    <i class="fa-solid fa-heart"></i>                    
-                                </div>
+                <video controls muted playsinline loop src="{{ $profile->intro_video ? asset('storage/' . $profile->intro_video) : asset('images/tutors/default.png') }}"></video>
+
+                <div class="info">
+                    <div class="info-header">
+                        <img src="{{ $profile->image ? asset('storage/' . $profile->image) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $profile->first_name }}">
+                        <div class="info-name">
+                            <div class="name">
+                                <h1>{{ $profile->first_name}} {{ $profile->last_name}}</h1>
+                                <i class="fa-solid fa-circle-check"></i>
+                                <!--Check Verificación-->
+                                <img src="" alt="">
+                                <!--Bandera pais-->
                             </div>
-                            <div class="info-resena">
-                                <div class="info-puntuacion">
-                                    <div class="puntuacion-title">
-                                        <i class="fa fa-star"></i>
-                                        <p>4.5</p>
-                                    </div>
-                                    <p>7 reseñas</p>
-                                </div>
-                                <div class="info-tutorias">
-                                    <div class=tutorias-title>
-                                        <i class="fa-solid fa-book"></i>
-                                        <p class="price-title">10</p>
-                                    </div>
-                                    <p class="tutorias-details">Tutorías Realizadas</p>
-                                </div>
-                            </div>
-                            <div class="info-details">
-                                <div>
-                                    <i class="fa-solid fa-book-open"></i>
-                                    <p>{{ implode(', ', $data['materias']) }}</p>
-                                </div>
-                                <div>
-                                    <i class="fa-solid fa-users"></i>
-                                    <p>10 estudiantes activos · 30 Clases</p>
-                                </div>
-                                <div>
-                                    <i class="fa-solid fa-language"></i>
-                                    <p>{{ $profile->native_language}}</p>
-                                </div>
-                            </div>
-                            <div class="info-buttons">
-                                <button class="button2">Ver Perfil</button>
-                                <button class="button1">Reservar</button>
+                            <div class="tutor">
+                                <h1><spam>Tutor:</spam>  {{ implode(', ', $data['grupos']) }}</h1>
                             </div>
                         </div>
-                    </div> <!--End card-->
-                 @endforeach
+                        <div class="icono-heart">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                    </div>
+                    <div class="info-resena">
+                        <div class="info-puntuacion">
+                            <div class="puntuacion-title">
+                                <i class="fa fa-star"></i>
+                                <p>4.5</p>
+                            </div>
+                            <p>7 reseñas</p>
+                        </div>
+                        <div class="info-tutorias">
+                            <div class=tutorias-title>
+                                <i class="fa-solid fa-book"></i>
+                                <p class="price-title">10</p>
+                            </div>
+                            <p class="tutorias-details">Tutorías Realizadas</p>
+                        </div>
+                    </div>
+                    <div class="info-details">
+                        <div>
+                            <i class="fa-solid fa-book-open"></i>
+                            <p>{{ implode(', ', $data['materias']) }}</p>
+                        </div>
+                        <div>
+                            <i class="fa-solid fa-users"></i>
+                            <p>10 estudiantes activos · 30 Clases</p>
+                        </div>
+                        <div>
+                            <i class="fa-solid fa-language"></i>
+                            <p>{{ $profile->native_language}}</p>
+                        </div>
+                    </div>
+                    <div class="info-buttons">
+                        <button class="button2">Ver Perfil</button>
+                        <button class="button1">Reservar</button>
+                    </div>
+                </div>
+            </div>
+            <!--End card-->
+            @endforeach 
             @endforeach
+
         </div>
     </div>
 </section>
@@ -263,6 +266,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     counters.forEach(counter => observer.observe(counter));
 });
+
+function scrollTutors(direction) {
+    const container = document.getElementById('tutors-carousel');
+    const cardWidth = container.querySelector('.tutors-card')?.offsetWidth || 300;
+    container.scrollBy({ left: direction * (cardWidth + 18), behavior: 'smooth' });
+}
 </script>
 
 
