@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Jobs\SendNotificationJob;
+use App\Models\Code;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
@@ -11,11 +12,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use App\Models\Coupon;
 use App\Models\UserCoupon;
-use App\Models\Code;
 
 class RegisterService
 {
-
+   
     public function registerUser($request): User
     {
         $user = User::create([
@@ -29,6 +29,7 @@ class RegisterService
         ]);
 
         $user->assignRole($request['user_role']);
+         $prefijo = Str::lower(Str::ascii(substr($request['first_name'], 0, 3))); // ej: 'luc'
 
         if($request['user_role'] == 'student') {
             if (!empty($request['codigo'])) {  
