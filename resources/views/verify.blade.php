@@ -66,6 +66,9 @@
             <p class="{{ $status }}">{{ $message }}</p>
             @if($status === 'success' || $status === 'info')
                 <div class="login-msg">Por favor, loguéate para terminar la verificación.</div>
+                <a href="classgo://verify?id={{ $id }}&hash={{ $hash }}" class="btn-app" style="display:inline-block;margin-top:18px;padding:12px 24px;background:#295C51;color:#fff;border-radius:8px;text-decoration:none;font-weight:500;">
+                    Abrir en la app
+                </a>
             @endif
             @if(isset($redirect))
                 <div class="loader"></div>
