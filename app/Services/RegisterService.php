@@ -32,10 +32,12 @@ class RegisterService
          $prefijo = Str::lower(Str::ascii(substr($request['first_name'], 0, 3))); // ej: 'luc'
 
         if($request['user_role'] == 'student') {
+             $this->codeCoupons($user); // Generar 5 cupones para el usuario
             if (!empty($request['codigo'])) {  
+            
             $code = Code::where('codigo', $request['codigo'])->first(); // Buscar el código en la base de datos
              $this->codeFriendly($code);
-        }
+          }
         }
         
 
@@ -59,9 +61,14 @@ class RegisterService
 
 
         $user->assignRole($request['user_role']);
-        if (!empty($request['codigo'])) {
-            $code = Code::where('codigo', $request['codigo'])->first(); // Buscar el código en la base de datos
-            $this->codeFriendly($code);
+        
+        // Generar cupones solo si el usuario es estudiante
+        if($request['user_role'] == 'student') {
+            $this->codeCoupons($user); 
+            if (!empty($request['codigo'])) {
+                $code = Code::where('codigo', $request['codigo'])->first(); // Buscar el código en la base de datos
+                $this->codeFriendly($code);
+            }
         }
         $emailData = ['userName' => $user->profile->full_name, 'userEmail' => $user->email, 'key' => $user->getKey()];
 
@@ -143,6 +150,29 @@ class RegisterService
                 ]);
                 }
             }
+    }
+
+
+     function codeCoupons($user)
+    {
+        $code = Code::create([
+            'nombre' => 'Código de bienvenida',
+            'descuento' => 100,
+            'codigo' => Str::random(8), // Generar un código único
+            'user_id' => $user->id,
+            'fecha_caducidad' => null,
+        ]);
+        // Generar 5 cupones asociados al Code
+        UserCoupon::create([
+            'coupon_id' => Coupon::create([
+                'code_id' => $code->id,
+                'fecha_caducidad' => now()->endOfMonth(), // Vence al final del siguiente mes
+                'descuento' => 100, // Descuento del 100%
+                'estado' => 'activo',
+            ])->id,
+            'user_id' => $user->id,
+            'cantidad' => 5,
+        ]);
     }
 
 }
