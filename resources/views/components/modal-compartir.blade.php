@@ -1,7 +1,7 @@
 <div id="modalCompartir" class="modal-compartir">
     <div class="modal-box">
         <div class="modal-header">
-            <img class="img-modal" src="{{ asset('images/send.png')}}" alt="">
+            <img class="img-modal" src="{{ asset('images/Tugo_With_Phone.png')}}" alt="">
             <p>Selecciona una red social para compartir tu código de invitación.</p>
         </div>
 
