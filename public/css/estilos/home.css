@@ -229,15 +229,15 @@
 
 /**--- 3 - Tutores Destacados --**/
 .tutors-container{
-  width: 100%;
+  width: 100vw;
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
   color: var(--primary-color);
   padding: 2rem 0;
-  overflow: hidden; /* Oculta cualquier desbordamiento */
 
+  
 }
 .over-text{
   font-size: var(--h1-regular);
@@ -264,11 +264,12 @@
   scroll-behavior: smooth;
   margin: 3rem 0;
   padding: 1rem 0;
-  max-width: 100vw; /* Limita el ancho al viewport */
+  box-sizing: border-box;
+
 }
 
 .tutors-card {
-  width: 400px;
+  width: 380px;
   border: 2px solid var(--primary-color);
   border-radius: 12px;
   background-color: #ffffff;

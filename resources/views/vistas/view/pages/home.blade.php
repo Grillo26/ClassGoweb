@@ -76,7 +76,7 @@
         
         <h1>Conoce a Nuestros Tutores Cuidadosamente Seleccionados</h1>
         <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p>
-        <div class="tutors" id="tutors-carousel">
+        <div class="tutors">
             @foreach($profiles as $profile) 
             @foreach($subjectsByUser as $userId => $data)
             
