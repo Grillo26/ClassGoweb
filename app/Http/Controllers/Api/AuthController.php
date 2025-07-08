@@ -176,11 +176,18 @@ class AuthController extends Controller
         if (!hash_equals($hash, sha1($user->email))) {
             return $this->error(message: 'Hash inválido.');
         }
-        if ($user->email_verified_at) {
-            return $this->success(message: 'El correo ya estaba verificado.');
+        $alreadyVerified = (bool) $user->email_verified_at;
+        if (!$alreadyVerified) {
+            $user->email_verified_at = now();
+            $user->save();
         }
-        $user->email_verified_at = now();
-        $user->save();
-        return $this->success(message: 'Correo verificado correctamente.');
+        // Generar token de acceso
+        $token = $user->createToken('classgoapp', ['*'], now()->addDays(7))->plainTextToken;
+        return response()->json([
+            'status' => true,
+            'token' => $token,
+            'user' => new \App\Http\Resources\UserResource($user),
+            'message' => $alreadyVerified ? 'El correo ya estaba verificado.' : 'Correo verificado correctamente.'
+        ]);
     }
 }
