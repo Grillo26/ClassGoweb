@@ -135,6 +135,7 @@ Route::post('test-payment-upload', [\App\Http\Controllers\Api\BookingController:
 
 // Agregar la ruta fuera del grupo para que sea pública:
 Route::post('update-fcm-token', [AuthController::class, 'updateFcmToken']);
+Route::get('verify-email', [AuthController::class, 'verifyEmail']);
 
 Route::get('user/{id}/profile-image', [ProfileController::class, 'getProfileImage']);
 Route::post('user/{id}/profile-image', [ProfileController::class, 'updateProfileImage']);

@@ -157,4 +157,30 @@ class AuthController extends Controller
         $user->save();
         return response()->json(['message' => 'FCM token actualizado correctamente']);
     }
+
+    /**
+     * Verifica el correo electrónico vía API (para app y web)
+     * @return \Illuminate\Http\Response
+     */
+    public function verifyEmail(Request $request)
+    {
+        $id = $request->query('id');
+        $hash = $request->query('hash');
+        if (!$id || !$hash) {
+            return $this->error(message: 'Parámetros inválidos.');
+        }
+        $user = \App\Models\User::find($id);
+        if (!$user) {
+            return $this->error(message: 'Usuario no encontrado.');
+        }
+        if (!hash_equals($hash, sha1($user->email))) {
+            return $this->error(message: 'Hash inválido.');
+        }
+        if ($user->email_verified_at) {
+            return $this->success(message: 'El correo ya estaba verificado.');
+        }
+        $user->email_verified_at = now();
+        $user->save();
+        return $this->success(message: 'Correo verificado correctamente.');
+    }
 }
