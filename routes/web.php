@@ -120,3 +120,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
         require __DIR__ . '/pagebuilder.php';
     }
 });
+
+Route::get('/verify', function () {
+    return view('verify');
+});
