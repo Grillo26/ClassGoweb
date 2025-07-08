@@ -124,3 +124,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
 Route::get('/verify', function () {
     return view('verify');
 });
+
+Route::get('/prueba', function () {
+    return '¡Ruta de prueba funcionando!';
+});
