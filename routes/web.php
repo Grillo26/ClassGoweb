@@ -34,8 +34,34 @@ use App\Http\Controllers\GoogleMeetController;
 use Illuminate\Support\Facades\Route;
 
 // RUTAS UNIVERSALES AL INICIO
-Route::get('/verify', function () {
-    return view('verify');
+Route::get('/verify', function (\Illuminate\Http\Request $request) {
+    $id = $request->query('id');
+    $hash = $request->query('hash');
+    $status = null;
+    $message = null;
+
+    if ($id && $hash) {
+        $user = \App\Models\User::find($id);
+        if ($user && hash_equals($hash, sha1($user->email))) {
+            if (!$user->email_verified_at) {
+                $user->email_verified_at = now();
+                $user->save();
+                $status = 'success';
+                $message = 'Correo verificado correctamente.';
+            } else {
+                $status = 'info';
+                $message = 'El correo ya estaba verificado.';
+            }
+        } else {
+            $status = 'error';
+            $message = 'El enlace de verificación no es válido.';
+        }
+    } else {
+        $status = 'error';
+        $message = 'Parámetros inválidos.';
+    }
+
+    return view('verify', compact('status', 'message'));
 });
 Route::get('/prueba', function () {
     return '¡Ruta de prueba funcionando!';
