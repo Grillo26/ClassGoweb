@@ -82,7 +82,8 @@
                 @foreach($subjectsByUser as $userId => $data)
                     <div class="tutors-card">
                         <div class="video-tutor">
-                            <img src="{{ asset('images/tutors/video1.gif') }}" alt="Tutor"> <!--Video cambiar-->
+                            <img src="{{ $profile->image ? asset('storage/' . $profile->image) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $profile->first_name }}">
+                            <img src="{{ $profile->intro_video ? asset}}> <!--Video cambiar-->
                         </div>
                         <div class="info">
                             <div class="info-header">

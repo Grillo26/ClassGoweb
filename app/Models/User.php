@@ -25,7 +25,6 @@ use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Dispute;
 use Spatie\Permission\Traits\HasRoles;
-use Stripe\Coupon;
 
 class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordContract
 {
@@ -100,24 +99,6 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     {
         return $this->hasMany(UserSubjectGroup::class)->orderBy('sort_order');
     }
-
-    /**
-     * Relación uno a uno con el modelo Code
-     */
-    public function code()
-    {
-        return $this->hasOne(Code::class);
-    }
-    /**
-     * Relacion muchos a muchos con el modelo Coupon
-     */
-    public function coupons()
-    {
-        return $this->belongsToMany(Coupon::class)
-            ->withPivot('usage_limit')
-            ->withTimestamps();
-    }
-
 
     /**
      * Reseñas que recibe el usuario (como tutor)
@@ -314,6 +295,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     public function companyCourseUsers(): HasMany
     {
         return $this->hasMany(CompanyCourseUser::class, 'user_id');
+
     }
 
     /**
