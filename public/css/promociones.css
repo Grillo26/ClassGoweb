@@ -52,6 +52,11 @@
     letter-spacing: 2px;
 }
 
+.inv-code.inactivo {
+    text-decoration: line-through;
+    color: #ff3b3b;
+}
+
 .inv-steps {
     display: flex;
     flex-direction: column;
@@ -228,6 +233,18 @@
 
 .cupon-usar-btn {
     background-color: var(--secundary-color);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cupon-usar-btn-disable {
+    background-color: var(--terciary-color2);
     color: #fff;
     border: none;
     padding: 0.5rem 1rem;

@@ -77,63 +77,68 @@
         <h1>Conoce a Nuestros Tutores Cuidadosamente Seleccionados</h1>
         <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p>
         <div class="tutors">
-            <div class="tutors-card">
-                <div class="video-tutor">
-                    <img src="{{ asset('images/tutors/video1.gif') }}" alt="Tutor"> <!--Video cambiar-->
-                </div>
-                <div class="info">
-                    <div class="info-header">
-                        <img src="{{ asset('images/tugo-negativo.png') }}" alt="Tutor">
-                        <div class="info-name">
-                            <div class="name">
-                                <h1>Norely Bonilla</h1>
-                                <i class="fa-solid fa-circle-check"></i> <!--Check Verificación-->
-                                <img src="" alt=""><!--Bandera pais-->
+
+            @foreach($profiles as $profile)
+                @foreach($subjectsByUser as $userId => $data)
+                    <div class="tutors-card">
+                        <div class="video-tutor">
+                            <img src="{{ asset('images/tutors/video1.gif') }}" alt="Tutor"> <!--Video cambiar-->
+                        </div>
+                        <div class="info">
+                            <div class="info-header">
+                                <img src="{{ $profile->image ? asset('storage/' . $profile->image) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $profile->first_name }}">
+                                <div class="info-name">
+                                    <div class="name">
+                                        <h1>{{ $profile->first_name}} {{ $profile->last_name}}</h1>
+                                        <i class="fa-solid fa-circle-check"></i> <!--Check Verificación-->
+                                        <img src="" alt=""><!--Bandera pais-->
+                                    </div>
+                                    <div class="tutor">
+                                        <h1><spam>Tutor:</spam>  {{ implode(', ', $data['grupos']) }}</h1>
+                                    </div>
+                                </div>
+                                <div class="icono-heart">
+                                    <i class="fa-solid fa-heart"></i>                    
+                                </div>
                             </div>
-                            <div class="tutor">
-                                <h1><spam>Tutor:</spam> Adm. de Empresas</h1>
+                            <div class="info-resena">
+                                <div class="info-puntuacion">
+                                    <div class="puntuacion-title">
+                                        <i class="fa fa-star"></i>
+                                        <p>4.5</p>
+                                    </div>
+                                    <p>7 reseñas</p>
+                                </div>
+                                <div class="info-tutorias">
+                                    <div class=tutorias-title>
+                                        <i class="fa-solid fa-book"></i>
+                                        <p class="price-title">10</p>
+                                    </div>
+                                    <p class="tutorias-details">Tutorías Realizadas</p>
+                                </div>
+                            </div>
+                            <div class="info-details">
+                                <div>
+                                    <i class="fa-solid fa-book-open"></i>
+                                    <p>{{ implode(', ', $data['materias']) }}</p>
+                                </div>
+                                <div>
+                                    <i class="fa-solid fa-users"></i>
+                                    <p>10 estudiantes activos · 30 Clases</p>
+                                </div>
+                                <div>
+                                    <i class="fa-solid fa-language"></i>
+                                    <p>{{ $profile->native_language}}</p>
+                                </div>
+                            </div>
+                            <div class="info-buttons">
+                                <button class="button2">Ver Perfil</button>
+                                <button class="button1">Reservar</button>
                             </div>
                         </div>
-                        <div class="icono-heart">
-                            <i class="fa-solid fa-heart"></i>                    
-                        </div>
-                    </div>
-                    <div class="info-resena">
-                        <div class="info-puntuacion">
-                            <div class="puntuacion-title">
-                                <i class="fa fa-star"></i>
-                                <p>4.5</p>
-                            </div>
-                            <p>7 reseñas</p>
-                        </div>
-                        <div class="info-tutorias">
-                            <div class=tutorias-title>
-                                <i class="fa-solid fa-book"></i>
-                                <p class="price-title">10</p>
-                            </div>
-                            <p class="tutorias-details">Tutorías Realizadas</p>
-                        </div>
-                    </div>
-                    <div class="info-details">
-                        <div>
-                            <i class="fa-solid fa-book-open"></i>
-                            <p>Finanzas, Presupuesto, Estadística</p>
-                        </div>
-                        <div>
-                            <i class="fa-solid fa-users"></i>
-                            <p>10 estudiantes activos · 30 Clases</p>
-                        </div>
-                        <div>
-                            <i class="fa-solid fa-language"></i>
-                            <p>Ingles</p>
-                        </div>
-                    </div>
-                    <div class="info-buttons">
-                        <button class="button2">Ver Perfil</button>
-                        <button class="button1">Reservar</button>
-                    </div>
-                </div>
-            </div> <!--End card-->
+                    </div> <!--End card-->
+                 @endforeach
+            @endforeach
         </div>
     </div>
 </section>
