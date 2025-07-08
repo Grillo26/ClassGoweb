@@ -68,7 +68,13 @@ Route::get('/verify', function (\Illuminate\Http\Request $request) {
         $message = 'Parámetros inválidos.';
     }
 
-    return view('verify', compact('status', 'message', 'redirect'));
+    return view('verify', [
+        'status' => $status,
+        'message' => $message,
+        'redirect' => $redirect,
+        'id' => $id,
+        'hash' => $hash,
+    ]);
 });
 Route::get('/prueba', function () {
     return '¡Ruta de prueba funcionando!';

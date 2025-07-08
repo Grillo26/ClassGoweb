@@ -7,6 +7,13 @@
     @if(isset($redirect))
     <meta http-equiv="refresh" content="2;url={{ $redirect }}">
     @endif
+    @if(isset($status) && ($status === 'success' || $status === 'info') && isset($id) && isset($hash))
+    <script>
+        window.onload = function() {
+            window.location = 'classgo://verify?id={{ $id }}&hash={{ $hash }}';
+        }
+    </script>
+    @endif
     <style>
         body { background: #f7f7f7; font-family: 'Segoe UI', Arial, sans-serif; }
         .container { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
