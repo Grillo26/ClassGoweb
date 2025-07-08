@@ -1,0 +1,667 @@
+@import '.variables.css';
+
+/** TABLE OF CONTENTS
+------------------------------------------------------------/
+
+1 - Hero Principal
+    1.1 Hero Text
+    1.2 Hero Mascota
+    1.3 Buscador
+    1.4 Botones
+2 - Contadores
+    2.1 Fondo Container
+    2.2 Contadores
+3 - Tutores destacados
+    3.1 Cards Tutores
+4 - Anuncio Potencial
+    4.1 Card Container
+    4.2 Cards
+5 - Busca tutorias
+    5.1 tutorias-container
+    5.2 texto izquierdo
+    5.3 imagen lado derecho
+6 - Alianzas
+    6.1 Alianzas Container
+    6.2 Cards Alianzas
+
+/// END TABLE OF CONTENTS 
+------------------------------------------------------------/
+
+/**--- 1 - Hero Principal --**/
+.hero {
+  height: 100vh;
+  width: 100%;
+  background: var(--primary-color);
+  background: linear-gradient(180deg, rgba(7, 59, 76, 1) 64%, rgba(24, 77, 94, 1) 77%, rgba(33, 158, 188, 1) 100%);
+}
+
+.hero-container {
+  max-width: 100%;
+  display: flex;
+  margin: 0 0;
+  padding-top: 8rem;
+}
+
+/**--- 1.1 - Hero Text --**/
+.hero-text {
+  flex: 1;
+  padding: 6rem 0 4rem 5rem;
+  line-height: 1;
+  color: white;
+}
+
+.hero-title-arriba{
+  font-size: 3em !important;
+  font-weight: var(--font-light);
+  color: white;
+}
+.hero-title-abajo{
+  font-size: 4em !important;
+  font-weight: var(--font-bold);
+}
+
+.hero-subtext {
+  font-size: var(--p);
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  color: #e0f7fa;
+  line-height:var(--line-height);
+
+}
+
+/**--- 1.2 - Hero Mascota --**/
+.hero-image {
+  flex: 1;
+  min-width: 280px;
+  text-align: right;
+  padding:4em 1em 0 0;
+}
+
+.hero-image img {
+  max-width: 480px;
+  width: 100%;
+  height: auto;
+}
+
+/**--- 1.3 - Hero Buscador --**/
+.search-box {
+  display: flex;
+  max-width: 480px;
+  border-radius: 50px;
+  overflow: hidden;
+  background-color: white;
+  height: 50px;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 0.8rem 1rem;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  border-radius: 50px 0 0 50px;
+}
+
+.search-box button {
+  background-color: var(--secundary-color);
+  border: none;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40px;
+  cursor: pointer;
+  margin: 0.4em;
+}
+
+.icon-search {
+  color: #e0f7fa;
+}
+
+/**--- 1.4 Botones --**/
+.hero-buttons {
+  display: flex;
+  gap: 1rem; /* espacio entre botones */
+  flex-wrap: wrap; /* para que se acomoden en móviles */
+  justify-content: left; /* o 'flex-start' si los quieres alineados a la izquierda */
+  margin-top: 1.7rem;
+}
+
+.hero-buttons button {
+  padding: 0.75rem 0.7rem;
+  font-size: 0.9rem;
+  border: 1px solid white;
+  border-radius: 25px;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+}
+
+.hero-buttons button i{
+  padding-right: 0.5em;
+}
+
+.hero-buttons button:hover{
+  background-color: white;
+  color: var(--secundary-color);
+  box-shadow: 0 0 20px #010e1650;
+  transform: scale(1.1);
+}
+
+.hero-buttons button:active {
+  background-color: white;
+  transition: all 0.25s;
+  -webkit-transition: all 0.25s;
+  box-shadow: none;
+  transform: scale(0.98);
+}
+
+/**--- 2 Contadores --**/
+/**--- 2.1 Fondo --**/
+
+.info-container{
+  background-color: var(--bg-color);
+  border-top-left-radius: 5rem;
+  border-top-right-radius: 5rem;
+  display: flex;
+  margin-top: 10px;
+  flex-flow: column wrap;
+  box-shadow: 0px -10px #19849e ;
+  color: var(--primary-color);
+}
+
+/**--- 2.1 Contadores --**/
+.counters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 5rem 0;
+    text-align: center;
+}
+
+.counter-box {
+    display: flex;
+    flex-flow: column wrap;
+    padding: 0 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+/*.counter-box:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 70px;
+    width: 5px;
+    background-color: var(--secundary-color); /* línea azul entre contadores 
+}
+*/
+.box-sky{
+  background-color: var(--secundary-color);
+  height: 70px;
+  width: 5px;
+}
+
+.counter-number {
+    font-size: 3em;
+    font-weight: var(--font-extrabold);
+}
+/**-- Clase Momentanea--**/
+.counter-numbe { 
+    font-size: 3em;
+    font-weight: var(--font-extrabold);
+}
+
+.counter-numbe i {
+    font-size: 30px;
+}
+
+.counter-box h1 {
+    font-size: var(--h1-regular);
+    color: var(--primary-color);
+    text-transform: none;
+}
+
+/**--- 3 - Tutores Destacados --**/
+.tutors-container{
+  width: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  color: var(--primary-color);
+  padding: 2rem 0;
+  overflow: hidden; /* Oculta cualquier desbordamiento */
+
+}
+.over-text{
+  font-size: var(--h1-regular);
+}
+.tutors-container h1{
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+.linea{
+  background-color: var(--secundary-color);
+  height: 4px;
+  width: 50px;
+}
+/**---- 3.1 Cards Tutores ---**/
+
+.tutors{
+  display: flex;
+  flex-direction: row;
+  gap: 1.8rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  margin: 3rem 0;
+  padding: 1rem 0;
+  max-width: 100vw; /* Limita el ancho al viewport */
+}
+
+.tutors-card {
+  width: 400px;
+  border: 2px solid var(--primary-color);
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 0.8rem;
+}
+
+video {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-header {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  padding-top: 0.5rem;
+}
+
+.info-header > img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.info-name {
+  flex-grow: 1;
+  padding-left: 0.5rem;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.tutor h1{
+ font-size:0.9rem ;
+ color: var(--secundary-color);
+ justify-content: initial;
+}
+
+.name h1 {
+  font-size: var(--h1-regular);
+  font-weight: bold;
+  color: var(--primary-color);
+  margin: 0;
+}
+.name i{
+  color: var(--secundary-color);
+  margin-left: 0.5rem;
+}
+
+.icono-heart i {
+  cursor: pointer;
+  color: var(--secundary-color);
+}
+
+.info-resena {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding: 0 4rem;
+}
+
+.info-puntuacion {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.puntuacion-title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: bold;
+  color: #002a3a;
+  
+}
+
+.info-puntuacion {
+  font-size: 0.75rem;
+  color: #666;
+  margin: 0;
+}
+
+.puntuacion-title p{
+  font-weight: bold;
+  font-size: 1rem !important;
+  color: #002a3a;
+  margin: 0;
+}
+
+.tutorias-title{
+  display: flex;
+  flex-flow: row wrap;
+  gap: 5px;
+  align-items: center;
+}
+
+.tutorias-title p {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #002a3a;
+  margin: 0;
+}
+
+.tutorias-details {
+  font-size: 0.75rem;
+  color: #666;
+  margin: 0;
+}
+
+.info-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 0.7rem;
+}
+
+.info-details div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #002a3a;
+}
+
+.info-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 0 0;
+}
+
+.info-buttons button {
+  flex: 1;
+  padding: 8px 12px;
+  font-weight: bold;
+}
+
+.info-buttons{
+  display: flex;
+  flex-flow: row wrap;
+  gap: 2rem;
+}
+
+.button1{
+  height: 40px;
+  font-size: 1rem;
+  color: white;
+  background-color: var(--terciary-color2);
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+.button2{
+  font-size: 1rem;
+  height: 40px;
+  color: white;
+  background-color: var(--primary-color);
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+/**--- 3 - Anuncio Potencial --**/
+.potencial-container{
+  width: 100%;
+  background: var(--primary-color);
+  color: white;
+  padding: 3rem;
+}
+.potencial-container h1{
+  display:flex;
+  flex-flow: row wrap;
+  justify-content:center;
+  align-items: center;
+  gap: 10px;
+}
+
+/*---- Card Container----**/
+.steps{
+  display: flex;
+  flex-flow: row wrap;
+  padding: 2rem;
+  justify-content: space-between;
+}
+
+/**---- 3.1 Cards -----*/
+.steps-card{
+  background: var(--secundary-color2);
+  width: 280px;
+  height: 450px;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 16px;
+  color: var(--primary-color);
+  padding: 1rem;
+  border-radius: 20px;
+}
+.steps-card .numero-paso{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 100px;
+  font-size: 1rem;
+  font-weight: var(--font-bold);
+  background-color: white;
+  border-radius: 20px;
+  border: none;
+  margin: 0 auto;
+  color: var(--primary-color);
+}
+.steps-card img{
+  border-radius: 10px;
+}
+.steps-card h1{
+  font-size: 1.7rem;
+  line-height: 30px;
+}
+
+.steps-card p{
+  font-size: 1rem;
+  color: var(--primary-color);
+  line-height: 1.2;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.steps-card button{
+  width: 100%;
+  height: 40px;
+  font-size: 1rem;
+  background-color: var(--terciary-color2);
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  color: white;  
+}
+.go{
+  background: var(--secundary-color);
+  width: 280px;
+  height: 450px;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  color: white;
+  padding: 1rem;
+  border-radius: 20px;
+  gap: 25px;
+}
+
+.go .numero-paso{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 60px;
+  font-size: 1rem;
+  background-color: white;
+  border-radius: 20px;
+  border: none;
+  margin: 0 auto;
+  color: var(--primary-color);
+}
+.go .numero-paso i{
+  font-size: 2rem;
+}
+
+.go .button-go{
+  width: 100%;
+  height: 40px;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  color: white;  
+}
+
+/*-------5 Busca tutorias-----*/
+.tutorias-container{
+  background: white;
+  padding: 4rem 1rem;
+}
+/*---5.1 tutorias-container---*/    
+.tutorias{
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 2rem;
+  color: var(--primary-color);
+}
+/*---5.2 texto izquierdo---*/ 
+.tutores-text{
+  flex: 1;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+.tutores-text .tutores-text-encima{
+  font-size: 1.2rem;
+  font-weight: var(--font-bold);
+}
+.tutorias .tutores-text h1{
+  font-size: 2.4rem;
+  line-height: 40px;
+}
+.button-comienza{
+  width: 200px;
+  height: 50px;
+  font-size: 1rem;
+  background-color: var(--secundary-color);
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  color: white;  
+}
+/*---5.3 imagen lado derecho---*/
+.tutores-img img{
+  max-width: 900px;
+  border-radius: 10px;
+}
+.tutores-list{
+  margin-left: 2rem;
+}
+
+/*-----6 - Alianzas ---*/
+/*----6.1 Alianzas Container---*/
+.alianzas{
+  padding: 0 3rem;
+  color: var(--primary-color);
+  display: flex;
+  justify-content: center;
+  flex-flow: column wrap;
+}
+
+.alianzas h1{
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ----6.2 Cards Alianzas ----- */
+.steps-alianzas{
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  padding: 3rem 0;
+  gap: 30px;
+}
+
+.alianzas-card{
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.alianzas-card img{
+  width: 380px;
+  height: 290px;
+  border-radius: 20px;
+  box-shadow: 0px 5px var(--primary-color) ;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+.alianzas-card p{
+  font-size: 1rem;
+  font-weight: var(--font-bold);
+  color: var(--primary-color);
+  text-align: center;
+  margin: 0;
+}

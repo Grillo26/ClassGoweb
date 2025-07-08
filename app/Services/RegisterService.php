@@ -3,16 +3,19 @@
 namespace App\Services;
 
 use App\Jobs\SendNotificationJob;
+use App\Models\Code;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use App\Models\Coupon;
+use App\Models\UserCoupon;
 
 class RegisterService
 {
-
+   
     public function registerUser($request): User
     {
         $user = User::create([
@@ -25,16 +28,24 @@ class RegisterService
             'phone_number' => $request['phone_number']
         ]);
 
-
         $user->assignRole($request['user_role']);
+         $prefijo = Str::lower(Str::ascii(substr($request['first_name'], 0, 3))); // ej: 'luc'
+
+        if($request['user_role'] == 'student') {
+            if (!empty($request['codigo'])) {  
+            $code = Code::where('codigo', $request['codigo'])->first(); // Buscar el código en la base de datos
+             $this->codeFriendly($code);
+        }
+        }
+        
+
+
 
         $emailData = ['userName' => $user->profile->full_name, 'userEmail' => $user->email, 'key' => $user->getKey()];
 
         dispatch(new SendNotificationJob('registration', $user, $emailData));
         dispatch(new SendNotificationJob('registration', User::admin(), $emailData));
-
         $user->token = $user->createToken('learnen')->plainTextToken;
-
         return $user;
     }
 
@@ -48,7 +59,10 @@ class RegisterService
 
 
         $user->assignRole($request['user_role']);
-
+        if (!empty($request['codigo'])) {
+            $code = Code::where('codigo', $request['codigo'])->first(); // Buscar el código en la base de datos
+            $this->codeFriendly($code);
+        }
         $emailData = ['userName' => $user->profile->full_name, 'userEmail' => $user->email, 'key' => $user->getKey()];
 
         dispatch(new SendNotificationJob('welcome', $user, $emailData));
@@ -110,4 +124,25 @@ class RegisterService
             'message' => $status
         ];
     }
+
+
+    function codeFriendly($code)
+    {
+         if ($code) {
+                // Asignar un cupón al usuario basado en el código
+                if($code->user_id) { 
+                UserCoupon::create([
+                    'coupon_id' => Coupon::create([
+                        'code_id' => $code->id,
+                        'descuento' => 100, // Descuento del 100%
+                        'fecha_caducidad' => now()->addMonth()->endOfMonth(), // Vence al final del siguiente mes
+                        'estado' => 'activo',
+                    ])->id,
+                    'user_id' => $code->user_id,
+                    'cantidad' => 1,
+                ]);
+                }
+            }
+    }
+
 }

@@ -55,4 +55,9 @@ return [
     'login_as' => 'Iniciar sesión como',
     'admin' => 'Administración',
     'sign_in_with_google' => 'Iniciar Sesion con Google',
+    'social_right_h2'=>'Registro con Google',
+    'social_right_h3' => 'completa tu registro con Google',
+    'your_email_placeholder'=> 'Tu correo',
+    'setup_account'=> 'completar registro',
+    'codigo_placeholder'=> 'Código de cupón (opcional)',
 ];

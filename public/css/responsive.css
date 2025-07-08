@@ -1,0 +1,34 @@
+/* TABLET: 768px */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero {
+        flex-direction: column-reverse;
+        text-align: center;
+    }
+
+    .hero img {
+        margin-bottom: 1rem;
+    }
+}
+
+/* MÓVILES: 480px */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    p {
+        font-size: 0.95rem;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

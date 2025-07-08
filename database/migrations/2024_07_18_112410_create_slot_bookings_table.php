@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained('users');
             $table->foreignId('tutor_id')->constrained('users');
-            $table->foreignId('user_subject_slot_id')->constrained();
             $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();
             $table->double('session_fee');
@@ -24,6 +23,7 @@ return new class extends Migration
             //el 2 se toma como pendiente  
             $table->tinyInteger('status')->default(1)->comment('1-> Active, 2-> Rescheduled, 3-> Refunded, 4-> Reserved, 5-> Completed');
             $table->json('meta_data')->nullable();
+             $table->unsignedBigInteger('user_subject_slot_id');
         });
     }
 

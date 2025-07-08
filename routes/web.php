@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\TutorController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Frontend\SearchController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\Impersonate;
 use App\Http\Controllers\OpenAiController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\ExportImageController; // Added ExportImageController
 use App\Livewire\Frontend\BlogDetails;
 use App\Livewire\Frontend\Blogs;
 use App\Livewire\Frontend\Checkout;
@@ -33,15 +37,23 @@ use App\Livewire\Payouts;
 use App\Http\Controllers\GoogleMeetController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/nosotros',function () {
+    return view('vistas.view.pages.nosotros');
+}); 
+
+
 Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialController::class, 'callback'])->name('social.callback');
 Route::get('/pay-qr/{orderId}', [PaymentController::class, 'showQR'])->name('pay-qr');
+
 
 Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::get('find-tutors', [SearchController::class, 'findTutors'])->name('find-tutors');
     Route::get('/blogs', Blogs::class)->name('blogs');
     Route::get('/blog/{slug}', BlogDetails::class)->name('blog-details');
     Route::view('/subscriptions-page', 'subscriptions-page');
+    Route::get('/home', [HomeController::class, 'index']);
+    Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones');
     
     Route::middleware(['auth', 'verified', 'onlineUser'])->group(function () {
         Route::post('/openai/submit', [OpenAiController::class, 'submit'])->name('openai.submit');
@@ -52,12 +64,13 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
         Route::middleware('role:student')->get('checkout', Checkout::class)->name('checkout');
         Route::middleware('role:student')->get('thank-you/{id}', ThankYou::class)->name('thank-you');
         
-
-
         Route::middleware('role:tutor')->prefix('tutor')->name('tutor.')->group(function () {
             Route::get('dashboard', ManageAccount::class)->name('dashboard');
             Route::get('payouts', Payouts::class)->name('payouts');
             Route::get('profile', fn() => redirect('tutor.profile.personal-details'))->name('profile');
+
+            //Route::get('/descargar-ficha/{id}', [ExportImageController::class, 'exportFicha'])->name('ficha');
+
 
             Route::prefix('profile')->name('profile.')->group(function () {
                 Route::get('personal-details', PersonalDetails::class)->name('personal-details');
@@ -76,6 +89,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
                 Route::get('session-detail/{date}', SessionDetail::class)->name('session-detail');
                 Route::get('upcoming-bookings',     UserBooking::class)->name('upcoming-bookings');
             });
+            
             Route::get('invoices', Invoices::class)->name('invoices');
             Route::get('disputes', Dispute::class)->name('disputes');
             Route::get('manage-dispute/{id}', ManageDispute::class)->name('manage-dispute');

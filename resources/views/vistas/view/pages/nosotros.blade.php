@@ -1,0 +1,139 @@
+@extends('vistas.view.layouts.app')
+
+@section('title', 'Class Go!')
+
+@section('content')
+    <!--NOSOTROS-->
+    <section class="nosotros">
+        <div class="nosotros-container">
+            <div class="nosotros-header">
+                <div class="nosotros-header-content">
+                    <div class="nosotros-header-text">
+                        <nav class="breadcrumb">
+                            <span class="active">Inicio</span> / <span>Nosotros</span>
+                        </nav>
+                        <h1>¿Quiénes Somos?</h1>
+                        <p>
+                            Somos una plataforma de tutorías en línea que conecta a estudiantes de todas las edades con
+                            tutores expertos.
+                            Te proporcionamos una experiencia accesible y de calidad, independientemente de tu ubicación u
+                            horario.
+                        </p>
+                    </div>
+                    <div class="nosotros-header-image">
+                        <img src="{{ asset('storage/optionbuilder/uploads/72002-15-2025_1048pmTugo 2.png') }}"
+                            alt="Misión ClassGo" class="tugo-image">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="nosotros-mision">
+                <div class="nosotros-mision-text">
+                    <h2 class="nosotros-mision-title">Misión</h2>
+                    <p class="nosotros-mision-text-general1">
+                        Plataforma educativa de tutorías virtuales para compartir conocimientos.
+                    </p>
+                    <p class="nosotros-mision-text-general2">
+                        Proporcionamos una plataforma educativa de tutorías virtuales accesibles las 24 horas, dirigida a
+                        toda
+                        persona que quiera compartir su conocimiento, con contenido que abarca desde nivel universitario
+                        hasta
+                        habilidades técnicas.
+                    </p>
+                </div>
+                <p class="nosotros-mision-porcentaje">
+                    <span class="nosotros-mision-porcentaje-text">
+                        +200
+                    </span>
+                    <span class="nosotros-porcentaje-subtext">
+                        Tutorías disponibles
+                    </span>
+                </p>
+
+
+                <div class="nosotros-mision-image">
+                    <img src="{{ asset('images/Tugo_With_Glasses.png') }}" alt="Misión ClassGo" class="tugo-image">
+                </div>
+            </div>
+
+            <div class="nosotros-vision">
+                <div class="vision-image">
+                    <img src="{{ asset('storage/optionbuilder/uploads/229502-18-2025_1204amPASO_3.jpg') }}"
+                        alt="Visión ClassGo" class="tugo-image">
+                </div>
+                <div class="nosotros-vision-text">
+                    <h2 class="nosotros-vision-title">Visión</h2>
+                    <p class="nosotros-vision-subtext">
+                        Nuestra visión: Impulsar el crecimiento del aprendizaje.
+                    </p>
+                    <p class="nosotros-vision-subtext2">
+                        Ser la plataforma líder en tutorías virtuales, fomentando el aprendizaje continuo y la accesibilidad
+                        educativa en todas las áreas del conocimiento.
+                    </p>
+                </div>
+
+
+            </div>
+
+            <div class="nosotros-logros">
+                <div class="nosotros-logros-text">
+                    <h3 class="nosotros-logros-title">Logros clave</h3>
+                    <h2 class="nosotros-logros-text">Conoce nuestros logros más destacados</h2>
+                    <p class="nosotros-logros-subtext">
+                        Estas cifras resaltan nuestros esfuerzos continuos para mantener altos estándares y una mejora
+                        constante
+                        en
+                        todo lo que hacemos.
+                    </p>
+                </div>
+                <div class="nosotros-logros-table">
+                    <table>
+                        <tr>
+                            <td>
+                                <span class="numero">+250</span>
+                                <span class="descripcion">Usuarios registrados</span>
+                            </td>
+                            <td>
+                                <span class="numero">+200</span>
+                                <span class="descripcion">Tutores disponibles</span>
+                            </td>
+                            <td>
+                                <span class="numero">+250</span>
+                                <span class="descripcion">Visitas a nuestra plataforma</span>
+                            </td>
+                            <td>
+                                <span class="numero">+18</span>
+                                <span class="descripcion">Curso exclusivo para Tutores</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="nosotros-convenios">
+                <h3>Juntos llegamos más lejos</h3>
+                <h2>Alianzas que potencian la educación</h2>
+                <p>En ClassGo creemos en el poder de la colaboración para transformar el aprendizaje. Por eso, trabajamos
+                    junto a instituciones educativas, clubes y organizaciones comprometidas con la formación académica y el
+                    desarrollo personal.</p>
+
+                <div class="nosotros-card">
+                    <div class="card">
+                        <img src="image1.jpg" alt="Ingeniería Petrolera">
+                        <h4 class="card-title">Ingeniería Petrolera</h4>
+                    </div>
+                    <div class="card">
+                        <img src="image2.jpg" alt="Club 'Tacuara' Debate y Oratoria">
+                        <h4 class="card-title">Club 'Tacuara' Debate y Oratoria</h4>
+                    </div>
+                    <div class="card">
+                        <img src="image3.jpg" alt="Club 'Tacuara' Debate y Oratoria">
+                        <h4 class="card-title">Club 'Tacuara' Debate y Oratoria</h4>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+@endsection

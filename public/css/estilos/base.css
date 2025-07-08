@@ -1,0 +1,44 @@
+@import './variables.css';
+
+
+/** TABLE OF CONTENTS
+------------------------------------------------------------/
+1 - Base
+------------------------------------------------------------*/
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    line-height: 1.6;
+    font-size: 16px;
+    scroll-behavior: smooth;
+    background-color:  rgba(33, 158, 188, 1);
+}
+/* BOTONES */
+button {
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+/* IMÁGENES RESPONSIVAS */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ENLACES */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+h1{
+    font-size: var(--h1);
+}
+
+
+

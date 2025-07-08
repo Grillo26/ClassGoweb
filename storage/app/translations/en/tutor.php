@@ -12,6 +12,7 @@ return [
     'similar_tutors' => 'Similar Tutors',
     'send_message' => 'Send message',
     'book_session' => 'Book a session',
+    'send_profile' => 'Share Profile',
     'language_know' => 'Languages I Know',
     'tutor_profile_settings' => 'Tutor profile settings',
     'help_section_title' => 'Find tutor help page section title',

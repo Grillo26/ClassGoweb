@@ -3,16 +3,18 @@
         <div class="row">
             <div class="col-lg-12 col-md-12">
                 <div class="tb-dhb-mainheading">
-                    <h4> {{ __('Tutorías') .' ('. $tutorias->total() .')'}}</h4>
+                    <h4> {{ __('Tutorías') . ' (' . $tutorias->total() . ')' }}</h4>
                     <div class="tb-sortby">
                         <form class="tb-themeform tb-displistform" wire:submit.prevent>
                             <fieldset>
                                 <div class="tb-themeform__wrap">
                                     <div class="tb-actionselect">
-                                        <input type="text" wire:model.live="tutor" class="form-control" placeholder="Buscar tutor">
+                                        <input type="text" wire:model.live="tutor" class="form-control"
+                                            placeholder="Buscar tutor">
                                     </div>
                                     <div class="tb-actionselect">
-                                        <input type="text" wire:model.live="student" class="form-control" placeholder="Buscar estudiante">
+                                        <input type="text" wire:model.live="student" class="form-control"
+                                            placeholder="Buscar estudiante">
                                     </div>
                                     <div class="tb-actionselect">
                                         <select wire:model.live="status" class="form-control">
@@ -110,21 +112,22 @@
                         </table>
                         {{ $tutorias->links('pagination.custom') }}
                         @else
-                            <x-no-record :image="asset('images/empty.png')"  :title="__('general.no_record_title')"/>
+                            <x-no-record :image="asset('images/empty.png')" :title="__('general.no_record_title')" />
                         @endif
                     </div>
                 </div>
             </div>
         </div>
     </main>
-    @if($showModal)
+    @if ($showModal)
         <div>
             DEBUG: Modal debería estar abierto para tutoría {{ $modalTutoriaId }} (status: {{ $modalStatus }})
         </div>
-        @livewire('admin.tutoria-status-modal', ['tutoriaId' => $modalTutoriaId, 'status' => $modalStatus], key('modal-'.$modalTutoriaId))
+        @livewire('admin.tutoria-status-modal', ['tutoriaId' => $modalTutoriaId, 'status' => $modalStatus], key('modal-' . $modalTutoriaId))
     @endif
     <!-- Modal para cambiar estado de tutoría -->
-    <div wire:ignore.self class="modal fade" id="modalEstadoTutoria" tabindex="-1" aria-labelledby="modalEstadoTutoriaLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="modalEstadoTutoria" tabindex="-1"
+        aria-labelledby="modalEstadoTutoriaLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -151,12 +154,12 @@
 </div>
 
 @push('scripts')
-<script>
-    window.addEventListener('cerrar-modal-tutoria', function () {
-        var modal = bootstrap.Modal.getInstance(document.getElementById('modalEstadoTutoria'));
-        if (modal) {
-            modal.hide();
-        }
-    });
-</script>
+    <script>
+        window.addEventListener('cerrar-modal-tutoria', function() {
+            var modal = bootstrap.Modal.getInstance(document.getElementById('modalEstadoTutoria'));
+            if (modal) {
+                modal.hide();
+            }
+        });
+    </script>
 @endpush

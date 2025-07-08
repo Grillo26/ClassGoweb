@@ -392,4 +392,21 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     {
         return $this->hasMany(UserSubjectSlot::class, 'user_id');
     }
+
+    /*<------ CODIGOS Y CUPONES ------->*/
+    public function codes()
+    {
+        return $this->hasMany(Code::class);
+    }
+
+    public function userCoupons()
+    {
+        return $this->hasMany(UserCoupon::class);
+    }
+
+    public function coupons()
+    {
+        return $this->belongsToMany(Coupon::class, 'user_coupons')->withPivot('cantidad')->withTimestamps();
+    }
+
 }

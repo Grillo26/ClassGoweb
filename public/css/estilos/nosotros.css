@@ -1,0 +1,392 @@
+@import "./variables.css";
+/* ------------------------------------------------------------ */
+/* 2 - Estilos Específicos para la Página Nosotros */
+/* ------------------------------------------------------------ */
+/* Estilo general */
+body {
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.nosotros-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+/*-----HEADER-----*/
+.nosotros-header {
+  width: 100%;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  padding: 0 0 15px 0;
+  background: var(--secundary-color);
+}
+
+.nosotros-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7rem 2.5rem 2rem;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  background: var(--primary-color); /* Fondo oscuro */
+}
+
+.nosotros-header-text {
+  flex: 1.2;
+  color: #fff;
+}
+.nosotros-header-text h1 {
+  font-size: 2.7rem;
+  font-weight: 700;
+  margin-top: 1.2rem;
+  margin-bottom: 1rem;
+  color: #fff;
+  line-height: 1.15;
+  padding-top: 2rem;
+}
+
+.nosotros-header-text p {
+  color: #fff;
+  font-size: 1.08rem;
+  margin: 0;
+  max-width: 1000px;
+}
+
+.breadcrumb {
+  color: #eaf6fa;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  font-family: "Montserrat", Arial, sans-serif;
+  opacity: 0.95;
+}
+
+.breadcrumb .active {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.nosotros-header-image img {
+  width: 400px;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .nosotros-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 2rem 1rem 1.5rem 1rem;
+  }
+  .nosotros-header-image img {
+    margin-left: 0;
+    margin-top: 2rem;
+    width: 160px;
+  }
+}
+
+/*-------MISION----*/
+.nosotros-mision {
+  display: flex;
+  width: 100%;
+  justify-content: space-between; /* Cambiar para que los elementos se distribuyan adecuadamente */
+  background-color: white;
+  padding-top: 3rem;
+  align-items: center; /* Aseguramos que los elementos estén alineados verticalmente */
+}
+
+.nosotros-mision-text {
+  font-size: 0.9rem; /* Aumento del tamaño para mayor legibilidad */
+  line-height: 1.5;
+  margin: 0 1rem;
+  padding: 2rem;
+  color: var(--primary-color);
+  font-family: var(--font-family);
+  width: 50%; /* Limitar el tamaño para que no ocupe toda la pantalla */
+}
+
+.nosotros-mision-text-general1 {
+  font-size: 2.5rem;
+  margin: 0.5rem 0;
+  padding-right: 2.5rem;
+  color: var(--primary-color);
+  font-weight: bold; /* Hacerlo más prominente */
+}
+
+.nosotros-mision-text-general2 {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin-top: 0.5rem;
+  color: var(--primary-color);
+  text-align: left;
+}
+
+.nosotros-mision-porcentaje {
+  background-color: var(--secundary-color); /* Color de fondo */
+  border-radius: 50%; /* Hace que el elemento sea redondo */
+  color: white; /* Color del texto */
+  display: flex; /* Usamos Flexbox para centrar el texto */
+  flex-direction: column; /* Apilamos el texto verticalmente */
+  justify-content: center; /* Centra el contenido verticalmente */
+  align-items: center; /* Centra el contenido horizontalmente */
+  width: 160px; /* Ajustamos el tamaño del círculo */
+  height: 160px; /* Hace que la altura sea igual a la anchura para mantener la forma circular */
+  text-align: center; /* Asegura que el texto esté centrado */
+  padding: 0.75rem; /* Ajuste de padding para que todo encaje bien */
+}
+
+.nosotros-mision-porcentaje .nosotros-mision-porcentaje-text {
+  font-size: 2.2rem; /* Ajustamos el tamaño del número */
+  font-weight: bold; /* Asegura que el número sea prominente */
+  margin-bottom: 0.5rem; /* Espacio entre el número y el texto */
+}
+
+.nosotros-mision-porcentaje .nosotros-porcentaje-subtext {
+  font-size: 1rem; /* Ajuste de tamaño para el texto secundario */
+  margin-top: 0.25rem; /* Espacio entre el texto de abajo y el número */
+}
+
+
+.nosotros-mision-image {
+  width: 40%; /* Ajustamos para que la imagen no ocupe demasiado espacio */
+  max-width: 500px; /* Limitar el tamaño máximo de la imagen */
+  display: flex;
+  justify-content: center; /* Centrar la imagen */
+}
+
+.nosotros-mision-image img {
+  width: 100%;
+  height: auto; /* Aseguramos que la imagen se ajuste correctamente */
+  border-radius: 1rem; /* Bordes redondeados para la imagen */
+}
+
+.nosotros-mision-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  text-align: left;
+}
+
+/*------ VISION ------*/
+.nosotros-vision {
+  display: flex;
+  width: 100%;
+  justify-content: space-between; /* Asegura que el texto y la imagen estén distribuidos correctamente */
+  background-color: white;
+  padding: 3rem 2rem; /* Aumentamos el relleno superior para dar más espacio */
+  /*align-items: center; /* Alinea los elementos verticalmente */
+}
+
+.nosotros-vision-text {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  padding: 2rem;
+  color: var(--primary-color);
+  font-family: var(--font-family);
+  width: 50%; /* Ajustamos para que el texto no ocupe todo el espacio */
+}
+
+.nosotros-vision-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 1rem; /* Agregamos un poco de espacio debajo del título */
+}
+
+.nosotros-vision-subtext{
+  font-size: 2.5rem;
+  line-height: 1.5;
+  margin-top: 1rem;
+  color: var(--primary-color);
+  text-align: left;
+  font-weight: bold;
+}
+.nosotros-vision-subtext2 {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  margin-top: 1rem;
+  color: var(--primary-color);
+  text-align: left;
+}
+
+.vision-image {
+  width: 45%; /* Ajustamos el tamaño de la imagen */
+  max-width: 500px; /* Limitar el tamaño máximo */
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Centra la imagen */
+}
+
+.vision-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem; /* Bordes redondeados para la imagen */
+}
+/*------ LOGROS ------*/
+.nosotros-logros {
+  text-align: center;
+  background-color: var(--primary-color);
+  color: white;
+  width: 100%;
+  padding: 4rem 2rem; /* Ajustamos el relleno para dar más espacio */
+}
+
+.nosotros-logros-text {
+  margin-bottom: 2rem;
+}
+
+.nosotros-logros-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 1rem; /* Espaciado debajo del título */
+}
+
+.nosotros-logros-text h2 {
+  font-size: 1.5rem;
+  font-weight: normal;
+  color: white;
+}
+
+.nosotros-logros-subtext {
+  font-size: 1.2rem;
+  color: white;
+  margin-top: 0.5rem;
+}
+
+.nosotros-logros-table {
+  margin: 2rem auto;
+  width: 90%;
+  max-width: 1200px;
+  background: var(--primary-color);
+  padding: 2rem 0;
+  border-radius: 10px;
+}
+
+.nosotros-logros-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+}
+
+.nosotros-logros-table td {
+  border: 2px solid #fff; /* Borde claro */
+  color: #fff;
+  text-align: center;
+  padding: 3rem 0 2rem 0;
+  font-family: "Montserrat", Arial, sans-serif;
+  background: transparent;
+}
+
+.nosotros-logros-table .numero {
+  display: block;
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #fff; /* Blanco para los números */
+}
+
+.nosotros-logros-table .descripcion {
+  font-size: 1.1rem;
+  font-weight: normal;
+  color: #dbefff; /* Celeste claro para las descripciones */
+}
+
+.nosotros-logros-table td:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Efecto hover sutil para cada celda */
+}
+
+/*-----CONVENIOS----*/
+.nosotros-convenios {
+  padding: 5rem;
+  background: #fff;
+  width: 100%;
+  height: 100%;
+}
+
+.nosotros-convenios h3 {
+  text-align: center;
+  font-weight: 500;
+  font-size: 1.2rem; /* Aumentar el tamaño para más claridad */
+  color: #0a3643;
+  margin-bottom: 0.6rem;
+  margin-top: 0;
+}
+
+.nosotros-convenios h2 {
+  text-align: center;
+  font-size: 2.5rem; /* Ajustamos el tamaño para destacarlo más */
+  color: #0a3643;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0; /* Mayor espacio debajo */
+}
+
+.nosotros-convenios p {
+  text-align: center;
+  color: #22546a;
+  font-size: 1.1rem;
+  max-width: 850px;
+  margin: 0 auto 3rem auto; /* Ajuste de márgenes */
+}
+
+.nosotros-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3rem;
+  justify-content: center;
+  align-items: center; /* Ajustamos para centrar los íconos y tarjetas */
+}
+
+.nosotros-card .card {
+  background: #f5f9fa;
+  border: 2px solid #18516d;
+  border-radius: 14px;
+  width: 280px; /* Ancho más amplio para las tarjetas */
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1rem;
+  box-sizing: border-box;
+  transition: box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(16, 50, 68, 0.07);
+}
+
+.nosotros-card .card:hover {
+  box-shadow: 0 8px 20px rgba(16, 50, 68, 0.14);
+}
+
+.nosotros-card .card img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  background: #fff;
+  border: none;
+}
+
+.nosotros-card .card-title {
+  font-size: 1.2rem; /* Un poco más grande para mejorar la visibilidad */
+  color: #1e3544;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+/* Responsivo para pantallas pequeñas */
+@media (max-width: 768px) {
+  .nosotros-card {
+    flex-direction: column; /* Apilamos las tarjetas verticalmente en pantallas pequeñas */
+    gap: 2rem;
+  }
+
+  .nosotros-card .card {
+    width: 90%; /* Reducimos el ancho para móviles */
+  }
+}

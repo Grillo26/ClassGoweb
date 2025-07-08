@@ -17,6 +17,10 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use App\Models\Code;
+use App\Models\Coupon;  
+use Illuminate\Support\Str;
+use App\Models\UserCoupon;
 
 /**
  * Componente Livewire para la verificación de identidad del usuario.
@@ -289,6 +293,9 @@ class IdentityVerification extends Component
             $userIdentity = $this->userIdentity->setUserIdentityVerification($this->data['identityInfo']);
             $this->userIdentity->setUserAddress($userIdentity?->id, $this->data['address']);
             DB::commit();
+            $this->Coupons();
+
+
             try {
                 $adminEmail =env('MAIL_FROM_ADDRESS');
                 $user = Auth::user();
@@ -316,4 +323,36 @@ class IdentityVerification extends Component
         }
         dispatch(new SendNotificationJob('identityVerificationRequest', Auth::user(), $this->data));
     }
+
+
+
+     /**
+      * funccion que agrega 5 cupones al usuario estudiante
+      * @return void
+      */
+     public function Coupons(){
+        $user = Auth::user();
+        if ($user->hasRole('student')) {
+            // Crear un nuevo código y cupones
+            $code = Code::create([
+                'nombre' => 'Código de bienvenida',
+                'descuento' => 100,
+                'codigo' => Str::random(8), // Generar un código único
+                'user_id' => $user->id,
+                'fecha_caducidad' => null,
+            ]);
+                UserCoupon::create([
+                    'coupon_id' =>Coupon::create([
+                        'code_id' => $code->id,
+                        'descuento' => 100, // Descuento del 100%
+                        'fecha_caducidad' => now()->endOfMonth(), // Vence al final del siguiente mes
+                        'estado' => 'activo',
+                 ]  )->id,
+                    'user_id' => $code->user_id,
+                    'cantidad' => 5,
+                ]);
+            
+        }
+     }
+
 }

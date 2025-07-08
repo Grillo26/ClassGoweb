@@ -15,6 +15,7 @@ return [
     'similar_tutors' => 'Tutores similares',
     'send_message' => 'Enviar mensaje',
     'book_session' => 'Reserva una sesión',
+    'send_profile' => 'Compartir Perfil',
     'language_know' => 'Idiomas que conozco',
     'tutor_profile_settings' => 'Configuración del perfil del tutor',
     'help_section_title' => 'Encuentra el título de la sección de la página de ayuda del tutor',
