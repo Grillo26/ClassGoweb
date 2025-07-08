@@ -39,6 +39,7 @@ Route::get('/verify', function (\Illuminate\Http\Request $request) {
     $hash = $request->query('hash');
     $status = null;
     $message = null;
+    $redirect = null;
 
     if ($id && $hash) {
         $user = \App\Models\User::find($id);
@@ -52,6 +53,12 @@ Route::get('/verify', function (\Illuminate\Http\Request $request) {
                 $status = 'info';
                 $message = 'El correo ya estaba verificado.';
             }
+            // Redirección según el rol
+            if ($user->hasRole('tutor')) {
+                $redirect = url('/tutor/dashboard');
+            } elseif ($user->hasRole('student')) {
+                $redirect = url('/student/bookings');
+            }
         } else {
             $status = 'error';
             $message = 'El enlace de verificación no es válido.';
@@ -61,7 +68,7 @@ Route::get('/verify', function (\Illuminate\Http\Request $request) {
         $message = 'Parámetros inválidos.';
     }
 
-    return view('verify', compact('status', 'message'));
+    return view('verify', compact('status', 'message', 'redirect'));
 });
 Route::get('/prueba', function () {
     return '¡Ruta de prueba funcionando!';
