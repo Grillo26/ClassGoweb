@@ -33,6 +33,14 @@ use App\Livewire\Payouts;
 use App\Http\Controllers\GoogleMeetController;
 use Illuminate\Support\Facades\Route;
 
+// RUTAS UNIVERSALES AL INICIO
+Route::get('/verify', function () {
+    return view('verify');
+});
+Route::get('/prueba', function () {
+    return '¡Ruta de prueba funcionando!';
+});
+
 Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialController::class, 'callback'])->name('social.callback');
 Route::get('/pay-qr/{orderId}', [PaymentController::class, 'showQR'])->name('pay-qr');
@@ -119,12 +127,4 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     if (!request()->is('api/*')) {
         require __DIR__ . '/pagebuilder.php';
     }
-});
-
-Route::get('/verify', function () {
-    return view('verify');
-});
-
-Route::get('/prueba', function () {
-    return '¡Ruta de prueba funcionando!';
 });
