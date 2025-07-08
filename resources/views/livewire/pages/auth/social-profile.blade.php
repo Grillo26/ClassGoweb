@@ -21,6 +21,7 @@ new #[Layout('layouts.guest')] class extends Component
     public string $user_role    = 'tutor';
     public string $terms        = '';
     public string $phone_number = '';
+    public string $codigo = '';
     public bool $isProfilePhoneMendatory = true;
     public $tutor_name = '';
     public $student_name = '';
@@ -122,6 +123,15 @@ new #[Layout('layouts.guest')] class extends Component
                             </div>
                         </div>
                         @endif
+                        
+                        <div class="form-group @error('codigo') am-invalid @enderror">
+                            <x-input-label for="codigo" :value="__('Código de referido (opcional)')" />
+                            <div class="form-control_wrap">
+                                <x-text-input wire:model="codigo" id="codigo" placeholder="{{ __('Ingresa el código de referido') }}" name="codigo" type="text" class="block w-full mt-1" />
+                                <x-input-error field_name="codigo" />
+                            </div>
+                        </div>
+                        
                         <div class="form-group am-form-groupradio">
                             <x-input-label :value="__('auth.role')" class="am-important" />
                             <div class="am-selectrole">

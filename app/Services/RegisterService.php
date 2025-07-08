@@ -34,7 +34,6 @@ class RegisterService
         if($request['user_role'] == 'student') {
              $this->codeCoupons($user); // Generar 5 cupones para el usuario
             if (!empty($request['codigo'])) {  
-            
             $code = Code::where('codigo', $request['codigo'])->first(); // Buscar el código en la base de datos
              $this->codeFriendly($code);
           }
@@ -146,7 +145,7 @@ class RegisterService
                         'estado' => 'activo',
                     ])->id,
                     'user_id' => $code->user_id,
-                    'cantidad' => 1,
+                    'cantidad' => 5,
                 ]);
                 }
             }
@@ -163,7 +162,7 @@ class RegisterService
             'fecha_caducidad' => null,
         ]);
         // Generar 5 cupones asociados al Code
-        UserCoupon::create([
+        /* UserCoupon::create([
             'coupon_id' => Coupon::create([
                 'code_id' => $code->id,
                 'fecha_caducidad' => now()->endOfMonth(), // Vence al final del siguiente mes
@@ -172,7 +171,7 @@ class RegisterService
             ])->id,
             'user_id' => $user->id,
             'cantidad' => 5,
-        ]);
+        ]); */
     }
 
 }

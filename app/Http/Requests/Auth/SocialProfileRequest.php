@@ -22,7 +22,8 @@ class SocialProfileRequest extends FormRequest
             'email'         => 'required|string|lowercase|email|max:255',
             'phone_number'  => $isProfilePhoneMendatory ? 'required|regex:/^(\+?\(?\d{1,4}\)?)?[\d\s\-]{7,15}$/' : 'nullable|regex:/^(\+?\(?\d{1,4}\)?)?[\d\s\-]{7,15}$/',
             'user_role'     => 'required|in:tutor,student',
-            'terms'         => 'required|string'
+            'terms'         => 'required|string',
+            'codigo'        => 'nullable|string|max:255'
         ];
     }
 
