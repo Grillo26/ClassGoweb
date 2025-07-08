@@ -192,7 +192,7 @@ class Navigation extends Component
                 'route' => 'promociones',
                 'onActiveRoute' => ['promociones'],
                 'title' => 'Promociones',
-                'icon'  => '<i class="am-icon-heart-01"></i>',
+                'icon'  => '<i class="am-icon-ticket-1"></i>',
                 'accessibility' => ['student'],
             ],
         ];

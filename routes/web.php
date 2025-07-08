@@ -7,6 +7,7 @@ use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\Impersonate;
 use App\Http\Controllers\OpenAiController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\ExportImageController; // Added ExportImageController
 use App\Livewire\Frontend\BlogDetails;
 use App\Livewire\Frontend\Blogs;
 use App\Livewire\Frontend\Checkout;
@@ -60,6 +61,9 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
             Route::get('dashboard', ManageAccount::class)->name('dashboard');
             Route::get('payouts', Payouts::class)->name('payouts');
             Route::get('profile', fn() => redirect('tutor.profile.personal-details'))->name('profile');
+
+            //Route::get('/descargar-ficha/{id}', [ExportImageController::class, 'exportFicha'])->name('ficha');
+
 
             Route::prefix('profile')->name('profile.')->group(function () {
                 Route::get('personal-details', PersonalDetails::class)->name('personal-details');
