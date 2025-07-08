@@ -69,6 +69,10 @@
                 <a href="classgo://verify?id={{ $id }}&hash={{ $hash }}" class="btn-app" style="display:inline-block;margin-top:18px;padding:12px 24px;background:#295C51;color:#fff;border-radius:8px;text-decoration:none;font-weight:500;">
                     Abrir en la app
                 </a>
+                <br><br>
+                <form method="get" action="{{ $redirect ?? '/' }}" style="display:inline;">
+                    <button type="submit" class="btn-app" style="margin-top:0;padding:12px 24px;background:#eafbe7;color:#295C51;border-radius:8px;border:none;font-weight:500;cursor:pointer;">Seguir en la web</button>
+                </form>
             @endif
             @if(isset($redirect))
                 <div class="loader"></div>
