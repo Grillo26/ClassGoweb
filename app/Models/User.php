@@ -101,22 +101,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
         return $this->hasMany(UserSubjectGroup::class)->orderBy('sort_order');
     }
 
-    /**
-     * Relación uno a uno con el modelo Code
-     */
-    public function code()
-    {
-        return $this->hasOne(Code::class);
-    }
-    /**
-     * Relacion muchos a muchos con el modelo Coupon
-     */
-    public function coupons()
-    {
-        return $this->belongsToMany(Coupon::class)
-            ->withPivot('usage_limit')
-            ->withTimestamps();
-    }
+   
 
 
     /**
