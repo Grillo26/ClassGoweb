@@ -25,7 +25,6 @@ use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Dispute;
 use Spatie\Permission\Traits\HasRoles;
-use Stripe\Coupon;
 
 class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordContract
 {
@@ -299,6 +298,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     public function companyCourseUsers(): HasMany
     {
         return $this->hasMany(CompanyCourseUser::class, 'user_id');
+
     }
 
     /**

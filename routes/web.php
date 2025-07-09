@@ -8,6 +8,7 @@ use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\Impersonate;
 use App\Http\Controllers\OpenAiController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\ExportImageController; // Added ExportImageController
 use App\Livewire\Frontend\BlogDetails;
 use App\Livewire\Frontend\Blogs;
 use App\Livewire\Frontend\Checkout;
@@ -41,6 +42,11 @@ Route::get('/nosotros',function () {
 }); 
 
 
+//OJO -------> Debe de estar dentro del grupo de rutas para el rol TUTOR
+Route::get('{slug}/ficha/{id}', [ExportImageController::class, 'exportFicha'])->name('tutor.ficha');
+
+
+
 Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialController::class, 'callback'])->name('social.callback');
 Route::get('/pay-qr/{orderId}', [PaymentController::class, 'showQR'])->name('pay-qr');
@@ -53,6 +59,8 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::view('/subscriptions-page', 'subscriptions-page');
     Route::get('/home', [HomeController::class, 'index']);
     Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones');
+
+
     
     Route::middleware(['auth', 'verified', 'onlineUser'])->group(function () {
         Route::post('/openai/submit', [OpenAiController::class, 'submit'])->name('openai.submit');
@@ -62,11 +70,12 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
         Route::get('google/callback', [SiteController::class, 'getGoogleToken']);
         Route::middleware('role:student')->get('checkout', Checkout::class)->name('checkout');
         Route::middleware('role:student')->get('thank-you/{id}', ThankYou::class)->name('thank-you');
-        
+
         Route::middleware('role:tutor')->prefix('tutor')->name('tutor.')->group(function () {
             Route::get('dashboard', ManageAccount::class)->name('dashboard');
             Route::get('payouts', Payouts::class)->name('payouts');
             Route::get('profile', fn() => redirect('tutor.profile.personal-details'))->name('profile');
+
 
             Route::prefix('profile')->name('profile.')->group(function () {
                 Route::get('personal-details', PersonalDetails::class)->name('personal-details');

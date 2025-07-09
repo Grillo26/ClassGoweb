@@ -52,6 +52,11 @@
     letter-spacing: 2px;
 }
 
+.inv-code .inactivo {
+    text-decoration: line-through;
+    color: #ff3b3b;
+}
+
 .inv-steps {
     display: flex;
     flex-direction: column;
@@ -93,12 +98,17 @@
     padding: 0.75rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.2s;
+    -webkit-transition: all 0.5s;
+
 }
 
 .inv-copy-button:hover {
-    background-color: #0477b1;
+    background-color: #014e75;
+    box-shadow: 0 0 9px #00344e;
+    transform: scale(1.1);
 }
+
 
 .compartir-button {
     background-color: var(--terciary-color2);
@@ -108,12 +118,15 @@
     padding: 0.75rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.2s
 }
 
 .compartir-button:hover {
-    background-color: #8d4d04;
+    background-color: var(--terciary-color2);
+    box-shadow:  0 0 9px #010e1650 ;
+    transform: scale(1.1);
 }
+
 
 /* Toast flotante */
 .inv-toast {
@@ -228,6 +241,18 @@
 
 .cupon-usar-btn {
     background-color: var(--secundary-color);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cupon-usar-btn-disable {
+    background-color: var(--terciary-color2);
     color: #fff;
     border: none;
     padding: 0.5rem 1rem;

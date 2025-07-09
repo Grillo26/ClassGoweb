@@ -22,26 +22,41 @@ footer{
 }
 .container-info{
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     padding: 4rem 0 0 4rem;
 }
 
 .info-text{
     display: flex;
     flex-flow: row wrap;
+    padding: 0.5rem 1rem;
+    gap: 10px;
 }
 .info-text i{
     color: white;
-    padding: 1em;
+    font-size: 2rem;
+    width: 32px;
+    height: 32px;
 }
+
 .info-text p{
-    padding: 1em;
     color: var(--footer-white);
 }
 
 .footer-info img{
     width: 300px;
+}
+
+.btn-registrate{
+  width: 200px;
+  height: 50px;
+  font-size: 1rem;
+  background-color: var(--secundary-color);
+  font-size: 1rem;
+  border-radius: 20px;
+  border: none;
+  color: white;  
+  margin-top: 1rem;
 }
 
 /**--- 1.2 About------**/
@@ -94,9 +109,9 @@ footer{
     font-size: 20px;
 }
 
-.linea{
+hr{
     height: 0.4px;
-    background-color: white;
+    background-color: rgb(146, 146, 146);
     border: none;
 }
 
@@ -108,4 +123,6 @@ footer{
     align-items: center;
     padding: 2rem;
     margin: 0;
+    color: white;
 }
+
