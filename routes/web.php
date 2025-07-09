@@ -43,7 +43,10 @@ Route::get('/nosotros',function () {
 
 
 //OJO -------> Debe de estar dentro del grupo de rutas para el rol TUTOR
-Route::get('{slug}/ficha/{id}', [ExportImageController::class, 'exportFicha'])->name('tutor.ficha');
+//Route::get('{slug}/ficha/{id}', [ExportImageController::class, 'exportFicha'])->name('tutor.ficha');
+Route::get('/tutor/ficha/{slug}/{id}', [ExportImageController::class, 'index'])->name('tutor.ficha');
+Route::get('/tutor/ficha-img/{slug}/{id}', [ExportImageController::class, 'exportFicha'])->name('tutor.ficha.img');
+Route::get('/tutor/ficha-download/{slug}/{id}', [ExportImageController::class, 'downloadFicha'])->name('tutor.ficha.download');
 
 
 

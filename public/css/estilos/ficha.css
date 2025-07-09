@@ -1,54 +1,76 @@
-@import '.variables.css';
+@import './variables.css';
 
 .ficha-container {
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    padding: 50px 20px;
+    gap: 48px;
     background-color: var(--primary-color);
 }
 .imagen-ficha {
-    width: 610px;
-    border-radius: 10px;
-    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+}
+.imagen-ficha img {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 1.5px 8px rgba(0,0,0,0.10);
+    border-radius: 18px;
+    transition: transform 0.3s cubic-bezier(.4,2,.6,1), box-shadow 0.3s;
+    width: 400px;
+    height: auto;
+    display: block;
+}
+.imagen-ficha img:hover {
+    transform: scale(1.04) rotate(-2deg);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.22), 0 3px 16px rgba(0,0,0,0.13);
 }
 
 .info-buttons {
-  display: flex;
-  justify-content: center;
-  width: 400px;
-  align-items: center;
-  margin-top: 12px;
-  padding: 0 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    min-width: 220px;
 }
 
 .info-buttons button {
-  flex: 1;
-  padding: 8px 12px;
-  font-weight: bold;
+/* Eliminado para evitar conflicto con nuevos estilos de botones */
 }
 
 .info-buttons{
-  display: flex;
-  flex-flow: row wrap;
-  gap: 2rem;
+/* Eliminado para evitar conflicto con nuevos estilos de botones */
 }
 
 .button1{
-  height: 40px;
-  font-size: 1rem;
-  color: white;
-  background-color:  #FB8500;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
+    padding: 14px 36px;
+    font-size: 1.15rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+    font-weight: 600;
+    background: #2d8cff;
+    color: #fff;
+}
+.button1:hover {
+    background: #1a6ed8;
+    transform: translateY(-2px) scale(1.04);
 }
 .button2{
-  font-size: 1rem;
-  height: 40px;
-  color: white;
-  background-color: #219EBC;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
+    padding: 14px 36px;
+    font-size: 1.15rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+    font-weight: 600;
+    background: var(--terciary-color2);
+    color: #fff;
+}
+.button2:hover {
+    background: #eaf3ff;
+    color: #1a6ed8;
+    transform: translateY(-2px) scale(1.04);
 }

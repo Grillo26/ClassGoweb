@@ -3,15 +3,13 @@
     <link rel="stylesheet" href="{{ asset('css/estilos/ficha.css') }}">
 @endsection 
 @section('content')
-@yield('styles')
 <section class="ficha-container">
     <div class="imagen-ficha">
-        <img src="{{ asset('images/ficha_base.jpeg') }}" alt="Pasos">
+        <img src="{{ url('tutor/ficha-img/' . $slug . '/' . $id) }}?t={{ time() }}" alt="Ficha de usuario" style="max-width:100%;">
     </div>
-
     <div class="info-buttons">
-        <button class="button2">Compartir</button>
-        <button class="button1">Descargar</button>
+        <a href="{{ route('tutor.ficha.download', ['slug' => $slug, 'id' => $id]) }}" class="button1" download>Descargar</a>
+        <button class="button2" onclick="navigator.share ? navigator.share({url: window.location.href}) : alert('No soportado');">Compartir</button>
     </div>
 </section>
 @endsection
