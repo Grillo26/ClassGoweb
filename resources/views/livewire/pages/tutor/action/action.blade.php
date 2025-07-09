@@ -114,7 +114,7 @@ new #[Layout('layouts.app')] class extends Component
         {{ __('tutor.send_message') }} <i class="am-icon-chat-03"></i></a>
 
     <!--BOTON COMPARTIR-->
-    {{-- <a href="{{  route('ficha', ['id' => Auth::id()]) }}" class="am-btn">{{ __('tutor.share_profile') }}  <i class="am-icon-share-3"></i> </a> --}}
+    <a href="{{  route('tutor.ficha', ['slug' => $tutor->profile->slug , 'id' => Auth::id()]) }}" class="am-btn">{{ __('tutor.share_profile') }}  <i class="am-icon-share-3"></i> </a>
 
     <a href="javascript:void(0);" onclick="Livewire.dispatch('showAlertMessage', {type: `error`, message: `{{ Auth::check() ?  __('general.not_allowed') : __('general.login_error') }}` })" class="am-likebtn"> 
         @if(empty($tutor?->profile?->intro_video)) {{ __('tutor.save_to_my_list') }} @endif<i class="am-icon-heart-01"></i> 
