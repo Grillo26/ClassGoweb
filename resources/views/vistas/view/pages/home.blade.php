@@ -240,7 +240,7 @@
             <div class="numero-paso">Paso 3</div>
             <img src="{{ asset('images/paso3.png') }}" alt="Pasos">
             <h1>Programar una Sesión</h1>
-            <p>Reserva fácilmente un horario conveniente para tu Sesións</p>
+            <p>Reserva fácilmente un horario conveniente para tu Sesión</p>
             <button>Empecemos</button>
         </div> <!--FIN CARD-->
 
@@ -273,7 +273,7 @@
         </div>
         <!-- Imagen -->
         <div class="tutores-img">
-            {{-- <img src="{{ asset('images/tutorias.png') }}" alt="Mascota"> --}}
+            <img src="{{ asset('images/tutorias.png') }}" alt="Mascota">
         </div>
     </div>
     <div class="alianzas">
@@ -282,18 +282,12 @@
         <p>En ClassGo creemos en el poder de la colaboración para transformar el aprendizaje. Por eso, trabajamos junto a instituciones educativas, clubes y organizaciones comprometidas con la formación académica y el desarrollo personal.</p>
         <div class="steps-alianzas">
             <!-- Alianzas Cards DESDE BD -->
-            <div class="alianzas-card">
-                <img src="{{ asset('images/alianzas.png')}}"><!--img-->
-                <p>Ingeniería Petrolera</p>
-            </div>
-            <div class="alianzas-card">
-                <img src="{{ asset('images/alianzas.png')}}"><!--img-->
-                <p>Ingeniería Petrolera</p>
-            </div>
-            <div class="alianzas-card">
-                <img src="{{ asset('images/alianzas.png')}}"><!--img-->
-                <p>Ingeniería Petrolera</p>
-            </div>
+            @foreach($alianzas as $alianza)
+                <div class="alianzas-card">
+                    <img src="{{ $alianza->imagen ? asset('storage/' . $alianza->imagen) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $alianza->imagen }}">
+                    <p>{{ $alianza -> titulo }}</p>
+                </div>
+            @endforeach
         </div>
     </div>
 </section>

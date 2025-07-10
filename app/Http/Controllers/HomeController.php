@@ -35,6 +35,8 @@ class HomeController extends Controller
             ];
         });
 
-        return view('vistas.view.pages.home', compact('profiles', 'subjectsByUser'));
+        $alianzas = Db::table('alianzas')->get();
+
+        return view('vistas.view.pages.home', compact('profiles', 'subjectsByUser', 'alianzas'));
     }
 }

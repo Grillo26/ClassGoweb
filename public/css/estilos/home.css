@@ -618,52 +618,216 @@ i.fa-solid.fa-book.icon::before{
   width: 50px;
 }
 /**---- 3.1 Cards Tutores ---**/
-.tutors{
+.tutors {
   width: 100%;
   display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  gap: 20px;
-  padding: 3rem 0.5rem;
+  flex-direction: row;
+  gap: 20px;  
+  padding: 5rem 5rem;
   box-sizing: border-box;
   overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tutor-card {
+  scroll-snap-align: start;
+  flex: 0 0 350px;
+  /* width ya está definida, pero esto fuerza el tamaño en el carrusel */
+}
+
+/* Oculta la barra de scroll en navegadores modernos */
+.tutors::-webkit-scrollbar {
+  display: none;
+}
+.tutors {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 /**--- 3 - Anuncio Potencial --**/
-.potencial-container{
+/* === Potencial Container === */
+.potencial-container {
   width: 100%;
   background: var(--primary-color);
   color: white;
   padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
 }
-.potencial-container h1{
-  display:flex;
+.potencial-container h1 {
+  display: flex;
   flex-flow: row wrap;
-  justify-content:center;
+  justify-content: center;
   align-items: center;
   gap: 10px;
+  width: 100%;
+  text-align: center;
 }
-
-/*---- Card Container----**/
-.steps{
+.potencial-container > p {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+.steps {
   display: flex;
-  flex-flow: row wrap;
-  padding: 2rem;
-  justify-content: space-between;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1rem;
+  width: 100%;
+  padding: 2rem 0;
+  overflow-x: auto;
+  box-sizing: border-box;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
-
-/**---- 3.1 Cards -----*/
-.steps-card{
-  background: var(--secundary-color2);
-  width: 280px;
+.steps-card, .go {
+  flex: 0 0 280px;
+  max-width: 320px;
+  min-width: 260px;
   height: 450px;
+  min-height: 450px;
   display: flex;
-  flex-flow: column wrap;
+  flex-direction: column;
   gap: 16px;
   color: var(--primary-color);
   padding: 1rem;
   border-radius: 20px;
+  align-items: center;
+  box-sizing: border-box;
+  justify-content: flex-start;
+  position: relative;
+  scroll-snap-align: start;
 }
-.steps-card .numero-paso{
+.steps-card button, .go button {
+  width: 90%;
+  min-width: 120px;
+  max-width: 100%;
+  height: 40px;
+  font-size: 1rem;
+  background-color: var(--terciary-color2);
+  border-radius: 10px;
+  border: none;
+  color: white;
+  margin: 0 auto 0.5rem auto;
+  box-sizing: border-box;
+  margin-top: auto;
+  position: static;
+}
+.go button {
+  background-color: var(--primary-color);
+}
+.steps::-webkit-scrollbar {
+  display: none;
+}
+.steps {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+@media (max-width: 1024px) {
+  .steps {
+    gap: 1.2rem;
+    padding: 1rem 0;
+  }
+  .steps-card, .go {
+    min-width: 220px;
+    max-width: 300px;
+  }
+}
+@media (max-width: 768px) {
+  .steps {
+    gap: 0.7rem;
+    padding: 1rem 0;
+  }
+  .steps-card, .go {
+    min-width: 180px;
+    max-width: 250px;
+    padding: 0.5rem;
+  }
+  .steps-card button, .go button {
+    width: 95%;
+  }
+}
+.steps-card, .go {
+  background: var(--secundary-color2);
+  width: 280px;
+  min-width: 260px;
+  max-width: 320px;
+  height: 450px;
+  min-height: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: var(--primary-color);
+  padding: 1rem;
+  border-radius: 20px;
+  align-items: center;
+  box-sizing: border-box;
+  justify-content: flex-start;
+  position: relative;
+  transition: box-shadow 0.3s cubic-bezier(.4,0,.2,1), transform 0.3s cubic-bezier(.4,0,.2,1);
+
+}
+.steps-card:hover, .go:hover{
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transform: translateY(-4px) scale(1.02);
+
+}
+
+.steps-card img, .go img {
+  width: 100%;
+  max-width: 280px;
+  min-height: 120px;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin: 0 auto;
+  display: block;
+}
+.steps-card h1, .go h1 {
+  font-size: 1.7rem;
+  line-height: 30px;
+  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+}
+.steps-card p, .go p {
+  font-size: 1rem;
+  color: var(--primary-color);
+  line-height: 1.2;
+  margin: 0 auto 0.5rem auto;
+  text-align: center;
+  max-height: 3.6em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.steps-card button, .go button {
+  width: 90%;
+  min-width: 120px;
+  max-width: 100%;
+  height: 40px;
+  font-size: 1rem;
+  background-color: var(--terciary-color2);
+  border-radius: 10px;
+  border: none;
+  color: white;
+  margin: 0 auto 0.5rem auto;
+  box-sizing: border-box;
+  margin-top: auto;
+  position: static;
+}
+.go {
+  background: var(--secundary-color);
+  color: white;
+}
+.go button {
+  background-color: var(--primary-color);
+}
+.steps-card .numero-paso, .go .numero-paso {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -677,71 +841,47 @@ i.fa-solid.fa-book.icon::before{
   margin: 0 auto;
   color: var(--primary-color);
 }
-.steps-card img{
-  border-radius: 10px;
-}
-.steps-card h1{
-  font-size: 1.7rem;
-  line-height: 30px;
-}
-
-.steps-card p{
-  font-size: 1rem;
-  color: var(--primary-color);
-  line-height: 1.2;
-  margin: 0 auto;
-  text-align: left;
-}
-
-.steps-card button{
-  width: 100%;
-  height: 40px;
-  font-size: 1rem;
-  background-color: var(--terciary-color2);
-  font-size: 1rem;
-  border-radius: 10px;
-  border: none;
-  color: white;  
-}
-.go{
-  background: var(--secundary-color);
-  width: 280px;
-  height: 450px;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  color: white;
-  padding: 1rem;
-  border-radius: 20px;
-  gap: 25px;
-}
-
-.go .numero-paso{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
+.go .numero-paso {
   width: 60px;
-  font-size: 1rem;
-  background-color: white;
-  border-radius: 20px;
-  border: none;
-  margin: 0 auto;
-  color: var(--primary-color);
+  height: 50px;
+  font-size: 1.2rem;
 }
-.go .numero-paso i{
+.go .numero-paso i {
   font-size: 2rem;
 }
-
-.go .button-go{
-  width: 100%;
-  height: 40px;
-  font-size: 1rem;
-  background-color: var(--primary-color);
-  font-size: 1rem;
-  border-radius: 10px;
-  border: none;
-  color: white;  
+@media (max-width: 1024px) {
+  .potencial-container {
+    padding: 2rem 0.5rem;
+  }
+  .steps {
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0.5rem;
+    gap: 1.5rem;
+  }
+  .steps-card, .go {
+    width: 100%;
+    max-width: 350px;
+    min-width: 220px;
+    margin: 0 auto;
+  }
+}
+@media (max-width: 768px) {
+  .potencial-container {
+    padding: 1.5rem 0.5rem;
+  }
+  .steps {
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0.2rem;
+    gap: 1rem;
+  }
+  .steps-card, .go {
+    width: 100%;
+    max-width: 98vw;
+    min-width: 180px;
+    padding: 0.5rem;
+  }
 }
 
 /*-------5 Busca tutorias-----*/
@@ -754,7 +894,7 @@ i.fa-solid.fa-book.icon::before{
   height: 100vh;
   width: 100%;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   max-width: 1200px;
   margin: 0 auto;
@@ -805,6 +945,7 @@ i.fa-solid.fa-book.icon::before{
   color: var(--primary-color);
   display: flex;
   justify-content: center;
+  text-align: center;
   flex-flow: column wrap;
 }
 
