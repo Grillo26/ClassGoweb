@@ -1,6 +1,6 @@
 @extends('vistas.view.layouts.app')
 
-@section('title', 'Class Go!')
+@section('title', 'ClassGo - Aprende y Progresa')
 
 @section('content')
 
@@ -71,14 +71,79 @@
 
     <!--TUTORES DESTACADOS-->
     <div class="tutors-container">
-        <div class="texto-sup">
-            <h1 class="over-text"><div class="linea"></div>Tutores Destacados<div class="linea"></div></h1>
-            <h1>Conoce a Nuestros Tutores Cuidadosamente Seleccionados</h1>
-            <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p>
-        </div>
+        <h1 class="over-text"><div class="linea"></div>Tutores Destacados<div class="linea"></div></h1>
+        <h1>Conoce a Nuestros Tutores Cuidadosamente Seleccionados</h1>
+        <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p> 
     
         <div class="tutors">
             @foreach($profiles as $profile)
+                @php
+                    $data = $subjectsByUser[$profile->user_id] ?? ['materias' => [], 'grupos' => []];
+                @endphp
+                <!-- Card -->
+                <div class="tutor-card">
+                    <div class="tutor-card-img" >
+                        <video controls muted playsinline loop src="{{ $profile->intro_video ? asset('storage/' . $profile->intro_video) : asset('images/tutors/default.png') }}"></video>
+                    </div>
+                    <div class="tutor-card-content">
+                        <div class="tutor-card-header">
+                            <div class="tutor-card-header-left">
+                                <h3>{{ $profile->first_name }} {{ $profile->last_name }}</h3>
+                                <span class="tutor-verified">✔️</span>
+                                {{-- <span class="tutor-flag">{{ $profile->native_language }}</span> --}}
+                            </div>
+                            <button title="Favorito">❤️</button>
+                        </div>
+                        @php
+                            $maxGrupos = 4;
+                            $grupos = $data['grupos'];
+                            $countGrupos = count($grupos);
+                        @endphp
+                        <p class="tutor-card-sub mas" title="{{ implode(', ', $grupos) }}">
+                            {{ implode(', ', $grupos) }}<span class="tutor-card-mas" style="display:none;"> +más</span>
+                        </p>
+                        <div class="tutor-card-rating-row">
+                            <div class="tutor-card-rating">
+                                <span class="star">⭐</span>
+                                <span>4.5</span>
+                                <span class="rating-count">(7 reseñas)</span>
+                            </div>
+                            <div class="tutor-card-price">
+                                <p class="price"><i class="fa-solid fa-book icon"></i>10</p>
+                                <p class="price-desc">Tutorías realizadas</p>
+                            </div>
+                        </div>
+                        <div class="tutor-card-tags" title="{{ implode(', ', $data['materias']) }}">
+                            @foreach($data['materias'] as $materia)
+                                <span class="tutor-card-tag">{{ $materia }}</span>
+                            @endforeach
+                            <span class="tutor-card-tag tutor-card-mas" style="display:none;">+más</span>
+                        </div>
+                        <script>
+                        // Mostrar "+más" si tutor-card-sub o tutor-card-tags se desbordan
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Para grupos
+                            document.querySelectorAll('.tutor-card-sub.mas').forEach(function(el) {
+                                if (el.scrollHeight > el.clientHeight + 1) {
+                                    el.querySelector('.tutor-card-mas').style.display = 'inline';
+                                }
+                            });
+                            // Para tags
+                        document.querySelectorAll('.tutor-card-tags').forEach(function(tags) {
+                                if (tags.scrollHeight > tags.clientHeight + 1) {
+                                    tags.querySelector('.tutor-card-mas').style.display = 'inline';
+                                }
+                            });
+                        });
+                        </script>
+                        <div class="tutor-card-actions">
+                            <button class="btn-profile">Ver Perfil</button>
+                            <button class="btn-reserve">Reservar</button>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+            {{-- @foreach($profiles as $profile)
                 @php
                     $data = $subjectsByUser[$profile->user_id] ?? ['materias' => [], 'grupos' => []];
                 @endphp
@@ -143,7 +208,7 @@
                         </div>
                     </div>
                 </div>
-            @endforeach
+            @endforeach --}}
         </div>
     </div>
 </section>
@@ -208,7 +273,7 @@
         </div>
         <!-- Imagen -->
         <div class="tutores-img">
-            <img src="{{ asset('images/tutorias.png') }}" alt="Mascota">
+            {{-- <img src="{{ asset('images/tutorias.png') }}" alt="Mascota"> --}}
         </div>
     </div>
     <div class="alianzas">
