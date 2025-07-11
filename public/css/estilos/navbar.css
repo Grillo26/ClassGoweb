@@ -43,6 +43,15 @@
     height: auto;
     margin: 0;
     flex-shrink: 0;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+
+
+.nav-i:active {
+    transform: scale(0.95);        /* Reduce ligeramente al hacer clic */
+    transition: transform 0.1s ease; /* Transición rápida al hacer clic */
+
 }
 
 /* Navegación Desktop */
@@ -63,12 +72,15 @@
     text-decoration: none;
     font-weight: normal;
     letter-spacing: 0.5px;
-    transition: opacity 0.3s;
     white-space: nowrap;
+    display: inline-block;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+
 }
 
 .navbar-links a:hover {
     opacity: 0.8;
+    transform: translateY(-3px); 
 }
 
 /* Acciones del navbar */
@@ -79,16 +91,72 @@
     z-index: 10;
 }
 
-.navbar-language {
-    background: transparent;
-    font-size: 1rem;
-    color: white;
-    border: none;
-    font-weight: var(--font-bold, bold);
-    cursor: pointer;
-    letter-spacing: 0.5px;
-    outline: none;
+
+/*--------Select---------*/
+.language-select {
+  position: relative;
+  width: 150px;
+  font-family: inherit;
+  user-select: none;
 }
+
+.language-select .selected-option {
+  background: transparent;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.language-select .selected-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.language-select img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.options-dropdown {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  background: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  display: none;
+  flex-direction: column;
+  animation: slideDown 0.3s ease forwards;
+  z-index: 1000;
+}
+
+.options-dropdown li {
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.options-dropdown li:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 
 .btn-outline {
     padding: 0.75rem 2rem;
@@ -122,8 +190,8 @@
 .navbar-icon {
     background-color: white;
     border-radius: 50%;
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -134,7 +202,7 @@
 }
 
 .navbar-icon:hover {
-    transform: scale(1.1);
+    transform: scale(1.2);
     box-shadow: 0 0 20px #010e1650;
 }
 

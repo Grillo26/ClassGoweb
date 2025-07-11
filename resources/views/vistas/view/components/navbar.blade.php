@@ -2,7 +2,9 @@
 	<div class="navbar-container">
 		<div class="navbar-left">
 			<!-- Logo -->
-			<img src="{{ asset('images/logoclassgo.png') }}" class="nav-i" alt="Mascota">
+			<a href="/home">
+				<img src="{{ asset('storage/optionbuilder/uploads/453302-18-2025_0409pmClassGo%20Logo-23%20(1).png') }}" class="nav-i" alt="Mascota">
+			</a>
 
 			<!-- Enlaces Desktop -->
 			<nav class="navbar-links">
@@ -18,10 +20,27 @@
 
 		<!-- Lado derecho -->
 		<div class="navbar-actions">
-			<select class="navbar-language">
-        <option selected>Español</option>
-        <option>English</option>
-      </select>
+			<div class="language-select">
+				<div class="selected-option" onclick="toggleDropdown()">
+					<img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f1ea-1f1f8.svg" alt="Español">
+					<span>Español</span>
+				</div>
+				<ul class="options-dropdown" id="languageDropdown">
+					<li onclick="selectLanguage('es')">
+						<img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f1ea-1f1f8.svg" alt="Español">
+					Español
+					</li>
+					<li onclick="selectLanguage('en')">
+						<img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f1ec-1f1e7.svg" alt="English">
+					English
+					</li>
+					<li onclick="selectLanguage('pt')">
+						<img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f1f5-1f1f9.svg" alt="English">
+					Português
+					</li>
+				</ul>
+			</div>
+
 			<button class="btn-outline">Empezar</button>
 			<div class="navbar-icon">
 				<i class="fa-solid fa-user-plus icon-white"></i>
@@ -49,6 +68,26 @@
 </header>
 
 <script>
+	function toggleDropdown() {
+    const dropdown = document.getElementById("languageDropdown");
+    dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+	}
+
+	function selectLanguage(lang) {
+		// Aquí puedes guardar en localStorage, cambiar idioma, etc.
+		console.log("Idioma seleccionado:", lang);
+		toggleDropdown();
+	}
+
+	// Cierra el dropdown si se hace clic fuera
+	document.addEventListener('click', function (e) {
+		const select = document.querySelector('.language-select');
+		if (!select.contains(e.target)) {
+		document.getElementById("languageDropdown").style.display = "none";
+		}
+	});
+
+	// Funcionalidad del menú hamburguesa
 	document.addEventListener('DOMContentLoaded', function() {
 	    const hamburgerMenu = document.getElementById('hamburger-menu');
 	    const mobileMenu = document.getElementById('navbar-mobile');

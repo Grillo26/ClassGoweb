@@ -35,7 +35,7 @@
 
         <!-- Columna derecha: imagen -->
         <div class="hero-image">
-            <img src="{{ asset('images/Tugo_With_Glasses.png') }}" alt="Mascota ClassGo">
+            <img src="{{ asset('storage/optionbuilder/uploads/740102-17-2025_0859pmTugo-saludando.gif') }}" alt="Mascota ClassGo">
         </div>
 
        

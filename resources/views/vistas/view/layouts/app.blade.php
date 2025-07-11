@@ -2,7 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'ClassGo')</title>
+    @php
+            $siteTitle        = setting('_general.site_name');
+    @endphp 
+    <title>{{ $siteTitle }} {!! request()->is('messenger') ? ' | Messages' : (!empty($title) ? ' | ' . $title : '') !!}</title>
+    <x-favicon />
     <link rel="stylesheet" href="{{ asset('css/estilos/landing.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
