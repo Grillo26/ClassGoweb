@@ -22,7 +22,6 @@ use App\Models\Coupon;
 use Illuminate\Support\Str;
 use App\Models\UserCoupon;
 
-use App\Models\UserCoupon;
 
 /**
  * Componente Livewire para la verificación de identidad del usuario.
