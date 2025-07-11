@@ -393,7 +393,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
         return $this->hasMany(UserSubjectSlot::class, 'user_id');
     }
 
-    /*<------ CODIGOS Y CUPONES ------->*/
+  
     public function codes()
     {
         return $this->hasMany(Code::class);

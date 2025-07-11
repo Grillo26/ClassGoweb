@@ -60,4 +60,5 @@ return [
     'your_email_placeholder'=> 'Tu correo',
     'setup_account'=> 'completar registro',
     'codigo_placeholder'=> 'Código de cupón (opcional)',
+    
 ];
