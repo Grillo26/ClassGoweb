@@ -2,8 +2,7 @@
   <div class="navbar-container">
 
     <!-- Logo -->
-   
-        <img src="{{ asset('images/logoclassgo.png') }}" class="nav-i" alt="Mascota">
+    <img src="{{ asset('images/logoclassgo.png') }}" class="nav-i" alt="Mascota">
     
 
     <!-- Enlaces -->

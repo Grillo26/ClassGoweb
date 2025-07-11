@@ -9,11 +9,13 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use App\Models\Coupon;
+use App\Models\UserCoupon;
 
 
 class RegisterService
 {
-
+   
     public function registerUser($request): User
     {
         $user = User::create([

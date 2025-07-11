@@ -83,6 +83,18 @@ Route::get('/verify', function (\Illuminate\Http\Request $request) {
 Route::get('/prueba', function () {
     return '¡Ruta de prueba funcionando!';
 });
+Route::get('/nosotros',function () {
+    return view('vistas.view.pages.nosotros');
+}); 
+
+
+//OJO -------> Debe de estar dentro del grupo de rutas para el rol TUTOR
+//Route::get('{slug}/ficha/{id}', [ExportImageController::class, 'exportFicha'])->name('tutor.ficha');
+Route::get('/tutor/ficha/{slug}/{id}', [ExportImageController::class, 'index'])->name('tutor.ficha');
+Route::get('/tutor/ficha-img/{slug}/{id}', [ExportImageController::class, 'exportFicha'])->name('tutor.ficha.img');
+Route::get('/tutor/ficha-download/{slug}/{id}', [ExportImageController::class, 'downloadFicha'])->name('tutor.ficha.download');
+
+
 
 Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialController::class, 'callback'])->name('social.callback');
@@ -96,6 +108,8 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::view('/subscriptions-page', 'subscriptions-page');
     Route::get('/home', [HomeController::class, 'index']);
     Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones');
+
+
     
     Route::middleware(['auth', 'verified', 'onlineUser'])->group(function () {
         Route::post('/openai/submit', [OpenAiController::class, 'submit'])->name('openai.submit');
@@ -105,7 +119,6 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
         Route::get('google/callback', [SiteController::class, 'getGoogleToken']);
         Route::middleware('role:student')->get('checkout', Checkout::class)->name('checkout');
         Route::middleware('role:student')->get('thank-you/{id}', ThankYou::class)->name('thank-you');
-        
         Route::middleware('role:tutor')->prefix('tutor')->name('tutor.')->group(function () {
             Route::get('dashboard', ManageAccount::class)->name('dashboard');
             Route::get('payouts', Payouts::class)->name('payouts');

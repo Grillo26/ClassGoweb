@@ -17,6 +17,10 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use App\Models\Code;
+use App\Models\Coupon;  
+use Illuminate\Support\Str;
+use App\Models\UserCoupon;
 
 use App\Models\UserCoupon;
 
