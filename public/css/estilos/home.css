@@ -379,6 +379,7 @@ i.fa-solid.fa-book.icon::before{
   width: 100%;
   background: var(--primary-color);
   background: linear-gradient(180deg, rgba(7, 59, 76, 1) 64%, rgba(24, 77, 94, 1) 77%, rgba(33, 158, 188, 1) 100%);
+  position: relative;
 }
 
 .hero-container {
