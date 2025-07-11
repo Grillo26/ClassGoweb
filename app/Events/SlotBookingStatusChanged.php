@@ -46,19 +46,21 @@ class SlotBookingStatusChanged implements ShouldBroadcast
         $icon = $iconosPorEstado[$estado] ?? 'pendiente';
         if ($booking) {
             $fcmService = new \App\Services\FcmService();
-            // Notificar al tutor
-            if ($booking->tutor && $booking->tutor->user && $booking->tutor->user->fcm_token) {
-                \Log::info('Enviando notificación FCM al tutor', ['user_id' => $booking->tutor->user->id, 'fcm_token' => $booking->tutor->user->fcm_token, 'icon' => $icon]);
+            
+            // Notificar al tutor SOLO cuando el estado cambie a "aceptada"
+            if ($this->newStatus === 'aceptada' && $booking->tutor && $booking->tutor->user && $booking->tutor->user->fcm_token) {
+                \Log::info('Enviando notificación FCM al tutor - Estado aceptada', ['user_id' => $booking->tutor->user->id, 'fcm_token' => $booking->tutor->user->fcm_token, 'icon' => $icon]);
                 $fcmService->sendNotification(
                     $booking->tutor->user->fcm_token,
-                    'Estado de tutoría actualizado',
-                    'El estado de la sesión ha cambiado a: ' . $this->newStatus,
+                    'Tutoría aceptada',
+                    'Tu tutoría ha sido aceptada por el estudiante',
                     ['icon' => $icon]
                 );
             } else {
-                \Log::warning('No se encontró fcm_token para el tutor', ['tutor' => $booking->tutor?->user?->id]);
+                \Log::info('No se envía notificación al tutor - Estado: ' . $this->newStatus, ['tutor' => $booking->tutor?->user?->id]);
             }
-            // Notificar al estudiante
+            
+            // Notificar al estudiante para todos los cambios de estado
             if ($booking->booker && $booking->booker->fcm_token) {
                 \Log::info('Enviando notificación FCM al estudiante', ['user_id' => $booking->booker->id, 'fcm_token' => $booking->booker->fcm_token, 'icon' => $icon]);
                 $fcmService->sendNotification(

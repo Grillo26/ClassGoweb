@@ -104,7 +104,9 @@ class ProfileController extends Controller
         return response()->json([
             'id' => $user->id,
             'profile_image' => $url,
-            'profile_image_db_path' => $rutaBD
+            'profile_image_db_path' => $rutaBD,
+            'name' => $user->name ?? $user->profile->full_name ?? null,
+            'email' => $user->email,
         ]);
     }
 
