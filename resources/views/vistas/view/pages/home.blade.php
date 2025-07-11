@@ -75,7 +75,7 @@
         <h1>Conoce a Nuestros Tutores Cuidadosamente Seleccionados</h1>
         <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p> 
     
-        <div class="tutors">
+        <div class="tutors" id="tutorsContainer">
             @foreach($profiles as $profile)
                 @php
                     $data = $subjectsByUser[$profile->user_id] ?? ['materias' => [], 'grupos' => []];
@@ -327,11 +327,43 @@ document.addEventListener("DOMContentLoaded", () => {
     counters.forEach(counter => observer.observe(counter));
 });
 
-function scrollTutors(direction) {
-    const container = document.getElementById('tutors-carousel');
-    const cardWidth = container.querySelector('.tutors-card')?.offsetWidth || 300;
-    container.scrollBy({ left: direction * (cardWidth + 18), behavior: 'smooth' });
-}
+        // 🌀 Carrusel infinito de tutores (scroll horizontal)
+    const container = document.getElementById('tutorsContainer');
+    const initialCards = [...container.querySelectorAll('.tutor-card')];
+
+    // Duplicamos tarjetas al inicio y al final
+    initialCards.forEach(card => {
+    const cloneStart = card.cloneNode(true);
+    const cloneEnd = card.cloneNode(true);
+    container.insertBefore(cloneStart, container.firstChild);
+    container.appendChild(cloneEnd);
+    });
+
+    // 🔁 Configurar scroll inicial al centro exacto
+    window.addEventListener('load', () => {
+    const totalWidth = container.scrollWidth;
+    const visibleWidth = container.clientWidth;
+    container.scrollLeft = (totalWidth - visibleWidth) / 2;
+    });
+
+    // 🔁 Detectar si estamos llegando al inicio o al final
+    container.addEventListener('scroll', () => {
+    const scrollLeft = container.scrollLeft;
+    const scrollRight = scrollLeft + container.clientWidth;
+    const totalWidth = container.scrollWidth;
+
+    const buffer = 100; // distancia del borde para activar el "rebote"
+
+    // Si el usuario llega muy al final, reinicia al medio (derecha infinita)
+    if (scrollRight >= totalWidth - buffer) {
+        container.scrollLeft = scrollLeft - (initialCards.length * 350); // 350 = ancho aprox. de cada card
+    }
+
+    // Si el usuario llega muy al principio, reinicia al medio (izquierda infinita)
+    if (scrollLeft <= buffer) {
+        container.scrollLeft = scrollLeft + (initialCards.length * 350);
+    }
+    });
 </script>
 
 

@@ -471,6 +471,8 @@
   flex-direction: column;
   color: #1a3b4d;
   transition: box-shadow 0.3s cubic-bezier(.4,0,.2,1), transform 0.3s cubic-bezier(.4,0,.2,1);
+  position: relative;
+  z-index:0;
 }
 
 .tutor-card:hover {
@@ -637,18 +639,20 @@ i.fa-solid.fa-book.icon::before{
 .tutor-card .tutor-card-actions .btn-reserve:hover {
   background: var(--primary-color);
 }
+
+
 .tutors {
   width: 100%;
   display: flex;
   flex-direction: row;
-  gap: 20px;  
-  padding: 5rem 5rem;
+  gap: 20px;
+  padding: 5rem;
   box-sizing: border-box;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+  justify-content: center;
 }
-
 .tutor-card {
   scroll-snap-align: start;
   flex: 0 0 350px;
