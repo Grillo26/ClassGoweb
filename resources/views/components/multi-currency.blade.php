@@ -8,9 +8,9 @@
             @csrf
             <input type="hidden" name="am-currency">
             <div class="am-language-select am-currency-select">
-                <a href="javascript:void(0);" class="am-currency-anchor">
+               {{--  <a href="javascript:void(0);" class="am-currency-anchor">
                     {!! $selectedCurrency['code'] . '&nbsp;' . $selectedCurrency['symbol'] !!}<i class="am-icon-chevron-down"></i>
-                </a>
+                </a> --}}
                 <ul class="sub-menutwo currency-menu">
                     @foreach(setting('_general.multi_currency_list') as $currency)
                         <li data-currency="{!! $currencies[$currency]['code'] !!}" class="{{ $selectedCurrency['code'] == $currency ? 'active' : '' }}">

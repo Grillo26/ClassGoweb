@@ -27,7 +27,7 @@
                             @php
                                 $vencido = $cupon->fecha_caducidad && $cupon->fecha_caducidad < now();
                                 $inactivo = isset($cupon->estado) && $cupon->estado === 'inactivo';
-                                $canjeado = isset($cupon->estado) && $cupon->estado === 'canjeado';
+                                $canjeado = isset($cupon->pivot->cantidad) && $cupon->pivot->cantidad == 0;
                             @endphp
                             <div class="cupon-item {{ $vencido ? 'cupon-vencido' : '' }}">
                                 <div class="cupon-text">
@@ -39,7 +39,7 @@
                                         @endif
                                     </p>
                                     <p class="cupon-principal">Obtubiste un descuento del {{ $cupon->descuento }}%</p>
-                                    <p class="cupon-detalle">en tu próxima tutoría</p>
+                                    <p class="cupon-detalle">en tu próxima tutoría - Cantidad: {{ $cupon->pivot->cantidad}}</p>
                                 </div>
                                 <div class="cupon-accion">
                                     @if($canjeado)

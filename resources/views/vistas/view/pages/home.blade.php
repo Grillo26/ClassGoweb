@@ -1,6 +1,6 @@
 @extends('vistas.view.layouts.app')
 
-@section('title', 'Class Go!')
+@section('title', 'ClassGo - Aprende y Progresa')
 
 @section('content')
 
@@ -35,7 +35,7 @@
 
         <!-- Columna derecha: imagen -->
         <div class="hero-image">
-            <img src="{{ asset('images/Tugo_With_Glasses.png') }}" alt="Mascota ClassGo">
+            <img src="{{ asset('storage/optionbuilder/uploads/740102-17-2025_0859pmTugo-saludando.gif') }}" alt="Mascota ClassGo">
         </div>
 
        
@@ -71,78 +71,144 @@
 
     <!--TUTORES DESTACADOS-->
     <div class="tutors-container">
-        
         <h1 class="over-text"><div class="linea"></div>Tutores Destacados<div class="linea"></div></h1>
-        
         <h1>Conoce a Nuestros Tutores Cuidadosamente Seleccionados</h1>
-        <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p>
-        <div class="tutors" id="tutors-carousel">
-            @foreach($profiles as $profile) 
-            @foreach($subjectsByUser as $userId => $data)
-            
-            <div class="tutors-card">
-
-                <video controls muted playsinline loop src="{{ $profile->intro_video ? asset('storage/' . $profile->intro_video) : asset('images/tutors/default.png') }}"></video>
-
-                <div class="info">
-                    <div class="info-header">
-                        <img src="{{ $profile->image ? asset('storage/' . $profile->image) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $profile->first_name }}">
-                        <div class="info-name">
-                            <div class="name">
-                                <h1>{{ $profile->first_name}} {{ $profile->last_name}}</h1>
-                                <i class="fa-solid fa-circle-check"></i>
-                                <!--Check Verificación-->
-                                <img src="" alt="">
-                                <!--Bandera pais-->
-                            </div>
-                            <div class="tutor">
-                                <h1><spam>Tutor:</spam>  {{ implode(', ', $data['grupos']) }}</h1>
-                            </div>
-                        </div>
-                        <div class="icono-heart">
-                            <i class="fa-solid fa-heart"></i>
-                        </div>
+        <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p> 
+    
+        <div class="tutors" id="tutorsContainer">
+            @foreach($profiles as $profile)
+                @php
+                    $data = $subjectsByUser[$profile->user_id] ?? ['materias' => [], 'grupos' => []];
+                @endphp
+                <!-- Card -->
+                <div class="tutor-card">
+                    <div class="tutor-card-img" >
+                        <video controls muted playsinline loop src="{{ $profile->intro_video ? asset('storage/' . $profile->intro_video) : asset('images/tutors/default.png') }}"></video>
                     </div>
-                    <div class="info-resena">
-                        <div class="info-puntuacion">
-                            <div class="puntuacion-title">
-                                <i class="fa fa-star"></i>
-                                <p>4.5</p>
+                    <div class="tutor-card-content">
+                        <div class="tutor-card-header">
+                            <div class="tutor-card-header-left">
+                                <h3>{{ $profile->first_name }} {{ $profile->last_name }}</h3>
+                                <span class="tutor-verified">✔️</span>
+                                {{-- <span class="tutor-flag">{{ $profile->native_language }}</span> --}}
                             </div>
-                            <p>7 reseñas</p>
+                            <button title="Favorito">❤️</button>
                         </div>
-                        <div class="info-tutorias">
-                            <div class=tutorias-title>
-                                <i class="fa-solid fa-book"></i>
-                                <p class="price-title">10</p>
+                        @php
+                            $maxGrupos = 4;
+                            $grupos = $data['grupos'];
+                            $countGrupos = count($grupos);
+                        @endphp
+                        <p class="tutor-card-sub mas" title="{{ implode(', ', $grupos) }}">
+                            {{ implode(', ', $grupos) }}<span class="tutor-card-mas" style="display:none;"> +más</span>
+                        </p>
+                        <div class="tutor-card-rating-row">
+                            <div class="tutor-card-rating">
+                                <span class="star">⭐</span>
+                                <span>4.5</span>
+                                <span class="rating-count">(7 reseñas)</span>
                             </div>
-                            <p class="tutorias-details">Tutorías Realizadas</p>
+                            <div class="tutor-card-price">
+                                <p class="price"><i class="fa-solid fa-book icon"></i>10</p>
+                                <p class="price-desc">Tutorías realizadas</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="info-details">
-                        <div>
-                            <i class="fa-solid fa-book-open"></i>
-                            <p>{{ implode(', ', $data['materias']) }}</p>
+                        <div class="tutor-card-tags" title="{{ implode(', ', $data['materias']) }}">
+                            @foreach($data['materias'] as $materia)
+                                <span class="tutor-card-tag">{{ $materia }}</span>
+                            @endforeach
+                            <span class="tutor-card-tag tutor-card-mas" style="display:none;">+más</span>
                         </div>
-                        <div>
-                            <i class="fa-solid fa-users"></i>
-                            <p>10 estudiantes activos · 30 Clases</p>
+                        <script>
+                        // Mostrar "+más" si tutor-card-sub o tutor-card-tags se desbordan
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Para grupos
+                            document.querySelectorAll('.tutor-card-sub.mas').forEach(function(el) {
+                                if (el.scrollHeight > el.clientHeight + 1) {
+                                    el.querySelector('.tutor-card-mas').style.display = 'inline';
+                                }
+                            });
+                            // Para tags
+                        document.querySelectorAll('.tutor-card-tags').forEach(function(tags) {
+                                if (tags.scrollHeight > tags.clientHeight + 1) {
+                                    tags.querySelector('.tutor-card-mas').style.display = 'inline';
+                                }
+                            });
+                        });
+                        </script>
+                        <div class="tutor-card-actions">
+                            <button class="btn-profile">Ver Perfil</button>
+                            <button class="btn-reserve">Reservar</button>
                         </div>
-                        <div>
-                            <i class="fa-solid fa-language"></i>
-                            <p>{{ $profile->native_language}}</p>
-                        </div>
-                    </div>
-                    <div class="info-buttons">
-                        <button class="button2">Ver Perfil</button>
-                        <button class="button1">Reservar</button>
                     </div>
                 </div>
-            </div>
-            <!--End card-->
-            @endforeach 
             @endforeach
+            {{-- @foreach($profiles as $profile)
+                @php
+                    $data = $subjectsByUser[$profile->user_id] ?? ['materias' => [], 'grupos' => []];
+                @endphp
 
+                <div class="tutors-card">
+                    <video controls muted playsinline loop src="{{ $profile->intro_video ? asset('storage/' . $profile->intro_video) : asset('images/tutors/default.png') }}"></video>
+
+                    <div class="info">
+                        <div class="info-header">
+                            <img src="{{ $profile->image ? asset('storage/' . $profile->image) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $profile->first_name }}">
+
+                            <div class="info-name">
+                                <div class="name">
+                                    <h1>{{ $profile->first_name }} {{ $profile->last_name }}</h1>
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                                <div class="tutor">
+                                    <h1><span>Tutor:</span> {{ implode(', ', $data['grupos']) }}</h1>
+                                </div>
+                            </div>
+
+                            <div class="icono-heart">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                        </div>
+
+                        <div class="info-resena">
+                            <div class="info-puntuacion">
+                                <div class="puntuacion-title">
+                                    <i class="fa fa-star"></i>
+                                    <p>4.5</p>
+                                </div>
+                                <p>7 reseñas</p>
+                            </div>
+                            <div class="info-tutorias">
+                                <div class="tutorias-title">
+                                    <i class="fa-solid fa-book"></i>
+                                    <p class="price-title">10</p>
+                                </div>
+                                <p class="tutorias-details">Tutorías Realizadas</p>
+                            </div>
+                        </div>
+
+                        <div class="info-details">
+                            <div>
+                                <i class="fa-solid fa-book-open"></i>
+                                <p>{{ implode(', ', $data['materias']) }}</p>
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-users"></i>
+                                <p>10 estudiantes activos · 30 Clases</p>
+                            </div>
+                            <div>
+                                <i class="fa-solid fa-language"></i>
+                                <p>{{ $profile->native_language }}</p>
+                            </div>
+                        </div>
+
+                        <div class="info-buttons">
+                            <button class="button2">Ver Perfil</button>
+                            <button class="button1">Reservar</button>
+                        </div>
+                    </div>
+                </div>
+            @endforeach --}}
         </div>
     </div>
 </section>
@@ -174,7 +240,7 @@
             <div class="numero-paso">Paso 3</div>
             <img src="{{ asset('images/paso3.png') }}" alt="Pasos">
             <h1>Programar una Sesión</h1>
-            <p>Reserva fácilmente un horario conveniente para tu Sesións</p>
+            <p>Reserva fácilmente un horario conveniente para tu Sesión</p>
             <button>Empecemos</button>
         </div> <!--FIN CARD-->
 
@@ -216,18 +282,12 @@
         <p>En ClassGo creemos en el poder de la colaboración para transformar el aprendizaje. Por eso, trabajamos junto a instituciones educativas, clubes y organizaciones comprometidas con la formación académica y el desarrollo personal.</p>
         <div class="steps-alianzas">
             <!-- Alianzas Cards DESDE BD -->
-            <div class="alianzas-card">
-                <img src="{{ asset('images/alianzas.png')}}"><!--img-->
-                <p>Ingeniería Petrolera</p>
-            </div>
-            <div class="alianzas-card">
-                <img src="{{ asset('images/alianzas.png')}}"><!--img-->
-                <p>Ingeniería Petrolera</p>
-            </div>
-            <div class="alianzas-card">
-                <img src="{{ asset('images/alianzas.png')}}"><!--img-->
-                <p>Ingeniería Petrolera</p>
-            </div>
+            @foreach($alianzas as $alianza)
+                <div class="alianzas-card">
+                    <img src="{{ $alianza->imagen ? asset('storage/' . $alianza->imagen) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $alianza->imagen }}">
+                    <p>{{ $alianza -> titulo }}</p>
+                </div>
+            @endforeach
         </div>
     </div>
 </section>
@@ -267,11 +327,43 @@ document.addEventListener("DOMContentLoaded", () => {
     counters.forEach(counter => observer.observe(counter));
 });
 
-function scrollTutors(direction) {
-    const container = document.getElementById('tutors-carousel');
-    const cardWidth = container.querySelector('.tutors-card')?.offsetWidth || 300;
-    container.scrollBy({ left: direction * (cardWidth + 18), behavior: 'smooth' });
-}
+        // 🌀 Carrusel infinito de tutores (scroll horizontal)
+    const container = document.getElementById('tutorsContainer');
+    const initialCards = [...container.querySelectorAll('.tutor-card')];
+
+    // Duplicamos tarjetas al inicio y al final
+    initialCards.forEach(card => {
+    const cloneStart = card.cloneNode(true);
+    const cloneEnd = card.cloneNode(true);
+    container.insertBefore(cloneStart, container.firstChild);
+    container.appendChild(cloneEnd);
+    });
+
+    // 🔁 Configurar scroll inicial al centro exacto
+    window.addEventListener('load', () => {
+    const totalWidth = container.scrollWidth;
+    const visibleWidth = container.clientWidth;
+    container.scrollLeft = (totalWidth - visibleWidth) / 2;
+    });
+
+    // 🔁 Detectar si estamos llegando al inicio o al final
+    container.addEventListener('scroll', () => {
+    const scrollLeft = container.scrollLeft;
+    const scrollRight = scrollLeft + container.clientWidth;
+    const totalWidth = container.scrollWidth;
+
+    const buffer = 100; // distancia del borde para activar el "rebote"
+
+    // Si el usuario llega muy al final, reinicia al medio (derecha infinita)
+    if (scrollRight >= totalWidth - buffer) {
+        container.scrollLeft = scrollLeft - (initialCards.length * 350); // 350 = ancho aprox. de cada card
+    }
+
+    // Si el usuario llega muy al principio, reinicia al medio (izquierda infinita)
+    if (scrollLeft <= buffer) {
+        container.scrollLeft = scrollLeft + (initialCards.length * 350);
+    }
+    });
 </script>
 
 

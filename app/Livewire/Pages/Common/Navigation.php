@@ -146,7 +146,7 @@ class Navigation extends Component
                 'icon'  => '<i class="am-icon-invoices-01"></i>',
                 'accessibility' => ['student', 'tutor'],
             ],
-            [
+           /*  [
                 'tutorSortOrder' => 6,
                 'studentSortOrder' => 6,
                 'route' => 'laraguppy.messenger',
@@ -155,7 +155,7 @@ class Navigation extends Component
                 'icon'  => '<i class="am-icon-chat-03"></i>',
                 'accessibility' => ['student', 'tutor'],
                 'disableNavigate' => true,
-            ],
+            ], */
             
               [
                 'tutorSortOrder' => 10,

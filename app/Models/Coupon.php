@@ -10,6 +10,8 @@ class Coupon extends Model
         'fecha_caducidad',
         'estado',
         'descuento',
+        'codigo',
+
     ];
 
    
