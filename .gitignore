@@ -25,5 +25,7 @@ storage/app/google/credentials.json
 /node_modules/
 *.mp4 
 /reemplazos.txt
-/public/storage
+/public/storage/profile_images
+/public/storage/qr_codes
+/public/storage/profile_videos
 config/firebase/*.json
