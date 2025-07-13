@@ -19,6 +19,7 @@ class UserResource extends JsonResource
         return [
             'id'                             => $this->whenHas('id'),
             'email'                          => $this->whenHas('email'),
+            'name'                           => $this->profile->full_name ?? null,
             'status'                         => $this->whenHas('status'),
             'is_favorite'                    => $this->whenHas('is_favorite'),
             'avg_rating'                     => $this->whenHas('avg_rating'),
