@@ -41,9 +41,7 @@ class UserResource extends JsonResource
             'educations'                     => EducationResource::collection($this->whenLoaded('educations')),
             'address'                        => new AddressResource($this->whenLoaded('address')),
             'identityVerification'           => new IdentityResource($this->whenLoaded('identityVerification')),
-            'role'                           => $this->whenLoaded('roles', function() {
-                return $this->roles?->first()?->name;
-            }),
+            'role'                           => $this->roles?->first()?->name ?? ($this->role ?? null),
             'balance'                           => $this->whenLoaded('userWallet', function() {
                 return formatAmount($this->userWallet?->amount ?? 0);
             })
