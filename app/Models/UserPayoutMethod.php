@@ -13,6 +13,7 @@ class UserPayoutMethod extends Model {
 
     public $casts = [
         'payout_details' => 'array'
+        
     ];
 
 }

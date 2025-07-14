@@ -32,13 +32,13 @@
                                     <i class="fas fa-eye"></i>
                                 </div>
                             </div>
-                            <div class="qr-image-info">
+                           {{--  <div class="qr-image-info">
                                 <span class="qr-status-badge active">
                                     <i class="fas fa-check-circle"></i>
                                     Activo
                                 </span>
                                 <p class="qr-description">qrale.jpg (152.28 KB)</p>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     @endif
