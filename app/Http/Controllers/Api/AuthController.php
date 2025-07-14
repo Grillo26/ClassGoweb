@@ -55,6 +55,10 @@ class AuthController extends Controller
                 'roles',
                 'userWallet:id,user_id,amount'
             ]);
+            // Forzar que roles sea una colección Eloquent válida
+            if (!($user->roles instanceof \Illuminate\Database\Eloquent\Collection)) {
+                $user->setRelation('roles', collect($user->roles));
+            }
             
             // Asegurar que el campo available_for_tutoring esté disponible
             $user->available_for_tutoring = $user->available_for_tutoring ?? true;
