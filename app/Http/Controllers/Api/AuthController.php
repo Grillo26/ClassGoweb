@@ -57,7 +57,7 @@ class AuthController extends Controller
             ]);
             // Forzar que roles sea una colección Eloquent válida
             if (!($user->roles instanceof \Illuminate\Database\Eloquent\Collection)) {
-                $user->setRelation('roles', collect($user->roles));
+                $user->setRelation('roles', collect($user->roles ? [$user->roles] : []));
             }
             
             // Asegurar que el campo available_for_tutoring esté disponible
