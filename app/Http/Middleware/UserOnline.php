@@ -19,8 +19,11 @@ class UserOnline
     public function handle(Request $request, Closure $next): Response
     {
         if(Auth::check()) {
-            $expiresAt = Carbon::now()->addMinutes(30);
-            Cache::put('user-online-' . Auth::user()->id, true, $expiresAt);
+            $user = Auth::user();
+            if ($user instanceof \App\Models\User) {
+                $expiresAt = Carbon::now()->addMinutes(30);
+                Cache::put('user-online-' . $user->id, true, $expiresAt);
+            }
         }
 
         return $next($request);
