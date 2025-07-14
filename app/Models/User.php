@@ -411,4 +411,16 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
         return $this->belongsToMany(Coupon::class, 'user_coupons')->withPivot('cantidad')->withTimestamps();
     }
 
+    /**
+     * Parche defensivo para relaciones morph: si se accede a una relación y es una colección, devuelve el primer elemento.
+     */
+    public function __get($key)
+    {
+        $value = parent::__get($key);
+        if ($value instanceof \Illuminate\Database\Eloquent\Collection && $value->count() === 1) {
+            return $value->first();
+        }
+        return $value;
+    }
+
 }
