@@ -55,6 +55,9 @@ class AuthController extends Controller
                 'roles',
                 'userWallet:id,user_id,amount'
             ]);
+            
+            // Asegurar que el campo available_for_tutoring esté disponible
+            $user->available_for_tutoring = $user->available_for_tutoring ?? true;
 
 
             $user->tokens()->where('name', 'lernen')->delete();
@@ -189,5 +192,33 @@ class AuthController extends Controller
             'user' => new \App\Http\Resources\UserResource($user),
             'message' => $alreadyVerified ? 'El correo ya estaba verificado.' : 'Correo verificado correctamente.'
         ]);
+    }
+
+    /**
+     * Actualiza la disponibilidad del tutor para tutorías
+     * @return \Illuminate\Http\Response
+     */
+    public function updateTutoringAvailability(Request $request)
+    {
+        $request->validate([
+            'available_for_tutoring' => 'required|boolean',
+        ]);
+
+        $user = Auth::user();
+        
+        // Verificar que el usuario sea tutor
+        if ($user->role !== 'tutor') {
+            return $this->error(message: 'Solo los tutores pueden cambiar su disponibilidad.', code: Response::HTTP_FORBIDDEN);
+        }
+
+        $user->available_for_tutoring = $request->available_for_tutoring;
+        $user->save();
+
+        return $this->success(
+            data: new UserResource($user),
+            message: $request->available_for_tutoring 
+                ? 'Disponibilidad activada correctamente.' 
+                : 'Disponibilidad desactivada correctamente.'
+        );
     }
 }

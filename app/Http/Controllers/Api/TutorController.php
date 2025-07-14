@@ -65,7 +65,8 @@ class TutorController extends Controller
             })->with(['profile', 'subjects'])
               ->whereHas('profile', function($q) {
                   $q->whereNotNull('verified_at');
-              });
+              })
+              ->where('available_for_tutoring', true); // Solo tutores disponibles
 
             // Filtro por keyword (búsqueda en nombre de materia)
             if ($request->filled('keyword')) {
@@ -327,7 +328,8 @@ class TutorController extends Controller
               ->whereHas('profile', function($q) {
                   $q->whereNotNull('verified_at');
               })
-              ->whereHas('subjects'); // Solo tutores con materias registradas
+              ->whereHas('subjects') // Solo tutores con materias registradas
+              ->where('available_for_tutoring', true); // Solo tutores disponibles
 
             // Filtro por keyword (búsqueda en nombre de materia)
             if ($request->filled('keyword')) {

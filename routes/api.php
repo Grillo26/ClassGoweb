@@ -137,6 +137,9 @@ Route::post('test-payment-upload', [\App\Http\Controllers\Api\BookingController:
 Route::post('update-fcm-token', [AuthController::class, 'updateFcmToken']);
 Route::get('verify-email', [AuthController::class, 'verifyEmail']);
 
+// Ruta para cambiar disponibilidad de tutoría (solo para tutores)
+Route::post('tutor/availability', [AuthController::class, 'updateTutoringAvailability']);
+
 Route::get('user/{id}/profile-image', [ProfileController::class, 'getProfileImage']);
 Route::post('user/{id}/profile-image', [ProfileController::class, 'updateProfileImage']);
 

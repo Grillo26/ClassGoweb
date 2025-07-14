@@ -40,6 +40,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
         'password',
         'email_verified_at',
         'fcm_token',
+        'available_for_tutoring',
     ];
 
     /**
@@ -63,6 +64,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
             'status' => UserStatusCast::class,
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'available_for_tutoring' => 'boolean',
         ];
     }
 
