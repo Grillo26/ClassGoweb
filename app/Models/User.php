@@ -417,7 +417,12 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     public function __get($key)
     {
         $value = parent::__get($key);
+        // Si es una colección con un solo elemento y NO es un modelo Role, devolver el primero
         if ($value instanceof \Illuminate\Database\Eloquent\Collection && $value->count() === 1) {
+            // Si el primer elemento es un modelo Role, devolver la colección completa
+            if ($value->first() instanceof \Spatie\Permission\Models\Role) {
+                return $value;
+            }
             return $value->first();
         }
         return $value;
