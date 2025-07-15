@@ -37,15 +37,9 @@ use App\Livewire\Payouts;
 use App\Http\Controllers\GoogleMeetController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/nosotros',function () {
+Route::get('/nosotros', function () {
     return view('vistas.view.pages.nosotros');
-}); 
-
-
-//OJO -------> Debe de estar dentro del grupo de rutas para el rol TUTOR
-Route::get('{slug}/ficha/{id}', [ExportImageController::class, 'exportFicha'])->name('tutor.ficha');
-
-
+});
 
 Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialController::class, 'callback'])->name('social.callback');
@@ -59,9 +53,10 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::view('/subscriptions-page', 'subscriptions-page');
     Route::get('/home', [HomeController::class, 'index']);
     Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones');
+    Route::post('tutor/favourite', [SearchController::class, 'favouriteTutor'])->name('tutor.favourite');
 
 
-    
+
     Route::middleware(['auth', 'verified', 'onlineUser'])->group(function () {
         Route::post('/openai/submit', [OpenAiController::class, 'submit'])->name('openai.submit');
         Route::post('favourite-tutor', [SearchController::class, 'favouriteTutor'])->name('favourite-tutor');
@@ -80,7 +75,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
             Route::prefix('profile')->name('profile.')->group(function () {
                 Route::get('personal-details', PersonalDetails::class)->name('personal-details');
                 Route::get('account-settings',  AccountSettings::class)->name('account-settings');
-                Route::get('courses',Courses::class)->name('courses');
+                Route::get('courses', Courses::class)->name('courses');
                 Route::prefix('resume')->name('resume.')->group(function () {
                     Route::get('education', Resume::class)->name('education');
                     Route::get('experience', Resume::class)->name('experience');
@@ -94,7 +89,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
                 Route::get('session-detail/{date}', SessionDetail::class)->name('session-detail');
                 Route::get('upcoming-bookings',     UserBooking::class)->name('upcoming-bookings');
             });
-            
+
             Route::get('invoices', Invoices::class)->name('invoices');
             Route::get('disputes', Dispute::class)->name('disputes');
             Route::get('manage-dispute/{id}', ManageDispute::class)->name('manage-dispute');
