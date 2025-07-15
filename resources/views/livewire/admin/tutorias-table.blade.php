@@ -16,11 +16,19 @@
                                         <input type="text" wire:model.live="student" class="form-control"
                                             placeholder="Buscar estudiante">
                                     </div>
+
+                                    <div class="tb-actionselect">
+                                        <a href="{{ route('google.authenticate') }}" class="tb-btn tb-btn-primary">
+                                            <i class="fab fa-google me-2"></i>
+                                            Autenticar Google
+                                        </a>
+                                    </div>
                                     <div class="tb-actionselect">
                                         <select wire:model.live="status" class="form-control">
                                             <option value="">Todos los estados</option>
-                                            @foreach (['pendiente', 'rechazado', 'aceptado', 'no_completado', 'completado'] as $estado)
-                                                <option value="{{ $estado }}">{{ ucfirst($estado) }}</option>
+                                            @foreach (['pendiente', 'rechazado', 'aceptado', 'no_completado',
+                                            'completado'] as $estado)
+                                            <option value="{{ $estado }}">{{ ucfirst($estado) }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -35,107 +43,109 @@
                 <div class="am-disputelist_wrap">
                     <div class="am-disputelist am-custom-scrollbar-y">
                         @if ($tutorias->count())
-                            <table class="tb-table @if (setting('_general.table_responsive') == 'yes') tb-table-responsive @endif">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 40px; text-align: center;">#</th>
-                                        <th style="text-align: left;">Tutor</th>
-                                        <th style="text-align: left;">Estudiante</th>
-                                        <th style="width: 110px; text-align: center;">Fecha</th>
-                                        <th style="width: 90px; text-align: center;">Hora inicio</th>
-                                        <th style="width: 90px; text-align: center;">Hora fin</th>
-                                        <th style="width: 120px; text-align: center;">Estado</th>
-                                        <th style="width: 110px; text-align: center;">Comprobante</th>
-                                        <th style="width: 110px; text-align: center;">QR de Pago Tutor</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                        $statusColors = [
-                                            1 => '#22C55E', // aceptado
-                                            2 => '#FACC15', // pendiente
-                                            3 => '#64748B', // no_completado
-                                            4 => '#FF9800', // rechazado/observado
-                                            5 => '#3B82F6', // completado
-                                            'pendiente' => '#FACC15',
-                                            'aceptado' => '#22C55E',
-                                            'no_completado' => '#64748B',
-                                            'rechazado' => '#FF9800',
-                                            'completado' => '#3B82F6',
-                                            'no completado' => '#64748B',
-                                        ];
-                                        $statusMap = [
-                                            1 => 'Aceptado',
-                                            2 => 'Pendiente',
-                                            3 => 'No completado',
-                                            4 => 'Observado', // o 'Rechazado' según tu lógica
-                                            5 => 'Completado',
-                                            'pendiente' => 'Pendiente',
-                                            'rechazado' => 'Observado',
-                                            'aceptado' => 'Aceptado',
-                                            'no_completado' => 'No completado',
-                                            'no completado' => 'No completado',
-                                            'completado' => 'Completado',
-                                        ];
-                                    @endphp
-                                    @foreach ($tutorias as $tutoria)
-                                        <tr>
-                                            <td style="text-align: center;">{{ $tutoria->id }}</td>
-                                            <td style="text-align: left;">{{ $tutoria->tutor?->full_name ?? '-' }}</td>
-                                            <td style="text-align: left;">{{ $tutoria->student?->full_name ?? '-' }}
-                                            </td>
-                                            <td style="text-align: center;">
-                                                {{ \Carbon\Carbon::parse($tutoria->start_time)->format('Y-m-d') }}</td>
-                                            <td style="text-align: center;">
-                                                {{ \Carbon\Carbon::parse($tutoria->start_time)->format('H:i') }}</td>
-                                            <td style="text-align: center;">
-                                                {{ \Carbon\Carbon::parse($tutoria->end_time)->format('H:i') }}</td>
-                                            <td style="text-align: center;">
-                                                <span
-                                                    style="display:inline-block; min-width:110px; text-align:center; font-weight:600; color:#222; background:{{ $statusColors[is_numeric($tutoria->status) ? intval($tutoria->status) : str_replace(' ', '_', strtolower($tutoria->status))] ?? '#FACC15' }}; border-radius:16px; padding:6px 18px; font-size:15px; letter-spacing:0.5px; box-shadow:0 1px 4px rgba(0,0,0,0.04); cursor:pointer;"
-                                                    data-bs-toggle="modal" data-bs-target="#modalEstadoTutoria"
-                                                    wire:click="abrirModalTutoria({{ $tutoria->id }}, '{{ $tutoria->status }}')">
-                                                    {{ $statusMap[is_numeric($tutoria->status) ? intval($tutoria->status) : str_replace(' ', '_', strtolower($tutoria->status))] ?? 'Pendiente' }}
-                                                </span>
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <div
-                                                    style="display: flex; align-items: center; justify-content: center; width: 100%;">
-                                                    @if (!empty($tutoria->paymentSlotBooking?->image_url))
-                                                        <a href="{{ Storage::url($tutoria->paymentSlotBooking->image_url) }}"
-                                                            target="_blank" style="margin-left: 12px;">
-                                                            <img src="{{ Storage::url($tutoria->paymentSlotBooking->image_url) }}"
-                                                                alt="Comprobante"
-                                                                style="max-width: 60px; max-height: 60px; border-radius: 6px; display: block;" />
-                                                        </a>
-                                                    @else
-                                                        <span style="margin-left: 12px;">Sin comprobante</span>
-                                                    @endif
-                                                </div>
-                                            </td>
-                                            <td style="text-align: center;">
-                                                <div
-                                                    style="display: flex; align-items: center; justify-content: center; width: 100%;">
-                                                    @if (!empty($tutoria->tutor->user->userPayouts->first()?->img_qr))
-                                                        <a href="{{ Storage::url($tutoria->tutor->user->userPayouts->first()?->img_qr) }}"
-                                                            target="_blank" style="margin-left: 12px;">
-                                                            <img src="{{ Storage::url($tutoria->tutor->user->userPayouts->first()?->img_qr) }}"
-                                                                alt="QR de Pago Tutor"
-                                                                style="max-width: 60px; max-height: 60px; border-radius: 6px; display: block;" />
-                                                        </a>
-                                                    @else
-                                                        <span style="margin-left: 12px;">Sin comprobante</span>
-                                                    @endif
-                                                </div>
-                                            </td>
+                        <table
+                            class="tb-table @if (setting('_general.table_responsive') == 'yes') tb-table-responsive @endif">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px; text-align: center;">#</th>
+                                    <th style="text-align: left;">Tutor</th>
+                                    <th style="text-align: left;">Estudiante</th>
+                                    <th style="width: 110px; text-align: center;">Fecha</th>
+                                    <th style="width: 90px; text-align: center;">Hora inicio</th>
+                                    <th style="width: 90px; text-align: center;">Hora fin</th>
+                                    <th style="width: 120px; text-align: center;">Estado</th>
+                                    <th style="width: 110px; text-align: center;">Comprobante</th>
+                                    <th style="width: 110px; text-align: center;">QR de Pago Tutor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                $statusColors = [
+                                1 => '#22C55E', // aceptado
+                                2 => '#FACC15', // pendiente
+                                3 => '#64748B', // no_completado
+                                4 => '#FF9800', // rechazado/observado
+                                5 => '#3B82F6', // completado
+                                'pendiente' => '#FACC15',
+                                'aceptado' => '#22C55E',
+                                'no_completado' => '#64748B',
+                                'rechazado' => '#FF9800',
+                                'completado' => '#3B82F6',
+                                'no completado' => '#64748B',
+                                ];
+                                $statusMap = [
+                                1 => 'Aceptado',
+                                2 => 'Pendiente',
+                                3 => 'No completado',
+                                4 => 'Observado', // o 'Rechazado' según tu lógica
+                                5 => 'Completado',
+                                'pendiente' => 'Pendiente',
+                                'rechazado' => 'Observado',
+                                'aceptado' => 'Aceptado',
+                                'no_completado' => 'No completado',
+                                'no completado' => 'No completado',
+                                'completado' => 'Completado',
+                                ];
+                                @endphp
+                                @foreach ($tutorias as $tutoria)
+                                <tr>
+                                    <td style="text-align: center;">{{ $tutoria->id }}</td>
+                                    <td style="text-align: left;">{{ $tutoria->tutor?->full_name ?? '-' }}</td>
+                                    <td style="text-align: left;">{{ $tutoria->student?->full_name ?? '-' }}
+                                    </td>
+                                    <td style="text-align: center;">
+                                        {{ \Carbon\Carbon::parse($tutoria->start_time)->format('Y-m-d') }}</td>
+                                    <td style="text-align: center;">
+                                        {{ \Carbon\Carbon::parse($tutoria->start_time)->format('H:i') }}</td>
+                                    <td style="text-align: center;">
+                                        {{ \Carbon\Carbon::parse($tutoria->end_time)->format('H:i') }}</td>
+                                    <td style="text-align: center;">
+                                        <span
+                                            style="display:inline-block; min-width:110px; text-align:center; font-weight:600; color:#222; background:{{ $statusColors[is_numeric($tutoria->status) ? intval($tutoria->status) : str_replace(' ', '_', strtolower($tutoria->status))] ?? '#FACC15' }}; border-radius:16px; padding:6px 18px; font-size:15px; letter-spacing:0.5px; box-shadow:0 1px 4px rgba(0,0,0,0.04); cursor:pointer;"
+                                            data-bs-toggle="modal" data-bs-target="#modalEstadoTutoria"
+                                            wire:click="abrirModalTutoria({{ $tutoria->id }}, '{{ $tutoria->status }}')">
+                                            {{ $statusMap[is_numeric($tutoria->status) ? intval($tutoria->status) :
+                                            str_replace(' ', '_', strtolower($tutoria->status))] ?? 'Pendiente' }}
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <div
+                                            style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                                            @if (!empty($tutoria->paymentSlotBooking?->image_url))
+                                            <a href="{{ Storage::url($tutoria->paymentSlotBooking->image_url) }}"
+                                                target="_blank" style="margin-left: 12px;">
+                                                <img src="{{ Storage::url($tutoria->paymentSlotBooking->image_url) }}"
+                                                    alt="Comprobante"
+                                                    style="max-width: 60px; max-height: 60px; border-radius: 6px; display: block;" />
+                                            </a>
+                                            @else
+                                            <span style="margin-left: 12px;">Sin comprobante</span>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <div
+                                            style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                                            @if (!empty($tutoria->tutor->user->userPayouts->first()?->img_qr))
+                                            <a href="{{ Storage::url($tutoria->tutor->user->userPayouts->first()?->img_qr) }}"
+                                                target="_blank" style="margin-left: 12px;">
+                                                <img src="{{ Storage::url($tutoria->tutor->user->userPayouts->first()?->img_qr) }}"
+                                                    alt="QR de Pago Tutor"
+                                                    style="max-width: 60px; max-height: 60px; border-radius: 6px; display: block;" />
+                                            </a>
+                                            @else
+                                            <span style="margin-left: 12px;">Sin comprobante</span>
+                                            @endif
+                                        </div>
+                                    </td>
 
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            {{ $tutorias->links('pagination.custom') }}
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        {{ $tutorias->links('pagination.custom') }}
                         @else
-                            <x-no-record :image="asset('images/empty.png')" :title="__('general.no_record_title')" />
+                        <x-no-record :image="asset('images/empty.png')" :title="__('general.no_record_title')" />
                         @endif
                     </div>
                 </div>
@@ -143,10 +153,11 @@
         </div>
     </main>
     @if ($showModal)
-        <div>
-            DEBUG: Modal debería estar abierto para tutoría {{ $modalTutoriaId }} (status: {{ $modalStatus }})
-        </div>
-        @livewire('admin.tutoria-status-modal', ['tutoriaId' => $modalTutoriaId, 'status' => $modalStatus], key('modal-' . $modalTutoriaId))
+    <div>
+        DEBUG: Modal debería estar abierto para tutoría {{ $modalTutoriaId }} (status: {{ $modalStatus }})
+    </div>
+    @livewire('admin.tutoria-status-modal', ['tutoriaId' => $modalTutoriaId, 'status' => $modalStatus], key('modal-' .
+    $modalTutoriaId))
     @endif
     <!-- Modal para cambiar estado de tutoría -->
     <div wire:ignore.self class="modal fade" id="modalEstadoTutoria" tabindex="-1"
@@ -177,12 +188,12 @@
 </div>
 
 @push('scripts')
-    <script>
-        window.addEventListener('cerrar-modal-tutoria', function() {
+<script>
+    window.addEventListener('cerrar-modal-tutoria', function() {
             var modal = bootstrap.Modal.getInstance(document.getElementById('modalEstadoTutoria'));
             if (modal) {
                 modal.hide();
             }
         });
-    </script>
+</script>
 @endpush
