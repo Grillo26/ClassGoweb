@@ -53,6 +53,7 @@ class AuthController extends Controller
             try {
                 $user->load([
                     'profile:id,user_id,first_name,last_name,gender,recommend_tutor,intro_video,native_language,verified_at,slug,image,tagline,description,created_at,updated_at',
+                    'address:country_id,state_id,city,address',
                     'roles',
                     'userWallet:id,user_id,amount'
                 ]);
@@ -60,6 +61,36 @@ class AuthController extends Controller
                 // Verificar que roles sea una colección válida
                 if (!($user->roles instanceof \Illuminate\Database\Eloquent\Collection)) {
                     $user->setRelation('roles', collect($user->roles ? [$user->roles] : []));
+                }
+                
+                // Verificar que address sea un modelo individual, no una colección
+                if ($user->address && !($user->address instanceof \App\Models\Address)) {
+                    \Log::warning('Address no es un modelo individual para usuario: ' . $user->id);
+                    $user->setRelation('address', null);
+                }
+                
+                // Verificar si hay múltiples addresses para este usuario
+                $addressCount = \DB::table('addresses')
+                    ->where('addressable_id', $user->id)
+                    ->where('addressable_type', 'App\\Models\\User')
+                    ->count();
+                
+                if ($addressCount > 1) {
+                    \Log::warning('Usuario ' . $user->id . ' tiene ' . $addressCount . ' addresses. Usando el más reciente.');
+                    // Forzar que use solo el address más reciente
+                    $latestAddress = \DB::table('addresses')
+                        ->where('addressable_id', $user->id)
+                        ->where('addressable_type', 'App\\Models\\User')
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+                    
+                    if ($latestAddress) {
+                        $addressModel = new \App\Models\Address();
+                        $addressModel->fill((array) $latestAddress);
+                        $user->setRelation('address', $addressModel);
+                    } else {
+                        $user->setRelation('address', null);
+                    }
                 }
                 
                 // Asegurar que el campo available_for_tutoring esté disponible
@@ -70,7 +101,19 @@ class AuthController extends Controller
             } catch (\Exception $e) {
                 \Log::error('Error cargando relaciones para usuario ' . $user->id . ': ' . $e->getMessage());
                 \Log::error('Stack trace: ' . $e->getTraceAsString());
-                return $this->error('Error interno del servidor', null, 500);
+                
+                // Intentar cargar sin address si hay problema
+                try {
+                    $user->load([
+                        'profile:id,user_id,first_name,last_name,gender,recommend_tutor,intro_video,native_language,verified_at,slug,image,tagline,description,created_at,updated_at',
+                        'roles',
+                        'userWallet:id,user_id,amount'
+                    ]);
+                    \Log::info('Relaciones cargadas sin address para usuario: ' . $user->id);
+                } catch (\Exception $e2) {
+                    \Log::error('Error crítico cargando relaciones: ' . $e2->getMessage());
+                    return $this->error('Error interno del servidor', null, 500);
+                }
             }
 
 

@@ -48,6 +48,6 @@ class Address extends Model {
      */
     public function addressable(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo('addressable', 'addressable_type', 'addressable_id');
     }
 }

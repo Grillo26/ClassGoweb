@@ -30,6 +30,19 @@ class UserOnline
             }
         }
 
-        return $next($request);
+        try {
+            return $next($request);
+        } catch (\Exception $e) {
+            \Log::error('Error en UserOnline middleware después de next(): ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            
+            // Si hay un error relacionado con morph, intentar continuar
+            if (strpos($e->getMessage(), 'getMorphClass') !== false) {
+                \Log::warning('Error de morph detectado, continuando...');
+                return response()->json(['error' => 'Error interno del servidor'], 500);
+            }
+            
+            throw $e;
+        }
     }
 }
