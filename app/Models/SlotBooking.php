@@ -81,11 +81,11 @@ class SlotBooking extends Model
     }
 
     public function rating(): MorphOne {
-        return $this->morphOne(Rating::class, 'ratingable');
+        return $this->morphOne(Rating::class, 'ratingable')->latest();
     }
 
     public function orderItem(): MorphOne {
-        return $this->morphOne(OrderItem::class, 'orderable');
+        return $this->morphOne(OrderItem::class, 'orderable')->latest();
     }
 
     public function bookingLog(): HasMany {

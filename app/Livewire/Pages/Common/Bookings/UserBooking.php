@@ -79,6 +79,7 @@ class UserBooking extends Component
         if ($userRole == 'tutor') {
             // Obtener reservas donde el tutor es el usuario actual
             $this->upcomingBookings = SlotBooking::where('tutor_id', Auth::id())
+                ->select('id', 'student_id', 'tutor_id', 'start_time', 'end_time', 'status', 'subject_id')
                 ->orderBy('start_time')
                 ->get()
                 ->groupBy(function($item) {
@@ -88,6 +89,7 @@ class UserBooking extends Component
         } else if ($userRole == 'student') {
             // Obtener reservas donde el estudiante es el usuario actual
             $this->upcomingBookings = SlotBooking::where('student_id', Auth::id())
+                ->select('id', 'student_id', 'tutor_id', 'start_time', 'end_time', 'status', 'subject_id')
                 ->orderBy('start_time')
                 ->get()
                 ->groupBy(function($item) {
