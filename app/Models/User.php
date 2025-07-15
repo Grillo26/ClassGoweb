@@ -138,7 +138,12 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     public function role(): Attribute
     {
         return Attribute::make(
-            get: fn() => Cache::rememberForever('user-role-' . $this->id, fn() => $this->roles->first()?->name),
+            get: fn() => Cache::rememberForever('user-role-' . $this->id, function() {
+                if ($this->roles instanceof \Illuminate\Database\Eloquent\Collection && $this->roles->count() > 0) {
+                    return $this->roles->first()->name;
+                }
+                return null;
+            }),
         );
     }
 
@@ -149,7 +154,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
 
     public function address(): MorphOne
     {
-        return $this->morphOne(Address::class, 'addressable');
+        return $this->morphOne(Address::class, 'addressable')->latest();
     }
 
     public function redirectAfterLogin(): Attribute

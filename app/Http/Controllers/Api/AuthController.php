@@ -63,6 +63,12 @@ class AuthController extends Controller
                     $user->setRelation('roles', collect($user->roles ? [$user->roles] : []));
                 }
                 
+                // Verificar que address sea un modelo individual, no una colección
+                if ($user->address && !($user->address instanceof \App\Models\Address)) {
+                    \Log::warning('Address no es un modelo individual para usuario: ' . $user->id);
+                    $user->setRelation('address', null);
+                }
+                
                 // Asegurar que el campo available_for_tutoring esté disponible
                 $user->available_for_tutoring = $user->available_for_tutoring ?? true;
                 

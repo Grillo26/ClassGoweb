@@ -20,9 +20,13 @@ class UserOnline
     {
         if(Auth::check()) {
             $user = Auth::user();
-            if ($user instanceof \App\Models\User) {
-                $expiresAt = Carbon::now()->addMinutes(30);
-                Cache::put('user-online-' . $user->id, true, $expiresAt);
+            if ($user instanceof \App\Models\User && $user->id) {
+                try {
+                    $expiresAt = Carbon::now()->addMinutes(30);
+                    Cache::put('user-online-' . $user->id, true, $expiresAt);
+                } catch (\Exception $e) {
+                    \Log::error('Error en UserOnline middleware: ' . $e->getMessage());
+                }
             }
         }
 
