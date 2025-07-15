@@ -80,12 +80,20 @@
         <h1>Conoce a Nuestros Tutores Cuidadosamente Seleccionados</h1>
         <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p> 
     
-        <div class="tutors" id="tutorsContainer">
-            @include('components.tutors', [
-                'profiles' => $profiles,
-                'subjectsByUser' => $subjectsByUser,
-            ])
+        <div class="tutors-carousel-viewport">
+            <div class="tutors" id="tutorsContainer">
+                @include('components.tutors', [
+                    'profiles' => $profiles,
+                    'subjectsByUser' => $subjectsByUser,
+                ])
+            </div>
         </div>
+        <div class="carousel-controls">
+            <button class="carousel-nav prev" onclick="prevSlide()">‹</button>
+            <button class="carousel-nav next" onclick="nextSlide()">›</button>
+        </div>
+        <div class="carousel-indicators" id="indicators"></div>
+
     </div>
 </section>
 
@@ -169,6 +177,110 @@
 </section>
 
 <script>
+let currentSlide = 0;
+        const cardsPerView = 3;
+        const tutorsContainer = document.getElementById('tutorsContainer');
+        const cards = document.querySelectorAll('.tutor-card');
+        const totalCards = cards.length;
+        const totalSlides = Math.ceil(totalCards / cardsPerView);
+
+        // Crear indicadores
+        function createIndicators() {
+            const indicatorsContainer = document.getElementById('indicators');
+            indicatorsContainer.innerHTML = '';
+            
+            for (let i = 0; i < totalSlides; i++) {
+                const indicator = document.createElement('div');
+                indicator.className = 'indicator';
+                if (i === 0) indicator.classList.add('active');
+                indicator.onclick = () => goToSlide(i);
+                indicatorsContainer.appendChild(indicator);
+            }
+        }
+
+        // Ir a slide específico
+        function goToSlide(slideIndex) {
+            if (slideIndex < 0 || slideIndex >= totalSlides) return;
+            
+            currentSlide = slideIndex;
+            const translateX = -currentSlide * 100;
+            tutorsContainer.style.transform = `translateX(${translateX}%)`;
+            
+            updateIndicators();
+            updateButtons();
+        }
+
+        // Siguiente slide
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        // Slide anterior
+        function prevSlide() {
+            if (currentSlide > 0) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        // Actualizar indicadores
+        function updateIndicators() {
+            const indicators = document.querySelectorAll('.indicator');
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // Actualizar botones
+        function updateButtons() {
+            const prevBtn = document.querySelector('.carousel-nav.prev');
+            const nextBtn = document.querySelector('.carousel-nav.next');
+            
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === totalSlides - 1;
+        }
+
+        // Inicializar carrusel
+        function initCarousel() {
+            createIndicators();
+            updateButtons();
+            
+            // Ajustar ancho del contenedor
+            tutorsContainer.style.width = `${totalSlides * 100}%`;
+        }
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // Inicializar al cargar la página
+        document.addEventListener('DOMContentLoaded', initCarousel);
+
+        // Responsive: ajustar cards por vista según el tamaño de pantalla
+        function updateCardsPerView() {
+            const width = window.innerWidth;
+            let newCardsPerView;
+            
+            if (width <= 480) {
+                newCardsPerView = 1;
+            } else if (width <= 768) {
+                newCardsPerView = 2;
+            } else {
+                newCardsPerView = 3;
+            }
+            
+            if (newCardsPerView !== cardsPerView) {
+                // Recalcular slides si es necesario
+                location.reload(); // Simplificado para el ejemplo
+            }
+        }
+
+        window.addEventListener('resize', updateCardsPerView);
+
+
 document.addEventListener("DOMContentLoaded", () => {
     const counters = document.querySelectorAll('.counter-number');
 
@@ -215,84 +327,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
-
-<style>
-.tutors-carousel-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-.carousel-btn {
-  background: var(--secundary-color);
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  font-size: 1.5rem;
-  cursor: pointer;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: background 0.2s;
-}
-.carousel-btn-left {
-  left: -60px;
-}
-.carousel-btn-right {
-  right: -60px;
-}
-.tutors-carousel {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  overflow: hidden;
-  gap: 0;
-}
-@media (max-width: 1200px) {
-  .carousel-btn-left {
-    left: -30px;
-  }
-  .carousel-btn-right {
-    right: -30px;
-  }
-}
-@media (max-width: 1024px) {
-  .tutors-carousel-container {
-    padding: 0 1rem;
-  }
-  .carousel-btn-left {
-    left: -18px;
-  }
-  .carousel-btn-right {
-    right: -18px;
-  }
-}
-@media (max-width: 768px) {
-  .tutors-carousel-container {
-    padding: 0 0.5rem;
-  }
-  .carousel-btn-left, .carousel-btn-right {
-    top: 90%;
-    left: 10px;
-    right: 10px;
-    transform: none;
-    position: static;
-    margin: 0 10px;
-  }
-  .tutors-carousel {
-    padding: 1rem 0;
-  }
-}
-</style>
 
 @endsection
 

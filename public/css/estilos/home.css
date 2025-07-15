@@ -289,29 +289,110 @@
   height: 4px;
   width: 50px;
 }
+
+/*---------BUTTONES--------------------*/
+.tutors-carousel-viewport {
+  width: calc(3 * 350px + 2 * 20px); /* 3 tarjetas + 2 gaps */
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  
+}
+
+.carousel-nav {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.carousel-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.carousel-nav.prev {
+  left: 10px;
+}
+
+.carousel-nav.next {
+  right: 10px;
+}
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ddd;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.indicator.active {
+  background: #667eea;
+}
+
+.carousel-info {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #666;
+}
+
 /**---- 3.1 Cards Tutores ---**/
 .tutors {
-  width: 100%;
   display: flex;
-  flex-wrap: wrap;
   flex-direction: row;
   gap: 20px;
-  padding: 5rem;
-  box-sizing: border-box;
-  justify-content: center;
+  padding: 2rem 0;
+  background: white;
+  justify-content: flex-start;
   align-items: stretch;
+  transition: transform 0.5s cubic-bezier(.4,0,.2,1);
+  position: relative;
+  width: calc(3 * 350px + 2 * 20px); /* 3 tarjetas + 2 gaps */
+  min-width: calc(3 * 350px + 2 * 20px);
+  max-width: 100%;
+}
+.tutors::-webkit-scrollbar {
+  height: 8px;
+  background: #f0f0f0;
+}
+.tutors::-webkit-scrollbar-thumb {
+  background: #b0b0b0;
+  border-radius: 4px;
 }
 .tutor-card {
-  flex: 1 1 300px;
+  flex: 0 0 350px;
   max-width: 350px;
-  min-width: 260px;
-  margin: 0 10px 1.5rem 10px;
+  min-width: 350px;
+  margin: 0;
   box-sizing: border-box;
   box-shadow: 0 8px 8px rgba(0,0,0,0.1);
   border-radius: 12px;
   transition: all 0.5s;
   -webkit-transition: all 0.5s;
-
+  background: #fff;
 }
 
 .tutor-card:hover {
@@ -589,6 +670,17 @@ i.fa-solid.fa-book.icon::before{
   .steps-card button, .go button {
     width: 95%;
   }
+  .carousel-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+  .carousel-nav.prev {
+    left: 2px;
+  }
+  .carousel-nav.next {
+    right: 2px;
+  }
 }
 .steps-card, .go {
   background: var(--secundary-color2);
@@ -832,3 +924,27 @@ i.fa-solid.fa-book.icon::before{
 
 /**--- Card Tutores --**/
 
+@media (max-width: 1200px) {
+  .tutors-carousel-viewport, .tutors {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+  }
+  .tutor-card {
+    min-width: 300px;
+    max-width: 300px;
+    flex: 0 0 300px;
+  }
+}
+@media (max-width: 900px) {
+  .tutors-carousel-viewport, .tutors {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+  }
+  .tutor-card {
+    min-width: 250px;
+    max-width: 250px;
+    flex: 0 0 250px;
+  }
+}
