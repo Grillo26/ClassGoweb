@@ -435,3 +435,6 @@
         height: 26px;
     }
 }
+
+/* ================= RESPONSIVE DESIGN ================= */
+/* Los estilos responsivos para tablet y móvil han sido movidos a archivos separados: navbar-tablet.css y navbar-mobile.css. */

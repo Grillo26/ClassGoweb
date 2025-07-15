@@ -1,0 +1,184 @@
+/* home-mobile.css: Estilos responsivos para móvil (max-width: 768px) */
+
+@media (max-width: 768px) {
+  /* Navbar transparente */
+  .navbar {
+    background-color: transparent !important;
+    box-shadow: none;
+    height: 60px;
+    border-radius: 0;
+    padding: 0.5rem 0.5rem;
+  }
+  .nav-i {
+    width: 100px;
+  }
+  /* Hero: centrar gif y texto debajo */
+  .hero {
+    height: auto;
+    min-height: 100vh;
+    padding-bottom: 2rem;
+  }
+  .hero-container {
+    flex-direction: column;
+    padding-top: 4rem;
+    align-items: center;
+  }
+  .hero-image {
+    padding: 0;
+    text-align: center;
+    order: 1;
+  }
+  .hero-image img {
+    margin: 0 auto;
+    display: block;
+    max-width: 70vw;
+    min-width: 120px;
+  }
+  .hero-text {
+    padding: 0.5rem;
+    text-align: center;
+    order: 2;
+    line-height: 2rem;
+  }
+  .hero-title-arriba, .hero-title-abajo {
+    font-size: 2.0em !important;
+  }
+  .hero-subtext{
+    font-size: 1.0em !important;
+  }
+  .search-box{
+    display: flex;
+    max-width: 70vw;
+    margin: 0 auto;
+  }
+  .hero-buttons{
+    display: flex;
+    justify-content: center;
+  }
+  .hero-buttons button{
+    display: flex;
+    flex-flow: column wrap;
+    width: 100px;
+  }
+  .hero-buttons button i{
+    display: flex;
+    margin: 0 auto;
+  }
+
+  /* Contadores en fila de dos */
+  .counters {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1.5rem 0.5rem;
+  }
+  .counter-box {
+    width: 48%;
+    min-width: 120px;
+    margin-bottom: 1rem;
+  }
+  .box-sky {
+    display: none;
+  }
+  /* Tutores: carrusel horizontal en móvil */
+  .tutors {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 0.7rem;
+    padding: 1rem 0.2rem;
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+  .tutor-card {
+    flex: 0 0 90vw;
+    max-width: 98vw;
+    min-width: 180px;
+    margin: 0 6px 1rem 6px;
+  }
+  .tutors-container {
+    padding: 1rem 0.2rem;
+  }
+  /* Guía paso a paso: cards ocupan ancho */
+  .steps {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.7rem;
+    padding: 1rem 0;
+  }
+  .steps-card, .go {
+    min-width: 180px;
+    max-width: 98vw;
+    width: 98vw;
+    padding: 0.5rem;
+    margin: 0 auto;
+  }
+  /* Busca tutorías: imagen debajo del texto */
+  .tutorias {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem 0.2rem;
+    height: auto;
+  }
+  .tutores-text {
+    padding: 1rem 0.2rem;
+    align-items: center;
+    text-align: center;
+  }
+  .tutores-img {
+    order: 2;
+    width: 100%;
+    text-align: center;
+  }
+  .tutores-img img {
+    min-width: 120px;
+    max-width: 98vw;
+    margin: 0 auto;
+  }
+  /* Alianzas: carrusel */
+  .steps-alianzas {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 1rem;
+    padding: 1rem 0.2rem;
+  }
+  .alianzas-card {
+    min-width: 180px;
+    max-width: 98vw;
+    margin: 0 auto;
+  }
+  .alianzas-card img {
+    width: 100%;
+    max-width: 98vw;
+    height: auto;
+  }
+  /* Footer reducido */
+  footer .footer-about .box:not(:nth-child(1)):not(:nth-child(4)) {
+    display: none;
+  }
+  .footer-container {
+    padding: 0.5rem 0.2rem;
+  }
+  .container-info {
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0 0 0;
+  }
+  .footer-info img {
+    width: 120px;
+  }
+  .container-redes {
+    justify-content: center;
+    padding-right: 0;
+    gap: 10px;
+  }
+  .btn-registrate {
+    width: 100%;
+    max-width: 180px;
+    height: 40px;
+    font-size: 0.9rem;
+    border-radius: 12px;
+    margin-top: 0.5rem;
+  }
+} 

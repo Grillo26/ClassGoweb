@@ -1,0 +1,31 @@
+/* footer-mobile.css: Estilos responsivos para móvil (max-width: 768px) */
+
+@media (max-width: 768px) {
+  .footer-about .box:not(:nth-child(1)):not(:nth-child(4)) {
+    display: none;
+  }
+  .footer-container {
+    padding: 0.5rem 0.2rem;
+  }
+  .container-info {
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0 0 0;
+  }
+  .footer-info img {
+    width: 120px;
+  }
+  .container-redes {
+    justify-content: center;
+    padding-right: 0;
+    gap: 10px;
+  }
+  .btn-registrate {
+    width: 100%;
+    max-width: 180px;
+    height: 40px;
+    font-size: 0.9rem;
+    border-radius: 12px;
+    margin-top: 0.5rem;
+  }
+} 

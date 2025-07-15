@@ -4,6 +4,11 @@
 
 @section('content')
 
+<!-- INICIO: Inclusión de CSS responsivos para tablet y móvil -->
+<link rel="stylesheet" href="{{ asset('css/estilos/home-tablet.css') }}">
+<link rel="stylesheet" href="{{ asset('css/estilos/home-mobile.css') }}">
+<!-- FIN: Inclusión de CSS responsivos para tablet y móvil -->
+
 <!-- HERO -->
 <section class="hero">
     <div class="hero-container">
@@ -80,17 +85,20 @@
                 @php
                     $data = $subjectsByUser[$profile->user_id] ?? ['materias' => [], 'grupos' => []];
                 @endphp
-                <!-- Card -->
                 <div class="tutor-card">
-                    <div class="tutor-card-img" >
-                        <video controls muted playsinline loop src="{{ $profile->intro_video ? asset('storage/' . $profile->intro_video) : asset('images/tutors/default.png') }}"></video>
+                    <div class="tutor-card-img">
+                        <video 
+                        controls 
+                        muted 
+                        playsinline 
+                        preload="none" 
+                        poster="{{ $profile->image ? asset('storage/' . $profile->image) : asset('storage/' . $profile->image) }}" src="{{ $profile->intro_video ? asset('storage/' . $profile->intro_video) : asset('storage/' . $profile->image) }}"></video>
                     </div>
                     <div class="tutor-card-content">
                         <div class="tutor-card-header">
                             <div class="tutor-card-header-left">
                                 <h3>{{ $profile->first_name }} {{ $profile->last_name }}</h3>
                                 <span class="tutor-verified">✔️</span>
-                                {{-- <span class="tutor-flag">{{ $profile->native_language }}</span> --}}
                             </div>
                             <button title="Favorito">❤️</button>
                         </div>
@@ -119,23 +127,6 @@
                             @endforeach
                             <span class="tutor-card-tag tutor-card-mas" style="display:none;">+más</span>
                         </div>
-                        <script>
-                        // Mostrar "+más" si tutor-card-sub o tutor-card-tags se desbordan
-                        document.addEventListener('DOMContentLoaded', function() {
-                            // Para grupos
-                            document.querySelectorAll('.tutor-card-sub.mas').forEach(function(el) {
-                                if (el.scrollHeight > el.clientHeight + 1) {
-                                    el.querySelector('.tutor-card-mas').style.display = 'inline';
-                                }
-                            });
-                            // Para tags
-                        document.querySelectorAll('.tutor-card-tags').forEach(function(tags) {
-                                if (tags.scrollHeight > tags.clientHeight + 1) {
-                                    tags.querySelector('.tutor-card-mas').style.display = 'inline';
-                                }
-                            });
-                        });
-                        </script>
                         <div class="tutor-card-actions">
                             <button class="btn-profile">Ver Perfil</button>
                             <button class="btn-reserve">Reservar</button>
@@ -143,72 +134,6 @@
                     </div>
                 </div>
             @endforeach
-            {{-- @foreach($profiles as $profile)
-                @php
-                    $data = $subjectsByUser[$profile->user_id] ?? ['materias' => [], 'grupos' => []];
-                @endphp
-
-                <div class="tutors-card">
-                    <video controls muted playsinline loop src="{{ $profile->intro_video ? asset('storage/' . $profile->intro_video) : asset('images/tutors/default.png') }}"></video>
-
-                    <div class="info">
-                        <div class="info-header">
-                            <img src="{{ $profile->image ? asset('storage/' . $profile->image) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $profile->first_name }}">
-
-                            <div class="info-name">
-                                <div class="name">
-                                    <h1>{{ $profile->first_name }} {{ $profile->last_name }}</h1>
-                                    <i class="fa-solid fa-circle-check"></i>
-                                </div>
-                                <div class="tutor">
-                                    <h1><span>Tutor:</span> {{ implode(', ', $data['grupos']) }}</h1>
-                                </div>
-                            </div>
-
-                            <div class="icono-heart">
-                                <i class="fa-solid fa-heart"></i>
-                            </div>
-                        </div>
-
-                        <div class="info-resena">
-                            <div class="info-puntuacion">
-                                <div class="puntuacion-title">
-                                    <i class="fa fa-star"></i>
-                                    <p>4.5</p>
-                                </div>
-                                <p>7 reseñas</p>
-                            </div>
-                            <div class="info-tutorias">
-                                <div class="tutorias-title">
-                                    <i class="fa-solid fa-book"></i>
-                                    <p class="price-title">10</p>
-                                </div>
-                                <p class="tutorias-details">Tutorías Realizadas</p>
-                            </div>
-                        </div>
-
-                        <div class="info-details">
-                            <div>
-                                <i class="fa-solid fa-book-open"></i>
-                                <p>{{ implode(', ', $data['materias']) }}</p>
-                            </div>
-                            <div>
-                                <i class="fa-solid fa-users"></i>
-                                <p>10 estudiantes activos · 30 Clases</p>
-                            </div>
-                            <div>
-                                <i class="fa-solid fa-language"></i>
-                                <p>{{ $profile->native_language }}</p>
-                            </div>
-                        </div>
-
-                        <div class="info-buttons">
-                            <button class="button2">Ver Perfil</button>
-                            <button class="button1">Reservar</button>
-                        </div>
-                    </div>
-                </div>
-            @endforeach --}}
         </div>
     </div>
 </section>
@@ -327,45 +252,95 @@ document.addEventListener("DOMContentLoaded", () => {
     counters.forEach(counter => observer.observe(counter));
 });
 
-        // 🌀 Carrusel infinito de tutores (scroll horizontal)
-    const container = document.getElementById('tutorsContainer');
-    const initialCards = [...container.querySelectorAll('.tutor-card')];
-
-    // Duplicamos tarjetas al inicio y al final
-    initialCards.forEach(card => {
-    const cloneStart = card.cloneNode(true);
-    const cloneEnd = card.cloneNode(true);
-    container.insertBefore(cloneStart, container.firstChild);
-    container.appendChild(cloneEnd);
+document.addEventListener('DOMContentLoaded', function() {
+    // Video lazy load: solo carga el src si el usuario da play
+    document.querySelectorAll('.tutor-card video').forEach(video => {
+        video.addEventListener('play', function() {
+            if (!video.src) {
+                video.src = video.getAttribute('data-src');
+            }
+        }, { once: true });
     });
-
-    // 🔁 Configurar scroll inicial al centro exacto
-    window.addEventListener('load', () => {
-    const totalWidth = container.scrollWidth;
-    const visibleWidth = container.clientWidth;
-    container.scrollLeft = (totalWidth - visibleWidth) / 2;
-    });
-
-    // 🔁 Detectar si estamos llegando al inicio o al final
-    container.addEventListener('scroll', () => {
-    const scrollLeft = container.scrollLeft;
-    const scrollRight = scrollLeft + container.clientWidth;
-    const totalWidth = container.scrollWidth;
-
-    const buffer = 100; // distancia del borde para activar el "rebote"
-
-    // Si el usuario llega muy al final, reinicia al medio (derecha infinita)
-    if (scrollRight >= totalWidth - buffer) {
-        container.scrollLeft = scrollLeft - (initialCards.length * 350); // 350 = ancho aprox. de cada card
-    }
-
-    // Si el usuario llega muy al principio, reinicia al medio (izquierda infinita)
-    if (scrollLeft <= buffer) {
-        container.scrollLeft = scrollLeft + (initialCards.length * 350);
-    }
-    });
+});
 </script>
 
+<style>
+.tutors-carousel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.carousel-btn {
+  background: var(--secundary-color);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: background 0.2s;
+}
+.carousel-btn-left {
+  left: -60px;
+}
+.carousel-btn-right {
+  right: -60px;
+}
+.tutors-carousel {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  overflow: hidden;
+  gap: 0;
+}
+@media (max-width: 1200px) {
+  .carousel-btn-left {
+    left: -30px;
+  }
+  .carousel-btn-right {
+    right: -30px;
+  }
+}
+@media (max-width: 1024px) {
+  .tutors-carousel-container {
+    padding: 0 1rem;
+  }
+  .carousel-btn-left {
+    left: -18px;
+  }
+  .carousel-btn-right {
+    right: -18px;
+  }
+}
+@media (max-width: 768px) {
+  .tutors-carousel-container {
+    padding: 0 0.5rem;
+  }
+  .carousel-btn-left, .carousel-btn-right {
+    top: 90%;
+    left: 10px;
+    right: 10px;
+    transform: none;
+    position: static;
+    margin: 0 10px;
+  }
+  .tutors-carousel {
+    padding: 1rem 0;
+  }
+}
+</style>
 
 @endsection
 

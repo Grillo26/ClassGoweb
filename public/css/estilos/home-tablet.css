@@ -1,0 +1,136 @@
+/* home-tablet.css: Estilos responsivos para tablet (max-width: 1024px) */
+
+@media (max-width: 1024px) {
+  /* Navbar transparente */
+  .navbar {
+    background-color: transparent !important;
+    box-shadow: none;
+  }
+  /* Hero: centrar gif y texto debajo */
+  .hero-container {
+    flex-direction: column;
+    padding-top: 6rem;
+    align-items: center;
+  }
+  .hero-image {
+    padding: 0;
+    text-align: center;
+    order: 1;
+  }
+  .hero-image img {
+    margin: 0 auto;
+    display: block;
+    max-width: 350px;
+  }
+  .hero-text {
+    padding: 2rem 1rem 1rem 1rem;
+    text-align: center;
+    order: 2;
+  }
+  /* Contadores en fila de dos */
+  .counters {
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2rem;
+  }
+  .counter-box {
+    width: 45%;
+    min-width: 180px;
+    margin-bottom: 1.5rem;
+  }
+  .box-sky {
+    display: none;
+  }
+  /* Tutores: 2 cards por fila en tablet */
+  .tutors {
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 2rem 0.5rem;
+    justify-content: center;
+    align-items: stretch;
+  }
+  .tutor-card {
+    flex: 1 1 45%;
+    max-width: 48vw;
+    min-width: 220px;
+    margin: 0 8px 1.2rem 8px;
+  }
+  .tutors-container {
+    padding: 2rem 0.5rem;
+  }
+  /* Guía paso a paso: cards ocupan ancho */
+  .steps {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 1.2rem;
+    padding: 1rem 0;
+  }
+  .steps-card, .go {
+    min-width: 220px;
+    max-width: 90vw;
+    width: 90vw;
+    margin: 0 auto;
+  }
+  /* Busca tutorías: imagen debajo del texto */
+  .tutorias {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem 0.5rem;
+    height: auto;
+  }
+  .tutores-text {
+    padding: 1rem 0.5rem;
+    align-items: center;
+    text-align: center;
+  }
+  .tutores-img {
+    order: 2;
+    width: 100%;
+    text-align: center;
+  }
+  .tutores-img img {
+    max-width: 95vw;
+    margin: 0 auto;
+  }
+  /* Alianzas: carrusel */
+  .steps-alianzas {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 1.5rem;
+    padding: 1.5rem 0.5rem;
+  }
+  .alianzas-card {
+    min-width: 220px;
+    max-width: 350px;
+    margin: 0 auto;
+  }
+  .alianzas-card img {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+  }
+  /* Footer reducido */
+  footer .footer-about .box:not(:nth-child(1)):not(:nth-child(4)) {
+    display: none;
+  }
+  .footer-container {
+    padding: 1rem 0.5rem;
+  }
+  .container-info {
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0 0 0;
+  }
+  .footer-info img {
+    width: 180px;
+  }
+  .container-redes {
+    justify-content: center;
+    padding-right: 0;
+    gap: 20px;
+  }
+  /* El carrusel horizontal solo se aplica en móvil */
+} 

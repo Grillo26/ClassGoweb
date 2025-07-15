@@ -1,10 +1,14 @@
 <header class="navbar">
+	<!-- INICIO: Inclusión de CSS responsivos para navbar -->
+	<link rel="stylesheet" href="{{ asset('css/estilos/navbar-tablet.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/estilos/navbar-mobile.css') }}">
+	<!-- FIN: Inclusión de CSS responsivos para navbar -->
 	<div class="navbar-container">
 		<div class="navbar-left">
 			<!-- Logo -->
 			<a href="/home">
 				<img src="{{ asset('storage/optionbuilder/uploads/453302-18-2025_0409pmClassGo%20Logo-23%20(1).png') }}" class="nav-i" alt="Mascota">
-			</a>
+			</a>	
 
 			<!-- Enlaces Desktop -->
 			<nav class="navbar-links">
@@ -62,6 +66,8 @@
 				<li><a href="#">Cómo trabajamos</a></li>
 				<li><a href="#">Preguntas</a></li>
 				<li><a href="#">Blog</a></li>
+				<li><a href="#">Empezar</a></li>
+				<li><a href="#">Login</a></li>
 			</ul>
 		</nav>
 	</div>

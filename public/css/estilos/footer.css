@@ -126,3 +126,6 @@ hr{
     color: white;
 }
 
+/* ================= RESPONSIVE DESIGN ================= */
+/* Los estilos responsivos para tablet y móvil han sido movidos a archivos separados: footer-tablet.css y footer-mobile.css. */
+
