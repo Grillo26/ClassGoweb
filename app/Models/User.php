@@ -154,7 +154,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
 
     public function address(): MorphOne
     {
-        return $this->morphOne(Address::class, 'addressable')->latest();
+        return $this->morphOne(Address::class, 'addressable');
     }
 
     public function redirectAfterLogin(): Attribute

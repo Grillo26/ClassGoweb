@@ -39,7 +39,7 @@ class UserResource extends JsonResource
             'billingDetail'                  => new BillingDetailResource($this->whenLoaded('billingDetail')),
             'languages'                      => LanguageResource::collection($this->whenLoaded('languages')),
             'educations'                     => EducationResource::collection($this->whenLoaded('educations')),
-            'address'                        => new AddressResource($this->whenLoaded('address')),
+            'address'                        => null,
             'identityVerification'           => new IdentityResource($this->whenLoaded('identityVerification')),
             'role' => ($this->roles instanceof \Illuminate\Database\Eloquent\Collection && $this->roles->count() > 0) ? $this->roles->first()->name : null,
             'available_for_tutoring'         => $this->whenHas('available_for_tutoring'),
