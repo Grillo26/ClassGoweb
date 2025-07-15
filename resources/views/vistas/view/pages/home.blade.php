@@ -121,12 +121,12 @@
                                 <p class="price-desc">Tutorías realizadas</p>
                             </div>
                         </div>
-                        <div class="tutor-card-tags" title="{{ implode(', ', $data['materias']) }}">
+                        {{-- <div class="tutor-card-tags" title="{{ implode(', ', $data['materias']) }}">
                             @foreach($data['materias'] as $materia)
                                 <span class="tutor-card-tag">{{ $materia }}</span>
                             @endforeach
                             <span class="tutor-card-tag tutor-card-mas" style="display:none;">+más</span>
-                        </div>
+                        </div> --}}
                         <div class="tutor-card-actions">
                             <button class="btn-profile">Ver Perfil</button>
                             <button class="btn-reserve">Reservar</button>
@@ -262,6 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { once: true });
     });
 });
+
 </script>
 
 <style>

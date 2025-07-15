@@ -307,6 +307,11 @@
   min-width: 260px;
   margin: 0 10px 1.5rem 10px;
   box-sizing: border-box;
+  box-shadow: 0 8px 8px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+
 }
 
 .tutor-card:hover {
@@ -377,10 +382,13 @@
   font-size: 0.95rem;
   color: #334155;
   text-align: start;
-  min-height: 3.2em; /* Altura mínima para una línea */
-  display: flex;
-  align-items: center;
-  /* Puedes ajustar el min-height según el diseño deseado */
+  line-height: 1.4; /* Mejora legibilidad */
+  height: 4rem; /* Fuerza altura para 3 líneas aprox */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tutor-card .tutor-card-rating-row {

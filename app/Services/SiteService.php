@@ -364,7 +364,10 @@ public function getTutors($data = array()) {
         // 2. Extrae los perfiles de tutores
         $profiles = DB::table('profiles')
             ->whereIn('user_id', $tutorUserIds)
-            ->select('user_id', 'first_name', 'last_name', 'image', 'intro_video', 'native_language')
+            ->select('user_id',
+                DB::raw("SUBSTRING_INDEX(first_name, ' ', 1) as first_name"), //Extrae el primer nombre
+                DB::raw("SUBSTRING_INDEX(last_name, ' ', 1) as last_name"), //Extrae el primer apellido
+                'image', 'intro_video', 'native_language')
             ->get();
 
         // 3. Filtra los UserSubject solo para esos tutores
