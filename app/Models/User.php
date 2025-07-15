@@ -408,4 +408,10 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
         return $this->belongsToMany(Coupon::class, 'user_coupons')->withPivot('cantidad')->withTimestamps();
     }
 
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'tutor_id'); // El campo que referencia al tutor
+    }
+    
+
 }

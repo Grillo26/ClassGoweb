@@ -113,8 +113,8 @@
                         <div class="tutor-card-rating-row">
                             <div class="tutor-card-rating">
                                 <span class="star">⭐</span>
-                                <span>4.5</span>
-                                <span class="rating-count">(7 reseñas)</span>
+                                <span>{{ $profile->avg_rating}}</span>
+                                <span class="rating-count">( {{ $profile->total_reviews}} reseñas)</span>
                             </div>
                             <div class="tutor-card-price">
                                 <p class="price"><i class="fa-solid fa-book icon"></i>10</p>
