@@ -46,7 +46,7 @@ class Education extends Component
         $this->routes = [
             [
                 'icon'  => '<i><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3.3335 15.6667C3.3335 13.4575 5.12436 11.6667 7.3335 11.6667H12.6668C14.876 11.6667 16.6668 13.4575 16.6668 15.6667V15.6667C16.6668 17.1394 15.4729 18.3333 14.0002 18.3333H6.00016C4.5274 18.3333 3.3335 17.1394 3.3335 15.6667V15.6667Z" stroke="#585858" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.3335 5.00001C13.3335 6.84095 11.8411 8.33334 10.0002 8.33334C8.15921 8.33334 6.66683 6.84095 6.66683 5.00001C6.66683 3.15906 8.15921 1.66667 10.0002 1.66667C11.8411 1.66667 13.3335 3.15906 13.3335 5.00001Z" stroke="#585858" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></i>',
-                'title' => 'Education',
+                'title' => 'Educacion',
                 'route' => 'tutor.profile.resume.education',
             ],
             [

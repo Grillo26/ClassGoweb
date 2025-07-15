@@ -99,6 +99,7 @@ class PersonalDetails extends Component
     private function loadUserData(): void
     {
         $profile = $this->profileService->getUserProfile();
+       // dd( $profile);
         // Consulta directa a user_languages para el usuario actual
         $userLanguages = UserLanguage::where('user_id', Auth::id())
             ->pluck('language_id')
@@ -109,7 +110,6 @@ class PersonalDetails extends Component
         $this->email = Auth::user()?->email;
         $this->phone_number = $profile?->phone_number ?? '';
         $this->gender = $this->normalizeGender($profile?->gender ?? 3);
-        $this->slug = $profile?->slug ?? '';
         $this->description = $profile?->description ?? '';
         $this->image = $profile?->image ?? '';
         $this->intro_video = $profile?->intro_video ?? '';

@@ -118,23 +118,6 @@
                     <div class="border-bottom border-1 border-gray-200 w-100 mt-2"></div>
 
                 </div>
-
-                <!-- Tagline -->
-                <div class="row align-items-center mb-4">
-                    <div class="col-md-3 col-12 mb-2 mb-md-0">
-                        <label style="color:white;" for="slug" class="form-label m-0">
-                            {{ __('profile.tagline') }}
-                        </label>
-                    </div>
-                    <div class="col-md-9 col-12">
-                        <input type="text" id="slug" class="form-control bg-white text-black" wire:model="slug"
-                            placeholder="{{ __('profile.tagline_placeholder') }}">
-                    </div>
-                    @error('slug') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                    <div class="border-bottom border-1 border-gray-200 w-100 mt-2"></div>
-
-                </div>
-
                 <!-- Sección de Descripción -->
                 <div class="row align-items-center mb-4">
                     <div class="col-md-3 col-12 mb-2 mb-md-0">
@@ -309,7 +292,7 @@
                     @endforeach
                     @else
                     <div class="text-white-50">
-                        {{ __('profile.no_languages_selected') }}
+                        {{ __('lenguajes Selecionados') }}
                     </div>
                     @endif
                 </div>

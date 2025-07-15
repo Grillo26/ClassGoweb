@@ -101,6 +101,9 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
         return $this->hasMany(UserSubjectGroup::class)->orderBy('sort_order');
     }
 
+   
+
+
     /**
      * Reseñas que recibe el usuario (como tutor)
      */

@@ -83,7 +83,8 @@ return [
     'max' => 'Máximo',
     'other_languages' => 'Other languages',
     'remove' => 'Eliminar',
-    
-
+    'phone_number' => 'Número de teléfono',
+    'profile_picture' => 'Foto de perfil',
+    'other_languages' => 'Otros idiomas',
+   
 ];
-
