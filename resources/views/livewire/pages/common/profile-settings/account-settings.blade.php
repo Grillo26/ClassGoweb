@@ -60,13 +60,13 @@
                 </div>
             </fieldset>
         </form>
-        <div class="am-title_wrap">
+     {{--    <div class="am-title_wrap">
             <div class="am-title">
                 <h2>{{ __('passwords.link_google_calendar') }}</h2>
                 <p>{{ __('passwords.link__google_calendar_schedule') }}</p>
             </div>
-        </div>
-        <div class="am-linkaccount">
+        </div> --}}
+       {{--  <div class="am-linkaccount">
             @if(!empty($getAccountSetting['google_access_token']))
             <div class="am-linkaccount_option">
                 <div class="am-linkaccount_option_title">
@@ -121,7 +121,7 @@
                 <button  wire:click="saveReminder" wire:target="saveReminder" type="submit" wire:loading.class="am-btn_disable" type="button" class="am-btn">{{ __('passwords.Save_update') }}</button>
             </div>
             @endif
-        </div>
+        </div> --}}
         @if(session()->get('error'))
             <script>
                 document.addEventListener('DOMContentLoaded', function () {

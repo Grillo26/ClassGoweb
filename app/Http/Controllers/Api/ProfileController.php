@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\ProfileService;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
@@ -90,5 +91,56 @@ class ProfileController extends Controller
 
         $userProfile = $user->load(['profile', 'Languages', 'address']);
         return $this->success(message: __('api.profile_data_updated_successfully') ,data: new UserResource($userProfile),code: Response::HTTP_OK);
+    }
+
+    public function getProfileImage($id)
+    {
+        $user = \App\Models\User::with('profile')->find($id);
+        if (!$user || !$user->profile) {
+            return response()->json(['message' => 'Usuario o perfil no encontrado'], 404);
+        }
+        $rutaBD = $user->profile->image ?? null;
+        $url = $rutaBD ? url('public/storage/' . $rutaBD) : null;
+        return response()->json([
+            'id' => $user->id,
+            'profile_image' => $url,
+            'profile_image_db_path' => $rutaBD,
+            'name' => $user->name ?? $user->profile->full_name ?? null,
+            'email' => $user->email,
+        ]);
+    }
+
+    public function updateProfileImage(Request $request, $id)
+    {
+        $user = \App\Models\User::with('profile')->find($id);
+        if (!$user || !$user->profile) {
+            return response()->json(['message' => 'Usuario o perfil no encontrado'], 404);
+        }
+
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:4096',
+        ]);
+
+        // Guardar la imagen directamente en public/storage/profile_images
+        $fileName = uniqid() . '_' . $request->file('image')->getClientOriginalName();
+        $destinationPath = public_path('storage/profile_images');
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+        $request->file('image')->move($destinationPath, $fileName);
+        $relativePath = 'profile_images/' . $fileName;
+
+        // Actualizar el campo image en el perfil
+        $user->profile->image = $relativePath;
+        $user->profile->save();
+
+        $url = url('public/storage/' . $relativePath);
+
+        return response()->json([
+            'id' => $user->id,
+            'profile_image' => $url,
+            'profile_image_db_path' => $relativePath,
+            'message' => 'Imagen de perfil actualizada correctamente'
+        ]);
     }
 }

@@ -45,6 +45,7 @@ class AuthController extends Controller
      */
 
     public function login(LoginRequest $request){
+        \Log::info('Entró a login', $request->all());
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
 
             $user = Auth::user();
@@ -142,5 +143,51 @@ class AuthController extends Controller
         if($response){
             return $this->success(message: __('api.user_logout_successfully'));
         }
+    }
+
+    public function updateFcmToken(Request $request)
+    {
+        \Log::info('Entró a updateFcmToken', $request->all());
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'fcm_token' => 'required|string',
+        ]);
+        $user = \App\Models\User::find($request->user_id);
+        $user->fcm_token = $request->fcm_token;
+        $user->save();
+        return response()->json(['message' => 'FCM token actualizado correctamente']);
+    }
+
+    /**
+     * Verifica el correo electrónico vía API (para app y web)
+     * @return \Illuminate\Http\Response
+     */
+    public function verifyEmail(Request $request)
+    {
+        $id = $request->query('id');
+        $hash = $request->query('hash');
+        if (!$id || !$hash) {
+            return $this->error(message: 'Parámetros inválidos.');
+        }
+        $user = \App\Models\User::find($id);
+        if (!$user) {
+            return $this->error(message: 'Usuario no encontrado.');
+        }
+        if (!hash_equals($hash, sha1($user->email))) {
+            return $this->error(message: 'Hash inválido.');
+        }
+        $alreadyVerified = (bool) $user->email_verified_at;
+        if (!$alreadyVerified) {
+            $user->email_verified_at = now();
+            $user->save();
+        }
+        // Generar token de acceso
+        $token = $user->createToken('classgoapp', ['*'], now()->addDays(7))->plainTextToken;
+        return response()->json([
+            'status' => true,
+            'token' => $token,
+            'user' => new \App\Http\Resources\UserResource($user),
+            'message' => $alreadyVerified ? 'El correo ya estaba verificado.' : 'Correo verificado correctamente.'
+        ]);
     }
 }

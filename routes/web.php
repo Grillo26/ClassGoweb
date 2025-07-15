@@ -37,6 +37,52 @@ use App\Livewire\Payouts;
 use App\Http\Controllers\GoogleMeetController;
 use Illuminate\Support\Facades\Route;
 
+// RUTAS UNIVERSALES AL INICIO
+Route::get('/verify', function (\Illuminate\Http\Request $request) {
+    $id = $request->query('id');
+    $hash = $request->query('hash');
+    $status = null;
+    $message = null;
+    $redirect = null;
+
+    if ($id && $hash) {
+        $user = \App\Models\User::find($id);
+        if ($user && hash_equals($hash, sha1($user->email))) {
+            if (!$user->email_verified_at) {
+                $user->email_verified_at = now();
+                $user->save();
+                $status = 'success';
+                $message = 'Correo verificado correctamente.';
+            } else {
+                $status = 'info';
+                $message = 'El correo ya estaba verificado.';
+            }
+            // Redirección según el rol
+            if ($user->hasRole('tutor')) {
+                $redirect = url('/tutor/dashboard');
+            } elseif ($user->hasRole('student')) {
+                $redirect = url('/student/bookings');
+            }
+        } else {
+            $status = 'error';
+            $message = 'El enlace de verificación no es válido.';
+        }
+    } else {
+        $status = 'error';
+        $message = 'Parámetros inválidos.';
+    }
+
+    return view('verify', [
+        'status' => $status,
+        'message' => $message,
+        'redirect' => $redirect,
+        'id' => $id,
+        'hash' => $hash,
+    ]);
+});
+Route::get('/prueba', function () {
+    return '¡Ruta de prueba funcionando!';
+});
 Route::get('/nosotros',function () {
     return view('vistas.view.pages.nosotros');
 }); 
@@ -73,11 +119,12 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
         Route::get('google/callback', [SiteController::class, 'getGoogleToken']);
         Route::middleware('role:student')->get('checkout', Checkout::class)->name('checkout');
         Route::middleware('role:student')->get('thank-you/{id}', ThankYou::class)->name('thank-you');
-
         Route::middleware('role:tutor')->prefix('tutor')->name('tutor.')->group(function () {
             Route::get('dashboard', ManageAccount::class)->name('dashboard');
             Route::get('payouts', Payouts::class)->name('payouts');
             Route::get('profile', fn() => redirect('tutor.profile.personal-details'))->name('profile');
+
+            //Route::get('/descargar-ficha/{id}', [ExportImageController::class, 'exportFicha'])->name('ficha');
 
 
             Route::prefix('profile')->name('profile.')->group(function () {

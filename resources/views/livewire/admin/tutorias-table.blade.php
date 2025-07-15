@@ -164,6 +164,7 @@
                         <option value="no_completado">No completado</option>
                         <option value="rechazado">Observado</option>
                         <option value="completado">Completado</option>
+                        <option value="cursando">Cursando</option>
                     </select>
                 </div>
                 <div class="modal-footer">

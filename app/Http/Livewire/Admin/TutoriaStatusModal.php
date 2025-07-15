@@ -20,6 +20,7 @@ class TutoriaStatusModal extends Component
             'aceptado' => 'Aceptado',
             'no_completado' => 'No completado',
             'completado' => 'Completado',
+            'cursando' => 'Cursando',
         ];
         $this->tutoriaId = $tutoriaId;
         $this->status = $status;
@@ -29,8 +30,13 @@ class TutoriaStatusModal extends Component
     {
         $tutoria = SlotBooking::find($this->tutoriaId);
         if ($tutoria) {
-            $tutoria->status = $this->status;
+            \Log::info('Valor original de status recibido:', ['status' => $this->status]);
+            $status = str_replace('_', ' ', $this->status);
+            $status = ucfirst(strtolower($status));
+            \Log::info('Valor de status después de normalizar:', ['status' => $status]);
+            $tutoria->status = $status;
             $tutoria->save();
+            \Log::info('Valor de status guardado en BD:', ['status' => $tutoria->status, 'id' => $tutoria->id]);
             $this->emit('tutoriaStatusUpdated');
         }
     }

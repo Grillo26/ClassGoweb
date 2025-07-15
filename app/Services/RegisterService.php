@@ -6,12 +6,12 @@ use App\Jobs\SendNotificationJob;
 use App\Models\Code;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use App\Models\Coupon;
 use App\Models\UserCoupon;
+
 
 class RegisterService
 {
@@ -24,25 +24,13 @@ class RegisterService
         ]);
         $user->profile()->create([
             'first_name' => $request['first_name'],
-            'last_name'  => $request['last_name'],
+            'last_name' => $request['last_name'],
             'phone_number' => $request['phone_number']
         ]);
-
         $user->assignRole($request['user_role']);
-         $prefijo = Str::lower(Str::ascii(substr($request['first_name'], 0, 3))); // ej: 'luc'
-
-        if($request['user_role'] == 'student') {
-            if (!empty($request['codigo'])) {  
-            $code = Code::where('codigo', $request['codigo'])->first(); // Buscar el código en la base de datos
-             $this->codeFriendly($code);
-        }
-        }
-        
-
-
-
+      
+        $this->codigos($request, $user); // Generar 5 cupones para el usuario
         $emailData = ['userName' => $user->profile->full_name, 'userEmail' => $user->email, 'key' => $user->getKey()];
-
         dispatch(new SendNotificationJob('registration', $user, $emailData));
         dispatch(new SendNotificationJob('registration', User::admin(), $emailData));
         $user->token = $user->createToken('learnen')->plainTextToken;
@@ -53,21 +41,15 @@ class RegisterService
     {
         $user->profile()->create([
             'first_name' => $request['first_name'],
-            'last_name'  => $request['last_name'],
+            'last_name' => $request['last_name'],
             'phone_number' => $request['phone_number']
         ]);
-
-
         $user->assignRole($request['user_role']);
-        if (!empty($request['codigo'])) {
-            $code = Code::where('codigo', $request['codigo'])->first(); // Buscar el código en la base de datos
-            $this->codeFriendly($code);
-        }
+        // Generar cupones solo si el usuario es estudiante
+        $this->codigos($request, $user); // Generar 5 cupones para el usuario
         $emailData = ['userName' => $user->profile->full_name, 'userEmail' => $user->email, 'key' => $user->getKey()];
-
         dispatch(new SendNotificationJob('welcome', $user, $emailData));
         dispatch(new SendNotificationJob('welcome', User::admin(), $emailData));
-
         return $user;
     }
 
@@ -80,7 +62,6 @@ class RegisterService
 
     public function sendPasswordResetLink($request): array
     {
-
         $status = Password::sendResetLink(
             $request->only('email')
         );
@@ -96,9 +77,6 @@ class RegisterService
         ];
     }
 
-    /**
-     * Reset the password for the given user.
-     */
 
     public function resetPassword($request)
     {
@@ -125,24 +103,17 @@ class RegisterService
         ];
     }
 
-
-    function codeFriendly($code)
-    {
-         if ($code) {
-                // Asignar un cupón al usuario basado en el código
-                if($code->user_id) { 
-                UserCoupon::create([
-                    'coupon_id' => Coupon::create([
-                        'code_id' => $code->id,
-                        'descuento' => 100, // Descuento del 100%
-                        'fecha_caducidad' => now()->addMonth()->endOfMonth(), // Vence al final del siguiente mes
-                        'estado' => 'activo',
-                    ])->id,
-                    'user_id' => $code->user_id,
-                    'cantidad' => 1,
-                ]);
-                }
+    function codigos($request,$user ){
+         if ($request['user_role'] == 'student') {
+            $cuponservice=new CuponesService(); 
+            $cuponservice->codeCoupons($user); // Generar 5 cupones para el usuario
+             if (!empty($request['codigo'])) {
+                
+                
+                $cuponservice->codeFriendly(Code::where('codigo', $request['codigo'])->first(), $user); // Buscar el código en la base de datos
+                
+                $cuponservice->cupomcodigorandom(Code::where('codigo', $request['codigo'])->first(), $user); // Agregar el cupón al usuario 
             }
-    }
-
+        }
+    } 
 }

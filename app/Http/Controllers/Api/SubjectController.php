@@ -70,4 +70,16 @@ class SubjectController extends Controller
         );
         return strtr($string, $unwanted_array);
     }
+
+    public function getSubjectName($id)
+    {
+        $subject = \App\Models\Subject::find($id);
+        if (!$subject) {
+            return response()->json(['message' => 'Materia no encontrada'], 404);
+        }
+        return response()->json([
+            'id' => $subject->id,
+            'name' => $subject->name
+        ]);
+    }
 }

@@ -55,6 +55,7 @@ class TutorController extends Controller
                 'group_id' => $request->group_id,
                 'min_courses' => $request->min_courses,
                 'min_rating' => $request->min_rating,
+                'instant' => $request->instant,
                 'page' => $request->page
             ]);
 
@@ -114,6 +115,25 @@ class TutorController extends Controller
                 }
             }
 
+            // Filtro para tutoría instantánea
+            if ($request->filled('instant') && $request->instant === 'true') {
+                $now = now();
+                $currentTime = $now->format('H:i:s');
+                $currentDate = $now->format('Y-m-d');
+                
+                // Filtrar tutores que tengan slots en la fecha y hora actual
+                $query->whereHas('userSubjectSlots', function($q) use ($currentTime, $currentDate) {
+                    $q->where('date', $currentDate)
+                      ->where('start_time', '<=', $currentTime)
+                      ->where('end_time', '>=', $currentTime);
+                });
+                
+                Log::info('Filtro de tutoría instantánea aplicado', [
+                    'current_date' => $currentDate,
+                    'current_time' => $currentTime
+                ]);
+            }
+
             // Ordenar por el nombre del tutor (usando el perfil relacionado)
             $query->join('profiles', 'users.id', '=', 'profiles.user_id')
                   ->orderBy('profiles.first_name', 'asc')
@@ -129,10 +149,27 @@ class TutorController extends Controller
             
             $tutors = $query->paginate($perPage, ['*'], 'page', $page);
             
-            $tutors->getCollection()->transform(function ($tutor) {
+            $tutors->getCollection()->transform(function ($tutor) use ($request) {
                 $tutor = $this->getFavouriateTutors($tutor);
                 // Agregar el conteo de cursos completados
                 $tutor->completed_courses_count = $tutor->getCompletedCoursesCount();
+                
+                // Si es tutoría instantánea, agregar información de slots disponibles
+                if ($request->filled('instant') && $request->instant === 'true') {
+                    $now = now();
+                    $currentTime = $now->format('H:i:s');
+                    $currentDate = $now->format('Y-m-d');
+                    
+                    $availableSlots = $tutor->userSubjectSlots()
+                        ->where('date', $currentDate)
+                        ->where('start_time', '<=', $currentTime)
+                        ->where('end_time', '>=', $currentTime)
+                        ->get();
+                    
+                    $tutor->available_instant_slots = $availableSlots;
+                    $tutor->available_instant_slots_count = $availableSlots->count();
+                }
+                
                 return $tutor;
             });
 
@@ -223,9 +260,11 @@ class TutorController extends Controller
 
     public function slotDetail($id)
     {
-        $bookingService  = new BookingService();
-       // $currentSlot     = $bookingService->getSlotDetail($id);
-        //return $this->success(data: new TutorSlotResource($currentSlot));
+        $booking = \App\Models\SlotBooking::with(['tutor', 'slot', 'subject'])->find($id);
+        if (!$booking) {
+            return $this->error(data: null, message: __('api.booking_not_found'), code: 404);
+        }
+        return $this->success(data: new \App\Http\Resources\SlotBookingResource($booking));
     }
 
     public function getFavouriateTutors($tutors)
@@ -277,6 +316,7 @@ class TutorController extends Controller
                 'subject_id' => $request->subject_id,
                 'min_courses' => $request->min_courses,
                 'min_rating' => $request->min_rating,
+                'instant' => $request->instant,
                 'page' => $request->page
             ]);
 
@@ -344,6 +384,25 @@ class TutorController extends Controller
                 }
             }
 
+            // Filtro para tutoría instantánea
+            if ($request->filled('instant') && $request->instant === 'true') {
+                $now = now();
+                $currentTime = $now->format('H:i:s');
+                $currentDate = $now->format('Y-m-d');
+                
+                // Filtrar tutores que tengan slots en la fecha y hora actual
+                $query->whereHas('userSubjectSlots', function($q) use ($currentTime, $currentDate) {
+                    $q->where('date', $currentDate)
+                      ->where('start_time', '<=', $currentTime)
+                      ->where('end_time', '>=', $currentTime);
+                });
+                
+                Log::info('Filtro de tutoría instantánea aplicado en verified-tutors', [
+                    'current_date' => $currentDate,
+                    'current_time' => $currentTime
+                ]);
+            }
+
             // Ordenar por el nombre del tutor (usando el perfil relacionado)
             $query->join('profiles', 'users.id', '=', 'profiles.user_id')
                   ->orderBy('profiles.first_name', 'asc')
@@ -359,10 +418,27 @@ class TutorController extends Controller
             
             $tutors = $query->paginate($perPage, ['*'], 'page', $page);
             
-            $tutors->getCollection()->transform(function ($tutor) {
+            $tutors->getCollection()->transform(function ($tutor) use ($request) {
                 $tutor = $this->getFavouriateTutors($tutor);
                 // Agregar el conteo de cursos completados
                 $tutor->completed_courses_count = $tutor->getCompletedCoursesCount();
+                
+                // Si es tutoría instantánea, agregar información de slots disponibles
+                if ($request->filled('instant') && $request->instant === 'true') {
+                    $now = now();
+                    $currentTime = $now->format('H:i:s');
+                    $currentDate = $now->format('Y-m-d');
+                    
+                    $availableSlots = $tutor->userSubjectSlots()
+                        ->where('date', $currentDate)
+                        ->where('start_time', '<=', $currentTime)
+                        ->where('end_time', '>=', $currentTime)
+                        ->get();
+                    
+                    $tutor->available_instant_slots = $availableSlots;
+                    $tutor->available_instant_slots_count = $availableSlots->count();
+                }
+                
                 return $tutor;
             });
 
@@ -381,22 +457,32 @@ class TutorController extends Controller
     public function getVerifiedTutorsPhotos(Request $request)
     {
         try {
-            $tutors = \App\Models\User::whereHas('roles', function($q) {
-                    $q->where('name', 'tutor');
-                })
-                ->whereHas('profile', function($q) {
-                    $q->whereNotNull('verified_at');
-                })
-                ->with(['profile' => function($q) {
-                    $q->select('id', 'user_id', 'image');
-                }])
-                ->get();
+            $query = \App\Models\User::whereHas('roles', function($q) {
+                $q->where('name', 'tutor');
+            })
+            ->whereHas('profile', function($q) {
+                $q->whereNotNull('verified_at');
+            })
+            ->with(['profile' => function($q) {
+                $q->select('id', 'user_id', 'image', 'first_name', 'last_name');
+            }]);
+
+            if ($request->filled('tutor_id')) {
+                $query->where('id', $request->tutor_id);
+            }
+
+            $tutors = $query->get();
 
             $result = $tutors->map(function($tutor) {
                 $rutaBD = $tutor->profile ? $tutor->profile->image : null;
                 $url = $rutaBD ? url('public/storage/' . $rutaBD) : null;
+                $fullName = $tutor->profile ? trim($tutor->profile->first_name . ' ' . $tutor->profile->last_name) : 'N/A';
+                
                 return [
                     'id' => $tutor->id,
+                    'name' => $fullName,
+                    'first_name' => $tutor->profile ? $tutor->profile->first_name : null,
+                    'last_name' => $tutor->profile ? $tutor->profile->last_name : null,
                     'profile_image' => $url,
                     'profile_image_db_path' => $rutaBD
                 ];
@@ -406,6 +492,62 @@ class TutorController extends Controller
         } catch (\Exception $e) {
             \Log::error('Error en getVerifiedTutorsPhotos: ' . $e->getMessage());
             return $this->error(message: 'Error al obtener fotos de tutores verificados: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * API: Obtener información detallada de slots instantáneos disponibles para un tutor
+     * GET /api/tutor/{id}/instant-slots
+     */
+    public function getInstantSlots($tutorId)
+    {
+        try {
+            $tutor = User::whereHas('roles', function($q) {
+                $q->where('name', 'tutor');
+            })->whereHas('profile', function($q) {
+                $q->whereNotNull('verified_at');
+            })->find($tutorId);
+
+            if (!$tutor) {
+                return $this->error(message: 'Tutor no encontrado', code: Response::HTTP_NOT_FOUND);
+            }
+
+            $now = now();
+            $currentTime = $now->format('H:i:s');
+            $currentDate = $now->format('Y-m-d');
+
+            $instantSlots = $tutor->userSubjectSlots()
+                ->where('date', $currentDate)
+                ->where('start_time', '<=', $currentTime)
+                ->where('end_time', '>=', $currentTime)
+                ->with(['user.profile'])
+                ->get();
+
+            $result = [
+                'tutor' => [
+                    'id' => $tutor->id,
+                    'name' => $tutor->profile ? $tutor->profile->full_name : 'N/A',
+                    'image' => $tutor->profile ? url('public/storage/' . $tutor->profile->image) : null,
+                ],
+                'current_time' => $now->format('Y-m-d H:i:s'),
+                'available_slots' => $instantSlots->map(function($slot) {
+                    return [
+                        'id' => $slot->id,
+                        'start_time' => $slot->start_time,
+                        'end_time' => $slot->end_time,
+                        'duration' => $slot->duracion,
+                        'session_fee' => $slot->session_fee,
+                        'description' => $slot->description,
+                        'date' => $slot->date,
+                    ];
+                }),
+                'total_available_slots' => $instantSlots->count()
+            ];
+
+            return $this->success($result, 'Slots instantáneos obtenidos exitosamente');
+        } catch (\Exception $e) {
+            Log::error('Error en getInstantSlots: ' . $e->getMessage());
+            return $this->error(message: 'Error al obtener slots instantáneos: ' . $e->getMessage());
         }
     }
 }

@@ -22,7 +22,7 @@
     @endif
     @if($showMessage)
     @hasanyrole('tutor|student')
-    <a href="{{ route('laraguppy.messenger') }}" class="am-header_user_chat">
+    {{-- <a href="{{ route('laraguppy.messenger') }}" class="am-header_user_chat">
         <i class="am-icon-chat-03"></i>
         @php
             $message = getUnreadMsgsCount();
@@ -30,7 +30,7 @@
         @if($message > 0)
             <span>{{ $message }}</span>
         @endif
-    </a>
+    </a> --}}
     @endif
     @endhasanyrole
     <div class="am-header_user_menu">

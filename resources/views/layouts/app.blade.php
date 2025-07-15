@@ -10,6 +10,7 @@
         <title>{{ $siteTitle }} {!! request()->is('messenger') ? ' | Messages' : (!empty($title) ? ' | ' . $title : '') !!}</title>
         <x-favicon />
         @vite([
+           /*  'resources/css/app.css', */
             'public/css/bootstrap.min.css',
             'public/css/fonts.css',
             'public/css/icomoon/style.css',

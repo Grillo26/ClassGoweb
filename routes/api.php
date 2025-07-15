@@ -97,8 +97,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('reviews/{id}', [ReviewController::class, 'destroy']);
     Route::get('reviews/stats/{userId}', [ReviewController::class, 'getStats']);
 
-    // Ruta para obtener el tiempo disponible del tutor
-    
 });
 
 // Ruta para obtener el tiempo disponible del tutor (pública)
@@ -115,6 +113,7 @@ Route::get('settings',                                         [OptionBuilderCon
 Route::get('alianzas',                                          [AlianzaController::class, 'index']);
 Route::get('all-subjects', [SubjectController::class, 'index']);
 Route::get('verified-tutors-photos', [\App\Http\Controllers\Api\TutorController::class, 'getVerifiedTutorsPhotos']);
+Route::get('tutor/{id}/instant-slots', [\App\Http\Controllers\Api\TutorController::class, 'getInstantSlots']);
 
 Route::get('reviews', [ReviewController::class, 'index']);
 Route::get('reviews/received', [ReviewController::class, 'getReceivedReviews']);
@@ -134,7 +133,14 @@ Route::post('slot-bookings', [\App\Http\Controllers\Api\BookingController::class
 // Ruta para registrar un nuevo payment_slot_booking (renombrada para prueba)
 Route::post('test-payment-upload', [\App\Http\Controllers\Api\BookingController::class, 'storePaymentSlotBooking']);
 
+// Agregar la ruta fuera del grupo para que sea pública:
+Route::post('update-fcm-token', [AuthController::class, 'updateFcmToken']);
+Route::get('verify-email', [AuthController::class, 'verifyEmail']);
 
+Route::get('user/{id}/profile-image', [ProfileController::class, 'getProfileImage']);
+Route::post('user/{id}/profile-image', [ProfileController::class, 'updateProfileImage']);
+
+Route::get('subject/{id}/name', [SubjectController::class, 'getSubjectName']);
 
 Route::fallback(function () {
     return response()->json([

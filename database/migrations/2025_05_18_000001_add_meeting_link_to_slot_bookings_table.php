@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('slot_bookings', function (Blueprint $table) {
-            $table->text('meeting_link')->nullable()->after('user_subject_slot_id');
+            $table->string('meeting_link')->nullable()->after('calendar_event_id');
+           /*  $table->unsignedBigInteger('user_subject_slot_id')->after('tutor_id'); */
+           /*  $table->foreign('user_subject_slot_id')->references('id')->on('user_subject_slots')->onDelete('cascade'); */
         });
     }
 
@@ -22,8 +24,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('slot_bookings', function (Blueprint $table) {
-            $table->dropForeign(['user_subject_slot_id']);
-            $table->dropColumn('user_subject_slot_id');
+            /* $table->dropForeign(['user_subject_slot_id']); */
+            /* $table->dropColumn('user_subject_slot_id'); */
             $table->dropColumn('meeting_link');
         });
     }

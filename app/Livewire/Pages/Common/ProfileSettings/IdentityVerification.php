@@ -22,6 +22,7 @@ use App\Models\Coupon;
 use Illuminate\Support\Str;
 use App\Models\UserCoupon;
 
+
 /**
  * Componente Livewire para la verificación de identidad del usuario.
  * Permite a los usuarios cargar información y documentos para verificar su identidad.
@@ -31,122 +32,27 @@ class IdentityVerification extends Component
 {
 
     use WithFileUploads;
-    /**
-     * Formulario de verificación de identidad (Livewire Form Object)
-     * @var IdentityVerificationForm
-     */
     public IdentityVerificationForm $form;
-    /**
-     * Servicio de identidad del usuario
-     * @var IdentityService|null
-     */
     private $identityService;
-    /**
-     * Información de identidad del usuario
-     * @var mixed
-     */
     public $identityInfo;
-    /**
-     * Identidad actual del usuario
-     * @var mixed
-     */
     public $identity;
-    /**
-     * Indica si la vista está cargando
-     * @var bool
-     */
     public $isLoading = true;
-    /**
-     * Foto personal subida
-     * @var mixed
-     */
     public $personalPhoto;
-    /**
-     * Documentos subidos y existentes
-     * @var mixed
-     */
     public $docs, $existingDocs = [];
-    /**
-     * Indica si se está subiendo un archivo
-     * @var bool
-     */
-    public $isUploading = false;
-    /**
-     * Indica si el usuario está verificado
-     * @var bool
-     */
     public $verified = false;
-    /**
-     * Usuario autenticado
-     * @var mixed
-     */
     public $user = '';
-    /**
-     * Lista de países
-     * @var array|null
-     */
     public $countries = null;
-    /**
-     * Lista de estados del país seleccionado
-     * @var mixed
-     */
     public $states;
-    /**
-     * Extensiones de imagen permitidas
-     * @var array
-     */
     public $allowImgFileExt = [];
-    /**
-     * Texto de extensiones de archivo permitidas
-     * @var string
-     */
     public $fileExt = '';
-    /**
-     * Tamaño máximo de imagen permitido (MB)
-     * @var string
-     */
     public $allowImageSize = '';
-    /**
-     * Datos procesados del formulario
-     * @var mixed
-     */
     public $data;
-    /**
-     * Perfil del usuario
-     * @var mixed
-     */
     public $profile;
-    /**
-     * Plantilla de email para notificaciones
-     * @var mixed
-     */
     public $emailTemplate;
-    /**
-     * Indica si el país tiene estados
-     * @var bool
-     */
     public $hasStates = false;
-    /**
-     * Ruta activa
-     * @var mixed
-     */
     public $activeRoute;
-
-    /**
-     * Servicio de identidad del usuario (privado)
-     * @var IdentityService|null
-     */
     private ?IdentityService $userIdentity = null;
-    /**
-     * Servicio de perfil del usuario (privado)
-     * @var ProfileService|null
-     */
     private ?ProfileService $profileService = null;
-
-    /**
-     * Inicializa los servicios de identidad y perfil, y asigna el usuario autenticado.
-     * Se ejecuta al bootear el componente.
-     */
     public function boot()
     {
         $this->userIdentity = new IdentityService(Auth::user());
@@ -154,19 +60,12 @@ class IdentityVerification extends Component
         $this->user = Auth::user();
     }
 
-    /**
-     * Marca la vista como cargada y dispara el evento para cargar JS de la página.
-     */
     public function loadData()
     {
         $this->isLoading = false;
         $this->dispatch('loadPageJs');
     }
 
-    /**
-     * Inicializa variables al montar el componente.
-     * Carga países, perfil, configuraciones y verifica si el perfil está completo.
-     */
     public function mount()
     {
         $this->activeRoute = Route::currentRouteName();
@@ -189,17 +88,9 @@ class IdentityVerification extends Component
         $this->dispatch('initSelect2', target: '.am-select2');
     }
 
-    /**
-     * Se ejecuta cuando se actualiza algún campo del formulario.
-     * Si el campo es countryName, busca el ID del país por su short_code.
-     * Si es un archivo, valida que sea imagen.
-     * @param mixed $value
-     * @param string $key
-     */
+    
     public function updatedForm($value, $key)
     {
-
-
         if ($key == 'countryName') {
             $country = Country::where('short_code', $value)->select('id')->first();
             $this->form->country = $country?->id;
@@ -217,12 +108,6 @@ class IdentityVerification extends Component
         }
     }
 
-    /**
-     * Renderiza la vista del componente.
-     * Carga los estados si hay país seleccionado y dispara eventos para select2.
-     * También obtiene la clave de Google Places si aplica.
-     * @return \Illuminate\View\View
-     */
     #[Layout('layouts.app')]
     public function render()
     {
@@ -331,28 +216,21 @@ class IdentityVerification extends Component
       * @return void
       */
      public function Coupons(){
-        $user = Auth::user();
-        if ($user->hasRole('student')) {
-            // Crear un nuevo código y cupones
-            $code = Code::create([
-                'nombre' => 'Código de bienvenida',
+        $user = Auth::user();    
+        // Buscar el UserCoupon del usuario que tenga cantidad 5 y esté asociado a un cupón creado en la fecha de registro
+        $userCoupon = UserCoupon::where('user_id', $user->id)
+            ->where('cantidad', 5)
+            ->whereHas('coupon', function($query) use ($user) {
+                $query->whereDate('created_at', $user->created_at->toDateString());
+            })
+            ->first();
+        if ($userCoupon && $userCoupon->coupon) {
+            // Actualizar solo el cupón específico del usuario
+            $userCoupon->coupon->update([
+                'estado' => 'activo',
                 'descuento' => 100,
-                'codigo' => Str::random(8), // Generar un código único
-                'user_id' => $user->id,
-                'fecha_caducidad' => null,
+                'fecha_caducidad' => now()->addDays(30)
             ]);
-                UserCoupon::create([
-                    'coupon_id' =>Coupon::create([
-                        'code_id' => $code->id,
-                        'descuento' => 100, // Descuento del 100%
-                        'fecha_caducidad' => now()->endOfMonth(), // Vence al final del siguiente mes
-                        'estado' => 'activo',
-                 ]  )->id,
-                    'user_id' => $code->user_id,
-                    'cantidad' => 5,
-                ]);
-            
         }
      }
-
 }

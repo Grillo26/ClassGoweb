@@ -75,15 +75,9 @@ class NotificationService
         }
         $emailTemplate = $content;
         if (Str::contains($emailTemplate['content'], '{verificationLink}')) {
-            $verifyUrl = URL::temporarySignedRoute(
-                'verification.verify',
-                Carbon::now()->addMinutes(1440),
-                [
-                    'id' => $data['key'],
-                    'hash' => sha1($data['userEmail']),
-                ]
-            );
-            $btnHtml = view('components.email.button', ['btnText' => trans('email_template.verfiy_email'), 'btnUrl' => $verifyUrl])->render();
+            // Enlace web universal para verificación (sirve para web y app)
+            $verifyUrl = 'https://classgoapp.com/verify?id=' . $data['key'] . '&hash=' . sha1($data['userEmail']);
+            $btnHtml = view('components.email.button', ['btnText' => 'Verificar cuenta', 'btnUrl' => $verifyUrl])->render();
             $emailTemplate['content'] = Str::replace('{verificationLink}', $btnHtml, $emailTemplate['content']);
         }
         return $emailTemplate;
@@ -110,15 +104,9 @@ class NotificationService
         }
         $emailTemplate = $content;
         if (Str::contains($emailTemplate['content'], '{verificationLink}')) {
-            $verifyUrl = URL::temporarySignedRoute(
-                'verification.verify',
-                Carbon::now()->addMinutes(1440),
-                [
-                    'id' => $data['key'],
-                    'hash' => sha1($data['userEmail']),
-                ]
-            );
-            $btnHtml = view('components.email.button', ['btnText' => trans('email_template.verfiy_email'), 'btnUrl' => $verifyUrl]);
+            // Enlace web universal para verificación (sirve para web y app)
+            $verifyUrl = 'https://classgoapp.com/verify?id=' . $data['key'] . '&hash=' . sha1($data['userEmail']);
+            $btnHtml = view('components.email.button', ['btnText' => 'Verificar cuenta', 'btnUrl' => $verifyUrl])->render();
             $emailTemplate['content'] = Str::replace('{verificationLink}', $btnHtml, $emailTemplate['content']);
         }
         return $emailTemplate;

@@ -1,0 +1,351 @@
+/* Estilos del modal QR - versión compatible con Bootstrap Modal */
+/* Todos los estilos específicos para #setupqrpopup para evitar conflictos */
+
+/* Modal principal - solo estilos de contenido, no comportamiento */
+#setupqrpopup .modal-dialog {
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+#setupqrpopup .modal-content {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+/* Header del modal */
+#setupqrpopup .upload-qr-header {
+    padding: 24px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: none;
+    background: white;
+}
+
+#setupqrpopup .upload-qr-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#setupqrpopup .upload-qr-close {
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#setupqrpopup .upload-qr-close:hover {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+/* Body del modal */
+#setupqrpopup .upload-qr-body {
+    padding: 24px;
+    background: white;
+}
+
+/* Zona de subida */
+#setupqrpopup .upload-file-zone {
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f9fafb;
+    margin-bottom: 16px;
+    position: relative;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#setupqrpopup .upload-file-zone:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+#setupqrpopup .upload-file-zone.drag-over {
+    border-color: #3b82f6;
+    background: #dbeafe;
+}
+
+#setupqrpopup .upload-file-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+#setupqrpopup .upload-file-icon {
+    color: #9ca3af;
+    transition: color 0.3s ease;
+}
+
+#setupqrpopup .upload-file-zone:hover .upload-file-icon {
+    color: #3b82f6;
+}
+
+#setupqrpopup .upload-file-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#setupqrpopup .upload-file-text {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#setupqrpopup .upload-file-format {
+    font-size: 12px;
+    color: #9ca3af;
+    background: #f3f4f6;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Mensaje de error */
+#setupqrpopup .upload-error-message {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 16px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Preview de imagen */
+#setupqrpopup .upload-image-preview {
+    margin-bottom: 16px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 8px;
+    display: none;
+}
+
+#setupqrpopup .upload-image-preview.show {
+    display: block;
+}
+
+/* Botones de acción */
+#setupqrpopup .upload-modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+#setupqrpopup .upload-btn-cancel {
+    padding: 12px 24px;
+    border: 1px solid #d1d5db;
+    background: white;
+    color: #374151;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+}
+
+#setupqrpopup .upload-btn-cancel:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+#setupqrpopup .upload-btn-save {
+    padding: 12px 24px;
+    background: #f39f05;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+}
+
+#setupqrpopup .upload-btn-save:hover:not(.upload-btn-loading) {
+    background: #2563eb;
+}
+
+#setupqrpopup .upload-btn-save.upload-btn-loading {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+#setupqrpopup .upload-loading-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#setupqrpopup .upload-spinner {
+    animation: upload-spin 1s linear infinite;
+}
+
+@keyframes upload-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Estilos para imagen existente */
+#setupqrpopup .existing-image-display {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+#setupqrpopup .existing-qr-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: white;
+}
+
+#setupqrpopup .existing-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#setupqrpopup .upload-file-zone:hover .existing-image-overlay {
+    opacity: 1;
+}
+
+#setupqrpopup .existing-image-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    text-align: center;
+}
+
+#setupqrpopup .existing-image-actions .upload-file-icon {
+    color: white;
+}
+
+#setupqrpopup .existing-image-actions .upload-file-title {
+    color: white;
+    font-size: 16px;
+    margin: 0;
+}
+
+#setupqrpopup .existing-image-actions .upload-file-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    margin: 0;
+}
+
+#setupqrpopup .existing-image-actions .upload-file-format {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 10px;
+}
+
+/* Preview de nueva imagen */
+#setupqrpopup .new-image-preview {
+    margin-bottom: 16px;
+    padding: 16px;
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+}
+
+#setupqrpopup .new-image-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #065f46;
+    margin: 0 0 12px 0;
+}
+
+#setupqrpopup .new-image-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+#setupqrpopup .new-image-preview-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 2px solid #10b981;
+}
+
+#setupqrpopup .new-image-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#setupqrpopup .new-image-filename {
+    font-size: 13px;
+    color: #065f46;
+    font-weight: 500;
+}
+
+#setupqrpopup .new-image-size {
+    font-size: 12px;
+    color: #059669;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    #setupqrpopup .upload-qr-header,
+    #setupqrpopup .upload-qr-body {
+        padding: 16px;
+    }
+
+    #setupqrpopup .upload-file-zone {
+        padding: 32px 16px;
+    }
+
+    #setupqrpopup .upload-modal-actions {
+        flex-direction: column;
+    }
+
+    #setupqrpopup .upload-btn-cancel,
+    #setupqrpopup .upload-btn-save {
+        width: 100%;
+        justify-content: center;
+    }
+}
