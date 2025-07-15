@@ -49,19 +49,42 @@ class AuthController extends Controller
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
 
             $user = Auth::user();
-            $user->load([
-                'profile:id,user_id,first_name,last_name,gender,recommend_tutor,intro_video,native_language,verified_at,slug,image,tagline,description,created_at,updated_at',
-                'address:country_id,state_id,city,address',
-                'roles',
-                'userWallet:id,user_id,amount'
-            ]);
-            // Forzar que roles sea una colección Eloquent válida
-            if (!($user->roles instanceof \Illuminate\Database\Eloquent\Collection)) {
-                $user->setRelation('roles', collect($user->roles ? [$user->roles] : []));
-            }
             
-            // Asegurar que el campo available_for_tutoring esté disponible
-            $user->available_for_tutoring = $user->available_for_tutoring ?? true;
+            try {
+                $user->load([
+                    'profile:id,user_id,first_name,last_name,gender,recommend_tutor,intro_video,native_language,verified_at,slug,image,tagline,description,created_at,updated_at',
+                    'address:country_id,state_id,city,address',
+                    'roles',
+                    'userWallet:id,user_id,amount'
+                ]);
+                
+                // Verificar que roles sea una colección válida
+                if (!($user->roles instanceof \Illuminate\Database\Eloquent\Collection)) {
+                    $user->setRelation('roles', collect($user->roles ? [$user->roles] : []));
+                }
+                
+                // Asegurar que el campo available_for_tutoring esté disponible
+                $user->available_for_tutoring = $user->available_for_tutoring ?? true;
+                
+                \Log::info('Relaciones cargadas exitosamente para usuario: ' . $user->id);
+                
+            } catch (\Exception $e) {
+                \Log::error('Error cargando relaciones para usuario ' . $user->id . ': ' . $e->getMessage());
+                \Log::error('Stack trace: ' . $e->getTraceAsString());
+                
+                // Intentar cargar sin address si hay problema
+                try {
+                    $user->load([
+                        'profile:id,user_id,first_name,last_name,gender,recommend_tutor,intro_video,native_language,verified_at,slug,image,tagline,description,created_at,updated_at',
+                        'roles',
+                        'userWallet:id,user_id,amount'
+                    ]);
+                    \Log::info('Relaciones cargadas sin address para usuario: ' . $user->id);
+                } catch (\Exception $e2) {
+                    \Log::error('Error crítico cargando relaciones: ' . $e2->getMessage());
+                    return $this->error('Error interno del servidor', null, 500);
+                }
+            }
 
 
             $user->tokens()->where('name', 'lernen')->delete();
