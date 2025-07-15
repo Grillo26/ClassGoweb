@@ -58,16 +58,24 @@ class UserBooking extends Component
         $this->dispatchSessionMessages();
         $this->activeRoute = Route::currentRouteName();
 
-        // Obtener las reservas del usuario logueado
-        $this->bookings = SlotBooking::getBookingsByStudent(Auth::id())->map(function($booking) {
-            return [
-                'title' => $booking->status,
-                'start' => $booking->start_time,
-                'end' => $booking->end_time,
-                'color' => $booking->status === 'confirmed' ? 'green' : ($booking->status === 'pending' ? 'orange' : 'red')
-            ];
-        });
-        //dd($this->bookings, "aver");
+        // Obtener las reservas del usuario logueado de forma segura sin cargar relaciones morph
+        try {
+            $bookings = SlotBooking::where('student_id', Auth::id())
+                ->select('id', 'start_time', 'end_time', 'status')
+                ->get();
+            
+            $this->bookings = $bookings->map(function($booking) {
+                return [
+                    'title' => $booking->getRawOriginal('status'),
+                    'start' => $booking->start_time,
+                    'end' => $booking->end_time,
+                    'color' => $booking->getRawOriginal('status') === 'confirmed' ? 'green' : ($booking->getRawOriginal('status') === 'pending' ? 'orange' : 'red')
+                ];
+            });
+        } catch (\Exception $e) {
+            \Log::error('Error cargando bookings en UserBooking: ' . $e->getMessage());
+            $this->bookings = collect([]);
+        }
     }
 
     #[Layout('layouts.app')]
@@ -76,26 +84,33 @@ class UserBooking extends Component
         $user = Auth::user();
         $userRole = $this->getUserRole($user);
         
-        if ($userRole == 'tutor') {
-            // Obtener reservas donde el tutor es el usuario actual
-            $this->upcomingBookings = SlotBooking::where('tutor_id', Auth::id())
-                ->select('id', 'student_id', 'tutor_id', 'start_time', 'end_time', 'status', 'subject_id')
-                ->orderBy('start_time')
-                ->get()
-                ->groupBy(function($item) {
-                    return parseToUserTz($item->start_time)->toDateString();
-                });
-                
-        } else if ($userRole == 'student') {
-            // Obtener reservas donde el estudiante es el usuario actual
-            $this->upcomingBookings = SlotBooking::where('student_id', Auth::id())
-                ->select('id', 'student_id', 'tutor_id', 'start_time', 'end_time', 'status', 'subject_id')
-                ->orderBy('start_time')
-                ->get()
-                ->groupBy(function($item) {
-                    return parseToUserTz($item->start_time)->toDateString();
-                });
-                
+        try {
+            if ($userRole == 'tutor') {
+                // Obtener reservas donde el tutor es el usuario actual
+                $this->upcomingBookings = SlotBooking::where('tutor_id', Auth::id())
+                    ->select('id', 'student_id', 'tutor_id', 'start_time', 'end_time', 'status', 'subject_id')
+                    ->orderBy('start_time')
+                    ->get()
+                    ->groupBy(function($item) {
+                        return parseToUserTz($item->start_time)->toDateString();
+                    });
+                    
+            } else if ($userRole == 'student') {
+                // Obtener reservas donde el estudiante es el usuario actual
+                $this->upcomingBookings = SlotBooking::where('student_id', Auth::id())
+                    ->select('id', 'student_id', 'tutor_id', 'start_time', 'end_time', 'status', 'subject_id')
+                    ->orderBy('start_time')
+                    ->get()
+                    ->groupBy(function($item) {
+                        return parseToUserTz($item->start_time)->toDateString();
+                    });
+                    
+            } else {
+                $this->upcomingBookings = collect([]);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error cargando upcomingBookings en UserBooking: ' . $e->getMessage());
+            $this->upcomingBookings = collect([]);
         }
         
         return view('livewire.pages.common.bookings.user-booking', [
@@ -104,15 +119,22 @@ class UserBooking extends Component
     }
     
     /**
-     * Obtener el rol del usuario de forma segura
+     * Obtener el rol del usuario de forma segura sin cargar relaciones morph
      */
     private function getUserRole($user)
     {
         try {
-            if ($user->roles instanceof \Illuminate\Database\Eloquent\Collection && $user->roles->count() > 0) {
-                return $user->roles->first()->name;
+            // Verificar si roles ya está cargado
+            if ($user->relationLoaded('roles')) {
+                if ($user->roles instanceof \Illuminate\Database\Eloquent\Collection && $user->roles->count() > 0) {
+                    return $user->roles->first()->name;
+                }
+                return null;
             }
-            return null;
+            
+            // Si no está cargado, hacer una consulta directa
+            $role = $user->roles()->select('name')->first();
+            return $role ? $role->name : null;
         } catch (\Exception $e) {
             \Log::error('Error obteniendo rol del usuario: ' . $e->getMessage());
             return null;

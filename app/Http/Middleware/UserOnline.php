@@ -37,7 +37,8 @@ class UserOnline
             \Log::error('Stack trace: ' . $e->getTraceAsString());
             
             // Si hay un error relacionado con morph, intentar continuar
-            if (strpos($e->getMessage(), 'getMorphClass') !== false) {
+            if (strpos($e->getMessage(), 'getMorphClass') !== false || 
+                strpos($e->getMessage(), 'Collection') !== false) {
                 \Log::warning('Error de morph detectado, continuando...');
                 return response()->json(['error' => 'Error interno del servidor'], 500);
             }

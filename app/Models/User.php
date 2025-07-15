@@ -140,10 +140,17 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
         return Attribute::make(
             get: fn() => Cache::rememberForever('user-role-' . $this->id, function() {
                 try {
-                    if ($this->roles instanceof \Illuminate\Database\Eloquent\Collection && $this->roles->count() > 0) {
-                        return $this->roles->first()->name;
+                    // Verificar si roles ya está cargado
+                    if ($this->relationLoaded('roles')) {
+                        if ($this->roles instanceof \Illuminate\Database\Eloquent\Collection && $this->roles->count() > 0) {
+                            return $this->roles->first()->name;
+                        }
+                        return null;
                     }
-                    return null;
+                    
+                    // Si no está cargado, hacer una consulta directa
+                    $role = $this->roles()->select('name')->first();
+                    return $role ? $role->name : null;
                 } catch (\Exception $e) {
                     \Log::error('Error en atributo role para usuario ' . $this->id . ': ' . $e->getMessage());
                     return null;
