@@ -73,7 +73,10 @@ class UserBooking extends Component
     #[Layout('layouts.app')]
     public function render()
     {
-        if (Auth::user()->role == 'tutor') {
+        $user = Auth::user();
+        $userRole = $this->getUserRole($user);
+        
+        if ($userRole == 'tutor') {
             // Obtener reservas donde el tutor es el usuario actual
             $this->upcomingBookings = SlotBooking::where('tutor_id', Auth::id())
                 ->orderBy('start_time')
@@ -82,7 +85,7 @@ class UserBooking extends Component
                     return parseToUserTz($item->start_time)->toDateString();
                 });
                 
-        } else if (Auth::user()->role == 'student') {
+        } else if ($userRole == 'student') {
             // Obtener reservas donde el estudiante es el usuario actual
             $this->upcomingBookings = SlotBooking::where('student_id', Auth::id())
                 ->orderBy('start_time')
@@ -96,6 +99,22 @@ class UserBooking extends Component
         return view('livewire.pages.common.bookings.user-booking', [
             'bookings' => $this->bookings, // Pasar las reservas a la vista
         ]);
+    }
+    
+    /**
+     * Obtener el rol del usuario de forma segura
+     */
+    private function getUserRole($user)
+    {
+        try {
+            if ($user->roles instanceof \Illuminate\Database\Eloquent\Collection && $user->roles->count() > 0) {
+                return $user->roles->first()->name;
+            }
+            return null;
+        } catch (\Exception $e) {
+            \Log::error('Error obteniendo rol del usuario: ' . $e->getMessage());
+            return null;
+        }
     }
 
     protected function dispatchSessionMessages() {
@@ -180,10 +199,13 @@ class UserBooking extends Component
     }
 
     public function syncWithGoogleCalendar() {
-        if (Auth::user() && Auth::user()->role == 'tutor') {
+        $user = Auth::user();
+        $userRole = $this->getUserRole($user);
+        
+        if ($user && $userRole == 'tutor') {
             $sucess = $this->bookingService->createSlotEventGoogleCalendar(booking: $this->currentBooking, updateMeetingLink: true);
             [$type, $message] = $sucess ? ['success', __('calendar.sync_success')] : ['error', __('calendar.sync_error')];
-        } elseif (Auth::user() && Auth::user()->role == 'student') {
+        } elseif ($user && $userRole == 'student') {
             $sucess = $this->bookingService->createBookingEventGoogleCalendar($this->currentBooking);
             [$type, $message] = $sucess ? ['success', __('calendar.sync_success')] : ['error', __('calendar.sync_error')];
         } else {
@@ -213,11 +235,14 @@ class UserBooking extends Component
         $start = $end = null;
         $this->disablePrevious = $this->isCurrent = false;
         $now = Carbon::now(getUserTimezone());
+        $user = Auth::user();
+        $userRole = $this->getUserRole($user);
+        
         if ($this->showBy == 'daily') {
             $start = $this->currentDate->toDateString()." 00:00:00";
             $end = $this->currentDate->toDateString()." 23:59:59";
             if ($this->currentDate->isSameDay($now)) {
-                if (Auth::user()->role == 'tutor') {
+                if ($userRole == 'tutor') {
                     $this->disablePrevious = true;
                 }
                 $this->isCurrent = true;
@@ -226,7 +251,7 @@ class UserBooking extends Component
             $start = $this->currentDate->copy()->startOfWeek($this->startOfWeek)->toDateString()." 00:00:00";
             $end = $this->currentDate->copy()->endOfWeek(getEndOfWeek($this->startOfWeek))->toDateString()." 23:59:59";
             if ($this->currentDate->isSameWeek($now)) {
-                if (Auth::user()->role == 'tutor') {
+                if ($userRole == 'tutor') {
                     $this->disablePrevious = true;
                 }
                 $this->isCurrent = true;
@@ -235,7 +260,7 @@ class UserBooking extends Component
             $start = $this->currentDate->copy()->firstOfMonth()->startOfWeek($this->startOfWeek)->toDateString()." 00:00:00";
             $end = $this->currentDate->copy()->lastOfMonth()->endOfWeek(getEndOfWeek($this->startOfWeek))->toDateString()." 23:59:59";
             if ($this->currentDate->isSameMonth($now)) {
-                if (Auth::user()->role == 'tutor') {
+                if ($userRole == 'tutor') {
                     $this->disablePrevious = true;
                 }
                 $this->isCurrent = true;
