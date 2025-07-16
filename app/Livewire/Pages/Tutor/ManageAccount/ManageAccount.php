@@ -2,62 +2,71 @@
 namespace App\Livewire\Pages\Tutor\ManageAccount;
 
 
-use App\Livewire\Forms\Tutor\Payout\PayoutForm;
 use App\Services\PayoutService;
-use App\Services\WalletService;
-use Carbon\Carbon;
-use Livewire\Attributes\Layout;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\On;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
-use App\Models\UserPayoutMethod;
 use Livewire\WithPagination;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
+use App\Livewire\Forms\Tutor\Payout\PayoutForm;
+
+use App\Models\UserPayoutMethod;
+
 
 class ManageAccount extends Component
 {
     use WithPagination;
     use WithFileUploads;
 
-    public $qrImage; // Variable para almacenar la imagen
-    public $currentQRPath; // Variable para la ruta de la imagen QR
+    public $qrImage;
+    public $currentQRPath;
     public $data = [];
     public $status = '';
     public $isLoading = true;
-    public $earnedAmount, $pendingFunds;
-    public $chart = false;
     public $payoutStatus;
-    public $selectedDate;
-    public $walletBalance;
-    public $withdrawalsType;
-    public $withdrawalBalance;
-    public PayoutForm $form;
-    private ?WalletService $walletService = null;
-    private ?PayoutService $payoutService = null;
 
+
+
+    
+
+    // Agregar estas propiedades para el formulario de banco
+    public $bankTitle = '';
+    public $bankAccountNumber = '';
+    public $bankName = '';
+    public $bankRoutingNumber = '';
+
+
+
+    public PayoutForm $form;
+    private ?PayoutService $payoutService = null;
     public function boot()
     {
-        $this->walletService = new WalletService();
         $this->payoutService = new PayoutService();
     }
 
     public function mount()
     {
-        $this->chart = true;
-        $this->selectedDate = now(getUserTimezone());
-        $this->data = $this->walletService->getUserEarnings(Auth::user()->id, $this->selectedDate);
-        $this->earnedAmount = $this->walletService->getEarnedIncome(Auth::user()->id);
-        $this->pendingFunds = $this->walletService->getPendingAvailableFunds(Auth::user()->id);
         $this->dispatch('initSelect2', target: '.am-select2');
-        // Obtener la imagen QR actual del usuario si existe
-        $payoutMethod = UserPayoutMethod::where('user_id', Auth::id())
-            ->where('payout_method', 'QR')
-            ->where('status', 'active') // Solo métodos activos
-            ->first();
-        $this->currentQRPath = $payoutMethod ? $payoutMethod->img_qr : null;
+        $this->loadCurrentQRImage();
     }
 
+    private function loadCurrentQRImage()
+    {
+        $payoutMethod = UserPayoutMethod::where('user_id', Auth::id())
+            ->where('payout_method', 'QR')
+            ->where('status', 'active')
+            ->first();
+        if ($payoutMethod && $payoutMethod->img_qr) {
+            // Normalizar la ruta de la imagen
+            $imgPath = $payoutMethod->img_qr;
+            // Remover el prefijo 'storage/' si existe para almacenarlo sin él
+            $this->currentQRPath = str_replace('storage/', '', $imgPath);
+        } else {
+            $this->currentQRPath = null;
+        }
+    }
 
     #[On('refresh-payouts')]
     public function refresh()
@@ -65,169 +74,210 @@ class ManageAccount extends Component
         $this->loadData();
     }
 
+
     #[Layout('layouts.app')]
     public function render()
     {
-        $withdrawalDetails = $this->payoutService->getWithdrawalDetail(Auth::user()->id, $this->status);
         $qr = UserPayoutMethod::withTrashed()
             ->where('user_id', Auth::id())
             ->where('payout_method', 'QR')
             ->first();
-        return view('livewire.pages.tutor.manage-account.manage-account', compact('withdrawalDetails', 'qr'));
+        return view('livewire.pages.tutor.manage-account.manage-account', compact('qr'));
     }
 
     public function loadData()
     {
         $this->isLoading = true;
-        if ($this->chart) {
-            $this->dispatch('initChartJs', currentDate: parseToUserTz($this->selectedDate->copy())->format('F, Y'), data: $this->data);
-        }
-        $this->chart = false;
-        $this->walletBalance = $this->walletService->getWalletAmount(Auth::user()->id);
-        $this->withdrawalBalance = $this->payoutService->geWithdrawalBalance(Auth::user()->id)->toArray();
-        $this->withdrawalsType = $this->payoutService->getWithdrawalTypes(Auth::user()->id);
         $this->payoutStatus = $this->payoutService->getPayoutStatus(Auth::user()->id);
         $this->dispatch('initSelect2', target: '.am-select2');
         $this->isLoading = false;
     }
 
-    public function updateQR()
+
+
+
+
+    public function updatePayout()
     {
-        // Verificar si hay archivo antes de validar
-        if (!$this->qrImage) {
-            $this->dispatch('showAlertMessage', [
-                'type' => 'error',
-                'title' => __('general.error_title'),
-                'message' => __('tutor.no_file_selected')
-            ]);
-            return;
-        }
-        // Simular carga de 3 segundos
-        sleep(3);
-        $this->validate([
-            'qrImage' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Formatos permitidos
-        ]);
-        // Buscar el método de pago QR del usuario, incluyendo eliminados
-        $existingPayout = UserPayoutMethod::withTrashed()
-            ->where('user_id', Auth::id())
-            ->where('payout_method', 'QR')
-            ->first();
-        // Si el registro existe pero está eliminado, restaurarlo
-        if ($existingPayout && $existingPayout->trashed()) {
-            $existingPayout->restore();
-        }
-        if ($existingPayout && $existingPayout->img_qr) {
-            $imgPath = $existingPayout->img_qr;
-            if (strpos($imgPath, 'storage/') === 0) {
-                $imgPath = substr($imgPath, 8); // Quita 'storage/'
+      
+            // Validar según el tipo de método
+            if ($this->form->current_method === 'QR') {
+                // Para QR validamos la imagen solo si no hay QR existente
+                if (!$this->currentQRPath && !$this->qrImage) {
+                    $this->showErrorMessage(__('tutor.no_file_selected'));
+                    return;
+                }
+
+                // Solo procesar nueva imagen si se seleccionó una
+                if ($this->qrImage) {
+                    $this->validate([
+                        'qrImage' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    ]);
+                    $imagePath = $this->handleQRImageUpload();
+                    $this->deleteExistingQRImage();
+                    $this->updateQRPayoutMethod($imagePath);
+                    // Refrescar la imagen actual después de guardar
+                    $this->loadCurrentQRImage();
+                }
+
+                $this->showSuccessMessage(__('tutor.qr_updated'));
+                $this->closeModal('modalQR');
+
+            } elseif ($this->form->current_method === 'cuentabancaria') {
+                // Validar directamente las propiedades del componente FUERA del try-catch
+                $this->validate([
+                    'bankTitle' => 'required|string|min:3|max:100',
+                    'bankAccountNumber' => 'required|string|min:5|max:50',
+                    'bankName' => 'required|string|min:2|max:100',
+                    'bankRoutingNumber' => 'nullable|string|max:50',
+                ], [
+                    'bankTitle.required' => 'El título de la cuenta es obligatorio',
+                    'bankTitle.min' => 'El título debe tener al menos 3 caracteres',
+                    'bankAccountNumber.required' => 'El número de cuenta es obligatorio',
+                    'bankAccountNumber.min' => 'El número de cuenta debe tener al menos 5 caracteres',
+                    'bankName.required' => 'El nombre del banco es obligatorio',
+                    'bankName.min' => 'El nombre del banco debe tener al menos 2 caracteres',
+                ]);
+
+                try {
+                    // Preparar los datos validados para el campo payout_details
+                    $payoutDetails = [
+                        'title' => $this->bankTitle,
+                        'accountNumber' => $this->bankAccountNumber,
+                        'bankName' => $this->bankName,
+                        'bankRoutingNumber' => $this->bankRoutingNumber,
+                    ];
+                    
+                    $payout = UserPayoutMethod::updateOrCreate(
+                        ['user_id' => Auth::id(), 'payout_method' => 'bank'],
+                        [
+                            'payout_details' => $payoutDetails,
+                            'status' => 'active'
+                        ]
+                    );
+                   
+                    if ($payout) {
+                        $this->showSuccessMessage(__('general.payout_account_add'));
+                        $this->resetFormAndCloseModals(['setupaccountpopup', 'setuppayoneerpopup']);
+                    } else {
+                        $this->showErrorMessage(__('general.payout_account_error'));
+                    }
+
+                } catch (\Exception $e) {
+                    // Manejar cualquier otro error
+                    dd('Error al agregar el método de pago: ' . $e->getMessage());
+                    \Log::error('Error adding payout detail: ' . $e->getMessage(), [
+                        'user_id' => Auth::user()->id,
+                        'method' => $this->form->current_method,
+                        'data' => $payoutDetails ?? null
+                    ]);
+
+                    $this->showErrorMessage('Error al guardar la cuenta bancaria. Inténtalo de nuevo.');
+                }
             }
-            Storage::disk('public')->delete($imgPath);
+
+      
+    }
+
+    private function validateQRImage(): bool
+    {
+        if (!$this->qrImage) {
+
+            $this->showErrorMessage(__('tutor.no_file_selected'));
+
+            return false;
         }
+        $this->validate([
+            'qrImage' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        return true;
+    }
+
+
+    private function handleQRImageUpload(bool $includeStoragePrefix = false): string
+    {
+        $this->validate([
+            'qrImage' => 'image|max:2048',
+        ]);
         $filename = time() . '_' . $this->qrImage->getClientOriginalName();
         $tempPath = $this->qrImage->storeAs('temp', $filename);
         $destinationPath = public_path('storage/qr_codes');
+        // Crear directorio si no existe
         if (!file_exists($destinationPath)) {
             mkdir($destinationPath, 0775, true);
         }
+        // Mover archivo desde temp a destino final
         rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
         $path = 'qr_codes/' . $filename;
         if (!$path) {
             throw new \Exception(__('tutor.qr_upload_failed'));
         }
-        // **Actualizar o crear el método de pago**
+        return $includeStoragePrefix ? 'storage/' . $path : $path;
+    }
+
+
+    private function deleteExistingQRImage(): void
+    {
+        $existingPayout = UserPayoutMethod::withTrashed()
+            ->where('user_id', Auth::id())
+            ->where('payout_method', 'QR')
+            ->first();
+        // Restaurar si está eliminado
+        if ($existingPayout && $existingPayout->trashed()) {
+            $existingPayout->restore();
+        }
+        // Eliminar imagen anterior
+        if ($existingPayout && $existingPayout->img_qr) {
+            $imgPath = $existingPayout->img_qr;
+            // Limpiar prefijo 'storage/' si existe
+            if (strpos($imgPath, 'storage/') === 0) {
+                $imgPath = substr($imgPath, 8);
+            }
+            Storage::disk('public')->delete($imgPath);
+        }
+    }
+
+    private function updateQRPayoutMethod(string $imagePath): void
+    {
         $payout = UserPayoutMethod::updateOrCreate(
-            ['user_id' => Auth::id(), 'payout_method' => 'QR'], // Claves únicas
-            ['img_qr' => $path, 'status' => 'active']
+            ['user_id' => Auth::id(), 'payout_method' => 'QR'],
+            ['img_qr' => $imagePath, 'status' => 'active']
         );
         if (!$payout) {
             throw new \Exception(__('tutor.qr_save_failed'));
         }
-        $this->currentQRPath = 'storage/' . $path;
-        $this->dispatch('showAlertMessage', [
-            'type' => 'success',
-            'title' => __('general.success_title'),
-            'message' => __('tutor.qr_updated')
-        ]);
-        $this->dispatch('toggleModel', ['id' => 'setupqrpopup', 'action' => 'hide']);// Cerrar el modal
-        return redirect()->to(request()->header('Referer'));
+        // Actualizar la variable local sin el prefijo 'storage/'
+        $this->currentQRPath = $imagePath;
     }
 
-    public function updatedSelectedDate($date)
-    {
-        $date = $date instanceof Carbon ? $date->format('F, Y') : $date;
-        $this->selectedDate = Carbon::createFromFormat('d F, Y', "01 $date");
-        $this->loadData();
-    }
 
-    public function updatePayout()
-    {
-        $data = $this->form->validatePayout();
-        $response = isDemoSite();
-        if ($response) {
-            $this->dispatch('showAlertMessage', [
-                'type' => 'error',
-                'title' => __('general.demosite_res_title'),
-                'message' => __('general.demosite_res_txt')
-            ]);
-            $this->dispatch('toggleModel', id: 'setupaccountpopup', action: 'hide');
-            $this->dispatch('toggleModel', id: 'setuppayoneerpopup', action: 'hide');
-            return;
-        }
-        if ($this->form->current_method === 'QR' && $this->qrImage) {
-            $this->validate([
-                'qrImage' => 'image|max:2048', // Solo imágenes, máximo 2MB
-            ]);
-            $filename = time() . '_' . $this->qrImage->getClientOriginalName();
-            $tempPath = $this->qrImage->storeAs('temp', $filename);
-            $destinationPath = public_path('storage/qr_codes');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0775, true);
-            }
-            rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
-            $data['img_qr'] = 'storage/qr_codes/' . $filename;
-        }
-        $payout = $this->payoutService->addPayoutDetail(Auth::user()->id, $this->form->current_method, $data);
-        if ($payout) {
-            $this->dispatch('showAlertMessage', [
-                'type' => 'success',
-                'title' => __('general.success_title'),
-                'message' => __('general.payout_account_add')
-            ]);
-        }
-        $this->form->reset();
-        $this->dispatch('toggleModel', id: 'setupaccountpopup', action: 'hide');
-        $this->dispatch('toggleModel', id: 'setuppayoneerpopup', action: 'hide');
-        $this->dispatch('reload-balances');
-        $this->loadData();
-    }
+
 
 
 
     public function removePayout()
     {
-        $response = isDemoSite();
-        if ($response) {
-            $this->dispatch('showAlertMessage', type: 'error', title: __('general.demosite_res_title'), message: __('general.demosite_res_txt'));
-            $this->dispatch('toggleModel', id: 'deletepopup', action: 'hide');
-            return;
-        }
         $payout = UserPayoutMethod::where('user_id', Auth::user()->id)
             ->where('payout_method', $this->form->current_method)
             ->first();
         if ($payout) {
             $payout->forceDelete();
-            $this->dispatch('showAlertMessage', type: 'success', title: __('general.success_title'), message: __('general.payout_account_remove'));
+
+            // Si era un QR, limpiar la imagen actual
+            if ($this->form->current_method === 'QR') {
+                $this->currentQRPath = null;
+            }
+
+            $this->showSuccessMessage(__('general.payout_account_remove'));
         }
-        $this->dispatch('toggleModel', id: 'deletepopup', action: 'hide');
+        $this->closeModal('deletepopup');
         $this->loadData();
     }
+
+
     public function updateStatus($method)
     {
-        $response = isDemoSite();
-        if ($response) {
-            $this->dispatch('showAlertMessage', type: 'error', title: __('general.demosite_res_title'), message: __('general.demosite_res_txt'));
-            return;
-        }
         $this->payoutService->updatePayoutStatus(Auth::user()->id, $method);
         $this->dispatch('reload-balances');
         $this->loadData();
@@ -238,7 +288,128 @@ class ManageAccount extends Component
         $this->form->reset();
         $this->form->resetErrorBag();
         $this->form->current_method = $method;
+
+        // Limpiar imagen temporal
+        $this->qrImage = null;
+
+        if ($method === 'QR') {
+            // Cargar datos del QR actual
+            $qrData = UserPayoutMethod::where('user_id', Auth::id())
+                ->where('payout_method', 'QR')
+                ->first();
+
+            // Actualizar la ruta de la imagen actual
+            if ($qrData && $qrData->img_qr) {
+                // Asegurar que la ruta tenga el prefijo correcto
+                $imgPath = $qrData->img_qr;
+                if (strpos($imgPath, 'storage/') !== 0) {
+                    $this->currentQRPath = $imgPath;
+                } else {
+                    $this->currentQRPath = str_replace('storage/', '', $imgPath);
+                }
+            } else {
+                $this->currentQRPath = null;
+            }
+        } elseif ($method === 'cuentabancaria') {
+            // Cargar datos existentes de la cuenta bancaria si existen
+            $bankData = UserPayoutMethod::where('user_id', Auth::id())
+                ->where('payout_method', 'bank')
+                ->first();
+
+            if ($bankData && $bankData->payout_details) {
+                $details = $bankData->payout_details;
+                $this->bankTitle = $details['title'] ?? '';
+                $this->bankAccountNumber = $details['accountNumber'] ?? '';
+                $this->bankName = $details['bankName'] ?? '';
+                $this->bankRoutingNumber = $details['bankRoutingNumber'] ?? '';
+            } else {
+                // Limpiar campos del formulario de banco si no hay datos
+                $this->bankTitle = '';
+                $this->bankAccountNumber = '';
+                $this->bankName = '';
+                $this->bankRoutingNumber = '';
+            }
+            $this->resetErrorBag();
+        }
+
         $this->dispatch('toggleModel', id: $id, action: 'show');
     }
 
+    #[On('modalClosed')]
+    public function handleModalClosed()
+    {
+        // Solo limpiar imagen temporal, no la imagen actual
+        $this->qrImage = null;
+        $this->resetErrorBag();
+    }
+
+
+    public function refreshQRData()
+    {
+        $this->loadCurrentQRImage();
+        $this->qrImage = null;
+        $this->resetErrorBag();
+    }
+
+
+
+    private function showSuccessMessage(string $message): void
+    {
+
+        $this->dispatch(
+            'showAlertMessage',
+            type: 'success',
+            title: __('general.success_title'),
+            message: $message
+        );
+
+        /*   $this->dispatch('showAlertMessage', [
+              'type' => 'success',
+              'title' => __('general.success_title'),
+              'message' => $message
+          ]); */
+    }
+
+
+    private function showErrorMessage(string $message): void
+    {
+
+        $this->dispatch('showAlertMessage', [
+            'type' => 'error',
+            'title' => __('general.error_title'),
+            'message' => $message
+        ]);
+    }
+
+
+
+    private function resetFormAndCloseModals(array $modalIds): void
+    {
+        $this->form->reset();
+        
+        // Limpiar campos específicos del banco
+        $this->bankTitle = '';
+        $this->bankAccountNumber = '';
+        $this->bankName = '';
+        $this->bankRoutingNumber = '';
+        
+        foreach ($modalIds as $modalId) {
+            $this->closeModal($modalId);
+        }
+    }
+
+    private function closeModal(string $modalId): void
+    {
+        $this->dispatch('toggleModel', id: $modalId, action: 'hide');
+        // Solo limpiar imagen temporal si estamos cerrando el modal QR
+        if ($modalId === 'modalQR') {
+            $this->qrImage = null;
+            $this->resetErrorBag();
+        }
+
+        // Dispatch del evento de cierre para limpieza del DOM
+        $this->dispatch('modalClosed');
+    }
 }
+
+
