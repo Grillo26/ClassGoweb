@@ -32,4 +32,13 @@ class HomeController extends Controller
             'alianzas' => $alianzas
         ]);
     }
+
+    public function nosotros() {
+    // Obtener alianzas
+    $alianzas = $this->tutorService->getAlliances();
+
+    return view('vistas.view.pages.nosotros', [
+        'alianzas' => $alianzas
+    ]);
+}
 }
