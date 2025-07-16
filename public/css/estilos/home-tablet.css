@@ -20,12 +20,25 @@
   .hero-image img {
     margin: 0 auto;
     display: block;
-    max-width: 350px;
+    max-width: 100vw;
+    min-width: 400px;
   }
   .hero-text {
     padding: 2rem 1rem 1rem 1rem;
     text-align: center;
     order: 2;
+  }
+
+  /* Buscador*/
+  .search-box {
+    display: flex;
+    max-width: 70vw;
+    margin: 0 auto;
+  }
+
+  .hero-buttons{
+    display: flex;
+    justify-content: center;
   }
   /* Contadores en fila de dos */
   .counters {

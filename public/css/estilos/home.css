@@ -781,40 +781,6 @@ i.fa-solid.fa-book.icon::before{
 .go .numero-paso i {
   font-size: 2rem;
 }
-@media (max-width: 1024px) {
-  .potencial-container {
-    padding: 2rem 0.5rem;
-  }
-  .steps {
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem 0.5rem;
-    gap: 1.5rem;
-  }
-  .steps-card, .go {
-    width: 100%;
-    max-width: 350px;
-    min-width: 220px;
-    margin: 0 auto;
-  }
-}
-@media (max-width: 768px) {
-  .potencial-container {
-    padding: 1.5rem 0.5rem;
-  }
-  .steps {
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem 0.2rem;
-    gap: 1rem;
-  }
-  .steps-card, .go {
-    width: 100%;
-    max-width: 98vw;
-    min-width: 180px;
-    padding: 0.5rem;
-  }
-}
 
 /*-------5 Busca tutorias-----*/
 .tutorias-container{
@@ -863,8 +829,8 @@ i.fa-solid.fa-book.icon::before{
 }
 /*---5.3 imagen lado derecho---*/
 .tutores-img img{
-  max-width: 900px;
-  border-radius: 10px;
+  max-width: 300px;
+  width: 100%;
 }
 .tutores-list{
   margin-left: 2rem;

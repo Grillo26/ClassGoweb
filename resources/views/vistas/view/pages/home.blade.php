@@ -32,7 +32,10 @@
 
             <!--Botones-->
             <div class="hero-buttons">
-                <button><i class="fa-solid fa-bolt-lightning"></i>Tutor al Instante</button>
+                <button>
+                    <i class="fa-solid fa-bolt-lightning"></i>
+                    Tutor al Instante
+                </button>
                 <button><i class="fa-solid fa-calendar"></i>Agendar Tutoría</button>
                 <button><i class="fa-solid fa-compass"></i>Explorar Tutores</button>
             </div>
@@ -70,7 +73,7 @@
         <div class="box-sky"></div>
         <div class="counter-box">
             <div class="counter-numbe"><i class="fa fa-star"></i>4.5</div>
-            <h1>En la App Store</h1>
+            <h1>En Play Store</h1>
         </div>
     </div>
 
