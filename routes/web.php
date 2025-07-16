@@ -108,6 +108,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     // <==== Grillo kkk ===>
     Route::get('/home', [HomeController::class, 'index']);
     Route::get('/nosotros', [HomeController::class, 'nosotros'])->name('nosotros');
+    Route::view('/como-trabajamos', 'vistas.view.pages.trabajamos')->name('como-trabajamos');
 
     Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones');
     Route::post('tutor/favourite', [SearchController::class, 'favouriteTutor'])->name('tutor.favourite');

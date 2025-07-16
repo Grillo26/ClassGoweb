@@ -71,10 +71,20 @@ body {
   opacity: 0.95;
 }
 
-.breadcrumb .active {
-  font-weight: 700;
-  text-decoration: underline;
+.breadcrumb-link {
+  color: #eaf6fa;
+  transition: opacity 0.3s ease;
 }
+
+.breadcrumb-link:hover {
+  opacity: 0.7;
+}
+
+.breadcrumb-current {
+  font-weight: 700;
+  
+}
+
 .nosotros-header-image{
   justify-content: end;
   align-items: end;
@@ -259,38 +269,26 @@ body {
 
 .nosotros-logros-text {
   margin-bottom: 2rem;
-  text-align: center;
+  line-height: 30px;
 }
 
 .nosotros-logros-title {
   font-size: 2.5rem;
   font-weight: bold;
-  color: white;
-  margin-bottom: 1rem;
-}
+  color: white;}
 
 .nosotros-logros-text h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #e0e0e0;
-  margin-bottom: 1rem;
-}
-
-.nosotros-logros-text h1 {
+  font-size: 1.5rem;
+  font-weight: normal;
   color: white;
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
+}
+.nosotros-logros-text h1{
+  color: white;
 }
 
 .nosotros-logros-subtext {
-  font-size: 1.1rem;
-  color: #e0e0e0;
-  margin-top: 0.5rem;
-  line-height: 1.4;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
+  font-size: 1.2rem;
+  color: white;
 }
 
 /*-----CONVENIOS----*/

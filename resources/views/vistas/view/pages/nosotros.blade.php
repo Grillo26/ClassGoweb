@@ -1,6 +1,6 @@
 @extends('vistas.view.layouts.app')
 
-@section('title', 'Class Go!')
+@section('title', 'Class Go! | ¿Quiénes somos?')
 
 @section('content')
     <!--NOSOTROS-->
@@ -10,7 +10,7 @@
                 <div class="nosotros-header-content">
                     <div class="nosotros-header-text">
                         <nav class="breadcrumb">
-                            <span class="active">Inicio</span> / <span>Nosotros</span>
+                            <a href="{{ route('home') }}" class="breadcrumb-link">Inicio</a> / <span class="breadcrumb-current">Nosotros</span>
                         </nav>
                         <h1>¿Quiénes Somos?</h1>
                         <p>
@@ -90,6 +90,7 @@
                 
                 @include('components.counters')
             </div>
+            
             @include('components.alianzas', ['alianzas' => $alianzas])
 
             
