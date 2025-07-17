@@ -10,6 +10,7 @@ use App\Services\SubjectService;
 use App\Traits\ApiResponser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,17 +32,43 @@ class UserSubjectController extends Controller
      */
     public function index(Request $request)
     {
-        $query = UserSubject::with(['subject' => function($query) {
-            $query->select('id', 'name', 'subject_group_id');
-        }]);
+        // Consulta simple sin relaciones para depurar
+        $query = UserSubject::query();
 
         // Filtrar por user_id si se especifica
         if ($request->has('user_id')) {
             $query->where('user_id', $request->user_id);
         }
 
-        $userSubjects = $query->get()
-        ->map(function($userSubject) {
+        // Agregar logs para depuración
+        Log::info('UserSubject Query:', [
+            'user_id' => $request->get('user_id'),
+            'sql' => $query->toSql(),
+            'bindings' => $query->getBindings()
+        ]);
+
+        $userSubjects = $query->get();
+
+        // Log del resultado
+        Log::info('UserSubjects Result:', [
+            'count' => $userSubjects->count(),
+            'data' => $userSubjects->toArray()
+        ]);
+
+        // Si no hay resultados, devolver información de depuración
+        if ($userSubjects->isEmpty()) {
+            return $this->success(
+                data: [],
+                message: 'No se encontraron materias. Debug info: user_id=' . $request->get('user_id') . ', total records=' . UserSubject::count()
+            );
+        }
+
+        // Cargar la relación después de obtener los datos
+        $userSubjects->load(['subject' => function($query) {
+            $query->select('id', 'name', 'subject_group_id');
+        }]);
+
+        $userSubjects = $userSubjects->map(function($userSubject) {
             return [
                 'id' => $userSubject->id,
                 'user_id' => $userSubject->user_id,
@@ -49,17 +76,17 @@ class UserSubjectController extends Controller
                 'description' => $userSubject->description,
                 'image' => $userSubject->image,
                 'status' => $userSubject->status,
-                'subject' => [
+                'subject' => $userSubject->subject ? [
                     'id' => $userSubject->subject->id,
                     'name' => $userSubject->subject->name,
                     'subject_group_id' => $userSubject->subject->subject_group_id
-                ]
+                ] : null
             ];
         });
 
         return $this->success(
             data: $userSubjects,
-            message: 'Materias del tutor obtenidas exitosamente'
+            message: 'Materias obtenidas exitosamente'
         );
     }
 
