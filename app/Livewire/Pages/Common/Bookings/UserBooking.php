@@ -113,7 +113,7 @@ class UserBooking extends Component
             'bookings' => $this->bookings, // Pasar las reservas a la vista
             'upcomingBookings' => $this->upcomingBookings,
             'currentDate' => $this->currentDate,
-            'debugBookings' => $this->debugBookings,
+            
         ]);
     }
     
