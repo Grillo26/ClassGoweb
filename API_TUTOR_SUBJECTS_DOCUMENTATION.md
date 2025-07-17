@@ -4,11 +4,13 @@ Esta documentación describe las APIs disponibles para que los tutores puedan ge
 
 ## Autenticación
 
-Todas las rutas requieren autenticación mediante token Bearer. El usuario debe tener el rol de "tutor".
+Todas las rutas requieren autenticación mediante token Bearer. El usuario debe tener el rol de "tutor". La autenticación se valida en cada método del controlador.
 
 ```
 Authorization: Bearer {token}
 ```
+
+**Nota:** Las rutas no están protegidas por middleware de autenticación, pero cada endpoint valida la autenticación internamente.
 
 ## Endpoints Disponibles
 
@@ -278,7 +280,7 @@ GET /api/tutor-subjects/available?group_id=2&keyword=matemáticas&per_page=10
 | Código | Descripción |
 |--------|-------------|
 | 400 | Parámetros inválidos |
-| 401 | No autenticado |
+| 401 | Usuario no autenticado |
 | 403 | Acceso denegado (no es tutor) |
 | 404 | Materia no encontrada |
 | 409 | Materia ya asignada |

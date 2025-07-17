@@ -21,7 +21,7 @@ class UserSubjectController extends Controller
 
     public function __construct()
     {
-        $this->subjectService = new SubjectService(Auth::user());
+        // No inicializar SubjectService aquí para evitar errores con usuarios no autenticados
     }
 
     /**
@@ -31,6 +31,15 @@ class UserSubjectController extends Controller
      */
     public function index()
     {
+        // Verificar si el usuario está autenticado
+        if (!Auth::check()) {
+            return $this->error(
+                data: null,
+                message: 'Usuario no autenticado',
+                code: Response::HTTP_UNAUTHORIZED
+            );
+        }
+
         if (Auth::user()->role !== 'tutor') {
             return $this->error(
                 data: null,
@@ -39,7 +48,8 @@ class UserSubjectController extends Controller
             );
         }
 
-        $userSubjects = $this->subjectService->getUserSubjectsWithSubjects(Auth::id());
+        $subjectService = new SubjectService(Auth::user());
+        $userSubjects = $subjectService->getUserSubjectsWithSubjects(Auth::id());
 
         return $this->success(
             data: $userSubjects,
@@ -55,6 +65,15 @@ class UserSubjectController extends Controller
      */
     public function show($id)
     {
+        // Verificar si el usuario está autenticado
+        if (!Auth::check()) {
+            return $this->error(
+                data: null,
+                message: 'Usuario no autenticado',
+                code: Response::HTTP_UNAUTHORIZED
+            );
+        }
+
         if (Auth::user()->role !== 'tutor') {
             return $this->error(
                 data: null,
@@ -92,6 +111,15 @@ class UserSubjectController extends Controller
      */
     public function store(Request $request)
     {
+        // Verificar si el usuario está autenticado
+        if (!Auth::check()) {
+            return $this->error(
+                data: null,
+                message: 'Usuario no autenticado',
+                code: Response::HTTP_UNAUTHORIZED
+            );
+        }
+
         if (Auth::user()->role !== 'tutor') {
             return $this->error(
                 data: null,
@@ -133,7 +161,8 @@ class UserSubjectController extends Controller
             'status' => 'active'
         ];
 
-        $userSubject = $this->subjectService->saveUserSubject($userSubjectData);
+        $subjectService = new SubjectService(Auth::user());
+        $userSubject = $subjectService->saveUserSubject($userSubjectData);
 
         // Cargar la relación con la materia para la respuesta
         $userSubject->load(['subject' => function($query) {
@@ -156,6 +185,15 @@ class UserSubjectController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Verificar si el usuario está autenticado
+        if (!Auth::check()) {
+            return $this->error(
+                data: null,
+                message: 'Usuario no autenticado',
+                code: Response::HTTP_UNAUTHORIZED
+            );
+        }
+
         if (Auth::user()->role !== 'tutor') {
             return $this->error(
                 data: null,
@@ -214,6 +252,15 @@ class UserSubjectController extends Controller
      */
     public function destroy($id)
     {
+        // Verificar si el usuario está autenticado
+        if (!Auth::check()) {
+            return $this->error(
+                data: null,
+                message: 'Usuario no autenticado',
+                code: Response::HTTP_UNAUTHORIZED
+            );
+        }
+
         if (Auth::user()->role !== 'tutor') {
             return $this->error(
                 data: null,
@@ -293,6 +340,15 @@ class UserSubjectController extends Controller
      */
     public function getAvailableSubjects(Request $request)
     {
+        // Verificar si el usuario está autenticado
+        if (!Auth::check()) {
+            return $this->error(
+                data: null,
+                message: 'Usuario no autenticado',
+                code: Response::HTTP_UNAUTHORIZED
+            );
+        }
+
         if (Auth::user()->role !== 'tutor') {
             return $this->error(
                 data: null,
