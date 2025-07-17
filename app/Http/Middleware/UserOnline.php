@@ -19,6 +19,7 @@ class UserOnline
     public function handle(Request $request, Closure $next): Response
     {
         if(Auth::check()) {
+            //dd('hola');
             $user = Auth::user();
             if ($user instanceof \App\Models\User && $user->id) {
                 try {
@@ -31,6 +32,7 @@ class UserOnline
         }
 
         try {
+            //dd($request);
             return $next($request);
         } catch (\Exception $e) {
             \Log::error('Error en UserOnline middleware después de next(): ' . $e->getMessage());

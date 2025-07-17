@@ -43,6 +43,7 @@ class UserBooking extends Component
     }
 
     public function mount() {
+        dd('mount', $this);
         $this->disputeReason = setting('_dispute_setting.dispute_reasons') ?? [];
         if (is_array($this->disputeReason) && !empty($this->disputeReason)) {
             $this->disputeReason = array_column($this->disputeReason, 'dispute_reason', 'id');
