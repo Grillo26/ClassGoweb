@@ -10,11 +10,20 @@ Esta documentación describe las APIs disponibles para que los tutores puedan ge
 
 ## Endpoints Disponibles
 
-### 1. Obtener Materias del Tutor
+### 1. Obtener Materias
 
 **GET** `/api/tutor-subjects`
 
-Obtiene todas las materias asignadas al tutor autenticado.
+Obtiene todas las materias. Puedes filtrar por usuario específico.
+
+**Query Parameters:**
+- `user_id` (integer, opcional): Filtrar materias de un usuario específico
+
+**Ejemplos de uso:**
+```
+GET /api/tutor-subjects                    # Obtener todas las materias
+GET /api/tutor-subjects?user_id=123       # Obtener materias del usuario 123
+```
 
 **Respuesta exitosa (200):**
 ```json
@@ -23,6 +32,7 @@ Obtiene todas las materias asignadas al tutor autenticado.
     "data": [
         {
             "id": 1,
+            "user_id": 123,
             "subject_id": 5,
             "description": "Especialista en matemáticas avanzadas",
             "image": "subjects/math_tutor.jpg",
@@ -34,7 +44,7 @@ Obtiene todas las materias asignadas al tutor autenticado.
             }
         }
     ],
-    "message": "Materias del tutor obtenidas exitosamente"
+    "message": "Materias obtenidas exitosamente"
 }
 ```
 
@@ -297,13 +307,19 @@ curl -X POST "https://classgoapp.com/api/tutor-subjects" \
   -F "image=@/path/to/math_image.jpg"
 ```
 
-### Ejemplo 2: Obtener materias disponibles filtradas
+### Ejemplo 2: Obtener materias de un tutor específico
+
+```bash
+curl -X GET "https://classgoapp.com/api/tutor-subjects?user_id=123"
+```
+
+### Ejemplo 3: Obtener materias disponibles filtradas
 
 ```bash
 curl -X GET "https://classgoapp.com/api/tutor-subjects/available?group_id=2&keyword=álgebra&user_id=123"
 ```
 
-### Ejemplo 3: Actualizar descripción de una materia
+### Ejemplo 4: Actualizar descripción de una materia
 
 ```bash
 curl -X PUT "https://classgoapp.com/api/tutor-subjects/1" \

@@ -29,13 +29,18 @@ class UserSubjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Obtener todas las materias de todos los usuarios
-        $userSubjects = UserSubject::with(['subject' => function($query) {
+        $query = UserSubject::with(['subject' => function($query) {
             $query->select('id', 'name', 'subject_group_id');
-        }])
-        ->get()
+        }]);
+
+        // Filtrar por user_id si se especifica
+        if ($request->has('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        $userSubjects = $query->get()
         ->map(function($userSubject) {
             return [
                 'id' => $userSubject->id,
