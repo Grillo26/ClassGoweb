@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SubjectSlotController;
 use App\Http\Controllers\Api\AlianzaController;
 use App\Http\Controllers\Api\SubjectController;
+use App\Http\Controllers\Api\UserSubjectController;
 use App\Http\Controllers\Api\ReviewController;
 
 
@@ -52,6 +53,7 @@ Route::get('slot-detail/{id}',                                  [TutorController
 Route::apiResource('tutor-education',                           EducationController::class)->only(['show','store','update','destroy']);
 Route::apiResource('tutor-experience',                          ExperienceController::class)->only(['show','store','update','destroy']);
 Route::apiResource('tutor-certification',                       CertificationController::class)->only(['show','store','destroy']);
+Route::apiResource('tutor-subjects',                            UserSubjectController::class)->only(['index','show','store','update','destroy']);
 
 Route::get('countries',                                     [TaxonomiesController::class,'getCountries']);
 Route::get('languages',                                     [TaxonomiesController::class,'getLanguages']);
@@ -144,6 +146,11 @@ Route::get('user/{id}/profile-image', [ProfileController::class, 'getProfileImag
 Route::post('user/{id}/profile-image', [ProfileController::class, 'updateProfileImage']);
 
 Route::get('subject/{id}/name', [SubjectController::class, 'getSubjectName']);
+
+// Rutas adicionales para gestión de materias de tutores
+Route::get('tutor-subjects/groups', [UserSubjectController::class, 'getSubjectGroups']);
+Route::get('tutor-subjects/groups/{groupId}/subjects', [UserSubjectController::class, 'getSubjectsByGroup']);
+Route::get('tutor-subjects/available', [UserSubjectController::class, 'getAvailableSubjects']);
 
 Route::fallback(function () {
     return response()->json([
