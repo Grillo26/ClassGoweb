@@ -4,13 +4,9 @@ Esta documentación describe las APIs disponibles para que los tutores puedan ge
 
 ## Autenticación
 
-Todas las rutas requieren autenticación mediante token Bearer. El usuario debe tener el rol de "tutor". La autenticación se valida en cada método del controlador.
+**Las APIs funcionan sin restricciones de autenticación.** Puedes acceder a todos los endpoints sin necesidad de token de autenticación.
 
-```
-Authorization: Bearer {token}
-```
-
-**Nota:** Las rutas no están protegidas por middleware de autenticación, pero cada endpoint valida la autenticación internamente.
+**Nota:** Estas APIs están diseñadas para ser públicas y permiten gestionar materias de cualquier usuario especificando el `user_id` en los parámetros.
 
 ## Endpoints Disponibles
 
@@ -75,11 +71,12 @@ Obtiene una materia específica del tutor.
 
 **POST** `/api/tutor-subjects`
 
-Agrega una nueva materia al tutor.
+Agrega una nueva materia a un usuario específico.
 
 **Body (multipart/form-data):**
 ```json
 {
+    "user_id": 123,
     "subject_id": 5,
     "description": "Especialista en matemáticas avanzadas con 5 años de experiencia",
     "image": "[archivo de imagen opcional]"
@@ -87,6 +84,7 @@ Agrega una nueva materia al tutor.
 ```
 
 **Parámetros:**
+- `user_id` (integer, requerido): ID del usuario al que se le asignará la materia
 - `subject_id` (integer, requerido): ID de la materia a agregar
 - `description` (string, opcional): Descripción de la experiencia en la materia
 - `image` (file, opcional): Imagen relacionada con la materia (máx. 3MB, formatos: jpeg, png, jpg, gif, webp)
@@ -239,16 +237,17 @@ Obtiene todas las materias de un grupo específico.
 
 **GET** `/api/tutor-subjects/available`
 
-Obtiene las materias disponibles para agregar (excluye las que ya tiene el tutor).
+Obtiene las materias disponibles para agregar (opcionalmente excluye las que ya tiene un usuario específico).
 
 **Query Parameters:**
 - `group_id` (integer, opcional): Filtrar por grupo de materias
 - `keyword` (string, opcional): Buscar por nombre de materia
+- `user_id` (integer, opcional): ID del usuario para excluir sus materias ya asignadas
 - `per_page` (integer, opcional): Número de resultados por página (default: 20)
 
 **Ejemplo de uso:**
 ```
-GET /api/tutor-subjects/available?group_id=2&keyword=matemáticas&per_page=10
+GET /api/tutor-subjects/available?group_id=2&keyword=matemáticas&user_id=123&per_page=10
 ```
 
 **Respuesta exitosa (200):**
@@ -280,8 +279,6 @@ GET /api/tutor-subjects/available?group_id=2&keyword=matemáticas&per_page=10
 | Código | Descripción |
 |--------|-------------|
 | 400 | Parámetros inválidos |
-| 401 | Usuario no autenticado |
-| 403 | Acceso denegado (no es tutor) |
 | 404 | Materia no encontrada |
 | 409 | Materia ya asignada |
 | 422 | Errores de validación |
@@ -293,8 +290,8 @@ GET /api/tutor-subjects/available?group_id=2&keyword=matemáticas&per_page=10
 
 ```bash
 curl -X POST "https://classgoapp.com/api/tutor-subjects" \
-  -H "Authorization: Bearer {token}" \
   -H "Content-Type: multipart/form-data" \
+  -F "user_id=123" \
   -F "subject_id=5" \
   -F "description=Especialista en matemáticas avanzadas" \
   -F "image=@/path/to/math_image.jpg"
@@ -303,15 +300,13 @@ curl -X POST "https://classgoapp.com/api/tutor-subjects" \
 ### Ejemplo 2: Obtener materias disponibles filtradas
 
 ```bash
-curl -X GET "https://classgoapp.com/api/tutor-subjects/available?group_id=2&keyword=álgebra" \
-  -H "Authorization: Bearer {token}"
+curl -X GET "https://classgoapp.com/api/tutor-subjects/available?group_id=2&keyword=álgebra&user_id=123"
 ```
 
 ### Ejemplo 3: Actualizar descripción de una materia
 
 ```bash
 curl -X PUT "https://classgoapp.com/api/tutor-subjects/1" \
-  -H "Authorization: Bearer {token}" \
   -H "Content-Type: application/json" \
   -d '{
     "description": "Nueva descripción actualizada"
@@ -320,9 +315,10 @@ curl -X PUT "https://classgoapp.com/api/tutor-subjects/1" \
 
 ## Notas Importantes
 
-1. **Autenticación**: Todas las rutas requieren que el usuario esté autenticado y tenga rol de "tutor"
+1. **Sin Autenticación**: Las APIs funcionan sin restricciones de autenticación
 2. **Imágenes**: Las imágenes se almacenan en el directorio `storage/app/public/subjects/`
-3. **Validación**: Se valida que no se dupliquen materias para el mismo tutor
+3. **Validación**: Se valida que no se dupliquen materias para el mismo usuario
 4. **Paginación**: Las rutas que devuelven listas soportan paginación
 5. **Filtros**: Se pueden filtrar materias por grupo y buscar por palabra clave
-6. **Estados**: Las materias pueden tener estado "active" o "inactive" 
+6. **Estados**: Las materias pueden tener estado "active" o "inactive"
+7. **user_id**: Para operaciones específicas de usuario, se debe especificar el `user_id` en los parámetros 
