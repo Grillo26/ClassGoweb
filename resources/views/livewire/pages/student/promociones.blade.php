@@ -104,12 +104,12 @@
 			<p class="text-tertiary-color mt-1 text-sm">¡Comparte y obtén descuentos!</p>
 			<div class="my-6">
 				<div id="inv-code" class="text-4xl font-extrabold tracking-widest bg-white/20 border-2 border-dashed border-tertiary-color p-4 rounded-lg {{ isset($codigo) && $codigo->estado !== 'activo' ? 'inactivo' : '' }}">
-                        {{ $codigo->codigo ?? 'Sin code' }}
+					{{ $codigo->codigo ?? 'Código Vencido' }}
 				</div>
 			</div>
             
 			<div class="w-full space-y-3">
-				<button id="btnCopiar" type="button" class="w-full bg-white/90  font-bold py-3 rounded-lg hover:bg-white transition-all boton-copiar">Copiar Código</button>
+				<button id="btnCopiar" type="button" class="w-full bg-white/90 text-primary font-bold py-3 rounded-lg hover:bg-white transition-all">Copiar Código</button>
 				<button id="compartir-button" type="button" class="w-full bg-tertiary-orange font-bold py-3 rounded-lg hover:opacity-90 transition-all">Compartir</button>
 				<x-modal-compartir />
 			</div>
