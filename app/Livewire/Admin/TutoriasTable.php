@@ -142,14 +142,15 @@ class TutoriasTable extends Component
                 $tutorName = $tutorProfile ? ($tutorProfile->first_name . ' ' . $tutorProfile->last_name) : '';
                 $tutorUser = $tutoria->tutor?->user;
                 if ($tutorUser) {
-                    Mail::to($tutorUser->email)->send(new SessionBookingMail([
+                     $mailService->sendTutoriaNotification($tutoria, $result);
+                  /*   Mail::to($tutorUser->email)->send(new SessionBookingMail([
                         'userName' => $tutorName,
                         'sessionDate' => date('d/m/Y', strtotime($tutoria->start_time)),
                         'sessionTime' => date('H:i', strtotime($tutoria->start_time)),
                         'meetingLink' => $tutoria->meeting_link,
                         'role' => 'Estudiante',
                         'oppositeName' => $studentName,
-                    ]));
+                    ])); */
                 }
             }
             $tutoria->save();

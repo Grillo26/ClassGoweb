@@ -1,5 +1,5 @@
 <div wire:ignore.self class="modal fade" id="setupaccountpopup" tabindex="-1" aria-labelledby="setupaccountpopupLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-m">
         <div class="modal-content bank-modal">
             <!-- Header -->
             <div class="modal-header bank-modal-header">
@@ -71,7 +71,7 @@
                     </div>
 
                     <!-- Número de routing -->
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <label for="routingnum" class="form-label">
                             Número de routing <span class="optional-text">(opcional)</span>
                         </label>
@@ -87,7 +87,7 @@
                             {{ $message }}
                         </div>
                         @enderror
-                    </div>
+                    </div> --}}
 
                 </form>
             </div>
@@ -125,7 +125,7 @@
 </div>
 
 <!-- Estilos del Modal Banco (basado en modal QR) -->
-<style>
+{{-- <style>
     .bank-modal {
         border: none;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
@@ -283,4 +283,4 @@
             margin-bottom: 0;
         }
     }
-</style>
+</style> --}}

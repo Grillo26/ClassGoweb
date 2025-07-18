@@ -1,53 +1,75 @@
 <?php
+// filepath: app/Services/MailService.php
 
 namespace App\Services;
 
-use App\Models\CountryState;
+use App\Mail\StudentTutoriaNotificationMail;
 use App\Mail\SessionBookingMail;
+use App\Mail\TutorTutoriaNotificationMail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class MailService
 {
-
     /**
      * Enviar correos de notificación de tutoría
      */
     public function sendTutoriaNotification($tutoria, $meetingLink)
     {
+        Log::info('Iniciando envío de notificaciones de tutoría', [
+            'tutoria_id' => $tutoria->id,
+            'meeting_link' => $meetingLink
+        ]);
+
         // Enviar correo al estudiante
         $this->sendStudentNotification($tutoria, $meetingLink);
 
         // Enviar correo al tutor
         $this->sendTutorNotification($tutoria, $meetingLink);
+
+        Log::info('Finalizando envío de notificaciones de tutoría', [
+            'tutoria_id' => $tutoria->id
+        ]);
     }
 
     /**
-     * Enviar correo al estudiante
+     * Enviar correo al estudiante usando Mailable
      */
-
     private function sendStudentNotification($tutoria, $meetingLink)
     {
-        $studentProfile = optional($tutoria->student)->profile;
-        $studentName = $studentProfile ? ($studentProfile->first_name . ' ' . $studentProfile->last_name) : 'Estudiante';
-        $studentUser = optional($tutoria->student)->user;
+        try {
 
-        if ($studentUser) {
+            //dd("Enviando correo al estudiante", $tutoria); 
+            $studentProfile = optional($tutoria->student)->profile;
+            $studentName = $tutoria->student->first_name . ' ' . $tutoria->student->last_name;
+            $studentUser = optional($tutoria->student)->user;
+
+            if (!$studentUser || !$studentUser->email) {
+
+                return;
+            }
             $tutorProfile = optional($tutoria->tutor)->profile;
-            $tutorName = $tutorProfile ? ($tutorProfile->first_name . ' ' . $tutorProfile->last_name) : 'Tutor';
+            $tutorName = $tutoria->tutor->first_name . ' ' . $tutoria->tutor->last_name;
 
-            // Usar vista personalizada
-            $htmlContent = view('emails.student-tutoria-notification', [
-                'userName' => $studentName,
-                'sessionDate' => date('d/m/Y', strtotime($tutoria->start_time)),
-                'sessionTime' => date('H:i', strtotime($tutoria->start_time)),
-                'meetingLink' => $meetingLink,
-                'oppositeName' => $tutorName,
-            ])->render();
+            // ✅ USAR MAILABLE EN LUGAR DE HTML CRUDO
+            Mail::to($studentUser->email)->send(new StudentTutoriaNotificationMail(
+                $studentName,
+                date('d/m/Y', strtotime($tutoria->start_time)),
+                date('H:i', strtotime($tutoria->start_time)),
+                $meetingLink,
+                $tutorName
+            ));
 
-            Mail::html($htmlContent, function ($message) use ($studentUser) {
-                $message->to($studentUser->email)
-                    ->subject('🎓 Tu tutoría ha sido confirmada - ClassGo');
-            });
+        
+
+        } catch (\Exception $e) {
+            Log::error('Error al enviar correo al estudiante', [
+                'tutoria_id' => $tutoria->id,
+                'error_message' => $e->getMessage(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
+                'stack_trace' => $e->getTraceAsString()
+            ]);
         }
     }
 
@@ -56,24 +78,49 @@ class MailService
      */
     private function sendTutorNotification($tutoria, $meetingLink)
     {
-        $tutorProfile = optional($tutoria->tutor)->profile;
-        $tutorName = $tutorProfile ? ($tutorProfile->first_name . ' ' . $tutorProfile->last_name) : 'Tutor';
-        $tutorUser = optional($tutoria->tutor)->user;
+        try {
+            $tutorProfile = optional($tutoria->tutor)->profile;
+            $tutorName = $tutoria->tutor->first_name . ' ' . $tutoria->tutor->last_name;
+            $tutorUser = optional($tutoria->tutor)->user;
 
-        if ($tutorUser) {
+            if (!$tutorUser || !$tutorUser->email) {
+                Log::warning('Tutor sin email válido', [
+                    'tutoria_id' => $tutoria->id,
+                    'tutor_id' => $tutoria->tutor->id ?? 'N/A'
+                ]);
+                return;
+            }
+
             $studentProfile = optional($tutoria->student)->profile;
-            $studentName = $studentProfile ? ($studentProfile->first_name . ' ' . $studentProfile->last_name) : 'Estudiante';
 
-            Mail::to($tutorUser->email)->send(new SessionBookingMail([
-                'userName' => $tutorName,
-                'sessionDate' => date('d/m/Y', strtotime($tutoria->start_time)),
-                'sessionTime' => date('H:i', strtotime($tutoria->start_time)),
-                'meetingLink' => $meetingLink,
-                'role' => 'Estudiante',
-                'oppositeName' => $studentName,
-            ]));
+            Log::info('Enviando correo al tutor', [
+                'tutoria_id' => $tutoria->id,
+                'tutor_email' => $tutorUser->email,
+                'tutor_name' => $tutorName
+            ]);
+
+            // Crear y enviar el correo al tutor
+            Mail::to($tutorUser->email)->send(new TutorTutoriaNotificationMail(
+                $tutorName,
+                date('d/m/Y', strtotime($tutoria->start_time)),
+                date('H:i', strtotime($tutoria->start_time)),
+                $meetingLink,
+                $tutoria->student->first_name . ' ' . $tutoria->student->last_name
+            ));
+
+            Log::info('Correo enviado exitosamente al tutor', [
+                'tutoria_id' => $tutoria->id,
+                'tutor_email' => $tutorUser->email
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error al enviar correo al tutor', [
+                'tutoria_id' => $tutoria->id,
+                'error_message' => $e->getMessage(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
+                'stack_trace' => $e->getTraceAsString()
+            ]);
         }
     }
-
-
 }

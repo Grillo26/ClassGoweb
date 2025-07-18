@@ -57,7 +57,7 @@
                                         
                                         <!-- Texto de la imagen -->
                                         <p style="font-size: 18px; color: #023047; text-align: center; margin: 16px 0; line-height: 1.5; font-weight: 600;">
-                                            Tu tutor {{ $oppositeName }} te está esperando. ¡Prepárate para una sesión increíble!
+                                            El Estudiante {{ $oppositeName }} te está esperando. ¡Prepárate para una sesión increíble!
                                         </p>
                                     </td>
                                 </tr>
@@ -72,7 +72,7 @@
                                         </h3>
                                         <p style="margin: 4px 0; color: #374151;"><strong>Fecha:</strong> {{ $sessionDate }}</p>
                                         <p style="margin: 4px 0; color: #374151;"><strong>Hora:</strong> {{ $sessionTime }}</p>
-                                        <p style="margin: 4px 0; color: #374151;"><strong>Tutor:</strong> {{ $oppositeName }}</p>
+                                        <p style="margin: 4px 0; color: #374151;"><strong>Estudiante:</strong> {{ $oppositeName }}</p>
                                     </td>
                                 </tr>
                             </table>
