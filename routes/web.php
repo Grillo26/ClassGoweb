@@ -37,7 +37,6 @@ use App\Livewire\Payouts;
 use App\Http\Controllers\GoogleMeetController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('/verify', function (\Illuminate\Http\Request $request) {
     $id = $request->query('id');
     $hash = $request->query('hash');
@@ -112,6 +111,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');
 
     Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones');
+    // promociones vista ejemplo    
     Route::post('tutor/favourite', [SearchController::class, 'favouriteTutor'])->name('tutor.favourite');
 
 

@@ -23,6 +23,9 @@
     display: flex;
     flex-flow: column wrap;
 }
+.modal-header p{
+    color: var(--primary-color);
+}
 .img-modal{
     width: 250px;
 }
@@ -66,10 +69,11 @@
 }
 
 .btn-cerrar {
-    background-color: #e5e7eb;
+    background-color: transparent;
     padding: 0.6rem 1rem;
     border: none;
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
+    color: var(--primary-color);
 }
