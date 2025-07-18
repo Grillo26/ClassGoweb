@@ -8,6 +8,53 @@
 2 - Card Invitación
 3 - Cupones locales
 ------------------------------------------------------------*/
+.cupon-text-cupones{
+    color: var(--primary-color);
+}
+.card-fondo{
+    background-color: var(--primary-color);
+}
+.card-copy-text{
+    color: var(--primary-color);
+}
+
+/* --------------CUPONES------------------ */
+.button-cupon{
+    background-color: var(--secundary-color);
+}
+.cupon-text{
+    color: var(--primary-color);
+}
+.boton-copiar{
+    color: var(--primary-color);
+}
+
+.mensaje-flotante {
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    margin: 0 auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    position: relative;
+    z-index: 10;
+    opacity: 1;
+    transition: opacity 0.5s;
+    font-size: 3rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 .promociones-container{
     display: flex;

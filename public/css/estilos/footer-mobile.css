@@ -1,19 +1,29 @@
 /* footer-mobile.css: Estilos responsivos para móvil (max-width: 768px) */
 
 @media (max-width: 768px) {
-  .footer-about .box:not(:nth-child(1)):not(:nth-child(4)) {
+  .footer-about .box {
     display: none;
   }
   .footer-container {
     padding: 0.5rem 0.2rem;
   }
-  .container-info {
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem 0 0 0;
+  .footer-info{
+    display: flex !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+    padding-left: 2rem;
   }
   .footer-info img {
-    width: 120px;
+    width: 300px;
+  }
+  .footer-info .info-text {
+    justify-content: center;
+    align-items: center;
+    gap: 0.1rem;
+    line-height: 5px;
+  }
+  .footer-info i{
+    font-size: 30px;
   }
   .container-redes {
     justify-content: center;
@@ -27,5 +37,6 @@
     font-size: 0.9rem;
     border-radius: 12px;
     margin-top: 0.5rem;
+    margin-left: 3rem;
   }
 } 

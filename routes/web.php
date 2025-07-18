@@ -41,7 +41,6 @@ use App\Http\Controllers\GoogleMeetController;
 use App\Services\GoogleMeetService;
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('/verify', function (\Illuminate\Http\Request $request) {
     $id = $request->query('id');
     $hash = $request->query('hash');
@@ -87,9 +86,7 @@ Route::get('/verify', function (\Illuminate\Http\Request $request) {
 Route::get('/prueba', function () {
     return '¡Ruta de prueba funcionando!';
 });
-Route::get('/nosotros',function () {
-    return view('vistas.view.pages.nosotros');
-}); 
+; 
 
 
 //OJO -------> Debe de estar dentro del grupo de rutas para el rol TUTOR
@@ -99,9 +96,6 @@ Route::get('/tutor/ficha-img/{slug}/{id}', [ExportImageController::class, 'expor
 Route::get('/tutor/ficha-download/{slug}/{id}', [ExportImageController::class, 'downloadFicha'])->name('tutor.ficha.download');
 
 
-Route::get('/nosotros', function () {
-    return view('vistas.view.pages.nosotros');
-});
 
 /* Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialController::class, 'callback'])->name('social.callback');
@@ -116,8 +110,15 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::get('/blogs', Blogs::class)->name('blogs');
     Route::get('/blog/{slug}', BlogDetails::class)->name('blog-details');
     Route::view('/subscriptions-page', 'subscriptions-page');
+
+    // <==== Grillo kkk ===>
     Route::get('/home', [HomeController::class, 'index']);
+    Route::get('/nosotros', [HomeController::class, 'nosotros'])->name('nosotros');
+    Route::view('/como-trabajamos', 'vistas.view.pages.trabajamos')->name('como-trabajamos');
+    Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');
+
     Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones');
+    // promociones vista ejemplo    
     Route::post('tutor/favourite', [SearchController::class, 'favouriteTutor'])->name('tutor.favourite');
 
 

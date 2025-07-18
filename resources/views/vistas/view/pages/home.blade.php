@@ -32,7 +32,10 @@
 
             <!--Botones-->
             <div class="hero-buttons">
-                <button><i class="fa-solid fa-bolt-lightning"></i>Tutor al Instante</button>
+                <button>
+                    <i class="fa-solid fa-bolt-lightning"></i>
+                    Tutor al Instante
+                </button>
                 <button><i class="fa-solid fa-calendar"></i>Agendar Tutoría</button>
                 <button><i class="fa-solid fa-compass"></i>Explorar Tutores</button>
             </div>
@@ -51,28 +54,7 @@
 <!-- CONTADORES INFO -->
 <section class="info-container">
     <!-- CONTADORES -->
-    <div class="counters">
-        <div class="counter-box">
-            <div class="counter-number" data-target="500">+0</div>
-            <h1>Usuarios registrados</h1>
-        </div>
-        <div class="box-sky">
-        </div>
-        <div class="counter-box">
-            <div class="counter-number"data-target="230">+0</div>
-            <h1>Tutores disponibles</h1>
-        </div>
-        <div class="box-sky"></div>
-        <div class="counter-box">
-            <div class="counter-number" data-target="230">0</div>
-            <h1>Estudiantes registrados</h1>
-        </div>
-        <div class="box-sky"></div>
-        <div class="counter-box">
-            <div class="counter-numbe"><i class="fa fa-star"></i>4.5</div>
-            <h1>En la App Store</h1>
-        </div>
-    </div>
+    @include('components.counters', ['color' => 'text-dark'])
 
     <!--TUTORES DESTACADOS-->
     <div class="tutors-container">
@@ -160,20 +142,7 @@
             <img src="{{ asset('images/tutorias.png') }}" alt="Mascota">
         </div>
     </div>
-    <div class="alianzas">
-        <h1 class="over-text"><div class="linea"></div>Juntos llegamos más lejos<div class="linea"></div></h1>
-        <h1>Alianzas que potencian la educación</h1>
-        <p>En ClassGo creemos en el poder de la colaboración para transformar el aprendizaje. Por eso, trabajamos junto a instituciones educativas, clubes y organizaciones comprometidas con la formación académica y el desarrollo personal.</p>
-        <div class="steps-alianzas">
-            <!-- Alianzas Cards DESDE BD -->
-            @foreach($alianzas as $alianza)
-                <div class="alianzas-card">
-                    <img src="{{ $alianza->imagen ? asset('storage/' . $alianza->imagen) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $alianza->imagen }}">
-                    <p>{{ $alianza -> titulo }}</p>
-                </div>
-            @endforeach
-        </div>
-    </div>
+    @include('components.alianzas', ['alianzas' => $alianzas])
 </section>
 
 <script>
@@ -281,39 +250,6 @@ let currentSlide = 0;
         window.addEventListener('resize', updateCardsPerView);
 
 
-document.addEventListener("DOMContentLoaded", () => {
-    const counters = document.querySelectorAll('.counter-number');
-
-    const animateCounter = (el) => {
-        const target = +el.getAttribute('data-target');
-        const isDecimal = el.getAttribute('data-decimal') === 'true';
-        let count = 0;
-        const step = isDecimal ? 0.1 : Math.ceil(target / 100);
-
-        const updateCounter = () => {
-            count += step;
-            if (count < target) {
-                el.innerHTML = isDecimal ? `<i class="fa fa-star"></i> ${count.toFixed(1)}` : `+${Math.floor(count)}`;
-                requestAnimationFrame(updateCounter);
-            } else {
-                el.innerHTML = isDecimal ? `<i class="fa fa-star"></i> ${target.toFixed(1)}` : `+${target}`;
-            }
-        };
-
-        updateCounter();
-    };
-
-    const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if(entry.isIntersecting) {
-                animateCounter(entry.target);
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.6 });
-
-    counters.forEach(counter => observer.observe(counter));
-});
 
 document.addEventListener('DOMContentLoaded', function() {
     // Video lazy load: solo carga el src si el usuario da play

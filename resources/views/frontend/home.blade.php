@@ -53,6 +53,8 @@
             <p>En la App Store</p>
         </div>
     </div>
+
+    
     <!--TUTORES DESTACADOS-->
     <div class="outstanding-tutors">
         <h2 style="text-align: center;">Tutores Destacados</h2>
