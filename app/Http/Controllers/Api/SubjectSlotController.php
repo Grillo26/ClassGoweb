@@ -45,7 +45,7 @@ class SubjectSlotController extends Controller
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'date' => 'required|date|after_or_equal:today',
-            'duracion' => 'nullable|string', // La duración es string en la BD
+            'duracion' => 'nullable', // Acepta cualquier tipo
         ]);
 
         if ($validator->fails()) {
@@ -60,7 +60,19 @@ class SubjectSlotController extends Controller
             // Calcular duración automáticamente si no se proporciona
             $startTime = \Carbon\Carbon::createFromFormat('H:i', $request->start_time);
             $endTime = \Carbon\Carbon::createFromFormat('H:i', $request->end_time);
-            $duracion = $request->duracion ?? $startTime->diffInMinutes($endTime) . ' minutos';
+            
+            // Procesar la duración
+            if ($request->duracion) {
+                // Si es un número, convertirlo a string con "minutos"
+                if (is_numeric($request->duracion)) {
+                    $duracion = $request->duracion . ' minutos';
+                } else {
+                    $duracion = $request->duracion;
+                }
+            } else {
+                // Calcular automáticamente
+                $duracion = $startTime->diffInMinutes($endTime) . ' minutos';
+            }
 
             // Crear el slot con solo las columnas que existen
             $slot = UserSubjectSlot::create([
