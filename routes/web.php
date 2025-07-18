@@ -37,6 +37,10 @@ use App\Livewire\Payouts;
 use App\Http\Controllers\GoogleMeetController;
 use Illuminate\Support\Facades\Route;
 
+    Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');
+
+Route::view('/estudiantes', 'vistas.view.pages.estudiantes')->name('estudiantes');
+
 Route::get('/verify', function (\Illuminate\Http\Request $request) {
     $id = $request->query('id');
     $hash = $request->query('hash');
