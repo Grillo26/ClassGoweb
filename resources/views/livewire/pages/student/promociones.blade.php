@@ -54,12 +54,12 @@
 		<div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-md">
 			<h3 class="text-xl font-bold mb-4 cupon-text-cupones">Mis cupones</h3>
 			<div class="space-y-4">
-                @if($cupones->isEmpty()){
+                @if($cupones->isEmpty())
                     <div class="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
 					    <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z" /></svg>
 					    <p class="mt-2 text-sm text-gray-500">No tienes cupones activos en este momento.</p>
 				    </div>
-                }
+                
                 @else
                     <div class="cupon-lista">
                         @foreach($cupones as $cupon)
