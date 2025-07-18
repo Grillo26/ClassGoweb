@@ -3,6 +3,9 @@
 use App\Http\Controllers\Admin\TutorController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Frontend\SearchController;
+use App\Http\Controllers\GoogleController;
+
+
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\Impersonate;
@@ -35,6 +38,7 @@ use App\Livewire\Pages\Tutor\ManageSessions\MyCalendar;
 use App\Livewire\Pages\Tutor\ManageSessions\SessionDetail;
 use App\Livewire\Payouts;
 use App\Http\Controllers\GoogleMeetController;
+use App\Services\GoogleMeetService;
 use Illuminate\Support\Facades\Route;
 
     Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');
@@ -97,9 +101,12 @@ Route::get('/tutor/ficha-download/{slug}/{id}', [ExportImageController::class, '
 
 
 
-Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
+/* Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialController::class, 'callback'])->name('social.callback');
-Route::get('/pay-qr/{orderId}', [PaymentController::class, 'showQR'])->name('pay-qr');
+ */Route::get('/pay-qr/{orderId}', [PaymentController::class, 'showQR'])->name('pay-qr');
+
+ Route::get('/google/authenticate', [GoogleController::class, 'authenticate'])->name('google.authenticate');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
 
 
 Route::middleware(['locale', 'maintenance'])->group(function () {
@@ -126,8 +133,8 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
         Route::get('logout', [SiteController::class, 'logout'])->name('logout');
         Route::get('user/identity-confirmation/{id}', [PersonalDetails::class, 'confirmParentVerification'])->name('confirm-identity');
         Route::get('google/callback', [SiteController::class, 'getGoogleToken']);
-        Route::middleware('role:student')->get('checkout', Checkout::class)->name('checkout');
-        Route::middleware('role:student')->get('thank-you/{id}', ThankYou::class)->name('thank-you');
+        Route::middleware('student')->get('checkout', Checkout::class)->name('checkout');
+        Route::middleware('student')->get('thank-you/{id}', ThankYou::class)->name('thank-you');
         Route::middleware('role:tutor')->prefix('tutor')->name('tutor.')->group(function () {
             Route::get('dashboard', ManageAccount::class)->name('dashboard');
             Route::get('payouts', Payouts::class)->name('payouts');
@@ -159,7 +166,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
             Route::get('manage-dispute/{id}', ManageDispute::class)->name('manage-dispute');
         });
 
-        Route::middleware('role:student')->prefix('student')->name('student.')->group(function () {
+        Route::middleware('student')->prefix('student')->name('student.')->group(function () {
             Route::get('profile', fn() => redirect('tutor.profile.personal-details'))->name('profile');
             Route::prefix('profile')->name('profile.')->group(function () {
                 Route::get('personal-details', PersonalDetails::class)->name('personal-details');
@@ -198,3 +205,5 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
         require __DIR__ . '/pagebuilder.php';
     }
 });
+
+

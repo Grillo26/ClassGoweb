@@ -1,4 +1,4 @@
-<div>
+<div class="container">
     @php use Illuminate\Support\Str; @endphp
     @if($currentCourse)
     <div class="am-card">
@@ -27,11 +27,10 @@
                 });
             </script>
             @else
-            <p>No hay video disponible para este curso.</p>
+            <p class="nodisponible">No hay video disponible para este curso.</p>
             @endif
-            {{-- <p>{{ $currentCourse->description }}</p> --}}
             @if($exam)
-            <button class="am-btn am-btn-primary am-open-exam-modal">
+            <button class="am-btnn am-btn-primary am-open-exam-modal">
                 Ir al examen
             </button>
             @endif
@@ -39,60 +38,7 @@
     </div>
 
     <!-- Modal Examen -->
-    <div class="am-modal am-fade" id="examModal" tabindex="-1" aria-labelledby="examModalLabel" aria-hidden="true">
-        <div class="am-modal-dialog am-modal-lg">
-            <div class="am-modal-content">
-                <div class="am-modal-header">
-                    <h5 class="am-modal-title" id="examModalLabel">Examen: {{ $exam?->title }}</h5>
-                    <button type="button" class="am-close" aria-label="Cerrar">&times;</button>
-                </div>
-                <div class="am-modal-body">
-                    @if($exam && $exam->questions->count())
-                    <form wire:submit.prevent="submitExam">
-                        @foreach($exam->questions as $q)
-                            @if($q->type === 'opcion_unica' && $q->options)
-                                <div class="am-form-group">
-                                    <label class="am-form-label">{{ $q->question }}</label>
-                                    @php
-                                        $options = $q->options;
-                                        if (is_string($options)) {
-                                            $options = json_decode($options, true);
-                                        }
-                                        if (!is_array($options)) {
-                                            $options = [];
-                                        }
-                                    @endphp
-                                    @foreach($options as $i => $option)
-                                    <div class="am-form-check">
-                                        <input class="am-form-check-input" type="radio" name="question_{{ $q->id }}" id="q{{ $q->id }}_{{ $i }}"
-                                            value="{{ $i+1}}" wire:model="answers.{{ $q->id }}">
-                                        <label class="am-form-check-label" for="q{{ $q->id }}_{{ $i }}">{{ $option }}</label>
-                                    </div>
-                                    @endforeach
-                                    @error('answers.' . $q->id)
-                                        <div class="am-form-error">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            @endif
-                        @endforeach
-                        <button type="submit" class="am-btn am-btn-success" wire:loading.attr="disabled">Enviar respuestas</button>
-                        <div wire:loading class="am-form-loading">Enviando...</div>
-                        @if (session()->has('exam_success'))
-                            <div class="am-alert am-alert-success" x-data="{show: true}" x-init="setTimeout(() => show = false, 2000)" x-show="show">
-                                {{ session('exam_success') }}
-                            </div>
-                        @endif
-                        @if (session()->has('exam_error'))
-                            <div class="am-alert am-alert-danger">{{ session('exam_error') }}</div>
-                        @endif
-                    </form>
-                    @else
-                    <p>No hay preguntas para este examen.</p>
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('livewire.pages.tutor.company-courses.components.courses-modal', ['exam' => $exam])
     @else
     <div class="am-alert am-alert-info">No tienes cursos pendientes o en progreso.</div>
     @endif
@@ -124,5 +70,8 @@
 </div>
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/livewire/pages/tutor/company-courses/courses.css') }}">
+<link rel="stylesheet" href="{{ asset('css/livewire/pages/tutor/company-courses/courses.css') }}">
+<link rel="stylesheet" href="{{ asset('css/livewire/pages/tutor/company-courses/components/courses-modal.css') }}">
+
+
 @endpush

@@ -9,9 +9,9 @@
             <div>
                 <input type="hidden" name="am-locale">
                 <div class="am-language-select">
-                    <a href="javascript:void(0);" class="am-lang-anchor">
+                    <a href="javascript:void(0);" class="am-lang-anchor" style="color: black">
                         <img src="{{ getLangFlag($selectedLang) }}" alt="{{ $selectedLang }}">
-                        {{ $translatedLangs[$selectedLang] }}<i class="am-icon-chevron-down"></i>
+                        {{ $translatedLangs[$selectedLang] }}</i>
                     </a>
                     <ul class="sub-menutwo locale-menu">
                         @foreach(setting('_general.multi_language_list') as $lang)

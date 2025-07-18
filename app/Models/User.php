@@ -40,6 +40,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
         'password',
         'email_verified_at',
         'fcm_token',
+        'available_for_tutoring',
     ];
 
     /**
@@ -63,6 +64,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
             'status' => UserStatusCast::class,
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'available_for_tutoring' => 'boolean',
         ];
     }
 
@@ -139,7 +141,24 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     public function role(): Attribute
     {
         return Attribute::make(
-            get: fn() => Cache::rememberForever('user-role-' . $this->id, fn() => $this->roles->first()?->name),
+            get: fn() => Cache::rememberForever('user-role-' . $this->id, function() {
+                try {
+                    // Verificar si roles ya está cargado
+                    if ($this->relationLoaded('roles')) {
+                        if ($this->roles instanceof \Illuminate\Database\Eloquent\Collection && $this->roles->count() > 0) {
+                            return $this->roles->first()->name;
+                        }
+                        return null;
+                    }
+                    
+                    // Si no está cargado, hacer una consulta directa
+                    $role = $this->roles()->select('name')->first();
+                    return $role ? $role->name : null;
+                } catch (\Exception $e) {
+                    \Log::error('Error en atributo role para usuario ' . $this->id . ': ' . $e->getMessage());
+                    return null;
+                }
+            }),
         );
     }
 
@@ -150,7 +169,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
 
     public function address(): MorphOne
     {
-        return $this->morphOne(Address::class, 'addressable');
+        return $this->morphOne(Address::class, 'addressable')->where('addressable_type', User::class);
     }
 
     public function redirectAfterLogin(): Attribute

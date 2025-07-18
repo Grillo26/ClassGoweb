@@ -55,7 +55,7 @@ class SlotBooking extends Model
     public static function getBookingsByStudent($studentId)
     {
         return self::where('student_id', $studentId)
-            ->select('start_time', 'end_time', 'status')
+            ->select('id', 'start_time', 'end_time', 'status')
             ->get();
     }
 
@@ -81,11 +81,11 @@ class SlotBooking extends Model
     }
 
     public function rating(): MorphOne {
-        return $this->morphOne(Rating::class, 'ratingable');
+        return $this->morphOne(Rating::class, 'ratingable')->latest()->take(1);
     }
 
     public function orderItem(): MorphOne {
-        return $this->morphOne(OrderItem::class, 'orderable');
+        return $this->morphOne(OrderItem::class, 'orderable')->latest()->take(1);
     }
 
     public function bookingLog(): HasMany {

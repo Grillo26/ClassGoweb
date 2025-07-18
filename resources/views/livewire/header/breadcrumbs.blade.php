@@ -3,12 +3,12 @@
         @foreach($breadcrumbs as $breadcrumb)
 
             @if(!is_null($breadcrumb->url) && !$loop->last)
-                <li><a href="{{ $breadcrumb->url }}" wire:navigate.remove>{{ $breadcrumb->title }}</a></li>
+                <li><a style="color: black;font-size: 20px" href="{{ $breadcrumb->url }}" wire:navigate.remove>{{ $breadcrumb->title }}</a></li>
                 <li>
-                    <em>/</em>
+                    <em style="color: black; font-size: 20px;">/</em>
                 </li>
             @else
-                <li class="active"><span>{{ $breadcrumb->title }}</span></li>
+                <li class="active" ><span style="color:#219EBC ;font-size: 20px">{{ $breadcrumb->title }}</span></li>
             @endif
 
         @endforeach
