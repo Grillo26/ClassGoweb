@@ -91,14 +91,14 @@
         x-data="{ isDragging: false }"
         x-on:dragover.prevent="isDragging = true"
         x-on:drop="isDragging = false">
-        <div class="am-dashboardwrap">
+        <div  class="am-dashboardwrap"  style="background: white">
             <livewire:pages.common.navigation />
-            <div class="am-mainwrap">
+            <div class="am-mainwrap" style="background-color: white">
                 <livewire:header.header />
                 <!-- Page Content -->
-                <main class="am-main">
-                    <div class="am-dashboard_box">
-                        <div class="am-dashboard_box_wrap">
+                <main class="am-main" style="height: calc(100vh - 80px); overflow: hidden;">
+                    <div style="height: 100%; overflow-y: auto; overflow-x: hidden; padding: 20px;">
+                        <div>
                             @yield('content')
                             {{ $slot ?? '' }}
                             @if (setting('_api.active_conference') == 'google_meet' && empty(isCalendarConnected(Auth::user())))

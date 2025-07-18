@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Rating extends Model {
     public $guarded = [];
@@ -58,5 +59,13 @@ class Rating extends Model {
     public function tutor(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'tutor_id');
+    }
+
+    /**
+     * Get the parent ratingable model.
+     */
+    public function ratingable(): MorphTo
+    {
+        return $this->morphTo();
     }
 }

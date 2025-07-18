@@ -10,6 +10,7 @@
     --transition: all 0.3s ease;
     --footer-white: #d6f7fd;
     --white: #fff;
+    --panel-background:rgb(241, 243, 244);
 
     /**-------FUENTES------*/
     --h1: 2.3rem;

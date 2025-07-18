@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SubjectSlotController;
 use App\Http\Controllers\Api\AlianzaController;
 use App\Http\Controllers\Api\SubjectController;
+use App\Http\Controllers\Api\UserSubjectController;
 use App\Http\Controllers\Api\ReviewController;
 
 
@@ -52,6 +53,7 @@ Route::get('slot-detail/{id}',                                  [TutorController
 Route::apiResource('tutor-education',                           EducationController::class)->only(['show','store','update','destroy']);
 Route::apiResource('tutor-experience',                          ExperienceController::class)->only(['show','store','update','destroy']);
 Route::apiResource('tutor-certification',                       CertificationController::class)->only(['show','store','destroy']);
+Route::apiResource('tutor-subjects',                            UserSubjectController::class)->only(['index','show','store','update','destroy']);
 
 Route::get('countries',                                     [TaxonomiesController::class,'getCountries']);
 Route::get('languages',                                     [TaxonomiesController::class,'getLanguages']);
@@ -102,6 +104,9 @@ Route::middleware('auth:sanctum')->group(function () {
 // Ruta para obtener el tiempo disponible del tutor (pública)
 Route::get('tutor/{id}/available-slots', [\App\Http\Controllers\Api\SubjectSlotController::class, 'getTutorAvailableSlots']);
 
+// Ruta para crear slots de disponibilidad (pública)
+Route::post('tutor/slots', [\App\Http\Controllers\Api\SubjectSlotController::class, 'createUserSubjectSlot']);
+
 // Ruta para obtener las tutorías del usuario autenticado (pública temporalmente)
 Route::get('user/bookings', [\App\Http\Controllers\Api\BookingController::class, 'getUpComingBooking']);
 
@@ -137,10 +142,18 @@ Route::post('test-payment-upload', [\App\Http\Controllers\Api\BookingController:
 Route::post('update-fcm-token', [AuthController::class, 'updateFcmToken']);
 Route::get('verify-email', [AuthController::class, 'verifyEmail']);
 
+// Ruta para cambiar disponibilidad de tutoría (solo para tutores)
+Route::post('tutor/availability', [AuthController::class, 'updateTutoringAvailability']);
+
 Route::get('user/{id}/profile-image', [ProfileController::class, 'getProfileImage']);
 Route::post('user/{id}/profile-image', [ProfileController::class, 'updateProfileImage']);
 
 Route::get('subject/{id}/name', [SubjectController::class, 'getSubjectName']);
+
+// Rutas adicionales para gestión de materias de tutores
+Route::get('tutor-subjects/groups', [UserSubjectController::class, 'getSubjectGroups']);
+Route::get('tutor-subjects/groups/{groupId}/subjects', [UserSubjectController::class, 'getSubjectsByGroup']);
+Route::get('tutor-subjects/available', [UserSubjectController::class, 'getAvailableSubjects']);
 
 Route::fallback(function () {
     return response()->json([
