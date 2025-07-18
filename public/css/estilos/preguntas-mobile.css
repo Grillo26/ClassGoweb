@@ -1,0 +1,97 @@
+/* Estilos responsivos para móviles - Página Preguntas */
+
+@media (max-width: 600px) {
+  .preguntas-container {
+    padding: 0 0.2rem;
+  }
+
+  .preguntas-header-content {
+    padding: 6rem 1rem 1.5rem 1rem;
+  }
+
+  .preguntas-header-text h1 {
+    font-size: 1.5rem;
+    padding-top: 0;
+  }
+
+  .preguntas-header-text p {
+    font-size: 0.9rem;
+
+  }
+
+  .preguntas-tabs {
+    padding: 0rem 0;
+  }
+
+  .tab-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 25px;
+  }
+
+  .tab-button {
+    padding: 0.8rem 1rem;
+    font-size: 0.85rem;
+    border-radius: 20px;
+    justify-content: center;
+  }
+
+  .tab-button.active::after {
+    display: none;
+  }
+
+  .preguntas-section {
+    padding: 2rem 1rem;
+  }
+
+  .preguntas-content {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .preguntas-image {
+    position: static;
+    order: -1;
+  }
+
+  .preguntas-image img {
+    max-width: 90%;
+    border-radius: 0.5rem;
+  }
+
+  .faq-question {
+    padding: 1rem 0;
+  }
+
+  .faq-question:hover {
+    padding-left: 0.5rem;
+  }
+
+  .faq-question h3 {
+    font-size: 0.9rem;
+    padding-right: 0.5rem;
+  }
+
+  .faq-answer {
+    padding: 0 0.5rem;
+  }
+
+  .faq-answer p {
+    font-size: 0.85rem;
+    padding-bottom: 1rem;
+  }
+
+  .faq-toggle {
+    width: 25px;
+    height: 25px;
+  }
+
+  .faq-toggle i {
+    font-size: 0.6rem;
+  }
+
+  .faq-item {
+    margin-bottom: 0.5rem;
+  }
+} 

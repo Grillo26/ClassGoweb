@@ -44,7 +44,7 @@ footer{
 }
 
 .footer-info img{
-    width: 300px;
+    width: 300px !important;
 }
 
 .btn-registrate{

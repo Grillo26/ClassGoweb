@@ -3,13 +3,7 @@
 /* 2 - Estilos Específicos para la Página Nosotros */
 /* ------------------------------------------------------------ */
 /* Estilo general */
-body {
-  font-family: Arial, sans-serif;
-  color: #333;
-  background-color: #f4f4f4 !important;
-  margin: 0;
-  padding: 0;
-}
+
 
 .nosotros-container {
   display: flex;
@@ -17,7 +11,7 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
-  
+  background-color: white;
 }
 /*-----HEADER-----*/
 .nosotros-header {
@@ -50,7 +44,7 @@ body {
   font-size: 2.7rem;
   font-weight: 700;
   margin-top: 1.2rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1rem ;
   color: #fff;
   line-height: 1.15;
   padding-top: 2rem;
@@ -268,8 +262,7 @@ body {
 }
 
 .nosotros-logros-text {
-  margin-bottom: 2rem;
-  line-height: 30px;
+  line-height: 50px;
 }
 
 .nosotros-logros-title {
@@ -279,7 +272,6 @@ body {
 
 .nosotros-logros-text h2 {
   font-size: 1.5rem;
-  font-weight: normal;
   color: white;
 }
 .nosotros-logros-text h1{
@@ -289,6 +281,9 @@ body {
 .nosotros-logros-subtext {
   font-size: 1.2rem;
   color: white;
+  padding: 0 15rem;
+  line-height: 25px;
+  
 }
 
 /*-----CONVENIOS----*/
@@ -387,4 +382,10 @@ body {
   font-weight: 500;
   margin-top: 0.5rem;
   margin-bottom: 0;
+}
+
+.counter-box h1 {
+    font-size: var(--h1-regular);
+    color: white;
+    text-transform: none;
 }

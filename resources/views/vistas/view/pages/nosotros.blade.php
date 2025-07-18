@@ -2,6 +2,8 @@
 
 @section('title', 'Class Go! | ¿Quiénes somos?')
 
+@section('body-class', 'nosotros')
+
 @section('content')
     <!--NOSOTROS-->
     <section class="nosotros">
@@ -88,7 +90,7 @@
                     </p>
                 </div>
                 
-                @include('components.counters')
+                @include('components.counters', ['color' => 'text-white'])
             </div>
             
             @include('components.alianzas', ['alianzas' => $alianzas])

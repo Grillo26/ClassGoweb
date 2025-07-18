@@ -16,8 +16,8 @@
 					<li><a href="#" class="{{ request()->is('tutores*') ? 'active' : '' }}">Tutores</a></li>
 					<li><a href="{{ route('nosotros')}}" class="{{ request()->is('nosotros*') ? 'active' : '' }}">Nosotros</a></li>
 					<li><a href="{{ route('como-trabajamos')}}" class="{{ request()->is('como-trabajamos*') ? 'active' : '' }}">Cómo trabajamos</a></li>
-					<li><a href="#" class="{{ request()->is('preguntas*') ? 'active' : '' }}">Preguntas</a></li>
-					<li><a href="#" class="{{ request()->is('blog*') ? 'active' : '' }}">Blog</a></li>
+					<li><a href="{{ route('preguntas')}}" class="{{ request()->is('preguntas*') ? 'active' : '' }}">Preguntas</a></li>
+					{{-- <li><a href="#" class="{{ request()->is('blog*') ? 'active' : '' }}">Blog</a></li> --}}
 				</ul>
 			</nav>
 		</div>
@@ -63,9 +63,9 @@
 			<ul>
 				<li><a href="#" class="{{ request()->is('tutores*') ? 'active' : '' }}">Tutores</a></li>
 				<li><a href="{{ route('nosotros')}}" class="{{ request()->is('nosotros*') ? 'active' : '' }}">Nosotros</a></li>
-				<li><a href="#" class="{{ request()->is('como-trabajamos*') ? 'active' : '' }}">Cómo trabajamos</a></li>
-				<li><a href="#" class="{{ request()->is('preguntas*') ? 'active' : '' }}">Preguntas</a></li>
-				<li><a href="#" class="{{ request()->is('blog*') ? 'active' : '' }}">Blog</a></li>
+				<li><a href="{{ route('como-trabajamos')}}" class="{{ request()->is('como-trabajamos*') ? 'active' : '' }}">Cómo trabajamos</a></li>
+				<li><a href="{{ route('preguntas')}}" class="{{ request()->is('preguntas*') ? 'active' : '' }}">Preguntas</a></li>
+				{{-- <li><a href="{{ route('')}}" class="{{ request()->is('blog*') ? 'active' : '' }}">Blog</a></li> --}}
 				<li><a href="#">Empezar</a></li>
 				<li><a href="#">Login</a></li>
 			</ul>

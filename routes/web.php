@@ -109,6 +109,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::get('/home', [HomeController::class, 'index']);
     Route::get('/nosotros', [HomeController::class, 'nosotros'])->name('nosotros');
     Route::view('/como-trabajamos', 'vistas.view.pages.trabajamos')->name('como-trabajamos');
+    Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');
 
     Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones');
     Route::post('tutor/favourite', [SearchController::class, 'favouriteTutor'])->name('tutor.favourite');

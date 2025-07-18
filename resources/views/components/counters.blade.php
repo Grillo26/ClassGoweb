@@ -1,22 +1,22 @@
 <div class="counters">
     <div class="counter-box">
         <div class="counter-number" data-target="500">+0</div>
-        <h1>Usuarios registrados</h1>
+        <h1 class="{{ $color ?? 'text-dark' }}">Usuarios registrados</h1>
     </div>
     <div class="box-sky"></div>
     <div class="counter-box">
         <div class="counter-number" data-target="230">+0</div>
-        <h1>Tutores disponibles</h1>
+        <h1 class="{{ $color ?? 'text-dark' }}">Tutores disponibles</h1>
     </div>
     <div class="box-sky"></div>
     <div class="counter-box">
         <div class="counter-number" data-target="230">0</div>
-        <h1>Estudiantes registrados</h1>
+        <h1 class="{{ $color ?? 'text-dark' }}">Estudiantes registrados</h1>
     </div>
     <div class="box-sky"></div>
     <div class="counter-box">
         <div class="counter-numbe"><i class="fa fa-star"></i>4.5</div>
-        <h1>En Play Store</h1>
+        <h1 class="{{ $color ?? 'text-dark' }}">En Play Store</h1>
     </div>
 </div> 
 <script>

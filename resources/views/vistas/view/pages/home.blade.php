@@ -54,7 +54,7 @@
 <!-- CONTADORES INFO -->
 <section class="info-container">
     <!-- CONTADORES -->
-    @include('components.counters')
+    @include('components.counters', ['color' => 'text-dark'])
 
     <!--TUTORES DESTACADOS-->
     <div class="tutors-container">

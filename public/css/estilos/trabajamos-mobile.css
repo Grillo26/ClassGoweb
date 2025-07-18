@@ -1,0 +1,108 @@
+/* Estilos responsivos para móviles - Página Cómo Trabajamos */
+
+@media (max-width: 600px) {
+  .trabajamos-container {
+    padding: 0 0.2rem;
+  }
+
+  .trabajamos-header-content {
+    padding: 7rem 1rem 1.5rem 1rem;
+  }
+
+  .trabajamos-header-text h1 {
+    font-size: 1.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .trabajamos-header-text p {
+    font-size: 0.9rem;
+  }
+
+  .trabajamos-tabs {
+    padding: 1rem 0;
+  }
+
+  .tab-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 25px;
+  }
+
+  .tab-button {
+    padding: 0.8rem 1rem;
+    font-size: 0.85rem;
+    border-radius: 20px;
+    justify-content: center;
+  }
+
+  .trabajamos-section-white,
+  .trabajamos-section-primary {
+    padding: 2rem 1rem;
+  }
+
+  .trabajamos-section-content {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  
+  }
+
+  .trabajamos-section-content.reverse {
+    flex-direction: column;
+  }
+
+  .trabajamos-text{
+    padding-left: 0rem;
+  }
+  .trabajamos-text h2 {
+    font-size: 1.4rem;
+  }
+
+  .trabajamos-text h3 {
+    font-size: 0.9rem;
+  }
+
+  .trabajamos-text h4 {
+    font-size: 1rem;
+  }
+
+  .trabajamos-text p {
+    font-size: 0.9rem;
+  }
+
+  .trabajamos-text ol li {
+    font-size: 0.9rem;
+  }
+
+  .trabajamos-icon {
+    width: 45px;
+    height: 45px;
+    margin: 0 auto 1rem auto;
+  }
+
+  .trabajamos-icon i {
+    font-size: 1rem;
+  }
+
+  .trabajamos-image img {
+    max-width: 90%;
+    border-radius: 0.5rem;
+  }
+
+  .trabajamos-footer {
+    padding: 2rem 0.5rem;
+  }
+
+  .trabajamos-footer h2 {
+    font-size: 1.5rem;
+  }
+
+  .trabajamos-footer h3 {
+    font-size: 1rem;
+  }
+
+  .trabajamos-footer p {
+    font-size: 0.9rem;
+  }
+} 

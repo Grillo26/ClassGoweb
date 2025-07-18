@@ -28,6 +28,10 @@
 ------------------------------------------------------------/
 
 /**--- 1 - Hero Principal --**/
+body{
+  background-color:  rgba(33, 158, 188, 1)!important;
+}
+
 .hero {
   height: 100vh;
   width: 100%;
@@ -248,7 +252,7 @@
 
 .counter-box h1 {
     font-size: var(--h1-regular);
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
     text-transform: none;
 }
 
@@ -863,6 +867,7 @@ i.fa-solid.fa-book.icon::before{
   padding: 3rem 0;
   gap: 30px;
 }
+
 
 .alianzas-card{
   display: flex;

@@ -267,7 +267,7 @@
     top: 100%;
     left: 0;
     right: 0;
-    background-color: #24A3BF;
+    background-color: #24a3bf00; /* transparente por defecto */
     border-radius: 20px;
     margin-top: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -276,6 +276,7 @@
 
 .navbar-mobile.active {
     display: block;
+    background-color: #24A3BF !important; /* celeste solo cuando está abierto */
 }
 
 .navbar-mobile ul {
@@ -463,3 +464,21 @@
 
 /* ================= RESPONSIVE DESIGN ================= */
 /* Los estilos responsivos para tablet y móvil han sido movidos a archivos separados: navbar-tablet.css y navbar-mobile.css. */
+
+/* NAVBAR TRANSPARENTE EN VISTAS ESPECÍFICAS (TABLET Y MÓVIL) */
+@media (max-width: 1024px) {
+  .nosotros .navbar,
+  .trabajamos .navbar,
+  .preguntas .navbar {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+}
+@media (max-width: 768px) {
+  .nosotros .navbar,
+  .trabajamos .navbar,
+  .preguntas .navbar {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+}

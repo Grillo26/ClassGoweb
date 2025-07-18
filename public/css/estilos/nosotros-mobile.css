@@ -6,7 +6,7 @@
   }
 
   .nosotros-header-content {
-    padding: 1rem 0.5rem 1rem 0.5rem;
+    padding: 6rem 2rem 1rem 2rem;
   }
   
   .nosotros-header-text h1 {
@@ -23,11 +23,14 @@
   }
   
   .nosotros-mision-porcentaje {
-    width: 60px;
-    height: 60px;
-    font-size: 1rem;
+    width: 100px;
+    height: 100px;
+    font-size: 0.5rem;
     left: 0;
     top: 0;
+  }
+  .nosotros.mision-porcentaje .nosotros-mision-porcentaje-text{
+    font-size: 0.5rem;
   }
   
   .nosotros-mision-image img {
