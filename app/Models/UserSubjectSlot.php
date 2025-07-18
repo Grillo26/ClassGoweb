@@ -10,25 +10,19 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 class UserSubjectSlot extends Model {
     use HasFactory;
 
-
     protected $table = 'user_subject_slots';
     protected $fillable = [
         'start_time',
         'end_time',
         'duracion',
         'date',
-        'user_id',
-        'session_fee',
-        'description',
-        'total_booked',
-        'meta_data'
+        'user_id'
     ];
 
     protected $casts = [
         'start_time' => 'datetime',
         'end_time' => 'datetime',
-        'date' => 'date:Y-m-d',
-        'meta_data' => 'array'
+        'date' => 'date:Y-m-d'
     ];
 
     public function user() {
