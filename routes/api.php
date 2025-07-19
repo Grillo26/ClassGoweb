@@ -137,9 +137,23 @@ Route::post('slot-bookings', [\App\Http\Controllers\Api\BookingController::class
 
 // Ruta de test para probar el evento manualmente
 Route::post('test-booking-event', function() {
-    \App\Events\SlotBookingCreated::dispatch(999); // slotBookingId
+    // Crear una tutoría real para el test
+    $booking = \App\Models\SlotBooking::create([
+        'student_id' => 649,
+        'tutor_id' => 789,
+        'start_time' => '2024-01-15 14:30:00',
+        'end_time' => '2024-01-15 16:00:00',
+        'session_fee' => 50.00,
+        'status' => 1
+    ]);
     
-    return response()->json(['message' => 'Evento de prueba disparado']);
+    \App\Events\SlotBookingCreated::dispatch($booking->id);
+    
+    return response()->json([
+        'message' => 'Evento de prueba disparado',
+        'booking_id' => $booking->id,
+        'canal' => 'private-user.649'
+    ]);
 });
 
 // Ruta de test simple para verificar broadcasting
