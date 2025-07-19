@@ -139,7 +139,7 @@ Route::post('slot-bookings', [\App\Http\Controllers\Api\BookingController::class
 Route::post('test-booking-event', function() {
     \App\Events\SlotBookingCreated::dispatch(
         999, // slotBookingId
-        456, // studentId
+        649, // studentId
         789, // tutorId
         '2024-01-15 14:30:00', // startTime
         '2024-01-15 16:00:00', // endTime
