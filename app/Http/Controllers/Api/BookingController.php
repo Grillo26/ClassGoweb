@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use function event;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
@@ -143,15 +144,40 @@ class BookingController extends Controller
 
         $slotBooking = \App\Models\SlotBooking::create($validated);
         
+        Log::info('Tutoría creada exitosamente', [
+            'slotBookingId' => $slotBooking->id,
+            'studentId' => $slotBooking->student_id,
+            'tutorId' => $slotBooking->tutor_id
+        ]);
+        
+        // Test simple de broadcasting
+        Log::info('Configuración de broadcasting', [
+            'default' => config('broadcasting.default'),
+            'pusher_key' => config('broadcasting.connections.pusher.key'),
+            'pusher_cluster' => config('broadcasting.connections.pusher.options.cluster')
+        ]);
+        
         // Disparar evento de tutoría creada
-        \App\Events\SlotBookingCreated::dispatch(
-            $slotBooking->id,
-            $slotBooking->student_id,
-            $slotBooking->tutor_id,
-            $slotBooking->start_time,
-            $slotBooking->end_time,
-            $slotBooking->session_fee
-        );
+        try {
+            \App\Events\SlotBookingCreated::dispatch(
+                $slotBooking->id,
+                $slotBooking->student_id,
+                $slotBooking->tutor_id,
+                $slotBooking->start_time,
+                $slotBooking->end_time,
+                $slotBooking->session_fee
+            );
+            
+            Log::info('Evento SlotBookingCreated disparado correctamente', [
+                'slotBookingId' => $slotBooking->id
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error al disparar evento SlotBookingCreated', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'slotBookingId' => $slotBooking->id
+            ]);
+        }
         
         return response()->json($slotBooking, 201);
     }
