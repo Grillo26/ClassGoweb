@@ -135,43 +135,6 @@ Route::get('user/{id}/bookings', [\App\Http\Controllers\Api\BookingController::c
 // Ruta para registrar una nueva tutoría (slot_booking)
 Route::post('slot-bookings', [\App\Http\Controllers\Api\BookingController::class, 'storeSlotBooking']);
 
-// Ruta de test para probar el evento manualmente
-Route::post('test-booking-event', function() {
-    // Crear una tutoría real para el test
-    $booking = \App\Models\SlotBooking::create([
-        'student_id' => 649,
-        'tutor_id' => 789,
-        'start_time' => '2024-01-15 14:30:00',
-        'end_time' => '2024-01-15 16:00:00',
-        'session_fee' => 50.00,
-        'status' => 1
-    ]);
-    
-    \App\Events\SlotBookingCreated::dispatch($booking->id);
-    
-    return response()->json([
-        'message' => 'Evento de prueba disparado',
-        'booking_id' => $booking->id,
-        'canal' => 'private-user.649'
-    ]);
-});
-
-// Ruta de test simple para verificar broadcasting
-Route::post('test-simple-event', function() {
-    $userId = request('user_id', 649); // Por defecto 649, pero puedes enviar otro
-    
-    \App\Events\TestEvent::dispatch(
-        'Mensaje de prueba desde servidor',
-        $userId
-    );
-    
-    return response()->json([
-        'message' => 'Test simple disparado',
-        'userId' => $userId,
-        'canal' => 'private-user.' . $userId
-    ]);
-});
-
 // Ruta para registrar un nuevo payment_slot_booking (renombrada para prueba)
 Route::post('test-payment-upload', [\App\Http\Controllers\Api\BookingController::class, 'storePaymentSlotBooking']);
 
