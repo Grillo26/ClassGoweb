@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use function event;
 
 class BookingController extends Controller
 {
@@ -141,6 +142,17 @@ class BookingController extends Controller
         ]);
 
         $slotBooking = \App\Models\SlotBooking::create($validated);
+        
+        // Disparar evento de tutoría creada
+        \App\Events\SlotBookingCreated::dispatch(
+            $slotBooking->id,
+            $slotBooking->student_id,
+            $slotBooking->tutor_id,
+            $slotBooking->start_time,
+            $slotBooking->end_time,
+            $slotBooking->session_fee
+        );
+        
         return response()->json($slotBooking, 201);
     }
 
