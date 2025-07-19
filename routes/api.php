@@ -137,16 +137,25 @@ Route::post('slot-bookings', [\App\Http\Controllers\Api\BookingController::class
 
 // Ruta de test para probar el evento manualmente
 Route::post('test-booking-event', function() {
-    \App\Events\SlotBookingCreated::dispatch(
-        999, // slotBookingId
-        649, // studentId
-        789, // tutorId
-        '2024-01-15 14:30:00', // startTime
-        '2024-01-15 16:00:00', // endTime
-        50.00 // sessionFee
-    );
+    \App\Events\SlotBookingCreated::dispatch(999); // slotBookingId
     
     return response()->json(['message' => 'Evento de prueba disparado']);
+});
+
+// Ruta de test simple para verificar broadcasting
+Route::post('test-simple-event', function() {
+    $userId = request('user_id', 649); // Por defecto 649, pero puedes enviar otro
+    
+    \App\Events\TestEvent::dispatch(
+        'Mensaje de prueba desde servidor',
+        $userId
+    );
+    
+    return response()->json([
+        'message' => 'Test simple disparado',
+        'userId' => $userId,
+        'canal' => 'private-user.' . $userId
+    ]);
 });
 
 // Ruta para registrar un nuevo payment_slot_booking (renombrada para prueba)

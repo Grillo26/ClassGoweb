@@ -14,23 +14,13 @@ class SlotBookingCreated implements ShouldBroadcast
     use Dispatchable, SerializesModels;
 
     public $slotBookingId;
-    public $studentId;
-    public $tutorId;
-    public $startTime;
-    public $endTime;
-    public $sessionFee;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($slotBookingId, $studentId, $tutorId, $startTime, $endTime, $sessionFee)
+    public function __construct($slotBookingId)
     {
         $this->slotBookingId = $slotBookingId;
-        $this->studentId = $studentId;
-        $this->tutorId = $tutorId;
-        $this->startTime = $startTime;
-        $this->endTime = $endTime;
-        $this->sessionFee = $sessionFee;
     }
 
     /**
@@ -40,30 +30,23 @@ class SlotBookingCreated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        Log::info('SlotBookingCreated: evento disparado', [
-            'slotBookingId' => $this->slotBookingId,
-            'studentId' => $this->studentId,
-            'tutorId' => $this->tutorId
-        ]);
-
-        // Buscar información del tutor para la notificación
-        $tutor = \App\Models\User::find($this->tutorId);
+        Log::info('SlotBookingCreated: evento disparado', ['slotBookingId' => $this->slotBookingId]);
+        $booking = \App\Models\SlotBooking::with(['tutor', 'booker'])->find($this->slotBookingId);
         
-        if ($tutor) {
+        if ($booking) {
             $fcmService = new \App\Services\FcmService();
             
             // Notificar al estudiante que creó la tutoría
-            $student = \App\Models\User::find($this->studentId);
-            if ($student && $student->fcm_token) {
+            if ($booking->booker && $booking->booker->fcm_token) {
                 Log::info('Enviando notificación FCM al estudiante - Tutoría creada', [
-                    'user_id' => $student->id,
-                    'fcm_token' => $student->fcm_token
+                    'user_id' => $booking->booker->id,
+                    'fcm_token' => $booking->booker->fcm_token
                 ]);
                 
                 $fcmService->sendNotification(
-                    $student->fcm_token,
+                    $booking->booker->fcm_token,
                     'Tutoría creada exitosamente',
-                    'Tu tutoría con ' . $tutor->first_name . ' ha sido creada',
+                    'Tu tutoría ha sido creada exitosamente',
                     [
                         'icon' => 'tutoria_creada',
                         'slotBookingId' => $this->slotBookingId,
@@ -71,12 +54,28 @@ class SlotBookingCreated implements ShouldBroadcast
                     ]
                 );
             } else {
-                Log::warning('No se encontró fcm_token para el estudiante', ['student' => $this->studentId]);
+                Log::warning('No se encontró fcm_token para el estudiante', ['student' => $booking->booker?->id]);
+            }
+        } else {
+            Log::warning('No se encontró la tutoría para enviar notificación', ['slotBookingId' => $this->slotBookingId]);
+        }
+        
+        // Retornar canales privados para cada usuario involucrado
+        $channels = [];
+        
+        if ($booking) {
+            // Canal para el estudiante
+            if ($booking->booker) {
+                $channels[] = new \Illuminate\Broadcasting\PrivateChannel('user.' . $booking->booker->id);
             }
         }
-
-        // Retornar canal privado solo para el estudiante que creó la tutoría
-        return new PrivateChannel('user.' . $this->studentId);
+        
+        // Si no hay usuarios específicos, usar canal público como fallback
+        if (empty($channels)) {
+            $channels[] = new Channel('slot-bookings');
+        }
+        
+        return $channels;
     }
 
     /**
@@ -98,11 +97,6 @@ class SlotBookingCreated implements ShouldBroadcast
     {
         return [
             'slotBookingId' => $this->slotBookingId,
-            'studentId' => $this->studentId,
-            'tutorId' => $this->tutorId,
-            'startTime' => $this->startTime,
-            'endTime' => $this->endTime,
-            'sessionFee' => $this->sessionFee,
             'message' => 'Tutoría creada exitosamente',
             'type' => 'booking_created'
         ];

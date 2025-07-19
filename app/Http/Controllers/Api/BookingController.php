@@ -159,14 +159,7 @@ class BookingController extends Controller
         
         // Disparar evento de tutoría creada
         try {
-            \App\Events\SlotBookingCreated::dispatch(
-                $slotBooking->id,
-                $slotBooking->student_id,
-                $slotBooking->tutor_id,
-                $slotBooking->start_time,
-                $slotBooking->end_time,
-                $slotBooking->session_fee
-            );
+            \App\Events\SlotBookingCreated::dispatch($slotBooking->id);
             
             Log::info('Evento SlotBookingCreated disparado correctamente', [
                 'slotBookingId' => $slotBooking->id
