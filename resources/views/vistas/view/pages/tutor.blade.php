@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Tutor - {{ $tutor->profile->first_name ?? '' }} {{ $tutor->profile->last_name ?? '' }}</title>
+    <link rel="stylesheet" href="{{ asset('css/tutores.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/estilos/navbar.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+@include('vistas.view.components.navbar')
+<div class="navbar-container">
+        
+</div>
+<body class="tutor-bg">
+    <!-- Contenido Principal -->
+    <main class="tutor-main">
+        <!-- Breadcrumbs -->
+        <div class="tutor-breadcrumbs">
+            <a href="#" class="tutor-breadcrumb-link">Tutores</a> / 
+            <a href="#" class="tutor-breadcrumb-link">Encontrar tutor</a> / 
+            <span class="tutor-breadcrumb-current">{{ $tutor->profile->first_name ?? '' }} {{ $tutor->profile->last_name ?? '' }}</span>
+        </div>
+        <div class="tutor-grid">
+            <!-- Columna Izquierda (Información del Tutor) -->
+            <div class="tutor-col tutor-col-main">
+                <!-- Card Principal del Tutor -->
+                <div class="tutor-card-main">
+                    <div class="tutor-banner" id="tutor-banner-area">
+                        <video id="tutor-bg-video"
+                            class="tutor-banner-video"
+                            preload="none"
+                            poster="{{ $tutor->profile->image ? asset('storage/' . $tutor->profile->image) : asset('images/tutors/profile.jpg') }}"
+                            src="{{ $tutor->profile->intro_video ? asset('storage/' . $tutor->profile->intro_video) : '' }}"
+                            loop
+                            muted
+                            playsinline
+                            style="object-fit: cover; width: 100%; height: 100%; position: absolute; left: 0; top: 0; z-index: 1;">
+                        </video>
+                        <div class="tutor-banner-overlay" id="tutor-banner-overlay" style="position: relative; z-index: 2; transition: opacity 0.3s;">
+                            <button id="tutor-banner-play" class="tutor-banner-play">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-banner-play-icon">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                            </button>
+                            <input id="tutor-banner-volume" type="range" min="0" max="1" step="0.01" value="0.5" style="display:none; width:100px; margin-left:20px;">
+                        </div>
+                    </div>
+                    <div class="tutor-card-main-content">
+                         <img src="{{ asset('storage/' . $tutor->profile->image) ? asset('storage/' . $tutor->profile->image): asset('images/tutors/profile.jpg') }}" alt="Foto de {{ $tutor->profile->first_name ?? '' }}" class="tutor-profile-img" style="background-color: white">
+                         <div class="tutor-profile-info">
+                            <h1 class="tutor-profile-name">{{ $tutor->profile->first_name ?? '' }} {{ $tutor->profile->last_name ?? '' }}</h1>
+                            <div class="tutor-profile-meta">
+                                <div class="tutor-profile-rating">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-star-icon">
+                                        <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                                    </svg>
+                                    <span>{{ number_format($tutor->avg_rating ?? 0, 1) }}</span>
+                                    <span class="rating-count">( {{ $tutor->total_reviews }} reseñas)</span>
+                                </div>
+                                <div class="tutor-profile-students">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                        class="tutor-student-icon">
+                                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                                        <polyline points="3 7 12 13 21 7" />
+                                    </svg>
+                                    <span>{{$tutor->email}}</span>
+                                </div>
+                            </div>
+                            
+                         </div>
+                         <p class="tutor-profile-quote">{{ $tutor->profile->description ?? '" Tutor verificado y aprobado por ClassGo!"' }}</p>
+                    </div>
+                </div>
+                <!-- SECCIÓN DE PESTAÑAS PRINCIPAL -->
+                <div class="tutor-tabs-card">
+                    <div class="tutor-tabs-nav">
+                        <nav class="tutor-tabs-list" aria-label="Tabs">
+                            <button onclick="changeTab(event, 'introduccion')" class="tutor-tab-btn active">Tutoría</button>
+                            <button onclick="changeTab(event, 'disponibilidad')" class="tutor-tab-btn">Disponibilidad</button>
+                            <button onclick="changeTab(event, 'curriculum')" class="tutor-tab-btn">Aspectos Destacados</button>
+                            <button onclick="changeTab(event, 'resenas')" class="tutor-tab-btn">Reseñas (0)</button>
+                        </nav>
+                    </div>
+                    <div class="tutor-tabs-content">
+                        <div id="introduccion" class="tutor-tab-content">
+                            {{-- <div>
+                                <h3 class="tutor-section-title">Acerca de mí</h3>
+                                <p class="tutor-section-text">{{ $tutor->profile->description ?? 'Sin descripción.' }}</p>                            </div>
+                            <hr class="tutor-section-divider"> --}}
+                            <div>
+                                <h3 class="tutor-section-title">Puedo enseñar</h3>
+                                @php
+                                    // Agrupar materias por grupo (asumiendo que $tutor->userSubjects está disponible)
+                                    $materiasPorGrupo = [];
+                                    if(isset($tutor->userSubjects)) {
+                                        foreach($tutor->userSubjects as $userSubject) {
+                                            $grupo = $userSubject->subject->group->name ?? 'Otros';
+                                            $materia = $userSubject->subject->name ?? null;
+                                            if($materia) {
+                                                $materiasPorGrupo[$grupo][] = $materia;
+                                            }
+                                        }
+                                    }
+                                @endphp
+                                <div class="tutor-section-skills-grupos">
+                                    @foreach($materiasPorGrupo as $grupo => $materiasGrupo)
+                                        <div class="tutor-grupo-block" style="margin-bottom:2rem;">
+                                            <div class="tutor-grupo-header" style="display:flex;align-items:center;gap:0.7rem;">
+                                                <span class="tutor-skill-tag" style="color: var(--primary-color);font-weight:600;font-size:1.1rem;min-width:2.2em;min-height:2.2em;display:inline-flex;"> 
+                                                    <i class="fa-solid fa-book icon"></i>{{ $grupo }}</span>
+                                            </div>
+                                            <div class="tutor-section-skills-materias" style="display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:1rem;">
+                                                @foreach($materiasGrupo as $materia)
+                                                    <span class="tutor-skill-materia" style="font-size:1rem;color:#023047;">{{ $materia }}</span>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <hr class="tutor-section-divider">
+                             <div>
+                                <h3 class="tutor-section-title">Puedo hablar</h3>
+                                @if($tutor->languages && count($tutor->languages))
+                                    @foreach($tutor->languages as $lang)
+                                        <span class="tutor-language-tag">{{ $lang->name }}</span>
+                                    @endforeach
+                                @else
+                                    <span class="tutor-language-tag">No especificado</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div id="disponibilidad" class="tutor-tab-content hidden">
+                            <h3 class="tutor-section-title-lg">Reserva una sesión</h3>
+                            <div class="tutor-availability-grid">
+                                <!-- Columna del Calendario -->
+                                <div>
+                                    <h4 class="tutor-section-title">Selecciona un día</h4>
+                                    <div class="tutor-calendar-box">
+                                        <div class="tutor-calendar-header">
+                                            <button class="tutor-calendar-nav-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-calendar-nav-icon"><path d="m15 18-6-6 6-6"></path></svg></button>
+                                            <h5 class="tutor-calendar-month">Julio 2025</h5>
+                                            <button class="tutor-calendar-nav-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-calendar-nav-icon"><path d="m9 18 6-6-6-6"></path></svg></button>
+                                        </div>
+                                        <div id="calendar-grid" class="tutor-calendar-grid">
+                                            <div class="tutor-calendar-day-label">L</div><div class="tutor-calendar-day-label">M</div><div class="tutor-calendar-day-label">M</div><div class="tutor-calendar-day-label">J</div><div class="tutor-calendar-day-label">V</div><div class="tutor-calendar-day-label">S</div><div class="tutor-calendar-day-label">D</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Columna del Selector de Hora -->
+                                <div id="time-selector-column" class="tutor-time-selector-col hidden">
+                                    <h4 class="tutor-section-title">Selecciona una hora</h4>
+                                    <div class="tutor-time-selector-box">
+                                        <p class="tutor-time-range">Horario disponible: <span id="available-range">16:00 - 21:40</span></p>
+                                        <div id="time-slots" class="tutor-time-slots"></div>
+                                        <button class="tutor-time-exact-btn">Elegir hora exacta</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tutor-pay-btn-box">
+                                <button class="tutor-pay-btn">Pagar y reservar</button>
+                            </div>
+                        </div>
+                        <div id="curriculum" class="tutor-tab-content hidden">
+                           <nav class="tutor-subtabs-nav"><button onclick="changeSubTab(event, 'educacion')" class="tutor-subtab-btn active">Educación</button><button onclick="changeSubTab(event, 'experiencia')" class="tutor-subtab-btn">Experiencia</button><button onclick="changeSubTab(event, 'certificaciones')" class="tutor-subtab-btn">Certificaciones</button></nav>
+                            <div id="educacion" class="tutor-subtab-content">
+                                <div class="tutor-empty-box"><img src="https://placehold.co/100x100/f0f7ff/8ECAE6?text=+" alt="Libro y birrete" class="tutor-empty-img">
+                                    <h4 class="tutor-empty-title">¡Aún no se ha añadido ningún registro!</h4>
+                                    <p class="tutor-empty-text">No hay registros disponibles para mostrar en este momento.</p>
+                                </div>
+                            </div>
+                            <div id="experiencia" class="tutor-subtab-content hidden">
+                                <div class="tutor-empty-box"><img src="https://placehold.co/100x100/f0f7ff/8ECAE6?text=+" alt="Maletín" class="tutor-empty-img">
+                                    <h4 class="tutor-empty-title">¡Aún no se ha añadido ningún registro!</h4>
+                                    <p class="tutor-empty-text">No hay experiencia laboral para mostrar.</p>
+                                </div>
+                            </div>
+                            <div id="certificaciones" class="tutor-subtab-content hidden">
+                                <div class="tutor-empty-box"><img src="https://placehold.co/100x100/f0f7ff/8ECAE6?text=+" alt="Medalla" class="tutor-empty-img">
+                                    <h4 class="tutor-empty-title">¡Aún no se ha añadido ningún registro!</h4>
+                                    <p class="tutor-empty-text">No hay certificaciones ni premios para mostrar.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="resenas" class="tutor-tab-content hidden">
+                            <h3 class="tutor-section-title">Reseñas de estudiantes</h3>
+                            <div class="tutor-reviews-box">
+                                <div class="tutor-reviews-summary"><div class="tutor-reviews-score">0.0</div><div class="tutor-reviews-stars">...estrellas svg...</div><div class="tutor-reviews-count">Basado en 0 calificaciones</div></div>
+                                <div class="tutor-reviews-details">...detalles de reviews...</div>
+                            </div>
+                            <div class="tutor-empty-box tutor-reviews-empty"><h4 class="tutor-empty-title">¡Aún no hay reseñas!</h4><p class="tutor-empty-text">Parece que no hay registros para mostrar en este momento.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Columna Derecha (Acciones) -->
+            <div class="tutor-col tutor-col-actions">
+                <div class="tutor-actions-card">
+                    <div class="tutor-actions-price-box">
+                        <p class="tutor-actions-price">10 <span class="tutor-actions-price-unit">/ tutorías realizadas</span></p>
+                        <div class="tutor-actions-meta">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-actions-meta-icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            <span>20 min</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-actions-meta-icon tutor-actions-meta-icon-green"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            <span class="tutor-actions-meta-verified">Tutor verificado</span>
+                        </div>
+                    </div>
+                    <div class="tutor-actions-btns">
+                        <button class="tutor-btn tutor-btn-now">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-btn-icon"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            <span>Tutoría ahora</span>
+                        </button>
+                        <button class="tutor-btn tutor-btn-reservar">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-btn-icon"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+                            <span>Reservar</span>
+                        </button>
+                        <button class="tutor-btn tutor-btn-share" id="btn-share-profile">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-btn-icon"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg>
+                            <span>Compartir perfil</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Modal Compartir -->
+    <div id="modal-share-profile" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);z-index:9999;align-items:center;justify-content:center;">
+        <div style="position: absolute; background:#fff;padding:2rem 1.5rem;border-radius:1rem;max-width:350px;width:90%; display:flex; justify-content:center; flex-flow: column wrap;">
+            <button id="close-modal-share" style="position:absolute;top:10px;right:15px;background:none;border:none;font-size:1.5rem;cursor:pointer;">&times;</button>
+            <img src="{{ asset('images/Tugo_With_Phone.png') }}" style="width: 300px; ">
+            <h3 style="margin-bottom:1rem;">Compartir perfil</h3>
+            <p style="margin-bottom:1.2rem;">Hecha un vistazo a mi perfil en ClassGo!</p>
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+                <button id="btn-share-whatsapp" style="background:#25D366;color:#fff;font-weight:600;padding:0.7rem 1rem;border:none;border-radius:0.7rem;display:flex;align-items:center;gap:0.7rem;cursor:pointer;justify-content:center;">
+                    <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.832 4.58 2.236 6.364L4 29l7.818-2.236A12.94 12.94 0 0 0 16 27c6.627 0 12-5.373 12-12S22.627 3 16 3Zm0 22c-1.77 0-3.484-.463-4.98-1.34l-.355-.21-4.646 1.33 1.33-4.646-.21-.355A9.956 9.956 0 0 1 6 15c0-5.514 4.486-10 10-10s10 4.486 10 10-4.486 10-10 10Zm5.29-7.29c-.29-.145-1.71-.84-1.975-.935-.265-.095-.46-.145-.655.145-.195.29-.75.935-.92 1.13-.17.195-.34.22-.63.075-.29-.145-1.225-.45-2.335-1.435-.863-.77-1.445-1.72-1.615-2.01-.17-.29-.018-.447.127-.592.13-.13.29-.34.435-.51.145-.17.193-.29.29-.485.097-.195.048-.365-.024-.51-.073-.145-.655-1.58-.9-2.165-.237-.57-.48-.492-.655-.5-.17-.007-.365-.01-.56-.01-.195 0-.51.073-.78.365-.27.29-1.03 1.01-1.03 2.465 0 1.455 1.055 2.86 1.202 3.055.145.195 2.08 3.18 5.04 4.33.705.242 1.255.386 1.685.494.708.18 1.35.155 1.86.094.567-.067 1.71-.698 1.95-1.372.24-.673.24-1.25.17-1.372-.07-.122-.265-.195-.555-.34Z" fill="#fff"/></svg>
+                    Compartir en WhatsApp
+                </button>
+                <button id="btn-share-facebook" style="background:#1877F3;color:#fff;font-weight:600;padding:0.7rem 1rem;border:none;border-radius:0.7rem;display:flex;align-items:center;gap:0.7rem;cursor:pointer;justify-content:center;">
+                    <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M29 16C29 8.82 23.18 3 16 3S3 8.82 3 16c0 6.29 4.61 11.48 10.63 12.79v-9.05h-3.2V16h3.2v-2.27c0-3.16 1.88-4.89 4.76-4.89 1.38 0 2.82.25 2.82.25v3.1h-1.59c-1.57 0-2.06.98-2.06 1.98V16h3.5l-.56 3.74h-2.94v9.05C24.39 27.48 29 22.29 29 16Z" fill="#fff"/></svg>
+                    Compartir en Facebook
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // --- SCRIPT PARA PESTAÑAS ---
+        function changeTab(event, tabID) {
+            let tabContents = document.querySelectorAll('.tutor-tab-content');
+            tabContents.forEach(content => content.classList.add('hidden'));
+            let tabButtons = document.querySelectorAll('.tutor-tab-btn');
+            tabButtons.forEach(button => button.classList.remove('active'));
+            document.getElementById(tabID).classList.remove('hidden');
+            event.currentTarget.classList.add('active');
+        }
+        function changeSubTab(event, tabID) {
+            let subTabContents = document.querySelectorAll('.tutor-subtab-content');
+            subTabContents.forEach(content => content.classList.add('hidden'));
+            let subTabButtons = document.querySelectorAll('.tutor-subtab-btn');
+            subTabButtons.forEach(button => button.classList.remove('active'));
+            document.getElementById(tabID).classList.remove('hidden');
+            event.currentTarget.classList.add('active');
+        }
+        // --- SCRIPT PARA CALENDARIO Y HORA ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarGrid = document.getElementById('calendar-grid');
+            const timeSelectorColumn = document.getElementById('time-selector-column');
+            const timeSlotsContainer = document.getElementById('time-slots');
+            if (!calendarGrid) return; // Salir si no estamos en la página correcta
+            const month = 6; // Julio (0-indexed)
+            const year = 2025;
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const startingDay = (firstDay === 0) ? 6 : firstDay - 1; 
+            for (let i = 0; i < startingDay; i++) {
+                calendarGrid.appendChild(document.createElement('div'));
+            }
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('button');
+                dayCell.textContent = day;
+                dayCell.classList.add('tutor-calendar-day');
+                dayCell.dataset.day = day;
+                dayCell.onclick = selectDate;
+                calendarGrid.appendChild(dayCell);
+            }
+            const exampleTimes = ['16:00', '16:20', '16:40', '17:00', '17:20', '17:40', '18:00', '18:20', '19:00', '19:20', '19:40'];
+            timeSlotsContainer.innerHTML = '';
+            exampleTimes.forEach(time => {
+                const timeButton = document.createElement('button');
+                timeButton.textContent = time;
+                timeButton.classList.add('tutor-time-slot');
+                timeButton.onclick = selectTime;
+                timeSlotsContainer.appendChild(timeButton);
+            });
+        });
+        function selectDate(event) {
+            const allDays = document.querySelectorAll('.tutor-calendar-day');
+            allDays.forEach(d => d.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            document.getElementById('time-selector-column').classList.remove('hidden');
+        }
+        function selectTime(event) {
+            const allTimes = document.querySelectorAll('.tutor-time-slot');
+            allTimes.forEach(t => t.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('tutor-bg-video');
+            const playBtn = document.getElementById('tutor-banner-play');
+            const volumeSlider = document.getElementById('tutor-banner-volume');
+            const overlay = document.getElementById('tutor-banner-overlay');
+            const bannerArea = document.getElementById('tutor-banner-area');
+            let isPlaying = false;
+            let overlayTimeout = null;
+
+            function showOverlay() {
+                overlay.style.opacity = 1;
+                overlay.style.pointerEvents = 'auto';
+                if (overlayTimeout) clearTimeout(overlayTimeout);
+            }
+            function hideOverlay() {
+                overlay.style.opacity = 0;
+                overlay.style.pointerEvents = 'none';
+            }
+
+            // Mostrar controles al pasar el mouse o hacer click
+            bannerArea.addEventListener('mouseenter', showOverlay);
+            bannerArea.addEventListener('mousemove', showOverlay);
+            bannerArea.addEventListener('mouseleave', function() {
+                if (isPlaying) {
+                    overlayTimeout = setTimeout(hideOverlay, 500); // espera breve para evitar parpadeo
+                }
+            });
+            bannerArea.addEventListener('click', function() {
+                showOverlay();
+                if (isPlaying) {
+                    overlayTimeout = setTimeout(hideOverlay, 2000); // oculta después de 2s si está reproduciendo
+                }
+            });
+
+            playBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (!video.src) return;
+                if (video.paused) {
+                    video.muted = false;
+                    video.play();
+                    isPlaying = true;
+                    playBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-banner-play-icon">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                    `;
+                    volumeSlider.style.display = 'inline-block';
+                    overlayTimeout = setTimeout(hideOverlay, 2000);
+                } else {
+                    video.pause();
+                    isPlaying = false;
+                    playBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-banner-play-icon">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                    `;
+                    volumeSlider.style.display = 'none';
+                    showOverlay();
+                }
+            });
+
+            // Volumen
+            volumeSlider.addEventListener('input', function(e) {
+                video.volume = this.value;
+                e.stopPropagation();
+            });
+
+            // Al pausar el video manualmente (por el usuario)
+            video.addEventListener('pause', function() {
+                isPlaying = false;
+                playBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-banner-play-icon">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                `;
+                volumeSlider.style.display = 'none';
+                showOverlay();
+            });
+
+            // Inicialmente mostrar controles
+            showOverlay();
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnShare = document.getElementById('btn-share-profile');
+            const modalShare = document.getElementById('modal-share-profile');
+            const closeModal = document.getElementById('close-modal-share');
+            const btnWhatsapp = document.getElementById('btn-share-whatsapp');
+            const btnFacebook = document.getElementById('btn-share-facebook');
+            const slug = @json($tutor->profile->slug ?? '');
+            const shareUrl = `https://classgoapp.com/tutors/${slug}`;
+            const shareMsg = 'Hecha un vistazo a mi perfil en ClassGo!';
+
+            btnShare.addEventListener('click', function() {
+                modalShare.style.display = 'flex';
+            });
+            closeModal.addEventListener('click', function() {
+                modalShare.style.display = 'none';
+            });
+            // WhatsApp
+            btnWhatsapp.addEventListener('click', function() {
+                const url = `https://wa.me/?text=${encodeURIComponent(shareMsg + ' ' + shareUrl)}`;
+                window.open(url, '_blank');
+            });
+            // Facebook
+            btnFacebook.addEventListener('click', function() {
+                const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareMsg)}`;
+                window.open(url, '_blank');
+            });
+        });
+    </script>
+</body>
+</html>

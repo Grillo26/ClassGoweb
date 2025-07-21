@@ -40,10 +40,9 @@ use App\Livewire\Payouts;
 use App\Http\Controllers\GoogleMeetController;
 use App\Services\GoogleMeetService;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TutorPerfilController;
 
-    Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');
-
-Route::view('/estudiantes', 'vistas.view.pages.estudiantes')->name('estudiantes');
+Route::view('/e', 'vistas.view.pages.e')->name('e');
 
 Route::get('/verify', function (\Illuminate\Http\Request $request) {
     $id = $request->query('id');
@@ -120,6 +119,8 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::get('/nosotros', [HomeController::class, 'nosotros'])->name('nosotros');
     Route::view('/como-trabajamos', 'vistas.view.pages.trabajamos')->name('como-trabajamos');
     Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');
+    Route::get('/tutors/{slug}', [HomeController::class, 'tutor'])->name('tutor');
+
 
     Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones');
     // promociones vista ejemplo    
@@ -205,5 +206,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
         require __DIR__ . '/pagebuilder.php';
     }
 });
+
+Route::get('/tutor/{id}', [TutorPerfilController::class, 'show'])->name('tutor.perfil');
 
 

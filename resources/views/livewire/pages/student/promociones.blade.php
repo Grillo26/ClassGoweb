@@ -25,7 +25,7 @@
         }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
+            background-color: var(--panel-background);
         }
         .bg-primary { background-color: var(--primary-color); }
         .text-primary { color: var(--primary-color); }
@@ -47,7 +47,6 @@
         }
     </style>
 @endpush
-
 <main class="flex-1 p-6 lg:p-8 overflow-y-auto">
 	<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 		<!-- Columna de Cupones -->
@@ -104,7 +103,7 @@
 			<p class="text-tertiary-color mt-1 text-sm">¡Comparte y obtén descuentos!</p>
 			<div class="my-6">
 				<div id="inv-code" class="text-4xl font-extrabold tracking-widest bg-white/20 border-2 border-dashed border-tertiary-color p-4 rounded-lg {{ isset($codigo) && $codigo->estado !== 'activo' ? 'inactivo' : '' }}">
-					{{ $codigo->codigo ?? 'Código Vencido' }}
+					{{ $codigo->codigo ?? 'No Code' }}
 				</div>
 			</div>
             

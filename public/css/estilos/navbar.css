@@ -18,7 +18,9 @@
     border-radius: 50px;           /* Elimina bordes redondeados para ocupar toda la parte superior */
     box-sizing: border-box;
     z-index: 1000; 
-    padding: 0.8rem 1.5rem;             /* Asegura que quede por encima del contenido */
+    padding: 0.8rem 1.5rem;   
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    
 }
 
 .navbar-container {
@@ -29,6 +31,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 1em;
+    
 }
 
 .navbar-left {

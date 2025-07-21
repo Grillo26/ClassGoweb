@@ -40,5 +40,31 @@ class HomeController extends Controller
     return view('vistas.view.pages.nosotros', [
         'alianzas' => $alianzas
     ]);
-}
+    }
+    public function tutor($slug){
+        $tutor = $this->tutorService->getTutorDetail($slug);
+        if (!$tutor) {
+            abort(404, 'Tutor no encontrado');
+        }
+        // Extraer materias y grupos
+        $materias = [];
+        $grupos = [];
+        if ($tutor->userSubjects) {
+            foreach ($tutor->userSubjects as $userSubject) {
+                if ($userSubject->subject) {
+                    $materias[] = $userSubject->subject->name;
+                    if ($userSubject->subject->group) {
+                        $grupos[] = $userSubject->subject->group->name;
+                    }
+                }
+            }
+        }
+        $materias = array_unique($materias);
+        $grupos = array_unique($grupos);
+        return view('vistas.view.pages.tutor', [
+            'tutor' => $tutor,
+            'materias' => $materias,
+            'grupos' => $grupos
+        ]);
+    }
 }

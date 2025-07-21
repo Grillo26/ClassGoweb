@@ -8,6 +8,9 @@
 2 - Card Invitación
 3 - Cupones locales
 ------------------------------------------------------------*/
+main{
+    background-color: var(--panel-background);
+}
 .cupon-text-cupones{
     color: var(--primary-color);
 }
