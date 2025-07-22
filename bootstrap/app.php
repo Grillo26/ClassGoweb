@@ -38,6 +38,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'role' => RoleMiddleware::class,
+            'student' => \App\Http\Middleware\CheckStudentRole::class,
             'onlineUser' => UserOnline::class,
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
             'locale' => \App\Http\Middleware\CheckLocale::class,

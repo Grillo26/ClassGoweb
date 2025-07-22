@@ -19,10 +19,33 @@ class UserOnline
     public function handle(Request $request, Closure $next): Response
     {
         if(Auth::check()) {
-            $expiresAt = Carbon::now()->addMinutes(30);
-            Cache::put('user-online-' . Auth::user()->id, true, $expiresAt);
+            //dd('hola');
+            $user = Auth::user();
+            if ($user instanceof \App\Models\User && $user->id) {
+                try {
+                    $expiresAt = Carbon::now()->addMinutes(30);
+                    Cache::put('user-online-' . $user->id, true, $expiresAt);
+                } catch (\Exception $e) {
+                    \Log::error('Error en UserOnline middleware: ' . $e->getMessage());
+                }
+            }
         }
 
-        return $next($request);
+        try {
+            //dd($request);
+            return $next($request);
+        } catch (\Exception $e) {
+            \Log::error('Error en UserOnline middleware después de next(): ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            
+            // Si hay un error relacionado con morph, intentar continuar
+            if (strpos($e->getMessage(), 'getMorphClass') !== false || 
+                strpos($e->getMessage(), 'Collection') !== false) {
+                \Log::warning('Error de morph detectado, continuando...');
+                return response()->json(['error' => 'Error interno del servidor'], 500);
+            }
+            
+            throw $e;
+        }
     }
 }

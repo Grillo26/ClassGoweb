@@ -19,6 +19,7 @@ class UserResource extends JsonResource
         return [
             'id'                             => $this->whenHas('id'),
             'email'                          => $this->whenHas('email'),
+            'name'                           => $this->profile->full_name ?? null,
             'status'                         => $this->whenHas('status'),
             'is_favorite'                    => $this->whenHas('is_favorite'),
             'avg_rating'                     => $this->whenHas('avg_rating'),
@@ -40,9 +41,8 @@ class UserResource extends JsonResource
             'educations'                     => EducationResource::collection($this->whenLoaded('educations')),
             'address'                        => new AddressResource($this->whenLoaded('address')),
             'identityVerification'           => new IdentityResource($this->whenLoaded('identityVerification')),
-            'role'                           => $this->whenLoaded('roles', function() {
-                return $this->roles?->first()?->name;
-            }),
+            'role' => ($this->roles instanceof \Illuminate\Database\Eloquent\Collection && $this->roles->count() > 0) ? $this->roles->first()->name : null,
+            'available_for_tutoring'         => $this->whenHas('available_for_tutoring'),
             'balance'                           => $this->whenLoaded('userWallet', function() {
                 return formatAmount($this->userWallet?->amount ?? 0);
             })

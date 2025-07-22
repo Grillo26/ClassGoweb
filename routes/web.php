@@ -117,8 +117,8 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
         Route::get('logout', [SiteController::class, 'logout'])->name('logout');
         Route::get('user/identity-confirmation/{id}', [PersonalDetails::class, 'confirmParentVerification'])->name('confirm-identity');
         Route::get('google/callback', [SiteController::class, 'getGoogleToken']);
-        Route::middleware('role:student')->get('checkout', Checkout::class)->name('checkout');
-        Route::middleware('role:student')->get('thank-you/{id}', ThankYou::class)->name('thank-you');
+        Route::middleware('student')->get('checkout', Checkout::class)->name('checkout');
+        Route::middleware('student')->get('thank-you/{id}', ThankYou::class)->name('thank-you');
         Route::middleware('role:tutor')->prefix('tutor')->name('tutor.')->group(function () {
             Route::get('dashboard', ManageAccount::class)->name('dashboard');
             Route::get('payouts', Payouts::class)->name('payouts');
@@ -150,7 +150,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
             Route::get('manage-dispute/{id}', ManageDispute::class)->name('manage-dispute');
         });
 
-        Route::middleware('role:student')->prefix('student')->name('student.')->group(function () {
+        Route::middleware('student')->prefix('student')->name('student.')->group(function () {
             Route::get('profile', fn() => redirect('tutor.profile.personal-details'))->name('profile');
             Route::prefix('profile')->name('profile.')->group(function () {
                 Route::get('personal-details', PersonalDetails::class)->name('personal-details');

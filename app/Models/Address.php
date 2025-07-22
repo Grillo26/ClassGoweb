@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Address extends Model {
     use HasFactory;
@@ -40,5 +41,13 @@ class Address extends Model {
 
     public function getFullAddressAttribute() {
         return "$this->address $this->city $this->state->name , $this->country->short_code";
+    }
+
+    /**
+     * Get the parent addressable model.
+     */
+    public function addressable(): MorphTo
+    {
+        return $this->morphTo('addressable', 'addressable_type', 'addressable_id');
     }
 }
