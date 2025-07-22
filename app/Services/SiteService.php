@@ -421,6 +421,47 @@ public function getTutors($data = array()) {
 
     }
 
+    public function getTutorDato(){
+        // 1. Obtener IDs de usuarios con rol 'tutor'
+        $tutorIds = \DB::table('model_has_roles')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->where('roles.name', 'tutor')
+            ->pluck('model_has_roles.model_id');
+
+        // 2. Obtener tutores verificados con perfil válido y cargar idiomas y calificaciones
+        $tutors = User::whereIn('id', $tutorIds)
+            ->whereHas('profile', function ($q) {
+                $q->whereNotNull('verified_at')
+                ->whereNotNull('first_name')
+                ->whereNotNull('last_name');
+            })
+            ->whereHas('userSubjects.subject.group') // solo si tienen grupo asignado
+            ->with([
+                'profile:id,user_id,first_name,last_name,slug,image,description,native_language',
+                'languages:id,name',
+            ])
+            ->withAvg('ratings as avg_rating', 'rating')
+            ->withCount('ratings as total_reviews')
+            ->orderByDesc('avg_rating')
+            ->get();
+
+        // 3. Mapear perfiles finales
+        $profiles = $tutors->map(function ($tutor) {
+            $profile = $tutor->profile;
+                return [
+                'user_id' => $tutor->id,
+                'full_name' => trim("{$profile->first_name} {$profile->last_name}"),
+                'slug' => $profile->slug,
+                'image' => $profile->image,
+                'description' => $profile->description,
+                'native_language' => $profile->native_language,
+                'languages' => $tutor->languages->pluck('name'),
+                'avg_rating' => round($tutor->avg_rating ?? 0, 2),
+                'total_reviews' => $tutor->total_reviews ?? 0,
+            ];
+        });
+        return $profiles;
+    }
     public function getAlliances()
     {
         return DB::table('alianzas')->get();

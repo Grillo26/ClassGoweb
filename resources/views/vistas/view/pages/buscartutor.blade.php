@@ -48,45 +48,43 @@
     <!-- Tutor List -->
     <section class="buscartutor-tutorlist-section">
         <div class="buscartutor-tutorlist-space">
-            <!-- Tutor Card 1 -->
-            <div class="buscartutor-tutor-card">
-                <img src="https://placehold.co/128x128/8ECAE6/023047?text=AF" alt="Foto de Antonio Flores" class="buscartutor-tutor-img">
-                <div class="buscartutor-tutor-info">
-                    <h3 class="buscartutor-tutor-name">Antonio Alexander Sandoval Flores</h3>
-                    <div class="buscartutor-tutor-meta">
-                        <span>0.0/5.0 (0 reseñas)</span>
-                        <span>•</span>
-                        <span>1 Sesión</span>
-                        <span>•</span>
-                        <span>Idiomas que conozco: Inglés</span>
+            <!-- Tutor Card de base de datos -->
+            @foreach ($profiles as $profile)
+                <div class="buscartutor-tutor-card">
+                    <img 
+                        src="{{ $profile['image'] ? asset('storage/' . $profile['image']) : asset('images/tutors/profile.jpg') }}" 
+                        alt="Foto de {{ $profile['full_name'] }}" 
+                        class="buscartutor-tutor-img">
+
+                    <div class="buscartutor-tutor-info">
+                        <h3 class="buscartutor-tutor-name">{{ $profile['full_name'] }}</h3>
+
+                        <div class="buscartutor-tutor-meta">
+                            <span>⭐ {{ $profile['avg_rating'] }} ({{ $profile['total_reviews'] }} reseñas)</span>
+                            <span>•</span>
+                            <span>1 Sesión</span>
+                            <span>•</span>
+                            <span>Idioma: {{ $profile['native_language'] }}</span>
+                        </div>
+
+                        <p class="buscartutor-tutor-desc">
+                            {{ $profile['description'] }}
+                        </p>
                     </div>
-                    <p class="buscartutor-tutor-desc">Apasionado por compartir conocimientos de manera clara y práctica. Mi objetivo es ayudarte a aprender de forma sencilla y efectiva.</p>
-                </div>
-                <div class="buscartutor-tutor-actions">
-                    <button class="buscartutor-tutor-btn buscartutor-tutor-btn-orange">Reservar una sesión</button>
-                    <button class="buscartutor-tutor-btn buscartutor-tutor-btn-blue">Enviar mensaje</button>
-                </div>
-            </div>
-            <!-- Tutor Card 2 -->
-            <div class="buscartutor-tutor-card">
-                <img src="https://placehold.co/128x128/219EBC/ffffff?text=ER" alt="Foto de Edward Rojas" class="buscartutor-tutor-img">
-                <div class="buscartutor-tutor-info">
-                    <h3 class="buscartutor-tutor-name">Edward Rojas Cespedes</h3>
-                    <p class="buscartutor-tutor-special">Especialidad: Controla la información, controla el futuro</p>
-                    <div class="buscartutor-tutor-meta">
-                        <span>0.0/5.0 (0 reseñas)</span>
-                        <span>•</span>
-                        <span>5 Materias</span>
-                        <span>•</span>
-                        <span>Idiomas que conozco: Inglés</span>
+
+                    <div class="buscartutor-tutor-actions">
+                        <button class="buscartutor-tutor-btn buscartutor-tutor-btn-orange">Reservar una sesión</button>
+                        <a href="{{ route('tutor', ['slug' => $profile['slug']]) }}" class="buscartutor-tutor-btn buscartutor-tutor-btn-blue">
+                            Ver Perfil
+                        </a>
+
+
                     </div>
-                    <p class="buscartutor-tutor-desc">Joven profesional próximo a graduarme en Información y Control de Gestión, combinando formación académica con habilidades prácticas en análisis de datos y sistemas de gestión. Preparado para los desafíos del mundo...</p>
                 </div>
-                <div class="buscartutor-tutor-actions">
-                    <button class="buscartutor-tutor-btn buscartutor-tutor-btn-orange">Reservar una sesión</button>
-                    <button class="buscartutor-tutor-btn buscartutor-tutor-btn-blue">Enviar mensaje</button>
-                </div>
-            </div>
+            @endforeach
+
+            
+            
         </div>
     </section>
 </div>

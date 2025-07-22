@@ -70,6 +70,7 @@ class HomeController extends Controller
     }
 
     public function buscarTutor(){
-        return view('vistas.view.pages.buscartutor');
+        $profiles = $this->tutorService->getTutorDato();
+        return view('vistas.view.pages.buscartutor', compact('profiles'));
     }
 }

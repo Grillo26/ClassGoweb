@@ -198,6 +198,9 @@
 .buscartutor-tutor-btn-blue {
     background: var(--secundary-color);
     color: #fff;
+    display: flex;
+    justify-content: center;
+
 }
 .buscartutor-tutor-btn-orange:hover, .buscartutor-tutor-btn-blue:hover {
     opacity: 0.9;
