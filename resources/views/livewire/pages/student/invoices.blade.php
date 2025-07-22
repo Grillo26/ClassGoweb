@@ -25,6 +25,9 @@ use Carbon\Carbon;
                     </thead>
                     <tbody>
                         @if (!$tutorias->isEmpty())
+                        {{-- @php
+                          dd($tutorias)
+                        @endphp --}}
                         @foreach($tutorias as $order)
                         <tr class="table-row">
                             <td><span class="table-cell-content">{{ $order?->start_time }}</span></td>
@@ -36,11 +39,21 @@ use Carbon\Carbon;
                                 </span>
                             </td>
                             @elserole('tutor')
-                            <td>
+                              
+                            @if($order->booker->profile)
+                             <td>
                                 <span class="table-cell-content">
                                     {{$order->booker->profile->first_name }} - {{$order->booker->profile->last_name}}
                                 </span>
-                            </td>
+                              </td>
+                            @else
+                              <td>
+                                  
+                              </td>
+                            @endif
+                    
+                              
+                                
                             @endrole
                             <td>
                                 @php
