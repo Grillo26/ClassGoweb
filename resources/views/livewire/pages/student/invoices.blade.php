@@ -26,7 +26,7 @@ use Carbon\Carbon;
                     <tbody>
                         @if (!$tutorias->isEmpty())
                         {{-- @php
-                          dd($tutorias)
+                        dd($tutorias)
                         @endphp --}}
                         @foreach($tutorias as $order)
                         <tr class="table-row">
@@ -39,21 +39,16 @@ use Carbon\Carbon;
                                 </span>
                             </td>
                             @elserole('tutor')
-                              
-                            @if($order->booker->profile)
-                             <td>
+
+                            <td>
                                 <span class="table-cell-content">
-                                    {{$order->booker->profile->first_name }} - {{$order->booker->profile->last_name}}
+                                    {{ $order->booker->profile?->first_name ?? '' }}{{ $order->booker->profile ? ' - ' .
+                                    $order->booker->profile->last_name : '' }}
                                 </span>
-                              </td>
-                            @else
-                              <td>
-                                  
-                              </td>
-                            @endif
-                    
-                              
-                                
+                            </td>
+
+
+
                             @endrole
                             <td>
                                 @php
