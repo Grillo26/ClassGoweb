@@ -41,6 +41,7 @@ class HomeController extends Controller
         'alianzas' => $alianzas
     ]);
     }
+
     public function tutor($slug){
         $tutor = $this->tutorService->getTutorDetail($slug);
         if (!$tutor) {
@@ -66,5 +67,9 @@ class HomeController extends Controller
             'materias' => $materias,
             'grupos' => $grupos
         ]);
+    }
+
+    public function buscarTutor(){
+        return view('vistas.view.pages.buscartutor');
     }
 }

@@ -1,0 +1,85 @@
+@media (max-width: 600px) {
+    .tutor-main {
+      padding: 0.5rem 0.2rem;
+    }
+    .tutor-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .tutor-card-main-content {
+      padding: 1rem;
+    }
+    .tutor-profile-img {
+      width: 90px;
+      height: 90px;
+      top: -45px;
+      left: 16px;
+      border-width: 3px;
+    }
+    .tutor-profile-info {
+      margin-left: 0;
+      padding-left: 0;
+      margin-top: 60px;
+    }
+    .tutor-profile-name {
+      font-size: 1.2rem;
+    }
+    .tutor-profile-meta {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .tutor-tabs-card {
+      border-radius: 1rem;
+    }
+    .tutor-tabs-list {
+      gap: 0.5rem;
+      padding: 0 0.5rem;
+      font-size: 0.95rem;
+    }
+    .tutor-tabs-content {
+      padding: 1rem;
+    }
+    .tutor-section-title,
+    .tutor-section-title-lg {
+      font-size: 1.1rem;
+    }
+    .tutor-section-skills,
+    .tutor-section-skills-grupos {
+      gap: 0.7rem;
+      margin-top: 1rem;
+    }
+    .tutor-grupo-block {
+      margin-bottom: 1rem !important;
+    }
+    .tutor-skill-tag {
+      font-size: 0.95rem !important;
+      min-width: 1.8em !important;
+      min-height: 1.8em !important;
+      padding: 0.3em !important;
+    }
+    .tutor-section-skills-materias {
+      gap: 0.7rem !important;
+      margin-left: 1.2rem !important;
+    }
+    .tutor-col-actions {
+      margin-top: 1rem;
+    }
+    .tutor-actions-card {
+      padding: 1rem;
+    }
+    .tutor-actions-btns {
+      gap: 0.5rem;
+    }
+    .tutor-btn {
+      font-size: 0.95rem;
+      padding: 0.7rem 0;
+    }
+    .tutor-reviews-box {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .tutor-reviews-summary,
+    .tutor-reviews-details {
+      width: 100% !important;
+    }
+  }

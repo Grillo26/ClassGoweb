@@ -120,6 +120,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::view('/como-trabajamos', 'vistas.view.pages.trabajamos')->name('como-trabajamos');
     Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');
     Route::get('/tutors/{slug}', [HomeController::class, 'tutor'])->name('tutor');
+    Route::get('/tutors', [HomeController::class, 'buscarTutor'])->name('buscar.tutor');
 
 
     Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones');

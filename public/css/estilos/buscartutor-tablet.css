@@ -1,0 +1,61 @@
+@media (min-width: 601px) and (max-width: 1024px) {
+  .buscartutor-hero-section {
+    padding: 60px 0 36px 0;
+  }
+  .buscartutor-container {
+    padding: 0 16px;
+  }
+  .buscartutor-hero-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .buscartutor-hero-img-col {
+    justify-content: center;
+  }
+  .buscartutor-hero-img {
+    max-width: 240px;
+    border-radius: 1.2rem;
+  }
+  .buscartutor-hero-title {
+    font-size: 2rem;
+  }
+  .buscartutor-hero-desc {
+    font-size: 1.05rem;
+  }
+  .buscartutor-search-section {
+    padding: 0 16px;
+    margin-top: -30px;
+  }
+  .buscartutor-search-box {
+    padding: 24px;
+  }
+  .buscartutor-search-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+  .buscartutor-tutorlist-section {
+    padding: 32px 16px;
+  }
+  .buscartutor-tutorlist-space {
+    gap: 24px;
+  }
+  .buscartutor-tutor-card {
+    flex-direction: row;
+    gap: 20px;
+    padding: 20px;
+    align-items: flex-start;
+  }
+  .buscartutor-tutor-img {
+    width: 110px;
+    height: 110px;
+    border-width: 3px;
+  }
+  .buscartutor-tutor-actions {
+    min-width: 120px;
+    gap: 8px;
+  }
+  .buscartutor-tutor-btn {
+    font-size: 0.98rem;
+    padding: 11px 0;
+  }
+} 

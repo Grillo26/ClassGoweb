@@ -13,7 +13,7 @@
 			<!-- Enlaces Desktop -->
 			<nav class="navbar-links">
 				<ul>
-					<li><a href="#" class="{{ request()->is('tutores*') ? 'active' : '' }}">Tutores</a></li>
+					<li><a href="{{ route('buscar.tutor')}}" class="{{ request()->is('tutores*') ? 'active' : '' }}">Tutores</a></li>
 					<li><a href="{{ route('nosotros')}}" class="{{ request()->is('nosotros*') ? 'active' : '' }}">Nosotros</a></li>
 					<li><a href="{{ route('como-trabajamos')}}" class="{{ request()->is('como-trabajamos*') ? 'active' : '' }}">Cómo trabajamos</a></li>
 					<li><a href="{{ route('preguntas')}}" class="{{ request()->is('preguntas*') ? 'active' : '' }}">Preguntas</a></li>
@@ -61,7 +61,7 @@
 		<!-- Menú Móvil -->
 		<nav class="navbar-mobile" id="navbar-mobile">
 			<ul>
-				<li><a href="#" class="{{ request()->is('tutores*') ? 'active' : '' }}">Tutores</a></li>
+				<li><a href="{{ route('buscar.tutor')}}" class="{{ request()->is('tutores*') ? 'active' : '' }}">Tutores</a></li>
 				<li><a href="{{ route('nosotros')}}" class="{{ request()->is('nosotros*') ? 'active' : '' }}">Nosotros</a></li>
 				<li><a href="{{ route('como-trabajamos')}}" class="{{ request()->is('como-trabajamos*') ? 'active' : '' }}">Cómo trabajamos</a></li>
 				<li><a href="{{ route('preguntas')}}" class="{{ request()->is('preguntas*') ? 'active' : '' }}">Preguntas</a></li>

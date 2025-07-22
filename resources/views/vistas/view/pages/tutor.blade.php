@@ -1,19 +1,7 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil de Tutor - {{ $tutor->profile->first_name ?? '' }} {{ $tutor->profile->last_name ?? '' }}</title>
-    <link rel="stylesheet" href="{{ asset('css/tutores.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/estilos/navbar.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-@include('vistas.view.components.navbar')
-<div class="navbar-container">
-        
-</div>
+@extends('vistas.view.layouts.app')
+
+@section('content')
+
 <body class="tutor-bg">
     <!-- Contenido Principal -->
     <main class="tutor-main">
@@ -32,7 +20,8 @@
                         <video id="tutor-bg-video"
                             class="tutor-banner-video"
                             preload="none"
-                            poster="{{ $tutor->profile->image ? asset('storage/' . $tutor->profile->image) : asset('images/tutors/profile.jpg') }}"
+                            {{-- poster="{{ $tutor->profile->image ? asset('storage/' . $tutor->profile->image) : asset('images/tutors/profile.jpg') }}" --}}
+                            poster="{{ asset('images/classgo/banner.jpeg')}}"
                             src="{{ $tutor->profile->intro_video ? asset('storage/' . $tutor->profile->intro_video) : '' }}"
                             loop
                             muted
@@ -110,14 +99,21 @@
                                 <div class="tutor-section-skills-grupos">
                                     @foreach($materiasPorGrupo as $grupo => $materiasGrupo)
                                         <div class="tutor-grupo-block" style="margin-bottom:2rem;">
-                                            <div class="tutor-grupo-header" style="display:flex;align-items:center;gap:0.7rem;">
+                                            <div class="tutor-grupo-header" style="display:flex;align-items:center;gap:0.2rem;">
                                                 <span class="tutor-skill-tag" style="color: var(--primary-color);font-weight:600;font-size:1.1rem;min-width:2.2em;min-height:2.2em;display:inline-flex;"> 
-                                                    <i class="fa-solid fa-book icon"></i>{{ $grupo }}</span>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right:0.3em;">
+                                                    <path d="M2 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/>
+                                                    <path d="M22 7V19a2 2 0 0 1-2 2H6"/>
+                                                    <path d="M16 2v4"/>
+                                                    <path d="M8 2v4"/>
+                                                    </svg>
+                                                    {{ $grupo }}</span>
                                             </div>
-                                            <div class="tutor-section-skills-materias" style="display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:1rem;">
+                                            <div class="tutor-section-skills-materias" style="display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:0.5rem; margin-left:2.3rem;">
                                                 @foreach($materiasGrupo as $materia)
                                                     <span class="tutor-skill-materia" style="font-size:1rem;color:#023047;">{{ $materia }}</span>
                                                 @endforeach
+                                                <img src=" {{ asset('images/png')}}" alt="">
                                             </div>
                                         </div>
                                     @endforeach
@@ -169,31 +165,67 @@
                         <div id="curriculum" class="tutor-tab-content hidden">
                            <nav class="tutor-subtabs-nav"><button onclick="changeSubTab(event, 'educacion')" class="tutor-subtab-btn active">Educación</button><button onclick="changeSubTab(event, 'experiencia')" class="tutor-subtab-btn">Experiencia</button><button onclick="changeSubTab(event, 'certificaciones')" class="tutor-subtab-btn">Certificaciones</button></nav>
                             <div id="educacion" class="tutor-subtab-content">
-                                <div class="tutor-empty-box"><img src="https://placehold.co/100x100/f0f7ff/8ECAE6?text=+" alt="Libro y birrete" class="tutor-empty-img">
-                                    <h4 class="tutor-empty-title">¡Aún no se ha añadido ningún registro!</h4>
-                                    <p class="tutor-empty-text">No hay registros disponibles para mostrar en este momento.</p>
+                                <div class="tutor-empty-box">
+                                    {{-- LOGICA PARA MOSTRAR DE BASE DE DATOS --}}
+                                    <div class="am-norecord">
+                                        @include('livewire.components.no-record')
+                                    </div>
                                 </div>
                             </div>
                             <div id="experiencia" class="tutor-subtab-content hidden">
-                                <div class="tutor-empty-box"><img src="https://placehold.co/100x100/f0f7ff/8ECAE6?text=+" alt="Maletín" class="tutor-empty-img">
-                                    <h4 class="tutor-empty-title">¡Aún no se ha añadido ningún registro!</h4>
-                                    <p class="tutor-empty-text">No hay experiencia laboral para mostrar.</p>
+                                <div class="tutor-empty-box">
+                                    {{-- LOGICA PARA MOSTRAR DE BASE DE DATOS --}}
+                                    <div class="am-norecord">
+                                        @include('livewire.components.no-record')
+                                    </div>
                                 </div>
                             </div>
                             <div id="certificaciones" class="tutor-subtab-content hidden">
-                                <div class="tutor-empty-box"><img src="https://placehold.co/100x100/f0f7ff/8ECAE6?text=+" alt="Medalla" class="tutor-empty-img">
-                                    <h4 class="tutor-empty-title">¡Aún no se ha añadido ningún registro!</h4>
-                                    <p class="tutor-empty-text">No hay certificaciones ni premios para mostrar.</p>
+                                <div class="tutor-empty-box">
+                                    {{-- LOGICA PARA MOSTRAR DE BASE DE DATOS --}}
+                                    <div class="am-norecord">
+                                        @include('livewire.components.no-record')
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div id="resenas" class="tutor-tab-content hidden">
-                            <h3 class="tutor-section-title">Reseñas de estudiantes</h3>
+                            <h3 class="tutor-section-title" style="margin-bottom: 1.5rem;">Reseñas de estudiantes</h3>
                             <div class="tutor-reviews-box">
-                                <div class="tutor-reviews-summary"><div class="tutor-reviews-score">0.0</div><div class="tutor-reviews-stars">...estrellas svg...</div><div class="tutor-reviews-count">Basado en 0 calificaciones</div></div>
-                                <div class="tutor-reviews-details">...detalles de reviews...</div>
+                                <!-- Resumen de calificación -->
+                                <div class="tutor-reviews-summary">
+                                    <div class="tutor-reviews-score" style="font-size:2.5rem;">0.0</div>
+                                    <div class="tutor-reviews-stars" style="margin:1rem 0;">
+                                        @for($i=0; $i<5; $i++)
+                                            <svg class="tutor-star-icon" width="24" height="24" fill="#ccc" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                            </svg>
+                                        @endfor
+                                    </div>
+                                    <div class="tutor-reviews-count" style="color:#888;">Basado en 0 calificaciones</div>
+                                </div>
+                                <!-- Detalle de barras -->
+                                <div class="tutor-reviews-details" style="width:67%;">
+                                    @for($i=5; $i>=1; $i--)
+                                    <div class="tutor-review-bar-row" style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+                                        <span style="color:#888;">{{ $i }}</span>
+                                        <svg class="tutor-star-icon" width="18" height="18" fill="#FB8500" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                        </svg>
+                                        <div class="tutor-review-bar-bg" style="flex:1;background:#e0e0e0;border-radius:1rem;height:8px;">
+                                            <div class="tutor-review-bar-fill" style="background:#FB8500;height:8px;border-radius:1rem;width:0%;"></div>
+                                        </div>
+                                        <span style="color:#888;font-weight:600;">0</span>
+                                    </div>
+                                    @endfor
+                                </div>
                             </div>
-                            <div class="tutor-empty-box tutor-reviews-empty"><h4 class="tutor-empty-title">¡Aún no hay reseñas!</h4><p class="tutor-empty-text">Parece que no hay registros para mostrar en este momento.</p></div>
+                            <div class="tutor-empty-box tutor-reviews-empty" style="text-align:center;margin-top:2rem;padding-top:2rem;border-top:1px solid #e0e0e0;">
+                                {{-- LOGICA PARA MOSTRAR DE BASE DE DATOS --}}
+                                <div class="am-norecord">
+                                    @include('livewire.components.no-record')
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -215,7 +247,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-btn-icon"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                             <span>Tutoría ahora</span>
                         </button>
-                        <button class="tutor-btn tutor-btn-reservar">
+                        <button class="tutor-btn tutor-btn-reservar" id="btn-go-disponibilidad">
                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-btn-icon"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
                             <span>Reservar</span>
                         </button>
@@ -420,6 +452,27 @@
                 window.open(url, '_blank');
             });
         });
+
+        // Ir a la pestaña de disponibilidad al presionar reservar
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnReservar = document.getElementById('btn-go-disponibilidad');
+            if(btnReservar) {
+                btnReservar.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Oculta todas las tabs
+                    document.querySelectorAll('.tutor-tab-content').forEach(el => el.classList.add('hidden'));
+                    document.getElementById('disponibilidad').classList.remove('hidden');
+                    // Quita active de todos los botones
+                    document.querySelectorAll('.tutor-tab-btn').forEach(el => el.classList.remove('active'));
+                    // Activa el botón de disponibilidad
+                    document.querySelectorAll('.tutor-tab-btn').forEach(el => {
+                        if(el.textContent.trim() === 'Disponibilidad') el.classList.add('active');
+                    });
+                    // Scroll al área de tabs
+                    document.getElementById('disponibilidad').scrollIntoView({behavior:'smooth'});
+                });
+            }
+        });
     </script>
 </body>
-</html>
+@endsection

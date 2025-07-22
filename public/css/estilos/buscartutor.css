@@ -1,0 +1,205 @@
+/* buscartutor.css - estilos base desktop */
+:root {
+    --primary-color: #023047;
+    --secondary-color: #219EBC;
+    --secondary-color2: #CDD6DA;
+    --tertiary-color: #8ECAE6;
+    --tertiary-color2: #FB8500;
+    --bg-color: #f8f9fa;
+}
+
+.buscartutor-hero-section {
+    background: linear-gradient(135deg, #023047 0%, #219EBC 100%);
+    color: #fff;
+    padding: 80px 0 60px 0;
+}
+.buscartutor-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+}
+.buscartutor-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+}
+.buscartutor-hero-label {
+    color: var(--tertiary-color);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+.buscartutor-hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+.buscartutor-hero-desc {
+    margin-top: 24px;
+    font-size: 1.15rem;
+    color: #e0e0e0;
+}
+.buscartutor-hero-img-col {
+    display: flex;
+    justify-content: flex-end;
+}
+.buscartutor-hero-img {
+    max-width: 320px;
+    width: 100%;
+    border-radius: 1.5rem;
+}
+
+.buscartutor-search-section {
+    max-width: 1200px;
+    margin: -40px auto 0 auto;
+    padding: 0 32px;
+}
+.buscartutor-search-box {
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 32px;
+}
+.buscartutor-search-grid {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr;
+    gap: 24px;
+}
+.buscartutor-search-keyword, .buscartutor-search-group {
+    display: flex;
+    flex-direction: column;
+}
+.buscartutor-search-input-wrap {
+    position: relative;
+}
+.buscartutor-search-input {
+    width: 100%;
+    padding: 14px 44px 14px 16px;
+    border: 1px solid #ccc;
+    border-radius: 0.7rem;
+    font-size: 1rem;
+    outline: none;
+}
+.buscartutor-search-icon {
+    position: absolute;
+    right: 12px;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    color: #bdbdbd;
+}
+.buscartutor-search-svg {
+    width: 20px;
+    height: 20px;
+}
+.buscartutor-search-select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #ccc;
+    border-radius: 0.7rem;
+    font-size: 1rem;
+    outline: none;
+}
+.buscartutor-search-btn {
+    width: 100%;
+    background: var(--tertiary-color2);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 14px 0;
+    border-radius: 0.7rem;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.buscartutor-search-btn:hover {
+    opacity: 0.9;
+}
+
+.buscartutor-tutorlist-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 32px;
+}
+.buscartutor-tutorlist-space {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.buscartutor-tutor-card {
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    padding: 32px;
+    align-items: flex-start;
+}
+.buscartutor-tutor-img {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--tertiary-color);
+}
+.buscartutor-tutor-info {
+    flex: 1;
+}
+.buscartutor-tutor-name {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+.buscartutor-tutor-special {
+    font-size: 1rem;
+    color: #888;
+    font-weight: 500;
+    margin-top: 4px;
+}
+.buscartutor-tutor-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #888;
+    font-size: 0.98rem;
+    margin-top: 8px;
+}
+.buscartutor-tutor-desc {
+    margin-top: 16px;
+    color: #555;
+    font-size: 1rem;
+}
+.buscartutor-tutor-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    min-width: 180px;
+}
+.buscartutor-tutor-btn {
+    width: 100%;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 12px 0;
+    border-radius: 0.7rem;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.buscartutor-tutor-btn-orange {
+    background: var(--tertiary-color2);
+    color: #fff;
+}
+.buscartutor-tutor-btn-blue {
+    background: var(--secondary-color);
+    color: #fff;
+}
+.buscartutor-tutor-btn-orange:hover, .buscartutor-tutor-btn-blue:hover {
+    opacity: 0.9;
+} 
