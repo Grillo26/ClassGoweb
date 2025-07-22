@@ -12,8 +12,8 @@ class BroadcastServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Permitir acceso sin autenticación
-        Broadcast::routes(['middleware' => []]);
+        // Permitir acceso sin autenticación real usando el middleware fake.broadcast.user
+        Broadcast::routes(['middleware' => ['fake.broadcast.user']]);
 
         require base_path('routes/channels.php');
     }
