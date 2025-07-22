@@ -1,4 +1,4 @@
-<div class="am-profile-setting">
+<div class="am-profile-setting" style="background: rgb(243,244,246) ; padding:20px;">
     <!-- Pantalla de carga -->
     @include('livewire.pages.common.profile-settings.tabs')
     @if($isLoading)
@@ -8,34 +8,44 @@
         </div>
     </div>
     @else
+    @role('student')
+    @include('livewire.pages.common.profile-settings.components.students')
+    @else
+
+    @include('livewire.pages.common.profile-settings.components.tutor')
+
+    @endrole
     <div class="am-userperinfo">
-        <h2 class="text-8xl fw-bold mb-8  text-white">{{ __('profile.personal_details') }}</h2><br>
-        <form wire:submit.prevent="updateInfo" class="row g-4 am-themeform am-themeform_personalinfo">
+        {{-- <h2 class="text-8xl fw-bold mb-8  text-white">{{ __('profile.personal_details') }}</h2><br>
+        <form wire:submit.prevent="updateInfo" class="row g-4 am-themeform am-themeform_personalinfo"> --}}
+
+            <!-- ...el resto de tu código sigue igual... -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Sección de información personal -->
-                <div class="col-span-2">
+                {{-- <div class="col-span-2">
                     <h3 style="color:white;" class="text-xl font-medium mb-4">{{ __('profile.basic_info') }}</h3>
-                </div>
+                </div> --}}
 
 
                 <!-- Nombre -->
-                <div class="row align-items-center mb-4">
+                {{-- <div class="row align-items-center mb-4">
                     <div class="col-md-3 col-12 mb-2 mb-md-0">
                         <label style="color:white;" for="first_name" class="form-label m-0">
-                            {{ __('profile.first_name') }} 
+                            {{ __('profile.first_name') }}
                         </label>
                     </div>
                     <div class="col-md-9 col-12">
                         <input type="text" id="first_name" class="form-control bg-white text-black"
                             wire:model="first_name">
-                        @error('first_name') <span style="color:rgb(251,133,0); font-size: medium;">{{ $message }}</span> @enderror
+                        @error('first_name') <span style="color:rgb(251,133,0); font-size: medium;">{{ $message
+                            }}</span> @enderror
                     </div>
                     <div class="border-bottom border-1 border-gray-200 w-100 mt-2"></div>
 
-                </div>
+                </div> --}}
 
                 <!-- Apellido -->
-                <div class="row align-items-center mb-4">
+                {{-- <div class="row align-items-center mb-4">
                     <div class="col-md-3 col-12 mb-2 mb-md-0">
                         <label style="color:white;" for="last_name" class="form-label m-0">
                             {{ __('profile.last_name') }} <span class="text-red-500"></span>
@@ -44,14 +54,15 @@
                     <div class="col-md-9 col-12">
                         <input type="text" id="last_name" class="form-control bg-white text-black"
                             wire:model="last_name">
-                        @error('last_name') <span style="color:rgb(251,133,0);font-size: medium;">{{ $message }}</span> @enderror
+                        @error('last_name') <span style="color:rgb(251,133,0);font-size: medium;">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="border-bottom border-1 border-gray-200 w-100 mt-2"></div>
 
-                </div>
+                </div> --}}
 
                 <!-- Email -->
-                <div class="row align-items-center mb-4">
+                {{-- <div class="row align-items-center mb-4">
                     <div class="col-md-3 col-12 mb-2 mb-md-0">
                         <label style="color:white;" for="email" class="form-label m-0">
                             {{ __('profile.email') }}
@@ -63,10 +74,10 @@
                     </div>
                     <div class="border-bottom border-1 border-gray-200 w-100 mt-2"></div>
 
-                </div>
+                </div> --}}
 
                 <!-- Teléfono -->
-                <div class="row align-items-center mb-4">
+                {{-- <div class="row align-items-center mb-4">
                     <div class="col-md-3 col-12 mb-2 mb-md-0">
                         <label style="color:white;" for="phone_number" class="form-label m-0">
                             {{ __('profile.phone_number') }}
@@ -75,51 +86,17 @@
                     <div class="col-md-9 col-12">
                         <input type="tel" id="phone_number" class="form-control bg-white text-black"
                             wire:model="phone_number">
-                        @error('phone_number') <span style="color:rgb(251,133,0);font-size: medium;">{{ $message }}</span> @enderror
+                        @error('phone_number') <span style="color:rgb(251,133,0);font-size: medium;">{{ $message
+                            }}</span> @enderror
                     </div>
                     <div class="border-bottom border-1 border-gray-200 w-100 mt-2"></div>
 
-
-                </div>
+                </div> --}}
 
                 {{-- genero --}}
-                <div class="row align-items-center mb-4">
-                    <div class="col-md-3 col-12 mb-2 mb-md-0">
-                        <label style="color:white;" class="form-label mb-0 me-3">
-                            {{ __('profile.gender') }} <span class="text-red-500"></span>
-                        </label>
-                    </div>
-                    <div class="col-md-9 col-12">
-                        <div class="d-flex align-items-center gap-3 flex-wrap ps-0 ms-0">
-                            <div class="form-check form-check-inline mb-0 ms-0 ps-0">
-                                <input class="form-check-input" type="radio" name="gender" id="gender-male" value="1"
-                                    wire:model="gender">
-                                <label class="form-check-label text-white" for="gender-male">
-                                    {{ __('profile.male') }}
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline mb-0 ms-0 ps-0">
-                                <input class="form-check-input" type="radio" name="gender" id="gender-female" value="2"
-                                    wire:model="gender">
-                                <label class="form-check-label text-white" for="gender-female">
-                                    {{ __('profile.female') }}
-                                </label>
-                            </div>
-                            <div class="form-check form-check-inline mb-0 ms-0 ps-0">
-                                <input class="form-check-input" type="radio" name="gender" id="gender-unspecified"
-                                    value="3" wire:model="gender">
-                                <label class="form-check-label text-white" for="gender-unspecified">
-                                    {{ __('profile.not_specified') }}
-                                </label>
-                            </div>
-                        </div>
-                        @error('gender') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
-                    </div>
-                    <div class="border-bottom border-1 border-gray-200 w-100 mt-2"></div>
-
-                </div>
+                {{-- @include('livewire.pages.common.profile-settings.components.genero') --}}
                 <!-- Sección de Descripción -->
-                <div class="row align-items-center mb-4">
+                {{-- <div class="row align-items-center mb-4">
                     <div class="col-md-3 col-12 mb-2 mb-md-0">
                         <label for="introduction" style="color:white;" class="form-label m-0">
                             {{ __('profile.description') }}
@@ -137,9 +114,9 @@
                     <div class="border-bottom border-1 border-gray-200 w-100 mt-2"></div>
 
                 </div>
-
+                --}}
                 <!-- Idioma nativo -->
-                <div class="row align-items-center mb-4">
+                {{-- <div class="row align-items-center mb-4">
                     <div class="col-md-3 col-12 mb-2 mb-md-0">
                         <label for="native_language" class="form-label m-0 text-white">
                             {{ __('profile.native_language') }} <span class="text-red-500"></span>
@@ -214,14 +191,15 @@
                                     });
                                 });
                             </script>
-                            @error('native_language') <span style="color:rgb(251,133,0);font-size: medium;">{{ $message }}</span> @enderror
+                            @error('native_language') <span style="color:rgb(251,133,0);font-size: medium;">{{ $message
+                                }}</span> @enderror
                         </div>
                     </div>
                     <div class="border-bottom border-1 border-gray-200 w-100 mt-2"></div>
-                </div>
+                </div> --}}
 
                 <!-- Otros idiomas -->
-                <div class="mb-3 position-relative" style="max-width: 400px;">
+                {{-- <div class="mb-3 position-relative" style="max-width: 400px;">
                     <label for="languages" class="form-label text-white mb-3">
                         {{ __('profile.other_languages') }} <span class="text-danger"></span>
                     </label>
@@ -276,9 +254,9 @@
                             });
                         }
                     </script>
-                </div>
+                </div> --}}
 
-                <div class="d-flex flex-wrap gap-2 mt-3">
+                {{-- <div class="d-flex flex-wrap gap-2 mt-3">
                     @if(count($user_languages) > 0)
                     @foreach($user_languages as $langId)
                     @if(isset($languages[$langId]))
@@ -296,199 +274,23 @@
                     </div>
                     @endif
                 </div>
-
+                --}}
                 @error('user_languages')
                 <div class="invalid-feedback d-block">
                     {{ $message }}
                 </div>
                 @enderror
                 <div class="border-bottom border-1 border-gray-200 w-100 mt-2"></div>
-
                 <!-- Foto de perfil -->
-                <div class="col-12 mt-4 mt-md-5">
-                    <div class="bg-white p-4 p-lg-5 rounded-3 shadow-sm border">
-                        <h5 class="form-label text-black mb-4 fw-semibold fs-4">
-                            {{ __('profile.profile_picture') }}
-                        </h5>
-
-                        <!-- Contenedor de imagen extra grande -->
-                        <div class="d-flex justify-content-center mb-4">
-                            <div class="overflow-hidden" style="width: 600px; height: 300px;">
-                                @if($image && !$image instanceof
-                                \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
-                                <img src="{{ asset('storage/' . $image) }}" alt="Profile"
-                                    class="img-fluid h-100 w-100 object-fit-cover border border-secondary p-2">
-                                @elseif($image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
-                                <img src="{{ $image->temporaryUrl() }}" alt="Profile"
-                                    class="img-fluid h-100 w-100 object-fit-cover border border-secondary p-2">
-                                @else
-                                <div
-                                    class="h-100 w-100 d-flex align-items-center justify-content-center bg-light border border-secondary">
-                                    <i class="bi bi-person text-muted" style="font-size: 4rem;"></i>
-                                </div>
-                                @endif
-                            </div>
-                        </div>
-
-                        <!-- Controles ampliados -->
-                        <div class="text-center">
-                            <div class="d-flex flex-column flex-md-row gap-3 justify-content-center mx-auto"
-                                style="max-width: 600px;">
-                                <label for="image-upload" class="btn btn-primary btn-lg flex-grow-1 py-2">
-                                    <i class="bi bi-cloud-arrow-up me-2"></i>
-                                    {{ __('profile.upload_image') }}
-                                    <input id="image-upload" type="file" class="d-none" wire:model="image"
-                                        wire:loading.attr="disabled">
-                                </label>
-
-                                @if($image)
-                                <button type="button" class="btn btn-outline-danger btn-lg flex-grow-1 py-2"
-                                    wire:click="removeMedia('image')">
-                                    <i class="bi bi-trash me-2"></i>
-                                    {{ __('profile.remove') }}
-                                </button>
-                                @endif
-                            </div>
-
-                            <!-- Mensaje de carga mejorado -->
-                            <div class="mt-4" wire:loading wire:target="image">
-                                <div class="spinner-border text-primary" role="status"
-                                    style="width: 2rem; height: 2rem;">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p class="text-primary mt-2 mb-0 fs-5">{{ __('profile.uploading') }}...</p>
-                            </div>
-
-                            @if($imageName)
-                            <div class="mt-4 text-muted fs-5 mx-auto" style="max-width: 500px;">
-                                <i class="bi bi-file-image-fill me-2"></i>
-                                <span class="text-truncate d-inline-block"
-                                    style="max-width: 80%; vertical-align: middle;">
-                                    {{ $imageName }}
-                                </span>
-                            </div>
-                            @endif
-
-
-                            <div class="mt-4 text-muted fs-5">
-                                {{ __('profile.allowed_formats') }}
-                                <span class="fw-bold">{{ implode(', ', $allowImgFileExt) }}</span>
-                                <br>
-                                <span class="fw-semibold">{{ __('profile.max') }} {{ $maxImageSize }}MB </span>
-                            </div>
-
-                            @error('image')
-                            <div class="alert alert-danger mt-4 mb-0 fs-5 py-2">
-                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-
             </div>
-
-            <!-- Video de presentación -->
-            <div class="col-12 mt-4 mt-md-5">
-                <div class="bg-white p-4 p-lg-5 rounded-3 shadow border">
-                    <div class="bg-white p-4 p-lg-5 rounded-3">
-                        <h5 class="form-label mb-4 fw-semibold fs-4 text-black">
-                            {{ __('profile.intro_video') }}
-                        </h5>
-
-                        <!-- Contenedor de video extra grande -->
-                        <div class="d-flex flex-column flex-lg-row gap-4 align-items-start">
-                            <!-- Preview del video ampliado -->
-                            <div class="flex-shrink-0">
-                                <div class="position-relative bg-black bg-opacity-25 rounded-3 overflow-hidden border border-secondary"
-                                    style="width: 300px; height: 200px;">
-                                    @if($intro_video instanceof
-                                    \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
-                                    <video class="w-100 h-100 object-fit-cover" controls>
-                                        <source src="{{ $intro_video->temporaryUrl() }}" type="video/mp4">
-                                    </video>
-                                    @elseif($intro_video)
-                                    <video class="w-100 h-100 object-fit-cover" controls>
-                                        <source src="{{ asset('storage/' . $intro_video) }}" type="video/mp4">
-                                    </video>
-                                    @else
-                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-play-circle-fill text-white opacity-50"
-                                            style="font-size: 3rem;"></i>
-                                    </div>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <!-- Controles ampliados -->
-                            <div class="flex-grow-1 w-100">
-                                <div class="d-flex flex-column flex-md-row gap-3 mb-3">
-                                    <label for="video-upload" class="btn btn-primary btn-lg flex-grow-1 py-2">
-                                        <i class="bi bi-cloud-arrow-up me-2"></i>
-                                        {{ __('profile.upload_video') }}
-                                        <input id="video-upload" type="file" class="d-none" wire:model="intro_video"
-                                            accept="video/*" onchange="validateVideoSize(this)"
-                                            wire:loading.attr="disabled">
-                                    </label>
-
-                                    @if($intro_video)
-                                    <button type="button" class="btn btn-outline-danger btn-lg flex-grow-1 py-2"
-                                        wire:click="removeMedia('video')">
-                                        <i class="bi bi-trash me-2"></i>
-                                        {{ __('profile.remove') }}
-                                    </button>
-                                    @endif
-                                </div>
-
-                                <!-- Mensaje de carga mejorado -->
-                                @if($isUploadingVideo)
-                                <div class="d-flex align-items-center gap-2 mt-3">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <span class="text-primary fs-5">{{ __('profile.uploading') }}...</span>
-                                </div>
-                                @endif
-
-
-                                <div class="mt-3 text-black fs-5">
-                                    {{ __('profile.allowed_formats') }}:
-                                    <span class="fw-bold">{{ implode(', ', $allowVideoFileExt) }}</span>
-                                    <br>
-                                    <span class="fw-semibold">{{ __('profile.max') }} {{ $maxVideoSize }}MB</span>
-                                </div>
-
-                                @error('intro_video')
-                                <div class="alert alert-danger mt-3 mb-0 fs-5 py-2">
-                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                                <div id="video-size-alert" class="alert alert-danger d-none mt-3" role="alert">
-                                    <!-- El mensaje se inserta por JS -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-    </div>
-    {{-- Botones de acción --}}
-    <div class="form-group am-form-btns">
-        <span>{{ __('profile.latest_changes_the_live') }}</span>
-        <x-primary-button type="submit" wire:loading.class="am-btn_disable" wire:target="updateInfo">
-            {{ __('general.save_update') }}
-        </x-primary-button>
     </div>
     </form>
-
 </div>
 @endif
 </div>
+@push('styles')
+
+@endpush
 @push('scripts')
 <script>
     function validateVideoSize(input) {
