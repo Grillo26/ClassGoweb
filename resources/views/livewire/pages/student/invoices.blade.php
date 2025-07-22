@@ -40,10 +40,14 @@ use Carbon\Carbon;
                             </td>
                             @elserole('tutor')
 
+
+
+                            
                             <td>
                                 <span class="table-cell-content">
-                                    {{ $order->booker->profile?->first_name ?? '' }}{{ $order->booker->profile ? ' - ' .
-                                    $order->booker->profile->last_name : '' }}
+                                    @if($order->booker && $order->booker->profile)
+                                    {{ $order->booker->profile->first_name }} - {{ $order->booker->profile->last_name }}
+                                    @endif
                                 </span>
                             </td>
 
