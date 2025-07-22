@@ -421,34 +421,46 @@ public function getTutors($data = array()) {
 
     }
 
-    public function getTutorDato(){
-        // 1. Obtener IDs de usuarios con rol 'tutor'
+    public function getTutorDato($perPage = 10)
+    {
         $tutorIds = \DB::table('model_has_roles')
             ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
             ->where('roles.name', 'tutor')
             ->pluck('model_has_roles.model_id');
 
-        // 2. Obtener tutores verificados con perfil válido y cargar idiomas y calificaciones
+        // Cargar todas las relaciones necesarias de una vez y paginar
         $tutors = User::whereIn('id', $tutorIds)
             ->whereHas('profile', function ($q) {
                 $q->whereNotNull('verified_at')
-                ->whereNotNull('first_name')
-                ->whereNotNull('last_name');
+                  ->whereNotNull('first_name')
+                  ->whereNotNull('last_name');
             })
             ->whereHas('userSubjects.subject.group') // solo si tienen grupo asignado
             ->with([
                 'profile:id,user_id,first_name,last_name,slug,image,description,native_language',
                 'languages:id,name',
+                'userSubjects.subject.group', // Carga materias y grupos
             ])
             ->withAvg('ratings as avg_rating', 'rating')
             ->withCount('ratings as total_reviews')
             ->orderByDesc('avg_rating')
-            ->get();
+            ->paginate($perPage);
 
-        // 3. Mapear perfiles finales
+        // Mapear perfiles finales
         $profiles = $tutors->map(function ($tutor) {
             $profile = $tutor->profile;
-                return [
+            // Materias y grupos
+            $materias = [];
+            $grupos = [];
+            foreach ($tutor->userSubjects as $userSubject) {
+                if ($userSubject->subject) {
+                    $materias[] = $userSubject->subject->name;
+                    if ($userSubject->subject->group) {
+                        $grupos[] = $userSubject->subject->group->name;
+                    }
+                }
+            }
+            return [
                 'user_id' => $tutor->id,
                 'full_name' => trim("{$profile->first_name} {$profile->last_name}"),
                 'slug' => $profile->slug,
@@ -458,10 +470,17 @@ public function getTutors($data = array()) {
                 'languages' => $tutor->languages->pluck('name'),
                 'avg_rating' => round($tutor->avg_rating ?? 0, 2),
                 'total_reviews' => $tutor->total_reviews ?? 0,
+                'materias' => array_unique($materias),
+                'grupos' => array_unique($grupos),
             ];
         });
-        return $profiles;
+
+        // Devuelve la paginación con los datos mapeados
+        $result = $tutors;
+        $result->setCollection($profiles);
+        return $result;
     }
+
     public function getAlliances()
     {
         return DB::table('alianzas')->get();
