@@ -1,0 +1,298 @@
+
+
+    @import '../../../../estilos/variables.css';
+    
+    .container {
+         background-color: rgb(241, 243, 244);
+        padding: 40px;
+    }
+
+      .container-card {
+        background-color: white;
+        padding:20px;
+        border-radius: 20px;
+        
+    } 
+
+
+    .am-titulo-card{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        font-size: large;
+        
+    }
+
+    .titulo_primario{
+        color: black;
+        font-weight: bolder;
+          
+    }
+
+    /* Contenedor de grupo */
+    .am-group-card {
+        background:#f8fafc;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 2px 8px rgba(60, 60, 60, 0.04);
+        overflow: hidden;
+    }
+
+    /* Header del grupo */
+    .am-group-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 24px;
+        background: rgb(249, 250, 252);
+        border-bottom: 1px solid #e5e7eb;
+        cursor: pointer;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .am-group-title {
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    .am-group-toggle {
+        width: 24px;
+        height: 24px;
+        display: inline-block;
+        background: url('data:image/svg+xml;utf8,<svg fill="none" stroke="gray" stroke-width="2" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M6 9l6 6 6-6"/></svg>') center/contain no-repeat;
+        transition: transform 0.2s;
+    }
+
+    .am-group-toggle.open {
+        transform: rotate(180deg);
+    }
+
+    /* Cuerpo del grupo */
+    .am-group-body {
+        padding: 0 24px 24px 24px;
+    }
+
+    /* Tarjeta de materia */
+    .am-subject-card {
+        background: #fff;
+        border-radius: 8px;
+        margin-top: 18px;
+        padding: 10px 10px;
+        display: flex;
+        font-size: 10px;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 1px 6px rgba(60, 60, 60, 0.04);
+        transition: box-shadow 0.2s;
+    }
+
+    .am-subject-card:hover {
+        box-shadow: 0 4px 16px rgba(33, 158, 188, 0.10);
+    }
+
+    .am-subject-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    .am-subject-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #0f172a;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .am-subject-desc {
+        font-size: 0.97rem;
+        color: #64748b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Acciones */
+    .am-subject-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .am-btn-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background: none;
+        color: #64748b;
+        font-size: 1.2rem;
+        padding: 6px;
+        border-radius: 6px;
+        transition: background 0.15s, color 0.15s;
+        cursor: pointer;
+    }
+
+    .am-btn-edit:hover {
+        background: #e0f2fe;
+        color: #2563eb;
+    }
+
+    .am-btn-delete:hover {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    /* Botón agregar tema */
+    .am-add-topic-row {
+        margin-top: 18px;
+        border: 2px dashed #cbd5e1;
+        border-radius: 10px;
+        padding: 10px 10px;
+        text-align: center;
+        background: #f8fafc;
+    }
+
+    .am-btn-add-topic {
+        background: none;
+        border: none;
+        color: #334155;
+        font-size: 1.08rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: color 0.18s;
+        padding: 0;
+    }
+
+    .am-btn-add-topic:hover {
+        color: #ff9800;
+        text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+
+        .am-group-header,
+        .am-group-body {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .am-subject-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 14px 10px;
+        }
+
+        .am-subject-actions {
+            width: 100%;
+            justify-content: flex-end;
+        }
+
+        .am-add-topic-row {
+            padding: 12px 0;
+        }
+    }
+
+    .am-filtros-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(60, 60, 60, 0.07);
+        border: 1px solid #e5e7eb;
+        padding: 22px 24px;
+        margin-bottom: 28px;
+    }
+
+    .filtros {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 0;
+    }
+
+    .am-search {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .am-search-input {
+        position: relative;
+    }
+
+    .am-search-input input[type="text"] {
+        width: 100%;
+        padding: 8px 38px 8px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 15px;
+        background: #f8fafc;
+        color: #222;
+        transition: border 0.2s;
+    }
+
+    .am-search-input input[type="text"]:focus {
+        border-color: #21a0bc;
+        outline: none;
+    }
+
+    .am-icon-search {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        font-size: 18px;
+    }
+
+    .am-filter-checkbox label {
+        color: #334155;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .am-filter-checkbox input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: #21a0bc;
+    }
+
+    .am-btn.am-btn-reset {
+        padding: 8px 18px;
+        background:var(--terciary-color2);
+        color: #fff;
+        border-radius: 6px;
+        border: none;
+        font-weight: 500;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: background 0.18s;
+    }
+
+    
+    @media (max-width: 700px) {
+        .am-filtros-card {
+            padding: 12px 8px;
+        }
+
+        .filtros {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+        }
+    }

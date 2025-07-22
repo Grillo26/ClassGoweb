@@ -19,6 +19,7 @@
             </div>
         </div>
     </div>
+    
     <div class="am-searchfilter_wrap">
         <div class="container">
             <div class="row">
@@ -32,64 +33,6 @@
 
                             </a>
                         </div>
-                    </div>
-
-
-                    <div class="am-searchfilter">
-                        {{-- <div class="am-searchfilter_item">
-                            <span class="am-searchfilter_title">{{ __('subject.subject_group') }}</span>
-                            <span class="am-select">
-
-                                <select id="group_id" class="am-select2" data-searchable="true"
-                                    data-class="am-filter-dropdown"
-                                    data-placeholder="{{ __('subject.choose_subject_group') }}">
-                                    <option> </option>
-                                    @foreach ($subjectGroups as $group)
-                                    <option value="{{ $group->id }}" {{ $group->id == ($filters['group_id'] ?? '') ?
-                                        'selected' : '' }}>{{ $group->name }}</option>
-                                    @endforeach
-                                </select>
-
-                            </span>
-                        </div> --}}
-
-
-
-                        {{-- <div class="am-searchfilter_item">
-                            <span class="am-searchfilter_title">{{ __('subject.choose_subject_label') }}</span>
-                            <span class="am-select">
-
-                                <select id="subject_id" class="am-select2" multiple data-searchable="true"
-                                    data-class="am-filter-dropdown"
-                                    data-placeholder="{{ __('subject.choose_subject_label') }}">
-
-                                    <option> </option>
-                                    @foreach ($subjects as $subject)
-                                    <option value="{{ $subject->id }}" {{ in_array($subject->id, $filters['subject_id']
-                                        ?? []) ? 'selected' : '' }}>{{ $subject->name }}</option>
-                                    @endforeach
-                                </select>
-                            </span>
-                        </div> --}}
-
-                        {{-- <<div class="am-searchfilter_item">
-                            <span class="am-searchfilter_title">{{ __('general.tutor_location') }}</span>
-                            <span class="am-select">
-                                @if(!empty(setting('_api.google_places_api_key')))
-                                <input type="text" class="form-control" id="map_location" value="{{ $filters['country'] ?? '' }}"
-                                    placeholder="{{ __('general.enter_tutor_location') }}">
-                                @else
-                                <select class="am-select2" id="tutor_country" data-searchable="true"
-                                    data-class="am-sort_dp_option am-sort-location" data-placeholder="{{ __('general.search_by_country') }}">
-                                    <option> </option>
-                                    @foreach ($countries as $country)
-                                    <option value="{{ $country->id }}" {{ $country->id == ($filters['country'] ?? '') ?
-                                        'selected' : '' }}>{{ $country->name }}</option>
-                                    @endforeach
-                                </select>
-                                @endif
-                            </span>
-                        </div> --}}
                     </div>
                     <div style="width:100%;margin-left: 10px">
                         <div style="display:flex; width:100%;">
@@ -119,7 +62,7 @@
     <div class="am-tutorsearch_section">
         <div class="container">
             <div class="row">
-                <livewire:components.search-tutor :filters="$filters" wire:key="tutors-list-{{ time() }}" />
+                <livewire:components.search-tutor :filters="$filters"   wire:key="tutors-list-{{ time() }}" />
                 @if(!empty(setting('_lernen.help_section_media')) ||
                 !empty(setting('_lernen.help_section_title')) ||
                 !empty(setting('_lernen.help_section_description')) ||

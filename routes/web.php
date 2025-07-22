@@ -3,6 +3,9 @@
 use App\Http\Controllers\Admin\TutorController;
 use App\Http\Controllers\Auth\SocialController;
 use App\Http\Controllers\Frontend\SearchController;
+use App\Http\Controllers\GoogleController;
+
+
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\Impersonate;
@@ -35,9 +38,9 @@ use App\Livewire\Pages\Tutor\ManageSessions\MyCalendar;
 use App\Livewire\Pages\Tutor\ManageSessions\SessionDetail;
 use App\Livewire\Payouts;
 use App\Http\Controllers\GoogleMeetController;
+use App\Services\GoogleMeetService;
 use Illuminate\Support\Facades\Route;
 
-// RUTAS UNIVERSALES AL INICIO
 Route::get('/verify', function (\Illuminate\Http\Request $request) {
     $id = $request->query('id');
     $hash = $request->query('hash');
@@ -83,9 +86,7 @@ Route::get('/verify', function (\Illuminate\Http\Request $request) {
 Route::get('/prueba', function () {
     return '¡Ruta de prueba funcionando!';
 });
-Route::get('/nosotros',function () {
-    return view('vistas.view.pages.nosotros');
-}); 
+; 
 
 
 //OJO -------> Debe de estar dentro del grupo de rutas para el rol TUTOR
@@ -96,9 +97,12 @@ Route::get('/tutor/ficha-download/{slug}/{id}', [ExportImageController::class, '
 
 
 
-Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
+/* Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialController::class, 'callback'])->name('social.callback');
-Route::get('/pay-qr/{orderId}', [PaymentController::class, 'showQR'])->name('pay-qr');
+ */Route::get('/pay-qr/{orderId}', [PaymentController::class, 'showQR'])->name('pay-qr');
+
+ Route::get('/google/authenticate', [GoogleController::class, 'authenticate'])->name('google.authenticate');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
 
 
 Route::middleware(['locale', 'maintenance'])->group(function () {
@@ -106,11 +110,19 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::get('/blogs', Blogs::class)->name('blogs');
     Route::get('/blog/{slug}', BlogDetails::class)->name('blog-details');
     Route::view('/subscriptions-page', 'subscriptions-page');
+
+    // <==== Grillo kkk ===>
     Route::get('/home', [HomeController::class, 'index']);
+    Route::get('/nosotros', [HomeController::class, 'nosotros'])->name('nosotros');
+    Route::view('/como-trabajamos', 'vistas.view.pages.trabajamos')->name('como-trabajamos');
+    Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');
+
     Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones');
+    // promociones vista ejemplo    
+    Route::post('tutor/favourite', [SearchController::class, 'favouriteTutor'])->name('tutor.favourite');
 
 
-    
+
     Route::middleware(['auth', 'verified', 'onlineUser'])->group(function () {
         Route::post('/openai/submit', [OpenAiController::class, 'submit'])->name('openai.submit');
         Route::post('favourite-tutor', [SearchController::class, 'favouriteTutor'])->name('favourite-tutor');
@@ -130,7 +142,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
             Route::prefix('profile')->name('profile.')->group(function () {
                 Route::get('personal-details', PersonalDetails::class)->name('personal-details');
                 Route::get('account-settings',  AccountSettings::class)->name('account-settings');
-                Route::get('courses',Courses::class)->name('courses');
+                Route::get('courses', Courses::class)->name('courses');
                 Route::prefix('resume')->name('resume.')->group(function () {
                     Route::get('education', Resume::class)->name('education');
                     Route::get('experience', Resume::class)->name('experience');
@@ -144,7 +156,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
                 Route::get('session-detail/{date}', SessionDetail::class)->name('session-detail');
                 Route::get('upcoming-bookings',     UserBooking::class)->name('upcoming-bookings');
             });
-            
+
             Route::get('invoices', Invoices::class)->name('invoices');
             Route::get('disputes', Dispute::class)->name('disputes');
             Route::get('manage-dispute/{id}', ManageDispute::class)->name('manage-dispute');
@@ -189,3 +201,5 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
         require __DIR__ . '/pagebuilder.php';
     }
 });
+
+

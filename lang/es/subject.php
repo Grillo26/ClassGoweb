@@ -2,8 +2,8 @@
 
 return [
     'select_all_subject_groups' => 'Seleccionar todo el grupo',
-    'subject_title' => 'Areas que puedo enseñar',
-    'subject_title_desc' => 'Proporcione su formación académica para ayudarnos a evaluar sus calificaciones.',
+    'subject_title' => 'Mis Materias',
+    'subject_title_desc' => 'Agregue y gestione las materias que desea enseñar.',
     'hourly_rate' => 'Tarifa por hora:',
     'choose_subject_category' => 'Elija la categoría de area que puede enseñar',
     'edit_subject' => 'Editar Asunto',

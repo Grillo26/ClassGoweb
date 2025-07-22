@@ -5,7 +5,7 @@ return [
     'personal_details' => 'Detalles personales',
     'account_settings' => 'Configuraciones de la cuenta',
     'identity_verification' => 'Verificación de identidad',
-    'identity_detail_desc' => 'Su número de teléfono y correo electrónico son semiconfidenciales, visibles para la administración y las reservas confirmadas.',
+    'identity_detail_desc' => 'Su número de teléfono y correo electrónico son confidenciales, visibles para la administración y las reservas confirmadas.',
     'full_name' => 'Nombre completo',
     'personal_detail_desc' => 'Proporcione su información personal a continuación para completar su perfil',
     'first_name' => 'Nombre',
@@ -72,18 +72,19 @@ return [
     'social_profile_placeholder' => 'Introduzca :profile_name :type',
     'basic_info' => 'Proporcionar información básica para completar su perfil',
     'email' => 'Email',
-    'phone_number' => 'Phone number',
+    'phone_number' => 'Número de teléfono',
     'profile_picture' => 'Profile photo',
     'upload_image' => 'Cargar Imagen',
     'upload_video' => 'Cargar Video',
     'upload_resume' => 'Upload resume',
     'upload_social_media' => 'Upload social media',
     'upload_other' => 'Upload other',
-    'allowed_formats' => 'Formatos permitidos:',
-    'max' => 'Maximum',
+    'allowed_formats' => 'Formatos permitidos',
+    'max' => 'Máximo',
     'other_languages' => 'Other languages',
     'remove' => 'Eliminar',
-    
-
+    'phone_number' => 'Número de teléfono',
+    'profile_picture' => 'Foto de perfil',
+    'other_languages' => 'Otros idiomas',
+   
 ];
-

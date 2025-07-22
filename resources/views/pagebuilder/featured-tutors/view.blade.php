@@ -26,5 +26,6 @@
             </div>
         </div>
     </div>
-    <x-featured-tutors  /> 
+    <x-featured-tutors /> 
+
 </section>

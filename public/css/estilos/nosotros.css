@@ -3,13 +3,7 @@
 /* 2 - Estilos Específicos para la Página Nosotros */
 /* ------------------------------------------------------------ */
 /* Estilo general */
-body {
-  font-family: Arial, sans-serif;
-  color: #333;
-  background-color: #f4f4f4;
-  margin: 0;
-  padding: 0;
-}
+
 
 .nosotros-container {
   display: flex;
@@ -17,24 +11,29 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
+  background-color: white;
 }
 /*-----HEADER-----*/
 .nosotros-header {
+  /* Este es el contenedor exterior (la capa de abajo) */
+  background: var(--secundary-color); /* Color celeste */
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  padding-bottom: 20px; /* IMPORTANTE: Esto revela el fondo celeste en la parte de abajo */
   width: 100%;
-  border-bottom-left-radius: 24px;
-  border-bottom-right-radius: 24px;
-  padding: 0 0 15px 0;
-  background: var(--secundary-color);
 }
 
+
 .nosotros-header-content {
+  background: var(--primary-color); /* Color azul oscuro */
+  border-bottom-left-radius: 40px; /* Un radio ligeramente menor para que encaje bien */
+  border-bottom-right-radius: 40px;
+  
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 7rem 2.5rem 2rem;
-  border-bottom-left-radius: 24px;
-  border-bottom-right-radius: 24px;
-  background: var(--primary-color); /* Fondo oscuro */
+  padding: 8rem 5rem 3rem 5rem ;
+  color: white; /* Añadido para que el texto sea visible */
 }
 
 .nosotros-header-text {
@@ -45,7 +44,7 @@ body {
   font-size: 2.7rem;
   font-weight: 700;
   margin-top: 1.2rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1rem ;
   color: #fff;
   line-height: 1.15;
   padding-top: 2rem;
@@ -55,7 +54,7 @@ body {
   color: #fff;
   font-size: 1.08rem;
   margin: 0;
-  max-width: 1000px;
+  max-width: 700px;
 }
 
 .breadcrumb {
@@ -66,13 +65,26 @@ body {
   opacity: 0.95;
 }
 
-.breadcrumb .active {
-  font-weight: 700;
-  text-decoration: underline;
+.breadcrumb-link {
+  color: #eaf6fa;
+  transition: opacity 0.3s ease;
 }
 
+.breadcrumb-link:hover {
+  opacity: 0.7;
+}
+
+.breadcrumb-current {
+  font-weight: 700;
+  
+}
+
+.nosotros-header-image{
+  justify-content: end;
+  align-items: end;
+}
 .nosotros-header-image img {
-  width: 400px;
+  width: 420px;
   height: auto;
   display: block;
 }
@@ -95,8 +107,8 @@ body {
   display: flex;
   width: 100%;
   justify-content: space-between; /* Cambiar para que los elementos se distribuyan adecuadamente */
-  background-color: white;
-  padding-top: 3rem;
+  background-color: none;
+  padding: 3rem 0;
   align-items: center; /* Aseguramos que los elementos estén alineados verticalmente */
 }
 
@@ -104,10 +116,13 @@ body {
   font-size: 0.9rem; /* Aumento del tamaño para mayor legibilidad */
   line-height: 1.5;
   margin: 0 1rem;
-  padding: 2rem;
+  padding: 2rem 4rem  ;
   color: var(--primary-color);
   font-family: var(--font-family);
   width: 50%; /* Limitar el tamaño para que no ocupe toda la pantalla */
+}
+.nosotros-mision-title{
+  font-size: 1.5rem !important;
 }
 
 .nosotros-mision-text-general1 {
@@ -126,43 +141,52 @@ body {
   text-align: left;
 }
 
+.nosotros-mision-image {
+  width: 50%;
+  max-width: 700px;
+  display: flex;
+  justify-content: center;
+  padding-right: 3rem;
+  padding-top: 5rem;
+  position: relative; /* ¡Clave para posicionar el círculo! */
+}
+
 .nosotros-mision-porcentaje {
-  background-color: var(--secundary-color); /* Color de fondo */
-  border-radius: 50%; /* Hace que el elemento sea redondo */
-  color: white; /* Color del texto */
-  display: flex; /* Usamos Flexbox para centrar el texto */
-  flex-direction: column; /* Apilamos el texto verticalmente */
-  justify-content: center; /* Centra el contenido verticalmente */
-  align-items: center; /* Centra el contenido horizontalmente */
-  width: 160px; /* Ajustamos el tamaño del círculo */
-  height: 160px; /* Hace que la altura sea igual a la anchura para mantener la forma circular */
-  text-align: center; /* Asegura que el texto esté centrado */
-  padding: 0.75rem; /* Ajuste de padding para que todo encaje bien */
+  background-color: var(--secundary-color);
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 130px;
+  height: 130px;
+  text-align: center;
+  padding: 0.75rem;
+  position: absolute;      /* ¡Clave! */
+  top: 70px;              /* Ajusta según lo que necesites */
+  left: -40px;             /* Ajusta según lo que necesites */
+  z-index: 2;              /* Asegura que esté encima de la imagen */
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08); /* Opcional: sombra para destacar */
 }
 
 .nosotros-mision-porcentaje .nosotros-mision-porcentaje-text {
-  font-size: 2.2rem; /* Ajustamos el tamaño del número */
-  font-weight: bold; /* Asegura que el número sea prominente */
-  margin-bottom: 0.5rem; /* Espacio entre el número y el texto */
+  font-size: 2.7rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  line-height: 15px;
+  padding-top: 1.5rem;
 }
 
 .nosotros-mision-porcentaje .nosotros-porcentaje-subtext {
-  font-size: 1rem; /* Ajuste de tamaño para el texto secundario */
-  margin-top: 0.25rem; /* Espacio entre el texto de abajo y el número */
-}
-
-
-.nosotros-mision-image {
-  width: 40%; /* Ajustamos para que la imagen no ocupe demasiado espacio */
-  max-width: 500px; /* Limitar el tamaño máximo de la imagen */
-  display: flex;
-  justify-content: center; /* Centrar la imagen */
+  font-size: 1rem;
+  margin-top: 0.25rem;
 }
 
 .nosotros-mision-image img {
   width: 100%;
-  height: auto; /* Aseguramos que la imagen se ajuste correctamente */
-  border-radius: 1rem; /* Bordes redondeados para la imagen */
+  height: auto;
+  border-radius: 1rem;
 }
 
 .nosotros-mision-title {
@@ -178,21 +202,21 @@ body {
   width: 100%;
   justify-content: space-between; /* Asegura que el texto y la imagen estén distribuidos correctamente */
   background-color: white;
-  padding: 3rem 2rem; /* Aumentamos el relleno superior para dar más espacio */
+  padding: 5rem 4rem; /* Aumentamos el relleno superior para dar más espacio */
   /*align-items: center; /* Alinea los elementos verticalmente */
 }
 
 .nosotros-vision-text {
   font-size: 1.1rem;
   line-height: 1.5;
-  padding: 2rem;
+  padding: 3rem;
   color: var(--primary-color);
   font-family: var(--font-family);
   width: 50%; /* Ajustamos para que el texto no ocupe todo el espacio */
 }
 
 .nosotros-vision-title {
-  font-size: 2.5rem;
+  font-size: 1.5rem !important;
   font-weight: bold;
   color: var(--primary-color);
   margin-bottom: 1rem; /* Agregamos un poco de espacio debajo del título */
@@ -215,8 +239,8 @@ body {
 }
 
 .vision-image {
-  width: 45%; /* Ajustamos el tamaño de la imagen */
-  max-width: 500px; /* Limitar el tamaño máximo */
+  width: 50%; /* Ajustamos el tamaño de la imagen */
+  max-width: 700px; /* Limitar el tamaño máximo */
   display: flex;
   justify-content: center;
   align-items: center; /* Centra la imagen */
@@ -231,74 +255,35 @@ body {
 .nosotros-logros {
   text-align: center;
   background-color: var(--primary-color);
-  color: white;
+  color: white !important;
   width: 100%;
   padding: 4rem 2rem; /* Ajustamos el relleno para dar más espacio */
+  margin-bottom: 6rem; /* Espacio debajo del bloque de logros */
 }
 
 .nosotros-logros-text {
-  margin-bottom: 2rem;
+  line-height: 50px;
 }
 
 .nosotros-logros-title {
   font-size: 2.5rem;
   font-weight: bold;
-  color: white;
-  margin-bottom: 1rem; /* Espaciado debajo del título */
-}
+  color: white;}
 
 .nosotros-logros-text h2 {
   font-size: 1.5rem;
-  font-weight: normal;
+  color: white;
+}
+.nosotros-logros-text h1{
   color: white;
 }
 
 .nosotros-logros-subtext {
   font-size: 1.2rem;
   color: white;
-  margin-top: 0.5rem;
-}
-
-.nosotros-logros-table {
-  margin: 2rem auto;
-  width: 90%;
-  max-width: 1200px;
-  background: var(--primary-color);
-  padding: 2rem 0;
-  border-radius: 10px;
-}
-
-.nosotros-logros-table table {
-  width: 100%;
-  border-collapse: collapse;
-  background: transparent;
-}
-
-.nosotros-logros-table td {
-  border: 2px solid #fff; /* Borde claro */
-  color: #fff;
-  text-align: center;
-  padding: 3rem 0 2rem 0;
-  font-family: "Montserrat", Arial, sans-serif;
-  background: transparent;
-}
-
-.nosotros-logros-table .numero {
-  display: block;
-  font-size: 2.8rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  color: #fff; /* Blanco para los números */
-}
-
-.nosotros-logros-table .descripcion {
-  font-size: 1.1rem;
-  font-weight: normal;
-  color: #dbefff; /* Celeste claro para las descripciones */
-}
-
-.nosotros-logros-table td:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* Efecto hover sutil para cada celda */
+  padding: 0 15rem;
+  line-height: 25px;
+  
 }
 
 /*-----CONVENIOS----*/
@@ -389,4 +374,18 @@ body {
   .nosotros-card .card {
     width: 90%; /* Reducimos el ancho para móviles */
   }
+}
+
+.counter-box h1 {
+  color: #00bcd4;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+.counter-box h1 {
+    font-size: var(--h1-regular);
+    color: white;
+    text-transform: none;
 }

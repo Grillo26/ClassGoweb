@@ -1,6 +1,6 @@
 <!-- Modal QR -->
 <div wire:ignore.self class="modal fade" id="modalQR" tabindex="-1" aria-labelledby="modalQRLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-m">
         <div class="modal-content qr-modal">
             <!-- Header -->
             <div class="modal-header qr-modal-header">

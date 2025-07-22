@@ -28,6 +28,10 @@
 ------------------------------------------------------------/
 
 /**--- 1 - Hero Principal --**/
+body{
+  background-color:  rgba(33, 158, 188, 1)!important;
+}
+
 .hero {
   height: 100vh;
   width: 100%;
@@ -248,7 +252,7 @@
 
 .counter-box h1 {
     font-size: var(--h1-regular);
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
     text-transform: none;
 }
 
@@ -289,193 +293,115 @@
   height: 4px;
   width: 50px;
 }
+
+/*---------BUTTONES--------------------*/
+.tutors-carousel-viewport {
+  width: calc(3 * 350px + 2 * 20px); /* 3 tarjetas + 2 gaps */
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  
+}
+
+.carousel-nav {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.carousel-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.carousel-nav.prev {
+  left: 10px;
+}
+
+.carousel-nav.next {
+  right: 10px;
+}
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ddd;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.indicator.active {
+  background: #667eea;
+}
+
+.carousel-info {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #666;
+}
+
 /**---- 3.1 Cards Tutores ---**/
-.tutor-card .tutor-card-sub {
-  font-size: 0.95rem;
-  color: #334155;
-  text-align: start;
-  min-height: 2.8em; /* Aproximadamente 2 líneas */
-  max-height: 2.8em;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  position: relative;
-}
-
-.tutor-card .tutor-card-sub.mas {
-  /* Para mostrar el +más */
-  white-space: wrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.tutor-card .tutor-card-tags {
-  min-height: 2.8em; /* 2 líneas de tags */
-  max-height: 2.8em;
+.tutors {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.3em;
-  overflow: hidden;
-  align-items: flex-start;
+  flex-direction: row;
+  gap: 20px;
+  padding: 2rem 0;
+  background: white;
+  justify-content: flex-start;
+  align-items: stretch;
+  transition: transform 0.5s cubic-bezier(.4,0,.2,1);
+  position: relative;
+  width: calc(3 * 350px + 2 * 20px); /* 3 tarjetas + 2 gaps */
+  min-width: calc(3 * 350px + 2 * 20px);
+  max-width: 100%;
 }
-/* ================= RESPONSIVE DESIGN ================= */
-@media (max-width: 1024px) {
-  .hero-container {
-    flex-direction: column;
-    padding-top: 3rem;
-    align-items: center;
-  }
-  .hero-text {
-    padding: 2rem 1rem 1rem 1rem;
-    text-align: center;
-  }
-  .hero-image {
-    padding: 2rem 0 0 0;
-    text-align: center;
-  }
-  .tutors {
-    width: 100%;
-    flex-wrap: wrap;
-    padding: 1rem 0.5rem;
-    gap: 1rem;
-  }
-  .tutor-card {
-    width: 100%;
-    max-width: 350px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .tutors-container {
-    padding: 2rem 0.5rem;
-  }
-  .steps {
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem 0.5rem;
-    gap: 1.5rem;
-  }
+.tutors::-webkit-scrollbar {
+  height: 8px;
+  background: #f0f0f0;
 }
-
-@media (max-width: 768px) {
-  .hero {
-    height: auto;
-    min-height: 100vh;
-    padding-bottom: 2rem;
-  }
-  .hero-title-arriba, .hero-title-abajo {
-    font-size: 2em !important;
-  }
-  .hero-text {
-    padding: 1.5rem 0.5rem 1rem 0.5rem;
-  }
-  .hero-image img {
-    max-width: 90vw;
-    min-width: 180px;
-  }
-  .counters {
-    flex-direction: column;
-    gap: 1.5rem;
-    padding: 2rem 0.5rem;
-  }
-  .counter-box {
-    padding: 0 0.5rem;
-  }
-  .box-sky {
-    display: none;
-  }
-  .tutors {
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    gap: 1rem;
-    padding: 1rem 0.2rem;
-  }
-  .tutor-card {
-    width: 100%;
-    max-width: 350px;
-  }
-  .tutors-container {
-    padding: 1rem 0.2rem;
-  }
-  .steps {
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem 0.2rem;
-    gap: 1rem;
-  }
-  .steps-card, .go {
-    width: 100%;
-    max-width: 350px;
-    height: auto;
-  }
-  .potencial-container {
-    padding: 1.5rem 0.5rem;
-  }
-  .tutorias {
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    padding: 1rem 0.5rem;
-    height: auto;
-  }
-  .tutores-text {
-    padding: 1rem 0.5rem;
-    align-items: center;
-    text-align: center;
-  }
-  .tutores-img img {
-    max-width: 95vw;
-  }
-  .alianzas {
-    padding: 0 0.5rem;
-  }
-  .steps-alianzas {
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    padding: 1.5rem 0.5rem;
-  }
-  .alianzas-card img {
-    width: 100%;
-    max-width: 350px;
-    height: auto;
-  }
+.tutors::-webkit-scrollbar-thumb {
+  background: #b0b0b0;
+  border-radius: 4px;
 }
-
-@media (max-width: 480px) {
-  .hero-title-arriba, .hero-title-abajo {
-    font-size: 1.3em !important;
-  }
-  .tutor-card-content {
-    padding: 1rem 0.5rem 0.5rem 0.5rem;
-  }
-  .steps-card, .go {
-    max-width: 98vw;
-    padding: 0.5rem;
-  }
-  .tutores-img img {
-    min-width: 120px;
-    max-width: 98vw;
-  }
-}
-/* === Card Tutor personalizada (antes Tailwind) === */
 .tutor-card {
-  background-color: #fff;
-  border-radius: 1rem;
-  width: 350px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  margin-bottom: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  color: #1a3b4d;
-  transition: box-shadow 0.3s cubic-bezier(.4,0,.2,1), transform 0.3s cubic-bezier(.4,0,.2,1);
-  position: relative;
-  z-index:0;
+  flex: 0 0 350px;
+  max-width: 350px;
+  min-width: 350px;
+  margin: 0;
+  box-sizing: border-box;
+  box-shadow: 0 8px 8px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  background: #fff;
 }
 
 .tutor-card:hover {
   transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .tutor-card .tutor-card-img {
@@ -493,6 +419,7 @@
   margin-bottom: 1rem;
 
 }
+
 
 .tutor-card-content {
   padding: 2rem 1.25rem 1.25rem 1.25rem;
@@ -540,10 +467,13 @@
   font-size: 0.95rem;
   color: #334155;
   text-align: start;
-  min-height: 3.2em; /* Altura mínima para una línea */
-  display: flex;
-  align-items: center;
-  /* Puedes ajustar el min-height según el diseño deseado */
+  line-height: 1.4; /* Mejora legibilidad */
+  height: 4rem; /* Fuerza altura para 3 líneas aprox */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tutor-card .tutor-card-rating-row {
@@ -637,34 +567,7 @@ i.fa-solid.fa-book.icon::before{
 }
 .tutor-card .tutor-card-actions .btn-reserve:hover {
   background: var(--primary-color);
-}
 
-
-.tutors {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  padding: 5rem;
-  box-sizing: border-box;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  justify-content: center;
-}
-.tutor-card {
-  scroll-snap-align: start;
-  flex: 0 0 350px;
-  /* width ya está definida, pero esto fuerza el tamaño en el carrusel */
-}
-
-/* Oculta la barra de scroll en navegadores modernos */
-.tutors::-webkit-scrollbar {
-  display: none;
-}
-.tutors {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }
 /**--- 3 - Anuncio Potencial --**/
 /* === Potencial Container === */
@@ -771,6 +674,17 @@ i.fa-solid.fa-book.icon::before{
   .steps-card button, .go button {
     width: 95%;
   }
+  .carousel-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+  .carousel-nav.prev {
+    left: 2px;
+  }
+  .carousel-nav.next {
+    right: 2px;
+  }
 }
 .steps-card, .go {
   background: var(--secundary-color2);
@@ -871,40 +785,6 @@ i.fa-solid.fa-book.icon::before{
 .go .numero-paso i {
   font-size: 2rem;
 }
-@media (max-width: 1024px) {
-  .potencial-container {
-    padding: 2rem 0.5rem;
-  }
-  .steps {
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem 0.5rem;
-    gap: 1.5rem;
-  }
-  .steps-card, .go {
-    width: 100%;
-    max-width: 350px;
-    min-width: 220px;
-    margin: 0 auto;
-  }
-}
-@media (max-width: 768px) {
-  .potencial-container {
-    padding: 1.5rem 0.5rem;
-  }
-  .steps {
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem 0.2rem;
-    gap: 1rem;
-  }
-  .steps-card, .go {
-    width: 100%;
-    max-width: 98vw;
-    min-width: 180px;
-    padding: 0.5rem;
-  }
-}
 
 /*-------5 Busca tutorias-----*/
 .tutorias-container{
@@ -953,8 +833,8 @@ i.fa-solid.fa-book.icon::before{
 }
 /*---5.3 imagen lado derecho---*/
 .tutores-img img{
-  max-width: 900px;
-  border-radius: 10px;
+  max-width: 300px;
+  width: 100%;
 }
 .tutores-list{
   margin-left: 2rem;
@@ -988,6 +868,7 @@ i.fa-solid.fa-book.icon::before{
   gap: 30px;
 }
 
+
 .alianzas-card{
   display: flex;
   flex-flow: column wrap;
@@ -1014,3 +895,27 @@ i.fa-solid.fa-book.icon::before{
 
 /**--- Card Tutores --**/
 
+@media (max-width: 1200px) {
+  .tutors-carousel-viewport, .tutors {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+  }
+  .tutor-card {
+    min-width: 300px;
+    max-width: 300px;
+    flex: 0 0 300px;
+  }
+}
+@media (max-width: 900px) {
+  .tutors-carousel-viewport, .tutors {
+    width: 100vw;
+    min-width: 0;
+    max-width: 100vw;
+  }
+  .tutor-card {
+    min-width: 250px;
+    max-width: 250px;
+    flex: 0 0 250px;
+  }
+}

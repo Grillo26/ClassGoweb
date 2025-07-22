@@ -28,4 +28,5 @@ return [
     'education_deleted_message' => 'La educación se eliminó correctamente.',
     'education_added_message' => 'La educación se agregó con éxito.',
     'education_edit_message' => 'Actualización educativa exitosa.',
+  
 ];
