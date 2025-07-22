@@ -13,6 +13,8 @@
     --text-gris: #888;
     --panel-background:rgb(241, 243, 244);
     --bg-gradient: linear-gradient(180deg, rgba(7, 59, 76, 1) 64%, rgba(24, 77, 94, 1) 77%, rgba(33, 158, 188, 1) 100%);
+    --bg-gradient2: linear-gradient(135deg, #023047 0%, #219EBC 100%);
+
 
 
     /**-------FUENTES------*/

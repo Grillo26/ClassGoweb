@@ -148,6 +148,7 @@
 }
 .buscartutor-tutor-info {
     flex: 1;
+    gap: 2px;
 }
 .buscartutor-tutor-name {
     font-size: 1.3rem;
