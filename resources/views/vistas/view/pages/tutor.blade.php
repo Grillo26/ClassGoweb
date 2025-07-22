@@ -2,13 +2,13 @@
 
 @section('content')
 
-<body class="tutor-bg">
+<div class="tutor-bg">
     <!-- Contenido Principal -->
     <main class="tutor-main">
         <!-- Breadcrumbs -->
         <div class="tutor-breadcrumbs">
             <a href="#" class="tutor-breadcrumb-link">Tutores</a> / 
-            <a href="#" class="tutor-breadcrumb-link">Encontrar tutor</a> / 
+            <a href="{{ route('buscar.tutor')}}" class="tutor-breadcrumb-link">Encontrar tutor</a> / 
             <span class="tutor-breadcrumb-current">{{ $tutor->profile->first_name ?? '' }} {{ $tutor->profile->last_name ?? '' }}</span>
         </div>
         <div class="tutor-grid">
@@ -474,5 +474,5 @@
             }
         });
     </script>
-</body>
+</div>
 @endsection

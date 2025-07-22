@@ -1,6 +1,7 @@
 @extends('vistas.view.layouts.app')
 
 @section('content')
+<div class="container-buscartutor">
     <!-- Hero Section -->
     <section class="buscartutor-hero-section">
         <div class="buscartutor-container">
@@ -88,4 +89,5 @@
             </div>
         </div>
     </section>
+</div>
 @endsection

@@ -1,0 +1,198 @@
+/* buscartutor.css - estilos base desktop */
+:root {
+    --primary-color: #023047;
+    --secondary-color: #219EBC;
+    --secondary-color2: #CDD6DA;
+    --tertiary-color: #8ECAE6;
+    --tertiary-color2: #FB8500;
+    --bg-color: #f8f9fa;
+}
+
+.buscartutor-hero-section {
+    background: linear-gradient(135deg, #023047 0%, #219EBC 100%);
+    color: #fff;
+    padding: 80px 0 60px 0;
+}
+.buscartutor-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px;
+}
+.buscartutor-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+}
+.buscartutor-hero-label {
+    font-size: 1rem;
+    color: var(--tertiary-color2);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+.buscartutor-hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+.buscartutor-hero-desc {
+    font-size: 1.15rem;
+    color: #e0e0e0;
+    margin-bottom: 0;
+}
+.buscartutor-hero-img-col {
+    display: flex;
+    justify-content: flex-end;
+}
+.buscartutor-hero-img {
+    max-width: 320px;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 24px 0 rgba(2,48,71,0.12);
+}
+
+.buscartutor-search-section {
+    background: #fff;
+    padding: 0 32px;
+    margin-top: -40px;
+    z-index: 2;
+    position: relative;
+}
+.buscartutor-search-box {
+    background: #fff;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 12px 0 rgba(2,48,71,0.07);
+    padding: 32px;
+    margin: 0 auto;
+    max-width: 900px;
+}
+.buscartutor-search-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 0.7fr;
+    gap: 24px;
+}
+.buscartutor-search-input {
+    width: 100%;
+    border: 1px solid var(--secondary-color2);
+    border-radius: 0.7rem;
+    padding: 0.7rem 1rem;
+    font-size: 1.1rem;
+    outline: none;
+    transition: border 0.2s;
+}
+.buscartutor-search-input:focus {
+    border-color: var(--secondary-color);
+}
+.buscartutor-search-select {
+    width: 100%;
+    border: 1px solid var(--secondary-color2);
+    border-radius: 0.7rem;
+    padding: 0.7rem 1rem;
+    font-size: 1.1rem;
+    outline: none;
+    transition: border 0.2s;
+}
+.buscartutor-search-select:focus {
+    border-color: var(--secondary-color);
+}
+.buscartutor-search-btn {
+    background: var(--secondary-color);
+    color: #fff;
+    border: none;
+    border-radius: 0.7rem;
+    padding: 0.7rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.buscartutor-search-btn:hover {
+    background: var(--primary-color);
+}
+
+.buscartutor-tutorlist-section {
+    background: var(--bg-color);
+    padding: 48px 0;
+}
+.buscartutor-tutorlist-space {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+.buscartutor-tutor-card {
+    display: flex;
+    align-items: flex-start;
+    background: #fff;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 12px 0 rgba(2,48,71,0.07);
+    padding: 2rem;
+    gap: 2rem;
+    position: relative;
+}
+.buscartutor-tutor-img {
+    width: 128px;
+    height: 128px;
+    object-fit: cover;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 8px 0 rgba(2,48,71,0.08);
+}
+.buscartutor-tutor-info {
+    flex: 1;
+    margin-left: 1rem;
+    padding-left: 1rem;
+}
+.buscartutor-tutor-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+.buscartutor-tutor-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--secondary-color);
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+}
+.buscartutor-tutor-desc {
+    color: #444;
+    font-size: 1.05rem;
+    margin-bottom: 0;
+}
+.buscartutor-tutor-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-left: 1.5rem;
+    min-width: 180px;
+}
+.buscartutor-tutor-btn {
+    border: none;
+    border-radius: 0.7rem;
+    padding: 0.7rem 1.2rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+}
+.buscartutor-tutor-btn-orange {
+    background: var(--tertiary-color2);
+    color: #fff;
+}
+.buscartutor-tutor-btn-orange:hover {
+    background: #ff9900;
+}
+.buscartutor-tutor-btn-blue {
+    background: var(--secondary-color);
+    color: #fff;
+}
+.buscartutor-tutor-btn-blue:hover {
+    background: var(--primary-color);
+}
+.buscartutor-pagination {
+    margin-top: 2.5rem;
+    display: flex;
+    justify-content: center;
+} 
