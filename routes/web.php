@@ -104,6 +104,8 @@ Route::get('auth/{provider}/callback', [SocialController::class, 'callback'])->n
  Route::get('/google/authenticate', [GoogleController::class, 'authenticate'])->name('google.authenticate');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
 
+Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
+
 
 Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::get('find-tutors', [SearchController::class, 'findTutors'])->name('find-tutors');
