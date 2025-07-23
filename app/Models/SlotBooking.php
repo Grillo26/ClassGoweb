@@ -109,4 +109,10 @@ class SlotBooking extends Model
     {
         return $this->hasMany(Claim::class);
     }
+
+    // Relación uno a uno: cada reserva tiene un solo pago
+    public function payment(): HasOne
+    {
+        return $this->hasOne(SlotPayment::class, 'slot_booking_id');
+    }
 }

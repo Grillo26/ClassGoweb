@@ -111,7 +111,7 @@ class ManageAccount extends Component
                 // Solo procesar nueva imagen si se seleccionó una
                 if ($this->qrImage) {
                     $this->validate([
-                        'qrImage' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                        'qrImage' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                     ]);
                     $imagePath = $this->handleQRImageUpload();
                     $this->deleteExistingQRImage();

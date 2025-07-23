@@ -35,7 +35,7 @@ class IdentityStoreRequest extends BaseFormRequest {
             'lat'         => 'nullable|numeric|regex:/^-?\d{1,9}(\.\d{1,6})?$/',
             'lng'         => 'nullable|numeric|regex:/^-?\d{1,9}(\.\d{1,6})?$/',
             'country'     => 'required|numeric', // No depende de enableGooglePlaces
-            'zipcode'     => 'nullable|alpha_num|regex:/^[a-zA-Z0-9]{5,10}$/',
+            /* 'zipcode'     => 'nullable|alpha_num|regex:/^[a-zA-Z0-9]{5,10}$/', */
             'city'        => 'nullable|string',
         ];
         

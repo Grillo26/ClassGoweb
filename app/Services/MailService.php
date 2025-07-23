@@ -8,6 +8,7 @@ use App\Mail\SessionBookingMail;
 use App\Mail\TutorTutoriaNotificationMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use App\Mail\AdminNuevaTutoriaMail;
 
 class MailService
 {
@@ -60,7 +61,7 @@ class MailService
                 $tutorName
             ));
 
-        
+
 
         } catch (\Exception $e) {
             Log::error('Error al enviar correo al estudiante', [
@@ -123,4 +124,22 @@ class MailService
             ]);
         }
     }
+
+
+
+
+    public function sendAdminNuevaTutoria($estudiante,$fechayhora,$tutor)
+    {
+
+    
+        $adminEmail = env('MAIL_ADMIN');
+        
+        Mail::to($adminEmail)->send(new AdminNuevaTutoriaMail(
+            $estudiante->name ?? ($estudiante->first_name . ' ' . $estudiante->last_name),
+            $fechayhora,
+            $tutor->profile->full_name ?? ($tutor->first_name . ' ' . $tutor->last_name)
+        ));
+    }
+
+
 }

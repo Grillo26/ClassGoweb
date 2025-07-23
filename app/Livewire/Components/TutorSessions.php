@@ -325,10 +325,6 @@ class TutorSessions extends Component
                 return redirect()->route('login');
             }
 
-            /* if (!Auth::check()) {
-                return redirect()->route('login');
-            } */
-
             $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->selectedSubject, $this->selectedHour);
             $data = [
                 'id' => $bookedSlot->id,
@@ -389,19 +385,20 @@ class TutorSessions extends Component
 
                     $student = Auth::user();
                     $fechaHora = now()->format('d/m/Y H:i');
-                    $contenido = "Se ha registrado una nueva reserva de tutoría el {$fechaHora}.\n\n";
+                /*     $contenido = "Se ha registrado una nueva reserva de tutoría el {$fechaHora}.\n\n";
                     $contenido .= "Detalles de la reserva:\n";
                     $contenido .= "Estudiante: {$student->name} ({$student->email})\n";
                     $contenido .= "Tutor: {$this->user?->profile?->full_name}\n";
                     $contenido .= "Materia: {$this->selectedSubject}\n";
                     $contenido .= "Horario: " . parseToUserTz($slot->start_time, $this->timezone)->format('d/m/Y H:i') . " - " . parseToUserTz($slot->end_time, $this->timezone)->format('H:i') . "\n";
                     $contenido .= "Precio: {$this->currency_symbol}" . number_format($sessionFee, 2) . "\n\n";
-                    $contenido .= "Por favor, revise el panel de administración para más detalles.";
-                    \Mail::raw($contenido, function ($message) {
+                    $contenido .= "Por favor, revise el panel de administración para más detalles."; */
+                   /*  \Mail::raw($contenido, function ($message) {
                         $message->to(env('MAIL_ADMIN'))
                             ->subject('Nueva reserva de tutoría registrada');
-                    });
-
+                    }); */
+                    $serviciomail=new \App\Services\MailService();
+                    $serviciomail->sendAdminNuevaTutoria($student,$fechaHora,$this->user?->profile?->full_name);
 
                 } catch (\Exception $e) {
                     Log::error('Error al guardar el comprobante: ' . $e->getMessage());
@@ -409,7 +406,6 @@ class TutorSessions extends Component
                     return;
                 }
             }
-
             if (!empty($this->currentSlot)) {
                 $this->dispatch('toggleModel', id: 'slot-detail', action: 'hide');
             }
