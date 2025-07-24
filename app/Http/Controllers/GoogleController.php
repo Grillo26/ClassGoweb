@@ -52,7 +52,7 @@ class GoogleController extends Controller
         // Es mejor para una configuración de una sola vez, no para cada login.
          file_put_contents(base_path('.env'), "\nGOOGLE_ADMIN_REFRESH_TOKEN={$refreshToken}", FILE_APPEND);
 
-        dd("¡Éxito! Tu nuevo refresh token es:", $refreshToken);
+        //dd("¡Éxito! Tu nuevo refresh token es:", $refreshToken);
 
         return redirect()->route('admin.tutorias.index')->with('success', 'Autenticación completada. Refresh token obtenido.');
 
