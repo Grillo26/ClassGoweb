@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil de Tutor - William Espinoza</title>
+    <title>ClassGo - Encontrar un Tutor</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,321 +11,201 @@
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* Aplicamos la paleta de colores y la fuente base */
         :root {
             --primary-color: #023047;
             --secondary-color: #219EBC;
             --secondary-color2: #CDD6DA;
             --tertiary-color: #8ECAE6;
             --tertiary-color2: #FB8500;
-            --bg-color: #fff;
-            --footer-white: #d6f7fd;
-            --transition: all 0.3s ease;
+            --bg-color: #f8f9fa;
         }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa; /* Un fondo ligeramente más suave */
-            color: var(--primary-color);
+            background-color: var(--bg-color);
         }
-        /* Clases personalizadas para usar las variables de color */
         .bg-primary { background-color: var(--primary-color); }
-        .bg-secondary { background-color: var(--secondary-color); }
-        .bg-tertiary-orange { background-color: var(--tertiary-color2); }
-        .bg-footer { background-color: var(--primary-color); }
-        
         .text-primary { color: var(--primary-color); }
         .text-secondary { color: var(--secondary-color); }
+        .bg-tertiary-orange { background-color: var(--tertiary-color2); }
         .text-tertiary-orange { color: var(--tertiary-color2); }
-
-        .border-secondary { border-color: var(--secondary-color); }
-        .border-tertiary { border-color: var(--tertiary-color); }
-        
-        .transition-all {
-            transition: var(--transition);
+        .border-tertiary-orange { border-color: var(--tertiary-color2); }
+        .ring-tertiary-orange {
+            --tw-ring-color: var(--tertiary-color2);
         }
-
-        /* Estilos para las pestañas */
-        .tab-button.active {
-            border-color: var(--secondary-color);
-            color: var(--secondary-color);
-            font-weight: 600;
-        }
-        .subtab-button.active {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-        /* Estilos para el calendario y selector de hora */
-        .calendar-day.selected {
-            background-color: var(--secondary-color);
-            color: white;
-            font-weight: bold;
-        }
-        .time-slot.selected {
-            background-color: var(--secondary-color);
-            color: white;
-            border-color: var(--secondary-color);
+        .hero-section {
+            background-color: #023047;
+            background-image: linear-gradient(135deg, #023047 0%, #219EBC 100%);
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body>
 
-    <!-- Header (Simulado) -->
+    <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <img src="Logo ClassGo azul.png" alt="Logo ClassGo" class="h-10 w-auto" onerror="this.onerror=null; this.src='https://placehold.co/100x40/023047/ffffff?text=ClassGo';">
+                <img src="https://i.imgur.com/f8nL3gS.png" alt="Logo ClassGo" class="h-10 w-auto" onerror="this.onerror=null; this.src='https://placehold.co/150x50/023047/ffffff?text=ClassGo';">
             </div>
-            <div class="hidden md:flex items-center space-x-6">
-                <a href="#" class="text-gray-600 hover:text-secondary transition-all">Encontrar Tutores</a>
-                <a href="#" class="text-gray-600 hover:text-secondary transition-all">Mis Clases</a>
-                <a href="#" class="bg-secondary text-white px-4 py-2 rounded-lg hover:opacity-90 transition-all">Mi Perfil</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#" class="text-gray-600 hover:text-secondary transition-all font-medium">Buscar Tutores</a>
+                <a href="#" class="text-gray-600 hover:text-secondary transition-all font-medium">Sobre Nosotros</a>
+                <a href="#" class="text-gray-600 hover:text-secondary transition-all font-medium">Cómo trabajamos</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                 <button class="bg-tertiary-orange text-white font-semibold px-5 py-2 rounded-lg hover:opacity-90 transition-all">Empezar</button>
+                 <button class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-gray-600"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                 </button>
             </div>
         </nav>
     </header>
 
-    <!-- Contenido Principal -->
-    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-        <!-- Breadcrumbs -->
-        <div class="text-sm text-gray-500 mb-6">
-            <a href="#" class="hover:text-secondary transition-all">Hogar</a> / 
-            <a href="#" class="hover:text-secondary transition-all">Encontrar tutor</a> / 
-            <span class="font-semibold text-primary">William Espinoza</span>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- Columna Izquierda (Información del Tutor) -->
-            <div class="lg:col-span-2 space-y-8">
-                
-                <!-- Card Principal del Tutor -->
-                <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-                    <div class="h-48 bg-gray-200 relative bg-cover bg-center" style="background-image: url('https://placehold.co/800x300/023047/8ECAE6?text=Video+Banner')">
-                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
-                            <button class="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center group transition-all hover:bg-white/30">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-10 w-10 text-white transform group-hover:scale-110 transition-transform"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-6 relative">
-                         <img src="https://placehold.co/128x128/8ECAE6/023047?text=WE" alt="Foto de William Espinoza" class="w-32 h-32 rounded-full object-cover border-4 border-white absolute -top-16 left-6 shadow-lg">
-                         <div class="ml-36 pl-2">
-                            <h1 class="text-3xl font-bold text-primary">William Espinoza</h1>
-                            <div class="mt-2 flex items-center space-x-4 text-gray-600">
-                                <div class="flex items-center space-x-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-tertiary-orange h-5 w-5 fill-tertiary-orange"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
-                                    <span>0.0 (0 reseñas)</span>
-                                </div>
-                                <div class="flex items-center space-x-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-secondary"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                                    <span>0 Estudiantes</span>
-                                </div>
-                            </div>
-                         </div>
-                         <p class="mt-4 text-gray-700 text-lg">"El país es grande porque sus ciudadanos son altamente preparados"</p>
-                    </div>
+    <!-- Hero Section -->
+    <section class="hero-section text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+             <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-wider text-tertiary-color mb-2">Hogar / Encontrar tutor</p>
+                    <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">Descubra un tutor en línea capacitado para sus estudios</h1>
+                    <p class="mt-4 text-lg text-gray-300">Domina tus estudios con tutorías personalizadas en línea impartidas por educadores expertos. Nuestros tutores capacitados están aquí para ayudarlo a construir bases sólidas y alcanzar sus objetivos académicos.</p>
                 </div>
-
-                <!-- SECCIÓN DE PESTAÑAS PRINCIPAL -->
-                <div class="bg-white rounded-2xl shadow-md">
-                    <div class="border-b border-gray-200">
-                        <nav class="-mb-px flex space-x-6 px-6 overflow-x-auto" aria-label="Tabs">
-                            <button onclick="changeTab(event, 'introduccion')" class="tab-button active shrink-0 border-b-2 border-transparent px-1 py-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 transition-all">Introducción</button>
-                            <button onclick="changeTab(event, 'disponibilidad')" class="tab-button shrink-0 border-b-2 border-transparent px-1 py-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 transition-all">Disponibilidad</button>
-                            <button onclick="changeTab(event, 'curriculum')" class="tab-button shrink-0 border-b-2 border-transparent px-1 py-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 transition-all">Aspectos Destacados</button>
-                            <button onclick="changeTab(event, 'resenas')" class="tab-button shrink-0 border-b-2 border-transparent px-1 py-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 transition-all">Reseñas (0)</button>
-                        </nav>
-                    </div>
-                    <div class="p-6">
-                        <div id="introduccion" class="tab-content space-y-8">
-                            <div>
-                                <h3 class="text-xl font-bold text-primary mb-4">Acerca de mí</h3>
-                                <p class="text-gray-600 leading-relaxed">Con una trayectoria de más de 25 años, he dedicado mi carrera a fortalecer las operaciones de organizaciones líderes en diversos sectores. Como auditor interno y externo, he evaluado exhaustivamente procesos, sistemas de control y riesgos, identificando oportunidades de mejora y asegurando el cumplimiento normativo. Mi experiencia en consultoría me permite diseñar soluciones personalizadas para optimizar la gestión de riesgos, mejorar la eficiencia...</p>
-                                <button class="text-secondary font-semibold mt-2 hover:underline">Mostrar más</button>
-                            </div>
-                            <hr class="border-gray-200">
-                            <div>
-                                <h3 class="text-xl font-bold text-primary mb-4">Puedo enseñar</h3>
-                                <div class="space-y-5 mt-5">
-                                    <div class="flex items-start space-x-4"><div class="bg-tertiary-color/20 p-3 rounded-xl"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary h-6 w-6"><path d="M21.5 12c0-5.25-4.25-9.5-9.5-9.5S2.5 6.75 2.5 12s4.25 9.5 9.5 9.5s9.5-4.25 9.5-9.5Z"></path><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></div><div><h4 class="font-semibold text-primary text-lg">Auditoría</h4><div class="flex flex-wrap gap-2 mt-2"><span class="bg-tertiary-color/30 text-primary text-sm font-medium px-3 py-1 rounded-full">Fundamentos de Auditoría</span> <span class="bg-tertiary-color/30 text-primary text-sm font-medium px-3 py-1 rounded-full">Normas Internacionales (ISA)</span> <span class="bg-tertiary-color/30 text-primary text-sm font-medium px-3 py-1 rounded-full">Riesgos y Controles Internos</span> <span class="bg-tertiary-color/30 text-primary text-sm font-medium px-3 py-1 rounded-full">Técnicas de Muestreo</span> <span class="bg-tertiary-color/30 text-primary text-sm font-medium px-3 py-1 rounded-full">Informes y Recomendaciones</span> <span class="bg-tertiary-color/30 text-primary text-sm font-medium px-3 py-1 rounded-full">Auditoría de Cumplimiento Legal</span> <span class="bg-tertiary-color/30 text-primary text-sm font-medium px-3 py-1 rounded-full">Herramientas Automatizadas</span> <span class="bg-tertiary-color/30 text-primary text-sm font-medium px-3 py-1 rounded-full">Auditorías Internas</span> <span class="bg-tertiary-color/30 text-primary text-sm font-medium px-3 py-1 rounded-full">Ética Profesional</span></div></div></div>
-                                    <div class="flex items-start space-x-4"><div class="bg-tertiary-color/20 p-3 rounded-xl"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary h-6 w-6"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect width="8" height="4" x="8" y="2" rx="1"></rect></svg></div><div><h4 class="font-semibold text-primary text-lg">Contabilidad</h4><div class="flex flex-wrap gap-2 mt-2"><span class="bg-tertiary-color/30 text-primary text-sm font-medium px-3 py-1 rounded-full">Contabilidad Básica</span><span class="bg-tertiary-color/30 text-primary text-sm font-medium px-3 py-1 rounded-full">Contabilidad Intermedia</span></div></div></div>
-                                    <div class="flex items-start space-x-4"><div class="bg-tertiary-color/20 p-3 rounded-xl"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary h-6 w-6"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg></div><div><h4 class="font-semibold text-primary text-lg">Finanzas</h4><div class="flex flex-wrap gap-2 mt-2"><span class="bg-tertiary-color/30 text-primary text-sm font-medium px-3 py-1 rounded-full">Análisis de Estados Financieros</span></div></div></div>
-                                </div>
-                            </div>
-                            <hr class="border-gray-200">
-                             <div>
-                                <h3 class="text-xl font-bold text-primary mb-3">Puedo hablar</h3>
-                                <span class="bg-secondary-color2 text-primary font-medium px-4 py-1.5 rounded-full">Nativo</span>
-                            </div>
-                        </div>
-                        <div id="disponibilidad" class="tab-content hidden">
-                            <h3 class="text-2xl font-bold text-primary mb-6">Reserva una sesión</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <!-- Columna del Calendario -->
-                                <div>
-                                    <h4 class="text-lg font-semibold mb-4">Selecciona un día</h4>
-                                    <div class="bg-white p-4 rounded-xl border">
-                                        <div class="flex items-center justify-between mb-4">
-                                            <button class="p-2 rounded-full hover:bg-gray-100 transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-gray-600"><path d="m15 18-6-6 6-6"></path></svg></button>
-                                            <h5 class="font-semibold text-primary">Julio 2025</h5>
-                                            <button class="p-2 rounded-full hover:bg-gray-100 transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-gray-600"><path d="m9 18 6-6-6-6"></path></svg></button>
-                                        </div>
-                                        <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-sm">
-                                            <div class="font-semibold text-gray-400">L</div><div class="font-semibold text-gray-400">M</div><div class="font-semibold text-gray-400">M</div><div class="font-semibold text-gray-400">J</div><div class="font-semibold text-gray-400">V</div><div class="font-semibold text-gray-400">S</div><div class="font-semibold text-gray-400">D</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Columna del Selector de Hora -->
-                                <div id="time-selector-column" class="hidden md:block">
-                                    <h4 class="text-lg font-semibold mb-4">Selecciona una hora</h4>
-                                    <div class="bg-white p-4 rounded-xl border h-full">
-                                        <p class="text-sm text-gray-500 mb-2">Horario disponible: <span id="available-range">16:00 - 21:40</span></p>
-                                        <div id="time-slots" class="grid grid-cols-3 gap-2"></div>
-                                        <button class="w-full mt-4 bg-tertiary-color/30 text-secondary font-semibold py-2 px-4 rounded-lg hover:bg-tertiary-color/50 transition-all">Elegir hora exacta</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mt-6 text-center">
-                                <button class="w-full md:w-auto bg-tertiary-orange text-white font-bold py-3 px-12 rounded-xl text-lg transition-all hover:opacity-90 shadow-lg hover:shadow-xl">Pagar y reservar</button>
-                            </div>
-                        </div>
-                        <div id="curriculum" class="tab-content hidden">
-                           <nav class="flex space-x-1 sm:space-x-4 border-b border-gray-200 mb-6"><button onclick="changeSubTab(event, 'educacion')" class="subtab-button active font-semibold px-3 py-2 rounded-t-lg text-sm transition-all">Educación</button><button onclick="changeSubTab(event, 'experiencia')" class="subtab-button font-semibold px-3 py-2 rounded-t-lg text-sm text-gray-600 transition-all">Experiencia</button><button onclick="changeSubTab(event, 'certificaciones')" class="subtab-button font-semibold px-3 py-2 rounded-t-lg text-sm text-gray-600 transition-all">Certificaciones</button></nav>
-                            <div id="educacion" class="subtab-content"><div class="text-center py-12"><img src="https://placehold.co/100x100/f0f7ff/8ECAE6?text=+" alt="Libro y birrete" class="mx-auto h-24 w-24"><h4 class="mt-4 text-lg font-semibold">¡Aún no se ha añadido ningún registro!</h4><p class="text-gray-500 mt-1">No hay registros disponibles para mostrar en este momento.</p></div></div>
-                            <div id="experiencia" class="subtab-content hidden"><div class="text-center py-12"><img src="https://placehold.co/100x100/f0f7ff/8ECAE6?text=+" alt="Maletín" class="mx-auto h-24 w-24"><h4 class="mt-4 text-lg font-semibold">¡Aún no se ha añadido ningún registro!</h4><p class="text-gray-500 mt-1">No hay experiencia laboral para mostrar.</p></div></div>
-                            <div id="certificaciones" class="subtab-content hidden"><div class="text-center py-12"><img src="https://placehold.co/100x100/f0f7ff/8ECAE6?text=+" alt="Medalla" class="mx-auto h-24 w-24"><h4 class="mt-4 text-lg font-semibold">¡Aún no se ha añadido ningún registro!</h4><p class="text-gray-500 mt-1">No hay certificaciones ni premios para mostrar.</p></div></div>
-                        </div>
-                        <div id="resenas" class="tab-content hidden">
-                            <h3 class="text-xl font-bold text-primary mb-4">Reseñas de estudiantes</h3>
-                            <div class="flex flex-col md:flex-row gap-8 items-start">
-                                <div class="w-full md:w-1/3 bg-tertiary-color/20 p-4 rounded-lg text-center"><div class="text-5xl font-bold">0.0</div><div class="flex justify-center text-gray-300 my-2"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg></div><div class="text-gray-600">Basado en 0 calificaciones</div></div>
-                                <div class="w-full md:w-2/3 space-y-2">
-                                    <div class="flex items-center gap-2 text-sm"><span class="text-gray-600">5</span><svg class="w-4 h-4 text-tertiary-orange" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-tertiary-orange h-2 rounded-full" style="width: 0%"></div></div><span class="text-gray-600 font-semibold">0</span></div>
-                                    <div class="flex items-center gap-2 text-sm"><span class="text-gray-600">4</span><svg class="w-4 h-4 text-tertiary-orange" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-tertiary-orange h-2 rounded-full" style="width: 0%"></div></div><span class="text-gray-600 font-semibold">0</span></div>
-                                    <div class="flex items-center gap-2 text-sm"><span class="text-gray-600">3</span><svg class="w-4 h-4 text-tertiary-orange" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-tertiary-orange h-2 rounded-full" style="width: 0%"></div></div><span class="text-gray-600 font-semibold">0</span></div>
-                                    <div class="flex items-center gap-2 text-sm"><span class="text-gray-600">2</span><svg class="w-4 h-4 text-tertiary-orange" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-tertiary-orange h-2 rounded-full" style="width: 0%"></div></div><span class="text-gray-600 font-semibold">0</span></div>
-                                    <div class="flex items-center gap-2 text-sm"><span class="text-gray-600">1</span><svg class="w-4 h-4 text-tertiary-orange" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg><div class="w-full bg-gray-200 rounded-full h-2"><div class="bg-tertiary-orange h-2 rounded-full" style="width: 0%"></div></div><span class="text-gray-600 font-semibold">0</span></div>
-                                </div>
-                            </div>
-                            <div class="text-center mt-8 border-t pt-8"><h4 class="text-lg font-semibold">¡Aún no hay reseñas!</h4><p class="text-gray-500 mt-1">Parece que no hay registros para mostrar en este momento.</p></div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Columna Derecha (Acciones) -->
-            <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white p-6 rounded-2xl shadow-md sticky top-28">
-                    <div class="mb-4">
-                        <p class="text-3xl font-bold text-primary">15 Bs <span class="text-base font-normal text-gray-500">/ tutoría</span></p>
-                        <div class="flex items-center text-sm text-gray-500 mt-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 mr-1"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                            <span>20 min</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 ml-3 mr-1 text-green-500"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                            <span class="text-green-600 font-semibold">Tutor verificado</span>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 space-y-3">
-                        <button class="w-full bg-tertiary-orange text-white font-bold py-3 px-6 rounded-xl text-lg transition-all hover:opacity-90 transform hover:-translate-y-1 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                            <span>Tutoría ahora</span>
-                        </button>
-                        <button class="w-full bg-secondary text-white font-bold py-3 px-6 rounded-xl text-lg transition-all hover:opacity-90 transform hover:-translate-y-1 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
-                            <span>Reservar</span>
-                        </button>
-                        <button class="w-full bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl text-lg transition-all hover:bg-gray-300 flex items-center justify-center space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg>
-                            <span>Compartir perfil</span>
-                        </button>
-                    </div>
+                <div class="hidden md:block">
+                     <img src="https://i.imgur.com/zYf4zDf.png" alt="Mascota de ClassGo" class="w-full max-w-sm mx-auto" onerror="this.onerror=null; this.src='https://placehold.co/300x300/ffffff/023047?text=ClassGo';">
                 </div>
             </div>
-
         </div>
-    </main>
+    </section>
+
+    <!-- Search and Filter Section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10">
+        <div class="bg-white p-6 rounded-2xl shadow-lg">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="md:col-span-4">
+                    <label for="keyword-search" class="sr-only">Buscar por palabra clave</label>
+                    <div class="relative">
+                        <input type="text" id="keyword-search" placeholder="Buscar por palabra clave" class="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary">
+                         <span class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
+                        </span>
+                    </div>
+                </div>
+                <div class="md:col-span-3">
+                    <label for="group-select" class="sr-only">Grupo de materias</label>
+                    <select id="group-select" class="w-full py-3 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary">
+                        <option>Elige grupo de materias</option>
+                        <option>Ciencias Exactas</option>
+                        <option>Humanidades</option>
+                        <option>Idiomas</option>
+                    </select>
+                </div>
+                <button class="w-full bg-tertiary-orange text-white font-bold py-3 rounded-lg text-lg hover:opacity-90 transition-all">Buscar</button>
+            </div>
+        </div>
+    </section>
     
-    <!-- Footer -->
-    <footer class="bg-footer text-white mt-16">
-        <!-- Contenido del Footer -->
-    </footer>
-
-    <script>
-        // --- SCRIPT PARA PESTAÑAS ---
-        function changeTab(event, tabID) {
-            let tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(content => content.classList.add('hidden'));
-            let tabButtons = document.querySelectorAll('.tab-button');
-            tabButtons.forEach(button => button.classList.remove('active'));
-            document.getElementById(tabID).classList.remove('hidden');
-            event.currentTarget.classList.add('active');
-        }
-
-        function changeSubTab(event, tabID) {
-            let subTabContents = document.querySelectorAll('.subtab-content');
-            subTabContents.forEach(content => content.classList.add('hidden'));
-            let subTabButtons = document.querySelectorAll('.subtab-button');
-            subTabButtons.forEach(button => button.classList.remove('active', 'bg-secondary', 'text-white'));
-            document.getElementById(tabID).classList.remove('hidden');
-            event.currentTarget.classList.add('active', 'bg-secondary', 'text-white');
-        }
-
-        // --- SCRIPT PARA CALENDARIO Y HORA ---
-        document.addEventListener('DOMContentLoaded', function() {
-            const calendarGrid = document.getElementById('calendar-grid');
-            const timeSelectorColumn = document.getElementById('time-selector-column');
-            const timeSlotsContainer = document.getElementById('time-slots');
-            if (!calendarGrid) return; // Salir si no estamos en la página correcta
+    <!-- Tutor List -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="space-y-8">
+            <!-- Tutor Card 1 -->
+            <div class="bg-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row gap-6">
+                <img src="https://placehold.co/128x128/8ECAE6/023047?text=AF" alt="Foto de Antonio Flores" class="w-32 h-32 rounded-full object-cover border-4 border-tertiary-color mx-auto md:mx-0">
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-primary">Antonio Alexander Sandoval Flores</h3>
+                    <div class="flex items-center space-x-4 text-sm text-gray-500 mt-2">
+                        <span>0.0/5.0 (0 reseñas)</span>
+                        <span>•</span>
+                        <span>1 Sesión</span>
+                        <span>•</span>
+                        <span>Idiomas que conozco: Inglés</span>
+                    </div>
+                    <p class="mt-3 text-gray-600">Apasionado por compartir conocimientos de manera clara y práctica. Mi objetivo es ayudarte a aprender de forma sencilla y efectiva.</p>
+                </div>
+                <div class="flex flex-col space-y-3 justify-center items-center md:w-48">
+                    <button class="w-full bg-tertiary-orange text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-all">Reservar una sesión</button>
+                    <button class="w-full bg-secondary text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-all">Enviar mensaje</button>
+                </div>
+            </div>
             
-            const month = 6; // Julio (0-indexed)
-            const year = 2025;
+            <!-- Tutor Card 2 -->
+            <div class="bg-white p-6 rounded-2xl shadow-md flex flex-col md:flex-row gap-6">
+                <img src="https://placehold.co/128x128/219EBC/ffffff?text=ER" alt="Foto de Edward Rojas" class="w-32 h-32 rounded-full object-cover border-4 border-tertiary-color mx-auto md:mx-0">
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-primary">Edward Rojas Cespedes</h3>
+                    <p class="text-sm text-gray-500 font-medium mt-1">Especialidad: Controla la información, controla el futuro</p>
+                    <div class="flex items-center space-x-4 text-sm text-gray-500 mt-2">
+                        <span>0.0/5.0 (0 reseñas)</span>
+                        <span>•</span>
+                        <span>5 Materias</span>
+                        <span>•</span>
+                        <span>Idiomas que conozco: Inglés</span>
+                    </div>
+                    <p class="mt-3 text-gray-600">Joven profesional próximo a graduarme en Información y Control de Gestión, combinando formación académica con habilidades prácticas en análisis de datos y sistemas de gestión. Preparado para los desafíos del mundo...</p>
+                </div>
+                <div class="flex flex-col space-y-3 justify-center items-center md:w-48">
+                    <button class="w-full bg-tertiary-orange text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-all">Reservar una sesión</button>
+                    <button class="w-full bg-secondary text-white font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-all">Enviar mensaje</button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const startingDay = (firstDay === 0) ? 6 : firstDay - 1; 
-
-            for (let i = 0; i < startingDay; i++) {
-                calendarGrid.appendChild(document.createElement('div'));
-            }
-
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dayCell = document.createElement('button');
-                dayCell.textContent = day;
-                dayCell.classList.add('calendar-day', 'w-10', 'h-10', 'flex', 'items-center', 'justify-center', 'rounded-full', 'hover:bg-tertiary-color/50', 'transition-all');
-                dayCell.dataset.day = day;
-                dayCell.onclick = selectDate;
-                calendarGrid.appendChild(dayCell);
-            }
-
-            const exampleTimes = ['16:00', '16:20', '16:40', '17:00', '17:20', '17:40', '18:00', '18:20', '19:00', '19:20', '19:40'];
-            timeSlotsContainer.innerHTML = ''; // Limpiar por si acaso
-            exampleTimes.forEach(time => {
-                const timeButton = document.createElement('button');
-                timeButton.textContent = time;
-                timeButton.classList.add('time-slot', 'p-2', 'border', 'rounded-lg', 'hover:border-secondary', 'transition-all');
-                timeButton.onclick = selectTime;
-                timeSlotsContainer.appendChild(timeButton);
-            });
-        });
-
-        function selectDate(event) {
-            const allDays = document.querySelectorAll('.calendar-day');
-            allDays.forEach(d => d.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-            document.getElementById('time-selector-column').classList.remove('hidden');
-        }
-
-        function selectTime(event) {
-            const allTimes = document.querySelectorAll('.time-slot');
-            allTimes.forEach(t => t.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-        }
-
-    </script>
+    <!-- Footer -->
+    <footer class="bg-primary text-white mt-16">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-2">
+                    <img src="https://i.imgur.com/f8nL3gS.png" alt="Logo ClassGo Blanco" class="h-12 w-auto mb-4" onerror="this.onerror=null; this.src='https://placehold.co/150x50/ffffff/023047?text=ClassGo';">
+                    <p class="text-gray-300">classgobol@gmail.com</p>
+                    <button class="mt-4 bg-tertiary-orange text-white font-semibold px-5 py-2 rounded-lg hover:opacity-90 transition-all">Regístrate Gratis</button>
+                </div>
+                <div>
+                    <h4 class="font-bold tracking-wider">Tutores</h4>
+                    <ul class="mt-4 space-y-2 text-gray-300">
+                        <li><a href="#" class="hover:text-white transition-all">Acerca de</a></li>
+                        <li><a href="#" class="hover:text-white transition-all">Términos y Condiciones</a></li>
+                        <li><a href="#" class="hover:text-white transition-all">Encuentra un tutor</a></li>
+                        <li><a href="#" class="hover:text-white transition-all">FAQs</a></li>
+                        <li><a href="#" class="hover:text-white transition-all">Cómo funciona</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold tracking-wider">Tutorías Online</h4>
+                    <ul class="mt-4 space-y-2 text-gray-300">
+                        <li><a href="#" class="hover:text-white transition-all">Contabilidad Básica</a></li>
+                        <li><a href="#" class="hover:text-white transition-all">Estadística</a></li>
+                        <li><a href="#" class="hover:text-white transition-all">Probabilidades</a></li>
+                        <li><a href="#" class="hover:text-white transition-all">Conceptos básicos de redes</a></li>
+                        <li><a href="#" class="hover:text-white transition-all">Computación</a></li>
+                        <li><a href="#" class="hover:text-white transition-all">Presupuesto</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold tracking-wider">Soporte</h4>
+                    <ul class="mt-4 space-y-2 text-gray-300">
+                        <li><a href="#" class="hover:text-white transition-all">Contáctanos por WhatsApp</a></li>
+                    </ul>
+                    <h4 class="font-bold tracking-wider mt-6">Obtén la App</h4>
+                    <p class="text-gray-300 mt-2 text-sm">¡Lleva tu educación a todas partes!</p>
+                    <div class="flex space-x-2 mt-2">
+                        <a href="#"><img src="https://placehold.co/120x40/000000/ffffff?text=App+Store" alt="App Store" class="h-10"></a>
+                        <a href="#"><img src="https://placehold.co/135x40/000000/ffffff?text=Google+Play" alt="Google Play" class="h-10"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col sm:flex-row justify-between items-center">
+                <p class="text-sm text-gray-400">Copyright © 2025. Todos los derechos reservados.</p>
+                <div class="flex space-x-4 mt-4 sm:mt-0">
+                    <a href="#" class="text-gray-400 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path></svg></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.585-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.585-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.585.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.058 1.644-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.441 1.441 1.441 1.441-.645 1.441-1.441-.645-1.44-1.441-1.44z"></path></svg></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"></path></svg></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22.533 5.568a2.79 2.79 0 0 0-1.947-1.947C18.832 3.14 12 3.14 12 3.14s-6.832 0-8.586.481A2.79 2.79 0 0 0 1.467 5.568C1 7.322 1 12 1 12s0 4.678.467 6.432a2.79 2.79 0 0 0 1.947 1.947c1.754.481 8.586.481 8.586.481s6.832 0 8.586-.481a2.79 2.79 0 0 0 1.947-1.947C23 16.678 23 12 23 12s0-4.678-.467-6.432zM9.75 15.5V8.5l6.5 3.5-6.5 3.5z"></path></svg></a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 </body>
 </html>

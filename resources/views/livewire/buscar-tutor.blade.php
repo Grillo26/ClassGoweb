@@ -49,7 +49,7 @@
                     <div class="buscartutor-tutor-info">
                         <h3 class="buscartutor-tutor-name">{{ $profile['full_name'] }}</h3>
                         <div class="buscartutor-tutor-meta">
-                            <span>⭐ {{ $profile['avg_rating'] }} ({{ $profile['total_reviews'] }} reseñas)</span>
+                            <span>⭐ {{ $profile['avg_rating'] }}/5.0 ({{ $profile['total_reviews'] }} reseñas)</span>
                             <span>•</span>
                             <span>Materias: 
                                 @if(!empty($profile['materias']))
