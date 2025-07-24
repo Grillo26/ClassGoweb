@@ -30,44 +30,41 @@ class GoogleController extends Controller
     }
 
     public function callback(Request $request)
-    {
-        // Debug temporal - confirmar que llega al callback
-        /* dd([
-            'callback_ejecutado' => true,
-            'request_url' => $request->fullUrl(),
-            'code' => $request->input('code'),
-            'all_params' => $request->all()
-        ]); */
-        $client = new Google_Client();
-        $client->setAuthConfig(base_path('app/credentials/credential.json'));
-        $client->setScopes([
-            'https://www.googleapis.com/auth/calendar',
-        ]);
-        $client->authenticate($request->input('code'));
-        $accessToken = $client->getAccessToken();
+{
+    $client = new Google_Client();
+    $client->setAuthConfig(base_path('app/credentials/credential.json'));
+    
+    // Es importante que el redirect URI aquí sea el mismo que usaste en la función redirect()
+    $client->setRedirectUri(route('google.callback'));
 
+    // Usamos fetchAccessTokenWithAuthCode que es más explícito y devuelve el token directamente.
+    $accessToken = $client->fetchAccessTokenWithAuthCode($request->input('code'));
 
-
-       /*  $refreshToken = null;
-        if (is_array($accessToken) && array_key_exists('refresh_token', $accessToken)) {
-            $refreshToken = $accessToken['refresh_token'];
-            //dd("Refresh token obtenido: ", $refreshToken);
-        }
-
-        if (!$refreshToken) {
-            //dd("No se pudo obtener el refresh token. Verifica la configuración de tu aplicación en Google Cloud Console.");
-            return redirect()->route('admin.tutorias.index')
-                ->with('error', 'No se pudo obtener el refresh token. Intenta revocar el acceso en tu cuenta de Google y vuelve a autorizar.');
-        }
- */
-
-        //dd('llega por aca entonces',$accessToken);
+    // --- Comprobación Robusta ---
+    // Verificamos si el array del token contiene la clave 'refresh_token'.
+    if (isset($accessToken['refresh_token'])) {
+        
         $refreshToken = $accessToken['refresh_token'];
-        //file_put_contents(base_path('.env'), "\nGOOGLE_ADMIN_REFRESH_TOKEN={$refreshToken}", FILE_APPEND);
+        
+        // Aquí puedes guardar el refresh token donde lo necesites.
+        // Por ejemplo, en el archivo .env o en la base de datos de un usuario.
+        // CUIDADO: La siguiente línea agrega el token al final del .env cada vez. 
+        // Es mejor para una configuración de una sola vez, no para cada login.
+         file_put_contents(base_path('.env'), "\nGOOGLE_ADMIN_REFRESH_TOKEN={$refreshToken}", FILE_APPEND);
 
-        file_put_contents(base_path('.env'), "\nGOOGLE_ADMIN_REFRESH_TOKEN={$refreshToken}", FILE_APPEND);
-        return redirect()->route('admin.tutorias.index')->with('success', 'Autenticación completada. Refresh token guardado.');
+        dd("¡Éxito! Tu nuevo refresh token es:", $refreshToken);
+
+        return redirect()->route('admin.tutorias.index')->with('success', 'Autenticación completada. Refresh token obtenido.');
+
+    } else {
+        // Esto ocurrirá si el usuario ya había autorizado la app antes.
+        // El access_token es válido para usar ahora, pero no obtuvimos un nuevo refresh_token.
+        // dd("Autenticación exitosa, pero no se recibió un nuevo refresh token.", $accessToken);
+        
+        return redirect()->route('admin.tutorias.index')
+            ->with('error', 'No se recibió un nuevo refresh token. Si necesitas forzar la generación de uno, primero revoca el acceso desde tu cuenta de Google.');
     }
+}
 
 
 
