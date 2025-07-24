@@ -1,0 +1,312 @@
+@import "./variables.css";
+
+/* ------------------------------------------------------------ */
+/* Estilos para la Página Preguntas */
+/* ------------------------------------------------------------ */
+.preguntas-image img{
+  width: 450px;
+  height: 400px;
+}
+.preguntas-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: white;
+}
+
+/*-----HEADER-----*/
+.preguntas-header {
+  background: var(--secundary-color);
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  padding-bottom: 15px;
+  width: 100%;
+}
+
+.preguntas-header-content {
+  background: var(--primary-color);
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 11rem 3rem 0rem 3rem;
+  color: white;
+  text-align: left;
+  flex-direction: column;
+}
+
+.preguntas-header-text {
+  max-width: 800px;
+  color: #fff;
+}
+
+.preguntas-header-text h1 {
+  font-size: 2.7rem;
+  font-weight: 700;
+  margin-top: 1.2rem;
+  margin-bottom: 1rem;
+  color: #fff;
+  line-height: 1.15;
+  padding-top: 2rem;
+}
+
+.preguntas-header-text p {
+  color: #fff;
+  font-size: 1.08rem;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.preguntas-header-text.align-left {
+  text-align: left;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding-bottom: 2rem;
+}
+
+.breadcrumb {
+  color: #eaf6fa;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  font-family: "Montserrat", Arial, sans-serif;
+  opacity: 0.95;
+}
+
+.breadcrumb-link {
+  color: #eaf6fa;
+  transition: opacity 0.3s ease;
+}
+
+.breadcrumb-link:hover {
+  opacity: 0.7;
+}
+
+.breadcrumb-current {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/*-----TABS-----*/
+.preguntas-tabs {
+  padding-top: 0rem;
+  background: transparent;
+  box-shadow: none;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  padding: 0.5rem;
+}
+
+.tab-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border: none;
+  background: transparent;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  position: relative;
+}
+
+.tab-button.active {
+  background: white;
+  color: var(--primary-color);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  font-weight: 600;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 3px;
+  background: #ff6b35;
+  border-radius: 2px;
+}
+
+.tab-button:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.tab-button i {
+  font-size: 1.1rem;
+}
+
+/*-----TAB CONTENT-----*/
+.tab-content {
+  display: none;
+  width: 100%;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/*-----FAQ SECTION-----*/
+.preguntas-section {
+  background: white;
+  padding: 5rem 4rem;
+  width: 100%;
+}
+
+.preguntas-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 4rem;
+  padding-left: 4rem;
+}
+
+.preguntas-faq {
+  flex: 1;
+}
+
+.preguntas-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: sticky;
+  top: 2rem;
+}
+
+.preguntas-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+}
+
+/*-----FAQ ITEMS-----*/
+.faq-item {
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 1rem;
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.faq-question:hover {
+  background: rgba(36, 163, 191, 0.05);
+  padding-left: 1rem;
+  border-radius: 8px;
+}
+
+.faq-question h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin: 0;
+  line-height: 1.4;
+  flex: 1;
+  padding-right: 1rem;
+}
+
+.faq-toggle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--secundary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.faq-toggle i {
+  color: white;
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.faq-item.active .faq-toggle {
+  background: var(--primary-color);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding: 0 1rem;
+}
+
+.faq-answer p {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+  padding-bottom: 1.5rem;
+}
+
+/*-----RESPONSIVE-----*/
+@media (max-width: 900px) {
+  .preguntas-content {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .preguntas-image {
+    position: static;
+    order: -1;
+  }
+  
+  .preguntas-image img {
+    max-width: 80%;
+  }
+}
+
+@media (max-width: 600px) {
+  .preguntas-content {
+    gap: 1.5rem;
+  }
+  
+  .preguntas-image img {
+    max-width: 90%;
+  }
+}
+
+/* Fondo gradiente reutilizable para secciones principales */
+/* Puedes modificar el gradiente aquí o en el componente fondo-seccion.blade.php */
+.fondo-seccion {
+  width: 100%;
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  padding-bottom: 20px;
+  /* El gradiente está en el atributo style del componente */
+}
+
+.tabs-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 2rem;
+  margin-bottom: 0;
+  background: transparent;
+  box-shadow: none;
+} 

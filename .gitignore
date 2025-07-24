@@ -29,3 +29,4 @@ storage/app/google/credentials.json
 /public/storage/qr_codes
 /public/storage/profile_videos
 config/firebase/*.json
+app/credentials/credential.json

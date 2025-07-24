@@ -9,9 +9,12 @@ use App\Models\Rating;
 use App\Models\CountryState;
 use App\Models\MenuItem;
 use App\Models\User;
+use App\Models\UserSubject;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+
+use Illuminate\Support\Facades\DB;
 
 class SiteService {
 
@@ -348,5 +351,78 @@ public function getTutors($data = array()) {
         $allRatings = range(1, 5);
         $allTutorRatings = Rating::with('profile')->get();
         return $allTutorRatings;
+    }
+
+    public function getTutorsWithSubjects()
+    {
+        // 1. Obtener IDs de usuarios con rol 'tutor'
+        $tutorRoleId = DB::table('roles')->where('name', 'tutor')->value('id');
+        $tutorUserIds = DB::table('model_has_roles')
+            ->where('role_id', $tutorRoleId)
+            ->pluck('model_id');
+
+        // 2. Obtener tutores verificados con   reviews y perfil
+        $tutors = User::query()
+            ->whereIn('id', $tutorUserIds)
+            ->whereHas('profile', function ($q) {
+                $q->whereNotNull('verified_at')
+                ->whereNotNull('first_name')
+                ->where('first_name', '!=', '')
+                ->whereNotNull('last_name')
+                ->where('last_name', '!=', '');
+            })
+            ->with([
+                'profile:id,user_id,first_name,last_name,image,intro_video,native_language,slug,verified_at',
+            ])
+            ->withAvg('ratings as avg_rating', 'rating')
+            ->withCount('ratings as total_reviews')
+
+            ->orderByDesc('avg_rating')
+            ->get();
+
+        // 3. Obtener materias y grupos de esos tutores
+        $userIds = $tutors->pluck('id');
+        $userSubjects = UserSubject::with(['subject.group'])
+            ->whereIn('user_id', $userIds)
+            ->get();
+
+        // 4. Agrupar por user_id solo si tienen grupos
+        $subjectsByUser = $userSubjects->groupBy('user_id')->filter(function ($items) {
+            return $items->pluck('subject.group.name')->filter()->isNotEmpty();
+        })->map(function ($items) {
+            return [
+                'materias' => $items->pluck('subject.name')->unique()->values()->all(),
+                'grupos' => $items->pluck('subject.group.name')->unique()->values()->all(),
+            ];
+        });
+
+        // 5. Armar perfiles con info y métricas SOLO si tiene grupos
+        $profiles = $tutors->filter(function ($tutor) use ($subjectsByUser) {
+            return isset($subjectsByUser[$tutor->id]); // solo si tiene grupos asignados
+        })->map(function ($tutor) {
+            $profile = $tutor->profile;
+            return (object)[
+                'user_id' => $tutor->id,
+                'first_name' => explode(' ', $profile->first_name)[0] ?? '',
+                'last_name' => explode(' ', $profile->last_name)[0] ?? '',
+                'image' => $profile?->image,
+                'intro_video' => $profile?->intro_video,
+                'native_language' => $profile?->native_language,
+                'slug' => $profile?->slug,
+                'avg_rating' => round($tutor->avg_rating ?? 0, 2),
+                'total_reviews' => $tutor->total_reviews ?? 0,
+            ];
+        })->values(); // importante: reinicia índices
+
+        return [
+            'profiles' => $profiles,
+            'subjectsByUser' => $subjectsByUser
+        ];
+
+    }
+
+    public function getAlliances()
+    {
+        return DB::table('alianzas')->get();
     }
 }

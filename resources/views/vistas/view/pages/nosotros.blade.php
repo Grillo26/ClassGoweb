@@ -1,6 +1,8 @@
 @extends('vistas.view.layouts.app')
 
-@section('title', 'Class Go!')
+@section('title', 'Class Go! | ¿Quiénes somos?')
+
+@section('body-class', 'nosotros')
 
 @section('content')
     <!--NOSOTROS-->
@@ -10,7 +12,7 @@
                 <div class="nosotros-header-content">
                     <div class="nosotros-header-text">
                         <nav class="breadcrumb">
-                            <span class="active">Inicio</span> / <span>Nosotros</span>
+                            <a href="{{ route('home') }}" class="breadcrumb-link">Inicio</a> / <span class="breadcrumb-current">Nosotros</span>
                         </nav>
                         <h1>¿Quiénes Somos?</h1>
                         <p>
@@ -42,24 +44,25 @@
                         habilidades técnicas.
                     </p>
                 </div>
-                <p class="nosotros-mision-porcentaje">
-                    <span class="nosotros-mision-porcentaje-text">
-                        +200
-                    </span>
-                    <span class="nosotros-porcentaje-subtext">
-                        Tutorías disponibles
-                    </span>
-                </p>
+
 
 
                 <div class="nosotros-mision-image">
-                    <img src="{{ asset('images/Tugo_With_Glasses.png') }}" alt="Misión ClassGo" class="tugo-image">
+                    <p class="nosotros-mision-porcentaje">
+                        <span class="nosotros-mision-porcentaje-text">
+                            +200 <!-- Porcentaje de Tutores Disponibles -->
+                        </span>
+                        <span class="nosotros-porcentaje-subtext">
+                            Tutorías disponibles
+                        </span>
+                    </p>
+                    <img src="{{ asset('images/mision.png') }}" alt="Misión ClassGo" class="tugo-image">
                 </div>
             </div>
 
             <div class="nosotros-vision">
                 <div class="vision-image">
-                    <img src="{{ asset('storage/optionbuilder/uploads/229502-18-2025_1204amPASO_3.jpg') }}"
+                    <img src="{{ asset('images/tutorias.png') }}"
                         alt="Visión ClassGo" class="tugo-image">
                 </div>
                 <div class="nosotros-vision-text">
@@ -75,7 +78,6 @@
 
 
             </div>
-
             <div class="nosotros-logros">
                 <div class="nosotros-logros-text">
                     <h3 class="nosotros-logros-title">Logros clave</h3>
@@ -87,52 +89,13 @@
                         todo lo que hacemos.
                     </p>
                 </div>
-                <div class="nosotros-logros-table">
-                    <table>
-                        <tr>
-                            <td>
-                                <span class="numero">+250</span>
-                                <span class="descripcion">Usuarios registrados</span>
-                            </td>
-                            <td>
-                                <span class="numero">+200</span>
-                                <span class="descripcion">Tutores disponibles</span>
-                            </td>
-                            <td>
-                                <span class="numero">+250</span>
-                                <span class="descripcion">Visitas a nuestra plataforma</span>
-                            </td>
-                            <td>
-                                <span class="numero">+18</span>
-                                <span class="descripcion">Curso exclusivo para Tutores</span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                
+                @include('components.counters', ['color' => 'text-white'])
             </div>
+            
+            @include('components.alianzas', ['alianzas' => $alianzas])
 
-            <div class="nosotros-convenios">
-                <h3>Juntos llegamos más lejos</h3>
-                <h2>Alianzas que potencian la educación</h2>
-                <p>En ClassGo creemos en el poder de la colaboración para transformar el aprendizaje. Por eso, trabajamos
-                    junto a instituciones educativas, clubes y organizaciones comprometidas con la formación académica y el
-                    desarrollo personal.</p>
-
-                <div class="nosotros-card">
-                    <div class="card">
-                        <img src="image1.jpg" alt="Ingeniería Petrolera">
-                        <h4 class="card-title">Ingeniería Petrolera</h4>
-                    </div>
-                    <div class="card">
-                        <img src="image2.jpg" alt="Club 'Tacuara' Debate y Oratoria">
-                        <h4 class="card-title">Club 'Tacuara' Debate y Oratoria</h4>
-                    </div>
-                    <div class="card">
-                        <img src="image3.jpg" alt="Club 'Tacuara' Debate y Oratoria">
-                        <h4 class="card-title">Club 'Tacuara' Debate y Oratoria</h4>
-                    </div>
-                </div>
-            </div>
+            
 
         </div>
     </section>

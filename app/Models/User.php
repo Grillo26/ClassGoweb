@@ -103,6 +103,9 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
         return $this->hasMany(UserSubjectGroup::class)->orderBy('sort_order');
     }
 
+   
+
+
     /**
      * Reseñas que recibe el usuario (como tutor)
      */
@@ -427,5 +430,11 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPasswordC
     {
         return $this->belongsToMany(Coupon::class, 'user_coupons')->withPivot('cantidad')->withTimestamps();
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'tutor_id'); // El campo que referencia al tutor
+    }
+    
 
 }

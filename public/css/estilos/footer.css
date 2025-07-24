@@ -44,7 +44,7 @@ footer{
 }
 
 .footer-info img{
-    width: 300px;
+    width: 300px !important;
 }
 
 .btn-registrate{
@@ -125,4 +125,7 @@ hr{
     margin: 0;
     color: white;
 }
+
+/* ================= RESPONSIVE DESIGN ================= */
+/* Los estilos responsivos para tablet y móvil han sido movidos a archivos separados: footer-tablet.css y footer-mobile.css. */
 

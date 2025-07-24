@@ -1,14 +1,14 @@
-<div class="dashboard-container" wire:init="loadData">
+<div class="dashboard-container" style="min-height:100vh" wire:init="loadData">
     @slot('title')
     {{ __('general.dashboard') }}
     @endslot
-    @if($isLoading)
+    {{-- @if($isLoading)
     @include('skeletons.manage-account')
-    @else
+    @else --}}
     <div class="am-section-load" wire:loading wire:target="refresh">
         @include('skeletons.manage-account')
     </div>
-    {{-- <div> --}}
+    <div>
         {{-- <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Ganancias totales</div>
@@ -33,25 +33,39 @@
             <div class="payment-methods-grid">
 
                 <div class="payment-method-card">
-                    <div class="method-header">
-                        <div class="method-icon bank">🏦</div>
-                        <div class="method-info">
-                            <h3>Transferencia bancaria</h3>
-                            <div class="no-account-message">Aún no se ha agregado ninguna cuenta.</div>
+                    <div class="method-left">
+                        <div class="method-icon bank">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="h-8 w-8 text-secondary">
+                                <path
+                                    d="M12 21v-5.172a2 2 0 0 0-.586-1.414L5.414 8.414A2 2 0 0 1 5 7V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v2a2 2 0 0 1-.414 1.414l-6 6A2 2 0 0 0 12 21z">
+                                </path>
+                            </svg>
                         </div>
                     </div>
-                    <div class="method-controls">
-                        <div class="method-actions">
-                            <button class="btn btn-primary" wire:click="openPayout('cuentabancaria', 'setupaccountpopup')">Configurar cuenta</button>
+                    <div class="method-right">
+                        <div class="method-header">
+                            <div class="method-info">
+                                <h3>Transferencia bancaria</h3>
+                                {{-- <div class="no-account-message">Aún no se ha agregado ninguna cuenta.</div> --}}
+                            </div>
+                        </div>
+                        <div class="method-controls">
+                            <div class="method-actions">
+                                <button class="btn btn-primary"
+                                    wire:click="openPayout('cuentabancaria', 'setupaccountpopup')">Configurar
+                                    cuenta</button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
 
                 <div class="payment-method-card active">
-                    <div class="method-header">
+                    <div class="method-left">
                         <div class="method-icon qr">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="h-8 w-8 text-green-600">
                                 <rect width="5" height="5" x="3" y="3" rx="1"></rect>
@@ -67,24 +81,28 @@
                                 <path d="M7 18h.01"></path>
                             </svg>
                         </div>
-                        <div class="method-info">
-                            <h3>Pago con QR</h3>
-                            <span class="method-status active">Activo</span>
-                            {{-- <div style="margin-top: 8px;">
-                                <span style="font-size: 14px; color: #64748b;">William E. - Banco FASSIL</span>
-                            </div> --}}
-                        </div>
                     </div>
-                    <div class="method-controls">
-                        {{-- <div class="radio-group">
-                            <input type="radio" id="default_qr" name="payment_method" checked>
-                            <label for="default_qr">Método de pago predeterminado</label>
-                        </div> --}}
-                        <div class="method-actions">
-                            <button class="btn btn-secondary" wire:click="openPayout('QR', 'modalQR')">Gestionar
-                                QR</button>
-                            <button class="btn btn-danger" wire:click="openPayout('QR', 'deletepopup')">Eliminar
-                                cuenta</button>
+                    <div class="method-right">
+                        <div class="method-header">
+                            <div class="method-info">
+                                <h3>Pago con QR</h3>
+                                {{-- <span class="method-status active">Activo</span> --}}
+                                {{-- <div style="margin-top: 8px;">
+                                    <span style="font-size: 14px; color: #64748b;">William E. - Banco FASSIL</span>
+                                </div> --}}
+                            </div>
+                        </div>
+                        <div class="method-controls">
+                            {{-- <div class="radio-group">
+                                <input type="radio" id="default_qr" name="payment_method" checked>
+                                <label for="default_qr">Método de pago predeterminado</label>
+                            </div> --}}
+                            <div class="method-actions">
+                                <button class="btn btn-secondary" wire:click="openPayout('QR', 'modalQR')">Gestionar
+                                    QR</button>
+                                <button class="btn btn-danger" wire:click="openPayout('QR', 'deletepopup')">Eliminar
+                                    cuenta</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -92,47 +110,49 @@
         </div>
 
         <!-- Transaction History -->
-        {{-- <div class="transaction-history">
+      {{--   <div class="transaction-history">
             <div class="section-header">
                 <h2 class="section-title">Historial de Transacciones</h2>
             </div>
 
-            <table class="transaction-table">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Monto</th>
-                        <th>Método</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>10 Jun, 2025</td>
-                        <td class="transaction-amount">150.00 Bs</td>
-                        <td class="transaction-method">Pago con QR</td>
-                        <td><span class="transaction-status">Completado</span></td>
-                    </tr>
-                    <tr>
-                        <td>25 May, 2025</td>
-                        <td class="transaction-amount">230.50 Bs</td>
-                        <td class="transaction-method">Pago con QR</td>
-                        <td><span class="transaction-status">Completado</span></td>
-                    </tr>
-                    <tr>
-                        <td>10 May, 2025</td>
-                        <td class="transaction-amount">95.00 Bs</td>
-                        <td class="transaction-method">Pago con QR</td>
-                        <td><span class="transaction-status">Completado</span></td>
-                    </tr>
-                    <tr>
-                        <td>24 Abr, 2025</td>
-                        <td class="transaction-amount">310.00 Bs</td>
-                        <td class="transaction-method">Pago con QR</td>
-                        <td><span class="transaction-status">Completado</span></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                <table class="transaction-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Monto</th>
+                            <th>Método</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>10 Jun, 2025</td>
+                            <td class="transaction-amount">150.00 Bs</td>
+                            <td class="transaction-method">Pago con QR</td>
+                            <td><span class="transaction-status">Completado</span></td>
+                        </tr>
+                        <tr>
+                            <td>25 May, 2025</td>
+                            <td class="transaction-amount">230.50 Bs</td>
+                            <td class="transaction-method">Pago con QR</td>
+                            <td><span class="transaction-status">Completado</span></td>
+                        </tr>
+                        <tr>
+                            <td>10 May, 2025</td>
+                            <td class="transaction-amount">95.00 Bs</td>
+                            <td class="transaction-method">Pago con QR</td>
+                            <td><span class="transaction-status">Completado</span></td>
+                        </tr>
+                        <tr>
+                            <td>24 Abr, 2025</td>
+                            <td class="transaction-amount">310.00 Bs</td>
+                            <td class="transaction-method">Pago con QR</td>
+                            <td><span class="transaction-status">Completado</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div> --}}
         @include('livewire.pages.tutor.manage-account.components.modal-por-definir')
         @include('livewire.pages.tutor.manage-account.components.modal-cuenta-bancaria')
@@ -144,11 +164,12 @@
         'showSocialShare' => true
         ])
     </div>
-    @endif
+    {{-- @endif --}}
 </div>
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/livewire/pages/tutor/manage-account/components/modal-qr-fixed.css') }}">
 <link rel="stylesheet" href="{{ asset('css/livewire/pages/tutor/manage-account/manage-account.css') }}">
+<link rel="stylesheet" href="{{ asset('css/livewire/pages/tutor/manage-account/components/modal-cuenta-bancaria.css') }}">
 @endpush
 @push('scripts')
 

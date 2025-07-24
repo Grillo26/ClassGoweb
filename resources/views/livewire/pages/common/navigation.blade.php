@@ -1,4 +1,4 @@
-<div class="am-sidebar">
+<div class="am-sidebar" style="background-color:white">
     <div class="am-sidebar_logo">
         <strong class="am-logo">
             <x-application-logo />
@@ -10,11 +10,11 @@
         </div>
     </div>
     <nav class="am-navigation">
-        <ul>
+        <ul >
             @foreach ( $menuItems as $item)
                 @if(in_array($role, $item['accessibility']))
-                <li @class(['am-active-nav' => in_array($activeRoute, $item['onActiveRoute'])])>
-                    <a href="{{ route($item['route']) }}" {{ empty($item['disableNavigate'])  ? 'wire:navigate.remove' : '' }}>
+                <li @class(['am-active-nav' => in_array($activeRoute, $item['onActiveRoute'])]) style="">
+                    <a href="{{ route($item['route']) }}" {{ empty($item['disableNavigate'])  ? 'wire:navigate.remove' : '' }} style="color: {{ in_array($activeRoute, $item['onActiveRoute']) ? 'white' : 'black' }};">
                         {!! $item['icon'] !!}
                         {{ $item['title'] }}
                     </a>

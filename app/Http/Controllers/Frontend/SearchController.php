@@ -14,12 +14,9 @@ class SearchController extends Controller
 {
     public function findTutors(Request $request)
     {
-
-
-        //dd('dasjhdvasghd');
         $service  = new SubjectService(Auth::user());
         $subjectGroups = $service->getSubjectGroups();
-        $subjects = $service->getSubjects(Auth::id())->filter(function($item) {
+        $subjects = $service->getSubjects(Auth::id())->filter(function ($item) {
             return $item->subject !== null;
         })->sortBy(fn($item) => $item->subject->name)->values();
         $helpContent = setting('_tutor');
@@ -31,15 +28,14 @@ class SearchController extends Controller
         $filters['group_id']     = $request->get('group_id') ?? null;
         $filters['language_id']  = array_filter(explode(',', $request->get('language_id')), fn($value, $key) => $key !== 0 || $value !== '', ARRAY_FILTER_USE_BOTH);
         $filters['sort_by']      = $request->get('sort_by') ?? null;
-
-        return view('frontend.find-tutors', compact('subjectGroups','subjects', 'helpContent', 'languages', 'filters'));
+        return view('frontend.find-tutors', compact('subjectGroups', 'subjects', 'helpContent', 'languages', 'filters'));
     }
 
-    public function tutorDetail(Request $request,$slug)
+    public function tutorDetail(Request $request, $slug)
     {
         $siteService  = new SiteService();
         $tutor = $siteService->getTutorDetail($slug);
-        if(empty($tutor)){
+        if (empty($tutor)) {
             abort('404');
         }
 
@@ -50,33 +46,19 @@ class SearchController extends Controller
         $userService = new UserService($user);
         $isFavourite = $userService->isFavouriteUser($tutor?->id ?? 0);
         $isAdmin = auth()?->user() && auth()?->user()?->hasRole('admin') ?? true;
-        if($tutor?->profile?->verified_at || $isAdmin){
-            $reviews       = Rating::where('tutor_id',$tutor->id)->count();
+        if ($tutor?->profile?->verified_at || $isAdmin) {
+            $reviews       = Rating::where('tutor_id', $tutor->id)->count();
             $courses = [];
-            if(\Nwidart\Modules\Facades\Module::has('courses') && \Nwidart\Modules\Facades\Module::isEnabled('courses')){
+            if (\Nwidart\Modules\Facades\Module::has('courses') && \Nwidart\Modules\Facades\Module::isEnabled('courses')) {
                 $courses = getFeaturedCourses($tutor->id);
             }
             $pageTitle = $tutor->profile?->full_name;
             $pageDescription = $tutor->profile?->description;
             $metaImage = $tutor->profile?->image;
             $pageKeywords = $tutor->userSubjects?->pluck('subject.name')->implode(', ') ? $tutor->userSubjects?->pluck('subject.name')->implode(', ') : $tutor->profile?->keywords;
-            return view('frontend.tutor-detail', compact('tutor','reviews', 'isFavourite','totalSlots','courses','pageTitle','pageDescription','pageKeywords','metaImage'));
+            return view('frontend.tutor-detail', compact('tutor', 'reviews', 'isFavourite', 'totalSlots', 'courses', 'pageTitle', 'pageDescription', 'pageKeywords', 'metaImage'));
         }
-        abort('404'); 
+        abort('404');
     }
-        
-    public function favouriteTutor(Request $request)
-    {
-        $userId = $request?->userId ?? '';
-        if ( Auth::user()?->role == 'student'){
-            $userService = new UserService(Auth::user());
-            $isFavourite = $userService->isFavouriteUser($userId);
-            if($isFavourite){
-                $userService->removeFromFavourite($userId);
-            } else {
-                $userService->addToFavourite($userId);
-            }
-            return response()->json(['type' => 'success']);
-        }
-    }
+    
 }

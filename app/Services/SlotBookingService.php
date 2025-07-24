@@ -15,7 +15,15 @@ class SlotBookingService implements interfaces\ISlotBookingService
     public function getSlotBookingByUserId(): \Illuminate\Database\Eloquent\Builder
     {
         $user = Auth::user();
-        if (!$user) {
+
+        if ($user->hasRole('student')) {
+            return SlotBooking::where('student_id', $user->id);
+        }
+        else{
+            return SlotBooking::where('tutor_id', $user->id);
+        }
+
+       /*  if (!$user) {
             return SlotBooking::query()->whereRaw('1 = 0'); // Retorna una consulta vacía
         }
         if ($user->hasRole('tutor')) {
@@ -28,7 +36,7 @@ class SlotBookingService implements interfaces\ISlotBookingService
                 ->where('student_id', $user->id);
         }
         // Si no es ninguno, retorna una consulta vacía
-        return SlotBooking::query()->whereRaw('1 = 0');
+        return SlotBooking::query()->whereRaw('1 = 0'); */
     }
 
     public function bookSlot($slotId, $userId, $additionalData = [])
