@@ -60,6 +60,8 @@ class GoogleController extends Controller
                 ->with('error', 'No se pudo obtener el refresh token. Intenta revocar el acceso en tu cuenta de Google y vuelve a autorizar.');
         }
  */
+
+        //dd('llega por aca entonces',$accessToken);
         $refreshToken = $accessToken['refresh_token'];
         //file_put_contents(base_path('.env'), "\nGOOGLE_ADMIN_REFRESH_TOKEN={$refreshToken}", FILE_APPEND);
 

@@ -26,7 +26,19 @@ class GoogleMeetService
         $description = $meetingData['description'] ?? 'Sesión de tutoría';
         $start_date_time = $meetingData['start_time'] ?? now()->addMinutes(10)->format('Y-m-d H:i:s');
         $end_date_time = $meetingData['end_time'] ?? now()->addMinutes(40)->format('Y-m-d H:i:s');
-        $timezone = $meetingData['timezone'] ?? 'UTC';
+        $t 'conferenceData' => [
+                'createRequest' => [
+                    'conferenceSolutionKey' => ['type' => 'hangoutsMeet'],
+                    'requestId' => 'random-string',
+                ],
+            ],
+        ]);
+
+        $calendarId = 'primary';
+       
+        $event = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
+        return $event->getHangoutLink();
+    }imezone = $meetingData['timezone'] ?? 'UTC';
 
 
         $client = new Google_Client();
@@ -36,25 +48,9 @@ class GoogleMeetService
             'refresh_token' => env('GOOGLE_ADMIN_REFRESH_TOKEN'),
         ]);
 
-
-
         if ($client->isAccessTokenExpired()) {
             $client->fetchAccessTokenWithRefreshToken(env('GOOGLE_ADMIN_REFRESH_TOKEN'));
-        } 
-
-
-        //nuevo code
-
-        $client->setAuthConfig(base_path('app/credentials/credential.json'));
-        $refreshToken = env('GOOGLE_ADMIN_REFRESH_TOKEN');
-        $accessToken = $client->fetchAccessTokenWithRefreshToken($refreshToken);
-        $client->setAccessToken($accessToken);
-
-        $service = new Google_Service_Calendar($client);
-
-        //
-
-
+        }
 
         $service = new Google_Service_Calendar($client);
 
@@ -69,16 +65,5 @@ class GoogleMeetService
                 'dateTime' => Carbon::parse($end_date_time)->toRfc3339String(),
                 'timeZone' => $timezone,
             ],
-            'conferenceData' => [
-                'createRequest' => [
-                    'conferenceSolutionKey' => ['type' => 'hangoutsMeet'],
-                    'requestId' => 'random-string',
-                ],
-            ],
-        ]);
-
-        $calendarId = 'primary';
-        $event = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
-        return $event->getHangoutLink();
-    }
+           
 }
