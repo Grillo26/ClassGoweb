@@ -48,7 +48,7 @@ class GoogleController extends Controller
 
 
 
-        $refreshToken = null;
+       /*  $refreshToken = null;
         if (is_array($accessToken) && array_key_exists('refresh_token', $accessToken)) {
             $refreshToken = $accessToken['refresh_token'];
             //dd("Refresh token obtenido: ", $refreshToken);
@@ -59,6 +59,10 @@ class GoogleController extends Controller
             return redirect()->route('admin.tutorias.index')
                 ->with('error', 'No se pudo obtener el refresh token. Intenta revocar el acceso en tu cuenta de Google y vuelve a autorizar.');
         }
+ */
+        $refreshToken = $accessToken['refresh_token'];
+        //file_put_contents(base_path('.env'), "\nGOOGLE_ADMIN_REFRESH_TOKEN={$refreshToken}", FILE_APPEND);
+
         file_put_contents(base_path('.env'), "\nGOOGLE_ADMIN_REFRESH_TOKEN={$refreshToken}", FILE_APPEND);
         return redirect()->route('admin.tutorias.index')->with('success', 'Autenticación completada. Refresh token guardado.');
     }
