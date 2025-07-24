@@ -436,7 +436,9 @@ public function getTutors($data = array()) {
                 if ($search) {
                     $q->where(function($query) use ($search) {
                         $query->where('first_name', 'like', "%$search%")
-                              ->orWhere('last_name', 'like', "%$search%") ;
+                              ->orWhere('last_name', 'like', "%$search%")
+                              ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
+                              ->orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE ?", ["%$search%"]);
                     });
                 }
             })

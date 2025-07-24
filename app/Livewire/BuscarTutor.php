@@ -14,6 +14,7 @@ class BuscarTutor extends Component
     use WithPagination;
 
     public $search = '';
+    public $searchInput = '';
     public $perPage = 10;
 
     protected $queryString = ['search', 'page'];
@@ -24,9 +25,19 @@ class BuscarTutor extends Component
         $this->resetPage();
     }
 
+    // Nuevo método para buscar solo al hacer clic en el botón
+    public function buscar()
+    {
+        $this->search = $this->searchInput;
+        $this->resetPage();
+    }
+
     public function getFilteredProfiles(SiteService $siteService)
     {
-        return $siteService->getTutorDato($this->perPage, $this->search);
+\Log::info('Buscando tutores con search:', ['search' => $this->search]);
+    $result = $siteService->getTutorDato($this->perPage, $this->search);
+    \Log::info('Total de tutores encontrados:', ['total' => $result->total()]);
+    return $result;
     }
 
     public function render(SiteService $siteService)
