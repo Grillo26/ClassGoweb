@@ -14,7 +14,6 @@ class BuscarTutor extends Component
     use WithPagination;
 
     public $search = '';
-    public $searchInput = '';
     public $perPage = 10;
 
     protected $queryString = ['search', 'page'];
@@ -22,13 +21,6 @@ class BuscarTutor extends Component
 
     public function updatingSearch()
     {
-        $this->resetPage();
-    }
-
-    // Nuevo método para buscar solo al hacer clic en el botón
-    public function buscar()
-    {
-        $this->search = $this->searchInput;
         $this->resetPage();
     }
 

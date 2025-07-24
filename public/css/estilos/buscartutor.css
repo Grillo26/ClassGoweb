@@ -64,7 +64,7 @@
 }
 .buscartutor-search-grid {
     display: grid;
-    grid-template-columns: 2fr 2fr 1fr;
+    grid-template-columns: 1fr ;
     gap: 24px;
 }
 .buscartutor-search-keyword, .buscartutor-search-group {

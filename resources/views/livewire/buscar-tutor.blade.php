@@ -27,24 +27,14 @@
                     <!-- BUSCADOR-->
                     <input type="text"
                     id="keyword-search"
-                    placeholder="Buscar por palabra clave"
+                    placeholder="¿Qué necesitas aprender? Busca por nombre, apellido o materia."
                     class="buscartutor-search-input"
-                    wire:model.defer="searchInput">
+                    wire:model.live.debounce.500ms="search">
                     <span class="buscartutor-search-icon">
                         <svg class="buscartutor-search-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
                     </span>
                 </div>
             </div>
-            <div class="buscartutor-search-group">
-                <label for="group-select" class="sr-only">Grupo de materias</label>
-                <select id="group-select" class="buscartutor-search-select">
-                    <option>Elige grupo de materias</option>
-                    <option>Ciencias Exactas</option>
-                    <option>Humanidades</option>
-                    <option>Idiomas</option>
-                </select>
-            </div>
-            <button class="buscartutor-search-btn" type="button" wire:click="buscar">Buscar</button>
         </div>
     </div>
     </section>
