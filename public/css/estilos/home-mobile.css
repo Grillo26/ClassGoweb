@@ -81,7 +81,7 @@
   .counters {
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.1rem;
     padding: 1.5rem 0.9rem;
   }
   .counter-box {
