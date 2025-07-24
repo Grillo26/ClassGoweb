@@ -30,15 +30,31 @@ class GoogleMeetService
 
 
         $client = new Google_Client();
-        $client->setAuthConfig(base_path('app/credentials/credential.json'));
+       /*  $client->setAuthConfig(base_path('app/credentials/credential.json'));
         $client->setAccessToken([
             'access_token' => env('GOOGLE_ADMIN_ACCESS_TOKEN'),
             'refresh_token' => env('GOOGLE_ADMIN_REFRESH_TOKEN'),
         ]);
 
+
+
         if ($client->isAccessTokenExpired()) {
             $client->fetchAccessTokenWithRefreshToken(env('GOOGLE_ADMIN_REFRESH_TOKEN'));
-        }
+        } */
+
+
+        //nuevo code
+
+        $client->setAuthConfig(base_path('app/credentials/credential.json'));
+        $refreshToken = env('GOOGLE_ADMIN_REFRESH_TOKEN');
+        $accessToken = $client->fetchAccessTokenWithRefreshToken($refreshToken);
+        $client->setAccessToken($accessToken);
+
+        $service = new Google_Service_Calendar($client);
+
+        //
+
+
 
         $service = new Google_Service_Calendar($client);
 
