@@ -37,6 +37,7 @@ use App\Http\Controllers\PaymentController;
 use App\Livewire\Pages\Tutor\ManageSessions\MyCalendar;
 use App\Livewire\Pages\Tutor\ManageSessions\SessionDetail;
 use App\Livewire\Payouts;
+use App\Livewire\BuscarTutor;
 use App\Http\Controllers\GoogleMeetController;
 use App\Services\GoogleMeetService;
 use Illuminate\Support\Facades\Route;
@@ -120,7 +121,10 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::view('/como-trabajamos', 'vistas.view.pages.trabajamos')->name('como-trabajamos');
     Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');
     Route::get('/tutors/{slug}', [HomeController::class, 'tutor'])->name('tutor');
-    Route::get('/tutors', [HomeController::class, 'buscarTutor'])->name('buscar.tutor');
+    //Route::get('/tutors', [HomeController::class, 'buscarTutor'])->name('buscar.tutor');
+
+    Route::get('/buscar-tutor', BuscarTutor::class)->name('buscar.tutor');
+
 
 
     Route::get('/promociones', [PromocionesController::class, 'index'])->name('promociones');

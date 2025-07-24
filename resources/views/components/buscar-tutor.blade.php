@@ -1,4 +1,4 @@
-<section class="buscartutor-search-section">
+{{-- <section class="buscartutor-search-section">
     <div class="buscartutor-search-box">
         <div class="buscartutor-search-grid">
             <div class="buscartutor-search-keyword">
@@ -99,4 +99,4 @@
         </style>
         {{ $profiles->links() }}
     </div>
-</section> 
+</section>  --}}

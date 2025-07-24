@@ -421,35 +421,38 @@ public function getTutors($data = array()) {
 
     }
 
-    public function getTutorDato($perPage = 10)
+    public function getTutorDato($perPage = 10, $search = null)
     {
         $tutorIds = \DB::table('model_has_roles')
             ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
             ->where('roles.name', 'tutor')
             ->pluck('model_has_roles.model_id');
 
-        // Cargar todas las relaciones necesarias de una vez y paginar
         $tutors = User::whereIn('id', $tutorIds)
-            ->whereHas('profile', function ($q) {
+            ->whereHas('profile', function ($q) use ($search) {
                 $q->whereNotNull('verified_at')
                   ->whereNotNull('first_name')
                   ->whereNotNull('last_name');
+                if ($search) {
+                    $q->where(function($query) use ($search) {
+                        $query->where('first_name', 'like', "%$search%")
+                              ->orWhere('last_name', 'like', "%$search%") ;
+                    });
+                }
             })
-            ->whereHas('userSubjects.subject.group') // solo si tienen grupo asignado
+            ->whereHas('userSubjects.subject.group')
             ->with([
                 'profile:id,user_id,first_name,last_name,slug,image,description,native_language',
                 'languages:id,name',
-                'userSubjects.subject.group', // Carga materias y grupos
+                'userSubjects.subject.group',
             ])
             ->withAvg('ratings as avg_rating', 'rating')
             ->withCount('ratings as total_reviews')
             ->orderByDesc('avg_rating')
             ->paginate($perPage);
 
-        // Mapear perfiles finales
         $profiles = $tutors->map(function ($tutor) {
             $profile = $tutor->profile;
-            // Materias y grupos
             $materias = [];
             $grupos = [];
             foreach ($tutor->userSubjects as $userSubject) {
@@ -475,11 +478,11 @@ public function getTutors($data = array()) {
             ];
         });
 
-        // Devuelve la paginación con los datos mapeados
         $result = $tutors;
         $result->setCollection($profiles);
         return $result;
     }
+
 
     public function getAlliances()
     {

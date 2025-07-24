@@ -21,6 +21,7 @@
     </section>
     
     <!-- Componente de búsqueda y listado de tutores -->
-    <x-buscar-tutor :profiles="$profiles" />
+    <livewire:buscar-tutor />
+
 </div>
 @endsection

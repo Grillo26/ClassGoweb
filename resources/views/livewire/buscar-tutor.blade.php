@@ -1,59 +1,135 @@
-<div>
-    <!-- Buscador y filtro -->
-    <section class="buscartutor-search-section">
-        <div class="buscartutor-search-box">
-            <div class="buscartutor-search-grid">
-                <div class="buscartutor-search-keyword">
-                    <label for="keyword-search" class="sr-only">Buscar por palabra clave</label>
-                    <div class="buscartutor-search-input-wrap">
-                        <input type="text" id="keyword-search" placeholder="Buscar por nombre, apellido o materia" class="buscartutor-search-input" wire:model.debounce.500ms="search">
-                        <span class="buscartutor-search-icon">
-                            <svg class="buscartutor-search-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
-                        </span>
-                    </div>
+<div class="container-buscartutor">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- Hero Section -->
+    <section class="buscartutor-hero-section">
+        <div class="buscartutor-container">
+             <div class="buscartutor-hero-grid">
+                <div>
+                    <p class="buscartutor-hero-label">Tutores / Encontrar tutor</p>
+                    <h1 class="buscartutor-hero-title">Descubra un tutor en línea capacitado para sus estudios</h1>
+                    <p class="buscartutor-hero-desc">Domina tus estudios con tutorías personalizadas en línea impartidas por educadores expertos. Nuestros tutores capacitados están aquí para ayudarlo a construir bases sólidas y alcanzar sus objetivos académicos.</p>
                 </div>
-                <div class="buscartutor-search-group">
-                    <label for="group-select" class="sr-only">Grupo de materias</label>
-                    <select id="group-select" class="buscartutor-search-select" wire:model="materia">
-                        <option value="">Elige materia</option>
-                        @foreach($materias as $mat)
-                            <option value="{{ $mat->id }}">{{ $mat->name }}</option>
-                        @endforeach
-                    </select>
+                <div class="buscartutor-hero-img-col">
+                     <img src="{{ asset('storage/optionbuilder/uploads/740102-17-2025_0859pmTugo-saludando.gif') }}" alt="Mascota de ClassGo" class="buscartutor-hero-img" onerror="this.onerror=null; this.src='https://placehold.co/300x300/ffffff/023047?text=ClassGo';">
                 </div>
-                <button class="buscartutor-search-btn" wire:click.prevent>Buscar</button>
             </div>
         </div>
     </section>
-
-    <!-- Lista de tutores -->
+    
+    <!-- Componente de búsqueda y listado de tutores -->
+    <section class="buscartutor-search-section">
+    <div class="buscartutor-search-box">
+        <div class="buscartutor-search-grid">
+            <div class="buscartutor-search-keyword">
+                <label for="keyword-search" class="sr-only">Buscar por palabra clave</label>
+                <div class="buscartutor-search-input-wrap">
+                    <input type="text"
+                    id="keyword-search"
+                    placeholder="Buscar por palabra clave"
+                    class="buscartutor-search-input"
+                    wire:model="search">
+                    <span class="buscartutor-search-icon">
+                        <svg class="buscartutor-search-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
+                    </span>
+                </div>
+            </div>
+            <div class="buscartutor-search-group">
+                <label for="group-select" class="sr-only">Grupo de materias</label>
+                <select id="group-select" class="buscartutor-search-select">
+                    <option>Elige grupo de materias</option>
+                    <option>Ciencias Exactas</option>
+                    <option>Humanidades</option>
+                    <option>Idiomas</option>
+                </select>
+            </div>
+            <button class="buscartutor-search-btn">Buscar</button>
+        </div>
+    </div>
+    </section>
     <section class="buscartutor-tutorlist-section">
         <div class="buscartutor-tutorlist-space">
-            @forelse($tutores as $tutor)
+            @forelse ($profiles as $profile)
                 <div class="buscartutor-tutor-card">
-                    <img src="{{ $tutor->profile->image ? asset('storage/' . $tutor->profile->image) : 'https://placehold.co/128x128/8ECAE6/023047?text=CG' }}" alt="Foto de {{ $tutor->profile->first_name }}" class="buscartutor-tutor-img">
+                    <img 
+                        src="{{ $profile['image'] ? asset('storage/' . $profile['image']) : asset('images/tutors/profile.jpg') }}" 
+                        alt="Foto de {{ $profile['full_name'] }}" 
+                        class="buscartutor-tutor-img">
                     <div class="buscartutor-tutor-info">
-                        <h3 class="buscartutor-tutor-name">{{ $tutor->profile->first_name }} {{ $tutor->profile->last_name }}</h3>
+                        <h3 class="buscartutor-tutor-name">{{ $profile['full_name'] }}</h3>
                         <div class="buscartutor-tutor-meta">
-                            <span>{{ number_format($tutor->avg_rating ?? 0, 1) }}/5.0 ({{ $tutor->total_reviews ?? 0 }} reseñas)</span>
+                            <span>⭐ {{ $profile['avg_rating'] }} ({{ $profile['total_reviews'] }} reseñas)</span>
                             <span>•</span>
-                            <span>{{ $tutor->userSubjects->count() }} Materias</span>
+                            <span>Materias: 
+                                @if(!empty($profile['materias']))
+                                    {{ implode(', ', $profile['materias']) }}
+                                @else
+                                    N/A
+                                @endif
+                            </span>
                             <span>•</span>
-                            <span>Idiomas: {{ $tutor->languages->pluck('name')->join(', ') }}</span>
+                            <span>Idioma: {{ $profile['native_language'] ?? 'N/A' }}</span>
                         </div>
-                        <p class="buscartutor-tutor-desc">{{ $tutor->profile->description }}</p>
+                        <p class="buscartutor-tutor-desc">
+                            {{ $profile['description'] }}
+                        </p>
                     </div>
                     <div class="buscartutor-tutor-actions">
-                        <a href="{{ route('tutor', $tutor->profile->slug) }}" class="buscartutor-tutor-btn buscartutor-tutor-btn-orange">Reservar una sesión</a>
-                        <a href="mailto:{{ $tutor->email }}" class="buscartutor-tutor-btn buscartutor-tutor-btn-blue">Enviar mensaje</a>
+                        <button class="buscartutor-tutor-btn buscartutor-tutor-btn-orange">Reservar una sesión</button>
+                        <a href="{{ route('tutor', ['slug' => $profile['slug']]) }}" class="buscartutor-tutor-btn buscartutor-tutor-btn-blue">
+                            Ver Perfil
+                        </a>
                     </div>
                 </div>
             @empty
-                <div class="buscartutor-tutor-card" style="text-align:center;">No se encontraron tutores.</div>
+                <div class="text-center py-8 text-gray-500">No se encontraron tutores para los criterios de búsqueda.</div>
             @endforelse
         </div>
         <div class="buscartutor-pagination">
-            {{ $tutores->links() }}
+            <style>
+                .buscartutor-pagination nav {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 2rem;
+                }
+                .buscartutor-pagination .pagination {
+                    display: flex;
+                    gap: 0.5rem;
+                    list-style: none;
+                    padding: 0;
+                }
+                .buscartutor-pagination .pagination li {
+                    display: inline-block;
+                }
+                .buscartutor-pagination .pagination li a,
+                .buscartutor-pagination .pagination li span {
+                    padding: 0.5rem 1rem;
+                    border-radius: 0.5rem;
+                    border: 1px solid #023047;
+                    color: #023047;
+                    background: #fff;
+                    font-weight: 600;
+                    text-decoration: none;
+                    transition: background 0.2s, color 0.2s;
+                }
+                .buscartutor-pagination .pagination li.active span,
+                .buscartutor-pagination .pagination li span[aria-current="page"] {
+                    background: #023047;
+                    color: #fff;
+                    border-color: #023047;
+                }
+                .buscartutor-pagination .pagination li a:hover {
+                    background: #FB8500;
+                    color: #fff;
+                    border-color: #FB8500;
+                }
+                .buscartutor-pagination .pagination li.disabled span {
+                    color: #aaa;
+                    background: #f5f5f5;
+                    border-color: #eee;
+                }
+            </style>
+            {{ $profiles->links() }}
         </div>
     </section>
-</div> 
+</div>
