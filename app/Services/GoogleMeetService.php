@@ -21,24 +21,12 @@ class GoogleMeetService
             'start_date_time' => 'required|date',
             'end_date_time' => 'required|date|after:start_date_time',
         ]); */
-
+       //dd('prueba');
         $title = $meetingData['title'] ?? 'Tutoría';
         $description = $meetingData['description'] ?? 'Sesión de tutoría';
         $start_date_time = $meetingData['start_time'] ?? now()->addMinutes(10)->format('Y-m-d H:i:s');
         $end_date_time = $meetingData['end_time'] ?? now()->addMinutes(40)->format('Y-m-d H:i:s');
-        $t 'conferenceData' => [
-                'createRequest' => [
-                    'conferenceSolutionKey' => ['type' => 'hangoutsMeet'],
-                    'requestId' => 'random-string',
-                ],
-            ],
-        ]);
-
-        $calendarId = 'primary';
-       
-        $event = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
-        return $event->getHangoutLink();
-    }imezone = $meetingData['timezone'] ?? 'UTC';
+        $timezone = $meetingData['timezone'] ?? 'UTC';
 
 
         $client = new Google_Client();
@@ -65,5 +53,17 @@ class GoogleMeetService
                 'dateTime' => Carbon::parse($end_date_time)->toRfc3339String(),
                 'timeZone' => $timezone,
             ],
-           
+            'conferenceData' => [
+                'createRequest' => [
+                    'conferenceSolutionKey' => ['type' => 'hangoutsMeet'],
+                    'requestId' => 'random-string',
+                ],
+            ],
+        ]);
+
+        $calendarId = 'primary';
+       
+        $event = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
+        return $event->getHangoutLink();
+    }
 }
