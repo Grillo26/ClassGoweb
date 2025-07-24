@@ -120,13 +120,13 @@ class TutoriasTable extends Component
                 //$zoomResponse = $zoomService->createMeeting($meetingData);
                 $result = $googlemeetservice->createMeeting($meetingDatameet);
                 //dd($result); //
-               $tutoria->meeting_link = $result;
+                $tutoria->meeting_link = $result;
                // dd($result);
-                $studentProfile = $tutoria->student->profile;
+               /*  $studentProfile = $tutoria->student->profile;
                 $studentName = $studentProfile ? ($studentProfile->first_name . ' ' . $studentProfile->last_name) : '';
                 $studentUser = $tutoria->student?->user;
                 $mailService = new MailService();
-                $mailService->sendTutoriaNotification($tutoria, $result);
+                $mailService->sendTutoriaNotification($tutoria, $result); */
                /*  if ($studentUser) {
                     Mail::to($studentUser->email)->send(new SessionBookingMail([
                         'userName' => $studentName,
@@ -138,20 +138,20 @@ class TutoriasTable extends Component
                     ]));
                 } */
                 // Enviar correo al tutor
-                $tutorProfile = $tutoria->tutor->profile;
+               /*  $tutorProfile = $tutoria->tutor->profile;
                 $tutorName = $tutorProfile ? ($tutorProfile->first_name . ' ' . $tutorProfile->last_name) : '';
                 $tutorUser = $tutoria->tutor?->user;
                 if ($tutorUser) {
                      $mailService->sendTutoriaNotification($tutoria, $result);
-                  /*   Mail::to($tutorUser->email)->send(new SessionBookingMail([
+                     Mail::to($tutorUser->email)->send(new SessionBookingMail([
                         'userName' => $tutorName,
                         'sessionDate' => date('d/m/Y', strtotime($tutoria->start_time)),
                         'sessionTime' => date('H:i', strtotime($tutoria->start_time)),
                         'meetingLink' => $tutoria->meeting_link,
                         'role' => 'Estudiante',
                         'oppositeName' => $studentName,
-                    ])); */
-                }
+                    ])); 
+                } */
             }
             $tutoria->save();
 

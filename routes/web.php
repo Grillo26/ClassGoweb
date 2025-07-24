@@ -86,7 +86,7 @@ Route::get('/verify', function (\Illuminate\Http\Request $request) {
 Route::get('/prueba', function () {
     return '¡Ruta de prueba funcionando!';
 });
-; 
+;
 
 
 //OJO -------> Debe de estar dentro del grupo de rutas para el rol TUTOR
@@ -97,12 +97,13 @@ Route::get('/tutor/ficha-download/{slug}/{id}', [ExportImageController::class, '
 
 
 
-/* Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
+Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
 Route::get('auth/{provider}/callback', [SocialController::class, 'callback'])->name('social.callback');
- */Route::get('/pay-qr/{orderId}', [PaymentController::class, 'showQR'])->name('pay-qr');
 
- Route::get('/google/authenticate', [GoogleController::class, 'authenticate'])->name('google.authenticate');
-Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
+Route::get('/pay-qr/{orderId}', [PaymentController::class, 'showQR'])->name('pay-qr');
+
+Route::get('/google/authenticate', [GoogleController::class, 'authenticate'])->name('google.authenticate');
+Route::get('/auth/api/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
 
 Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('social.redirect');
 
@@ -130,7 +131,9 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
         Route::post('favourite-tutor', [SearchController::class, 'favouriteTutor'])->name('favourite-tutor');
         Route::get('logout', [SiteController::class, 'logout'])->name('logout');
         Route::get('user/identity-confirmation/{id}', [PersonalDetails::class, 'confirmParentVerification'])->name('confirm-identity');
+        
         Route::get('google/callback', [SiteController::class, 'getGoogleToken']);
+        
         Route::middleware('student')->get('checkout', Checkout::class)->name('checkout');
         Route::middleware('student')->get('thank-you/{id}', ThankYou::class)->name('thank-you');
         Route::middleware('role:tutor')->prefix('tutor')->name('tutor.')->group(function () {
@@ -143,7 +146,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
 
             Route::prefix('profile')->name('profile.')->group(function () {
                 Route::get('personal-details', PersonalDetails::class)->name('personal-details');
-                Route::get('account-settings',  AccountSettings::class)->name('account-settings');
+                Route::get('account-settings', AccountSettings::class)->name('account-settings');
                 Route::get('courses', Courses::class)->name('courses');
                 Route::prefix('resume')->name('resume.')->group(function () {
                     Route::get('education', Resume::class)->name('education');
@@ -153,10 +156,10 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
                 Route::get('identification', IdentityVerification::class)->name('identification');
             });
             Route::prefix('bookings')->name('bookings.')->group(function () {
-                Route::get('manage-subjects',       ManageSubjects::class)->name('subjects');
-                Route::get('manage-sessions',       MyCalendar::class)->name('manage-sessions');
+                Route::get('manage-subjects', ManageSubjects::class)->name('subjects');
+                Route::get('manage-sessions', MyCalendar::class)->name('manage-sessions');
                 Route::get('session-detail/{date}', SessionDetail::class)->name('session-detail');
-                Route::get('upcoming-bookings',     UserBooking::class)->name('upcoming-bookings');
+                Route::get('upcoming-bookings', UserBooking::class)->name('upcoming-bookings');
             });
 
             Route::get('invoices', Invoices::class)->name('invoices');
@@ -168,7 +171,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
             Route::get('profile', fn() => redirect('tutor.profile.personal-details'))->name('profile');
             Route::prefix('profile')->name('profile.')->group(function () {
                 Route::get('personal-details', PersonalDetails::class)->name('personal-details');
-                Route::get('account-settings',  AccountSettings::class)->name('account-settings');
+                Route::get('account-settings', AccountSettings::class)->name('account-settings');
                 Route::get('identification', IdentityVerification::class)->name('identification');
             });
             Route::get('bookings', UserBooking::class)->name('bookings');
@@ -187,14 +190,14 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
 
     Route::get('tutor/{slug}', [SearchController::class, 'tutorDetail'])->name('tutor-detail');
     Route::get('{gateway}/process/payment', [SiteController::class, 'processPayment'])->name('payment.process');
-    Route::get('checkout/cancel',            fn() => redirect()->route('invoices')->with('payment_cancel', __('general.payment_cancelled_desc')))->name('checkout.cancel');
-    Route::post('payfast/webhook',          [SiteController::class, 'payfastWebhook'])->name('payfast.webhook');
-    Route::post('payment/success',          [SiteController::class, 'paymentSuccess'])->name('post.success');
-    Route::get('payment/success',           [SiteController::class, 'paymentSuccess'])->name('get.success');
-    Route::post('switch-lang',              [SiteController::class, 'switchLang'])->name('switch-lang');
-    Route::post('switch-currency',          [SiteController::class, 'switchCurrency'])->name('switch-currency');
-    Route::get('exit-impersonate',          [Impersonate::class, 'exitImpersonate'])->name('exit-impersonate');
-    Route::get('pay/{id}',                  [SiteController::class, 'preparePayment'])->name('pay');
+    Route::get('checkout/cancel', fn() => redirect()->route('invoices')->with('payment_cancel', __('general.payment_cancelled_desc')))->name('checkout.cancel');
+    Route::post('payfast/webhook', [SiteController::class, 'payfastWebhook'])->name('payfast.webhook');
+    Route::post('payment/success', [SiteController::class, 'paymentSuccess'])->name('post.success');
+    Route::get('payment/success', [SiteController::class, 'paymentSuccess'])->name('get.success');
+    Route::post('switch-lang', [SiteController::class, 'switchLang'])->name('switch-lang');
+    Route::post('switch-currency', [SiteController::class, 'switchCurrency'])->name('switch-currency');
+    Route::get('exit-impersonate', [Impersonate::class, 'exitImpersonate'])->name('exit-impersonate');
+    Route::get('pay/{id}', [SiteController::class, 'preparePayment'])->name('pay');
     require __DIR__ . '/auth.php';
 
     require __DIR__ . '/admin.php';

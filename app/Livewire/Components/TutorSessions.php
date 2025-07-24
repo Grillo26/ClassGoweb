@@ -397,8 +397,8 @@ class TutorSessions extends Component
                         $message->to(env('MAIL_ADMIN'))
                             ->subject('Nueva reserva de tutoría registrada');
                     }); */
-                    $serviciomail=new \App\Services\MailService();
-                    $serviciomail->sendAdminNuevaTutoria($student,$fechaHora,$this->user?->profile?->full_name);
+                   /*  $serviciomail=new \App\Services\MailService();
+                    $serviciomail->sendAdminNuevaTutoria($student,$fechaHora,$this->user?->profile?->full_name); */
 
                 } catch (\Exception $e) {
                     Log::error('Error al guardar el comprobante: ' . $e->getMessage());

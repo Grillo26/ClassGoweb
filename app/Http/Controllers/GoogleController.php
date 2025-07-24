@@ -11,23 +11,23 @@ use Carbon\Carbon;
 
 class GoogleController extends Controller
 {
-   // app/Http/Controllers/GoogleMeetController.php
+    // app/Http/Controllers/GoogleMeetController.php
 
-public function authenticate()
-{
-    $client = new Google_Client();
-    $client->setAuthConfig(base_path('app/credentials/credential.json'));
-    $client->setScopes([
-        'https://www.googleapis.com/auth/calendar',
-    ]);
-    $callbackUrl = route('google.callback');
-    $client->setRedirectUri($callbackUrl);
-    //dd("La URL que DEBES registrar en Google es:", $callbackUrl);
-    $client->setAccessType('offline');
-    $client->setPrompt('consent');
-    $authUrl = $client->createAuthUrl();
-    return redirect($authUrl);
-}
+    public function authenticate()
+    {
+        $client = new Google_Client();
+        $client->setAuthConfig(base_path('app/credentials/credential.json'));
+        $client->setScopes([
+            'https://www.googleapis.com/auth/calendar',
+        ]);
+        $callbackUrl = route('google.callback');
+        $client->setRedirectUri($callbackUrl);
+        //dd("La URL que DEBES registrar en Google es:", $callbackUrl);
+        $client->setAccessType('offline');
+        $client->setPrompt('consent');
+        $authUrl = $client->createAuthUrl();
+        return redirect($authUrl);
+    }
 
     public function callback(Request $request)
     {
@@ -38,7 +38,6 @@ public function authenticate()
             'code' => $request->input('code'),
             'all_params' => $request->all()
         ]); */
-
         $client = new Google_Client();
         $client->setAuthConfig(base_path('app/credentials/credential.json'));
         $client->setScopes([
@@ -47,12 +46,25 @@ public function authenticate()
         $client->authenticate($request->input('code'));
         $accessToken = $client->getAccessToken();
 
-        // Guarda el refresh token en el archivo .env
-        $refreshToken = $accessToken['refresh_token'];
-        file_put_contents(base_path('.env'), "\nGOOGLE_ADMIN_REFRESH_TOKEN={$refreshToken}", FILE_APPEND);
 
-         return redirect()->route('admin.tutorias.index')->with('success', 'Autenticación completada. Refresh token guardado.');
-     }
+
+        $refreshToken = null;
+        if (is_array($accessToken) && array_key_exists('refresh_token', $accessToken)) {
+            $refreshToken = $accessToken['refresh_token'];
+            //dd("Refresh token obtenido: ", $refreshToken);
+        }
+
+        if (!$refreshToken) {
+            //dd("No se pudo obtener el refresh token. Verifica la configuración de tu aplicación en Google Cloud Console.");
+            return redirect()->route('admin.tutorias.index')
+                ->with('error', 'No se pudo obtener el refresh token. Intenta revocar el acceso en tu cuenta de Google y vuelve a autorizar.');
+        }
+        file_put_contents(base_path('.env'), "\nGOOGLE_ADMIN_REFRESH_TOKEN={$refreshToken}", FILE_APPEND);
+        return redirect()->route('admin.tutorias.index')->with('success', 'Autenticación completada. Refresh token guardado.');
+    }
+
+
+
 
     public function createMeeting(Request $request)
     {
@@ -97,7 +109,7 @@ public function authenticate()
 
         $calendarId = 'primary';
         $event = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
-        
+
         return view('meeting_success', [
             'message' => 'Reunión creada con éxito.',
             'meet_link' => $event->getHangoutLink(),
