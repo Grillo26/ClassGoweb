@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="{{ asset('css/estilos/trabajamos.css') }}">
     <link rel="stylesheet" href="{{ asset('css/estilos/preguntas.css') }}">
     <link rel="stylesheet" href="{{ asset('css/estilos/buscartutor.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/estilos/tutores.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/estilos/tutor-perfil.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"></head>
