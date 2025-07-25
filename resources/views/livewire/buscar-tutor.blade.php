@@ -9,6 +9,9 @@
                     <p class="buscartutor-hero-label">Tutores / Encontrar tutor</p>
                     <h1 class="buscartutor-hero-title">Descubra un tutor en línea capacitado para sus estudios</h1>
                     <p class="buscartutor-hero-desc">Domina tus estudios con tutorías personalizadas en línea impartidas por educadores expertos. Nuestros tutores capacitados están aquí para ayudarlo a construir bases sólidas y alcanzar sus objetivos académicos.</p>
+                    <p class="mobile-only">
+                        Nuestros tutores capacitados están aquí para ayudarlo a construir bases sólidas y alcanzar sus objetivos académicos.
+                    </p>
                 </div>
                 <div class="buscartutor-hero-img-col">
                      <img src="{{ asset('storage/optionbuilder/uploads/740102-17-2025_0859pmTugo-saludando.gif') }}" alt="Mascota de ClassGo" class="buscartutor-hero-img" onerror="this.onerror=null; this.src='https://placehold.co/300x300/ffffff/023047?text=ClassGo';">
@@ -22,17 +25,31 @@
     <div class="buscartutor-search-box">
         <div class="buscartutor-search-grid">
             <div class="buscartutor-search-keyword">
-                <label for="keyword-search" class="sr-only">Buscar por palabra clave</label>
                 <div class="buscartutor-search-input-wrap">
                     <!-- BUSCADOR-->
-                    <input type="text"
-                    id="keyword-search"
-                    placeholder="¿Qué necesitas aprender? Busca por nombre, apellido o materia."
-                    class="buscartutor-search-input"
-                    wire:model.live.debounce.500ms="search">
-                    <span class="buscartutor-search-icon">
-                        <svg class="buscartutor-search-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
-                    </span>
+                    <!--desktop-->
+                    <div class="buscador-desktop">
+                        <input type="text"
+                        id="keyword-search"
+                        placeholder="¿Qué necesitas aprender? Busca por nombre del tutor o materia."
+                        class="buscartutor-search-input"
+                        wire:model.live.debounce.500ms="search">
+                        <span class="buscartutor-search-icon">
+                            <svg class="buscartutor-search-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
+                        </span>
+                    </div>
+                    <!---movile-->
+                    <div class="buscador-mobile">
+                        <input type="text"
+                        id="keyword-search"
+                        placeholder="¿Qué necesitas aprender?"
+                        class="buscartutor-search-input"
+                        wire:model.live.debounce.500ms="search">
+                        <span class="buscartutor-search-icon">
+                            <svg class="buscartutor-search-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
+                        </span>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -50,15 +67,19 @@
                         <h3 class="buscartutor-tutor-name">{{ $profile['full_name'] }}</h3>
                         <div class="buscartutor-tutor-meta">
                             <span>⭐ {{ $profile['avg_rating'] }}/5.0 ({{ $profile['total_reviews'] }} reseñas)</span>
-                            <span>•</span>
-                            <span>Materias: 
-                                @if(!empty($profile['materias']))
-                                    {{ implode(', ', $profile['materias']) }}
-                                @else
-                                    N/A
-                                @endif
-                            </span>
-                            <span>•</span>
+                            <div class="desktop-only">
+                                <span>•</span>
+                                <span>1 Tutorías
+                                </span>
+                                <span>•</span>
+                            </div>
+                            
+                            <div class="mobile-only">
+                                <span>•</span>
+                                <span>1 Tutorías
+                                </span>
+                                <span>•</span>
+                            </div>
                             <span>Idioma: {{ $profile['native_language'] ?? 'N/A' }}</span>
                         </div>
                         <p class="buscartutor-tutor-desc">

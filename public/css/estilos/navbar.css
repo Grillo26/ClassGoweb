@@ -485,3 +485,85 @@
     box-shadow: none !important;
   }
 }
+
+/* =================== navbar-tablet.css =================== */
+/* navbar-tablet.css: Estilos responsivos para tablet (max-width: 1024px) */
+
+@media (max-width: 1024px) {
+  /* Ocultar botón 'Empezar' y botón blanco */
+  .btn-outline,
+  .navbar-mobile a[href*="Empezar"] {
+    display: none !important;
+  }
+  /* Centrar logo y colocar selector de idioma a la izquierda */
+  .navbar-container {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  .navbar-left {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .nav-i {
+    margin: 0 auto;
+    display: block;
+    position: relative;
+    left: 0;
+    right: 0;
+  }
+  .language-select {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+}
+
+/* =================== navbar-mobile.css =================== */
+/* navbar-mobile.css: Estilos responsivos para móvil (max-width: 768px) */
+
+@media (max-width: 768px) {
+  /* Ocultar botón 'Empezar' y botón blanco */
+  .btn-outline, .navbar-icon,
+  .navbar-mobile a[href*="Empezar"] {
+    display: none !important;
+  }
+  /* Centrar logo y colocar selector de idioma a la izquierda */
+  .navbar-container {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  .navbar-left {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .nav-i {
+    margin: 0 auto;
+    display: block;
+    position: relative;
+    left: 0;
+    right: 0;
+  }
+  .language-select {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+  .navbar-left a img{
+    padding-left: 4rem;
+    width: 200px;
+  }
+}

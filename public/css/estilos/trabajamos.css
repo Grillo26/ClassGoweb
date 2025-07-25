@@ -1,5 +1,6 @@
 @import "./variables.css";
 
+/* =================== trabajamos.css =================== */
 /* ------------------------------------------------------------ */
 /* Estilos para la Página Cómo Trabajamos */
 /* ------------------------------------------------------------ */
@@ -333,4 +334,93 @@
   padding: 0.5rem;
   display: flex;
   gap: 1rem;
+} 
+
+/* =================== trabajamos-tablet.css =================== */
+/* ------------------------------------------------------------ */
+/* Estilos para la Página Cómo Trabajamos en tablet */
+/* ------------------------------------------------------------ */
+
+@media (max-width: 992px) {
+  .trabajamos-header-content {
+    padding: 8rem 3rem 0rem 3rem;
+  }
+
+  .trabajamos-header-text h1 {
+    font-size: 2.2rem;
+  }
+
+  .trabajamos-header-text p {
+    font-size: 0.9rem;
+  }
+
+  .trabajamos-section-content {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .trabajamos-text {
+    padding-left: 0;
+  }
+
+  .trabajamos-image {
+    order: -1;
+  }
+}
+
+/* =================== trabajamos-mobile.css =================== */
+/* ------------------------------------------------------------ */
+/* Estilos para la Página Cómo Trabajamos en mobile */
+/* ------------------------------------------------------------ */
+
+@media (max-width: 768px) {
+  .trabajamos-header-content {
+    padding: 6rem 2rem 0rem 2rem;
+  }
+
+  .trabajamos-header-text h1 {
+    font-size: 2rem;
+  }
+
+  .trabajamos-header-text p {
+    font-size: 0.8rem;
+  }
+
+  .trabajamos-tabs {
+    padding-top: 2rem;
+  }
+
+  .tab-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .trabajamos-section-white,
+  .trabajamos-section-primary {
+    padding: 3rem 2rem;
+  }
+
+  .trabajamos-section-content {
+    gap: 1.5rem;
+  }
+
+  .trabajamos-text h2 {
+    font-size: 1.8rem;
+  }
+
+  .trabajamos-text h3 {
+    font-size: 0.9rem;
+  }
+
+  .trabajamos-text h4 {
+    font-size: 1.1rem;
+  }
+
+  .trabajamos-text p {
+    font-size: 0.9rem;
+  }
+
+  .trabajamos-text ol li {
+    font-size: 0.8rem;
+  }
 } 
