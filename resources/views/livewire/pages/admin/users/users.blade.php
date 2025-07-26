@@ -108,7 +108,6 @@
                                             @if ( file_exists(public_path('storage/' . $single->profile->image)))
                                               <img src="{{ asset('storage/' . $single->profile->image) }}" alt="{{ $single->profile->image }}" />
                                             @else
-                                           
                                                  <img src="{{ setting('_general.default_avatar_for_user') ? asset('storage/' . setting('_general.default_avatar_for_user')[0]['path']) : asset('images/placeholder.png') }}" alt="{{ $single->profile->image }}" />   
                                             @endif
                                         @endif
@@ -120,12 +119,14 @@
                                         @endif
                                         
                                         @if($single->roles()->first()->name == 'tutor')
-                                            <a href="{{ route('tutor-detail',['slug' => $single->profile->slug]) }}" class="am-custom-tooltip">
+                                           @if($single->profile && $single->profile->slug)  
+                                              <a href="{{ route('tutor-detail',['slug' => $single->profile->slug]) }}" class="am-custom-tooltip">
                                                 <span class="am-tooltip-text">
                                                     <span>{{ __('general.visit_profile') }}</span>
                                                 </span>
                                                 <i class="icon-external-link"></i>
-                                            </a>
+                                             </a>
+                                            @endif
                                         @endif
                                     </div>
                                 </td>
