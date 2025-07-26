@@ -72,7 +72,7 @@
                             <button onclick="changeTab(event, 'introduccion')" class="tutor-tab-btn active">Tutoría</button>
                             <button onclick="changeTab(event, 'disponibilidad')" class="tutor-tab-btn">Disponibilidad</button>
                             <button onclick="changeTab(event, 'curriculum')" class="tutor-tab-btn">Aspectos Destacados</button>
-                            <button onclick="changeTab(event, 'resenas')" class="tutor-tab-btn">Reseñas (0)</button>
+                            <button onclick="changeTab(event, 'resenas')" class="tutor-tab-btn">Reseñas</button>
                         </nav>
                     </div>
                     <div class="tutor-tabs-content">
@@ -99,13 +99,17 @@
                                 <div class="tutor-section-skills-grupos">
                                     @foreach($materiasPorGrupo as $grupo => $materiasGrupo)
                                         <div class="tutor-grupo-block" style="margin-bottom:2rem;">
-                                            <div class="tutor-grupo-header" style="display:flex;align-items:center;gap:0.2rem;">
+                                            <div class="tutor-grupo-header" style="display:flex;align-items:center;gap:0.1rem;">
                                                 <span class="tutor-skill-tag" style="color: var(--primary-color);font-weight:600;font-size:1.1rem;min-width:2.2em;min-height:2.2em;display:inline-flex;"> 
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right:0.3em;">
-                                                    <path d="M2 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/>
-                                                    <path d="M22 7V19a2 2 0 0 1-2 2H6"/>
-                                                    <path d="M16 2v4"/>
-                                                    <path d="M8 2v4"/>
+                                                    <!-- Tapa del cuaderno -->
+                                                    <rect x="3" y="2" width="18" height="20" rx="2" ry="2" />
+                                                    <!-- Línea de división entre tapa y hojas -->
+                                                    <line x1="7" y1="2" x2="7" y2="22" />
+                                                    <!-- Líneas interiores (simulan hojas) -->
+                                                    <line x1="11" y1="6" x2="17" y2="6" />
+                                                    <line x1="11" y1="10" x2="17" y2="10" />
+                                                    <line x1="11" y1="14" x2="17" y2="14" />
                                                     </svg>
                                                     {{ $grupo }}</span>
                                             </div>
@@ -113,7 +117,7 @@
                                                 @foreach($materiasGrupo as $materia)
                                                     <span class="tutor-skill-materia" style="font-size:1rem;color:#023047;">{{ $materia }}</span>
                                                 @endforeach
-                                                <img src=" {{ asset('images/png')}}" alt="">
+
                                             </div>
                                         </div>
                                     @endforeach

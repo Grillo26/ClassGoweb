@@ -23,7 +23,7 @@
 }
 
 .tutor-breadcrumbs {
-	color: var(--text-gris);
+	color: white;
 	font-size: 1rem;
 	margin-bottom: 1rem;
 }
@@ -56,7 +56,6 @@
 }
 
 .tutor-card-main {
-	background: #fff;
 	border-radius: 1.5rem;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 	overflow: hidden;
@@ -103,10 +102,12 @@
 }
 
 .tutor-card-main-content {
-    background: #fff;
+    background: #ffffff;
     z-index: 5;
     position: relative;
 	padding: 2rem;
+	border-bottom-left-radius: 30px;
+	border-bottom-right-radius: 30px;
 }
 
 .tutor-profile-img {
@@ -182,6 +183,11 @@
 	gap: 2rem;
 	padding: 0 2rem;
 	overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE y Edge */
+}
+.tutor-tabs-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari y Opera */
 }
 
 .tutor-tab-btn {
@@ -710,45 +716,191 @@
     html, body {
         width: 100vw !important;
         overflow-x: hidden !important;
-        box-sizing: border-box;
-    }
-    .tutor-bg, .tutor-main, .tutor-card-main, .tutor-tabs-card, .tutor-footer {
-        width: 100vw !important;
-        max-width: 100vw !important;
-        min-width: 0 !important;
         box-sizing: border-box !important;
         margin: 0 !important;
+        padding: 0 !important;
     }
 	.tutor-breadcrumbs{
 		display: none;
 	}
+	
+    .tutor-bg {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        overflow-x: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
     .tutor-main {
-        padding: 0rem 0 !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 0 2rem 0 !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
     }
     .tutor-grid {
-        grid-template-columns: 1fr !important;
-        gap: 0.5rem !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+    .tutor-tabs-card {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+        padding: 0 !important;
+    }
+    .tutor-tabs-nav {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        overflow-x: auto !important;
+        margin: 0 !important;
+        padding: 0 0.5rem !important;
+        scrollbar-width: thin !important;
+        -ms-overflow-style: auto !important;
+    }
+    .tutor-tabs-list {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 0.2rem !important;
+        width: max-content !important;
+        box-sizing: border-box !important;
+        overflow-x: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        scrollbar-width: thin !important;
+        -ms-overflow-style: auto !important;
+    }
+    .tutor-tabs-list::-webkit-scrollbar {
+        height: 4px !important;
+        background: #eee !important;
+    }
+    .tutor-tabs-list::-webkit-scrollbar-thumb {
+        background: #ccc !important;
+        border-radius: 2px !important;
+    }
+    .tutor-tabs-content {
+        padding: 1.2rem 0.5rem 1.2rem 0.5rem !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        margin: 0 auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    .tutor-tab-content {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .tutor-section-title-lg,
+    .tutor-section-title {
+        text-align: center !important;
+        width: 100%;
+    }
+    .tutor-availability-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 1.5rem !important;
         width: 100vw !important;
         max-width: 100vw !important;
         box-sizing: border-box !important;
-        margin: 0 !important;
-		padding-top: 7rem;
+        padding: 0 0.5rem !important;
+        overflow-x: hidden !important;
     }
-    .tutor-card-main-content,
-    .tutor-tabs-content,
-    .tutor-actions-card {
+    .tutor-calendar-box,
+    .tutor-time-selector-box {
+        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 340px !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
         padding-left: 0.5rem !important;
         padding-right: 0.5rem !important;
+        overflow-x: hidden !important;
+    }
+    .tutor-time-selector-col {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 auto !important;
         box-sizing: border-box !important;
-        width: 100vw !important;
-        max-width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+    .tutor-subtab-content {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .tutor-reviews-box {
+        flex-direction: column !important;
+        gap: 1rem !important;
+        align-items: center !important;
+        width: 100% !important;
+        max-width: 400px !important;
+        margin: 0 auto !important;
+    }
+    .tutor-reviews-summary, .tutor-reviews-details {
+        width: 100% !important;
+        padding: 0.5rem !important;
+        box-sizing: border-box !important;
+        margin: 0 auto !important;
+    }
+    /* REVERTIR estilos de .tutor-card-main y sus hijos a como estaban antes */
+    .tutor-card-main {
+        border-radius: 0rem;
+    }
+    .tutor-banner {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        height: 280px;
+        background: #000;
+    }
+    .tutor-banner::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 150px;
+        z-index: 2;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
+        pointer-events: none;
     }
     .tutor-profile-img {
         left: 50% !important;
         transform: translateX(-50%) !important;
         position: relative !important;
         top: 0 !important;
-        margin-bottom: 1rem !important;
+        margin-top: -5rem !important;
     }
     .tutor-profile-info {
         margin-left: 0 !important;
@@ -756,25 +908,41 @@
         margin-top: 0.5rem !important;
         text-align: center !important;
     }
-    .tutor-tabs-list {
-        gap: 0.2rem !important;
-        padding: 0 0.1rem !important;
-        overflow-x: auto !important;
+    .tutor-profile-meta {
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 1px;
     }
-    .tutor-section-skills-materia {
-        margin-left: 0 !important;
+    .tutor-profile-quote {
+        margin-top: 0rem;
     }
-    .tutor-actions-card {
-        position: static !important;
-        top: auto !important;
-    }
-    .tutor-reviews-box {
-        flex-direction: column !important;
-        gap: 1rem !important;
-    }
-    .tutor-reviews-summary, .tutor-reviews-details {
+    /* FIN REVERTIR estilos de .tutor-card-main */
+    /* Ajuste para que los textos largos en skills/materias hagan salto de línea */
+    .tutor-section-skills-grupos {
         width: 100% !important;
-        padding: 0.5rem !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+        word-break: break-word !important;
+    }
+    .tutor-section-skills-materias {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 1.2rem !important;
+        margin-top: 0.5rem !important;
+        margin-left: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+        word-break: break-word !important;
+    }
+    .tutor-skill-materia {
+        word-break: break-word !important;
+        white-space: normal !important;
+        max-width: 80vw !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
     }
 }
 .tutor-main-bg { background: #fff !important; } 
