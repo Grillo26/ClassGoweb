@@ -30,3 +30,5 @@ storage/app/google/credentials.json
 /public/storage/profile_videos
 config/firebase/*.json
 app/credentials/credential.json
+/storage/app/public/uploads/*
+/public/storage/uploads/*

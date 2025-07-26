@@ -8,8 +8,8 @@
     <div class="am-section-load" wire:loading wire:target="refresh">
         @include('skeletons.manage-account')
     </div>
-    <div>
-        {{-- <div class="stats-grid">
+    {{-- <div>
+        <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Ganancias totales</div>
                 <div class="stat-value amount">1,250 Bs</div>
@@ -23,7 +23,7 @@
                 <div class="stat-label">Tutorías completadas</div>
                 <div class="stat-value">82</div>
             </div>
-        </div> --}}
+        </div>  --}}
 
         <!-- Payment Methods Section -->
         <div class="payment-methods-section">
@@ -110,7 +110,7 @@
         </div>
 
         <!-- Transaction History -->
-      {{--   <div class="transaction-history">
+       <div class="transaction-history">
             <div class="section-header">
                 <h2 class="section-title">Historial de Transacciones</h2>
             </div>
@@ -153,7 +153,7 @@
                     </tbody>
                 </table>
             </div>
-        </div> --}}
+        </div> 
         @include('livewire.pages.tutor.manage-account.components.modal-por-definir')
         @include('livewire.pages.tutor.manage-account.components.modal-cuenta-bancaria')
         @include('livewire.pages.tutor.manage-account.components.modal-qr-nuevo')

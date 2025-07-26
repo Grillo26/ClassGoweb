@@ -9,7 +9,8 @@
                             <div class="tb-themeform__wrap">
                                 <div class="tb-actionselect">
                                     <a href="javascript:void(0)" id="add_user_click" class="tb-btn add-new"
-                                        data-bs-toggle="modal" data-bs-target="#tb-add-user">{{__('general.add_new_user')}}
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#tb-add-user">{{__('general.add_new_user')}}
                                         <i class="icon-plus"></i></a>
                                 </div>
                                 <div class="tb-actionselect" wire:ignore>
@@ -17,12 +18,14 @@
                                         <select data-componentid="@this" class="am-select2 form-control"
                                             data-searchable="false" data-live='true' id="verification"
                                             data-wiremodel="verification">
-                                            <option value="" {{ $verification=='' ? 'selected' : '' }}>{{ __('All users') }}
+                                            <option value="" {{ $verification=='' ? 'selected' : '' }}>{{ __('All
+                                                users') }}
                                             </option>
-                                            <option value="verified" {{ $verification=='verified' ? 'selected' : '' }}>{{
+                                            <option value="verified" {{ $verification=='verified' ? 'selected' : '' }}>
+                                                {{
                                                 __('Verified users') }}</option>
-                                            <option value="unverified" {{ $verification=='non_verified' ? 'selected' : ''
-                                                }}>{{ __('Non verified users') }}</option>
+                                            <option value="unverified" {{ $verification=='non_verified' ? 'selected'
+                                                : '' }}>{{ __('Non verified users') }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -31,7 +34,8 @@
                                         <select data-componentid="@this" class="am-select2 form-control"
                                             data-searchable="false" data-live='true' id="filter_user"
                                             data-wiremodel="filterUser">
-                                            <option value="" {{ $filterUser=='' ? 'selected' : '' }}>{{ __('All users') }}
+                                            <option value="" {{ $filterUser=='' ? 'selected' : '' }}>{{ __('All users')
+                                                }}
                                             </option>
                                             <option value="active" {{ $filterUser=='active' ? 'selected' : '' }}>{{
                                                 __('Active') }}</option>
@@ -46,9 +50,11 @@
                                             data-searchable="false" data-live='true' id="roles" data-wiremodel="roles">
                                             <option value="" {{ $roles=='' ? 'selected' : '' }}>{{ __('All users') }}
                                             </option>
-                                            <option value="student" {{ $roles=='student' || $role=='student' ? 'selected' : '' }}>{{
+                                            <option value="student" {{ $roles=='student' || $role=='student'
+                                                ? 'selected' : '' }}>{{
                                                 $student_name }}</option>
-                                            <option value="tutor" {{ $roles=='tutor' || $role=='tutor' ? 'selected' : '' }}>{{
+                                            <option value="tutor" {{ $roles=='tutor' || $role=='tutor' ? 'selected' : ''
+                                                }}>{{
                                                 $tutor_name }}</option>
                                         </select>
                                     </div>
@@ -56,8 +62,10 @@
                                 <div class="tb-actionselect" wire:ignore>
                                     <div class="tb-select">
                                         <select data-componentid="@this" class="am-select2 form-control"
-                                            data-searchable="false" data-live='true' id="sort_by" data-wiremodel="sortby">
-                                            <option value="asc" {{ $sortby=='asc' ? 'selected' : '' }}>{{ __('general.asc')
+                                            data-searchable="false" data-live='true' id="sort_by"
+                                            data-wiremodel="sortby">
+                                            <option value="asc" {{ $sortby=='asc' ? 'selected' : '' }}>{{
+                                                __('general.asc')
                                                 }}</option>
                                             <option value="desc" {{ $sortby=='desc' ? 'selected' : '' }}>{{
                                                 __('general.desc') }}</option>
@@ -77,7 +85,8 @@
             <div class="am-disputelist_wrap">
                 <div class="am-disputelist am-custom-scrollbar-y">
                     @if( !$users->isEmpty() )
-                    <table class="tb-table @if(setting('_general.table_responsive') == 'yes') tb-table-responsive @endif">
+                    <table
+                        class="tb-table @if(setting('_general.table_responsive') == 'yes') tb-table-responsive @endif">
                         <thead>
                             <tr>
                                 <th>{{ __('#' )}}</th>
@@ -98,74 +107,85 @@
                                 <td data-label="{{ __('Name' )}}">
                                     <div class="tb-varification_userinfo">
                                         <strong class="tb-adminhead__img">
-                                         
-                                          
-                                         
-                                         @if (!empty($single->profile->image) && file_exists(public_path('storage/' . $single->profile->image)))
-                                                <img src="{{ asset('storage/' . $single->profile->image) }}" alt="{{ $single->profile->image }}" />
+
+
+
+                                            @if (!empty($single->profile) && !empty($single->profile->image) &&
+                                            file_exists(public_path('storage/' . $single->profile->image)))
+                                            <img src="{{ asset('storage/' . $single->profile->image) }}"
+                                                alt="{{ $single->profile->image }}" />
                                             @else
-                                                   <img src="{{ setting('_general.default_avatar_for_user') ? asset('storage/' . setting('_general.default_avatar_for_user')[0]['path']) : asset('images/placeholder.png') }}" alt="{{ $single->profile->image }}" />   
+                                            <img src="{{ setting('_general.default_avatar_for_user') ? asset('storage/' . setting('_general.default_avatar_for_user')[0]['path']) : asset('images/placeholder.png') }}"
+                                                alt="avatar" />
                                             @endif
                                         </strong>
                                         <span>{{ $single->profile->full_name }}</span>
                                         @if($single->roles()->first()->name == 'tutor')
-                                            <a href="{{ route('tutor-detail',['slug' => $single->profile->slug]) }}" class="am-custom-tooltip">
-                                                <span class="am-tooltip-text">
-                                                    <span>{{ __('general.visit_profile') }}</span>
-                                                </span>
-                                                <i class="icon-external-link"></i>
-                                            </a>
+                                        <a href="{{ route('tutor-detail',['slug' => $single->profile->slug]) }}"
+                                            class="am-custom-tooltip">
+                                            <span class="am-tooltip-text">
+                                                <span>{{ __('general.visit_profile') }}</span>
+                                            </span>
+                                            <i class="icon-external-link"></i>
+                                        </a>
                                         @endif
                                     </div>
                                 </td>
                                 <td data-label="{{ __('general.email' )}}"><span>{{ $single->email }}</span></td>
-                                <td data-label="{{ __('general.created_date' )}}"><span>{{ $single->created_at->format('F d,
+                                <td data-label="{{ __('general.created_date' )}}"><span>{{
+                                        $single->created_at->format('F d,
                                         Y')}}</span></td>
                                 <td data-label="{{ __('admin/general.role') }}">
                                     {{ ucfirst( $single->roles()->first()->name ) }}
                                 </td>
                                 @php
-                                    $verified_at = $single->email_verified_at ? "verified" : "non_verified";
-                                    $content = $single->email_verified_at ? __('general.reject_account') : __('general.approve_this_account');
+                                $verified_at = $single->email_verified_at ? "verified" : "non_verified";
+                                $content = $single->email_verified_at ? __('general.reject_account') :
+                                __('general.approve_this_account');
                                 @endphp
-                                <td @click="$wire.dispatch('showConfirm', { id : {{ $single->id }}, content: '{{ $content }}', type: '{{ $verified_at }}', action : 'verified-at-template' })" data-label="{{ __('general.verification') }}">
-                                    <a href="javascript:;"
-                                       class="tb-email-verifiedbtn tk-project-tag"
-                                       @if (!$single->email_verified_at)
-                                           disabled
-                                       @endif>
+                                <td @click="$wire.dispatch('showConfirm', { id : {{ $single->id }}, content: '{{ $content }}', type: '{{ $verified_at }}', action : 'verified-at-template' })"
+                                    data-label="{{ __('general.verification') }}">
+                                    <a href="javascript:;" class="tb-email-verifiedbtn tk-project-tag" @if
+                                        (!$single->email_verified_at)
+                                        disabled
+                                        @endif>
                                         <i class="icon-mail"></i>
                                         {{ $single->email_verified_at ? "Verified" : "Non verified" }}
                                     </a>
                                 </td>
                                 <td @click="$wire.dispatch('showConfirm', { id : {{ $single->id }}, content: `{{ $single->status == 'active' ? __('general.disable_user') : __('general.enable_user') }}`, type: '{{ $single->status }}', action : 'update-status' })"
                                     data-label="{{__('general.status')}}">
-                                    <em class="tk-project-tag {{  $single->status == 'active' ? 'tk-hourly-tag' : 'tk-fixed-tag' }}">{{
+                                    <em
+                                        class="tk-project-tag {{  $single->status == 'active' ? 'tk-hourly-tag' : 'tk-fixed-tag' }}">{{
                                         $single->status}}</em>
                                 </td>
                                 <td data-label="{{__('general.identity_verification')}}">
                                     <div class="am-status-tag">
                                         <div class="am-status-tag">
-                                            <em class="tk-project-tag {{  !empty($single->profile->verified_at) ? 'tk-hourly-tag' : 'tk-fixed-tag' }}">{{
-                                                !empty($single->profile->verified_at) ? __('general.verified') : __('general.non_verified')}}</em>
+                                            <em
+                                                class="tk-project-tag {{  !empty($single->profile->verified_at) ? 'tk-hourly-tag' : 'tk-fixed-tag' }}">{{
+                                                !empty($single->profile->verified_at) ? __('general.verified') :
+                                                __('general.non_verified')}}</em>
                                         </div>
                                     </div>
                                 </td>
-                                <td  data-label="{{__('general.actions')}}">
+                                <td data-label="{{__('general.actions')}}">
                                     <div class="am-custom-tooltip">
                                         <span class="am-tooltip-text am-tooltip-textimp">
                                             <span>{{__('general.remove_user')}}</span>
                                         </span>
-                                        <i @click="$wire.dispatch('showConfirm', { id : {{ $single->id }}, content: '{{ __('general.delete_user') }}', action : 'delete-user' })" class="icon-trash-2"></i>
-                                    </div> 
+                                        <i @click="$wire.dispatch('showConfirm', { id : {{ $single->id }}, content: '{{ __('general.delete_user') }}', action : 'delete-user' })"
+                                            class="icon-trash-2"></i>
+                                    </div>
                                     <div class="am-custom-tooltip am-tooltip-textimp">
                                         <span class="am-tooltip-text">
                                             <span>{{ __('admin/general.impersonate_user') }}</span>
                                         </span>
                                         @if (!empty($single->email_verified_at))
-                                        <i @click="$wire.dispatch('showConfirm', { id : {{ $single->id }}, action : 'impersonate-user' })" class="icon-eye"></i>
+                                        <i @click="$wire.dispatch('showConfirm', { id : {{ $single->id }}, action : 'impersonate-user' })"
+                                            class="icon-eye"></i>
                                         @endif
-                                    </div> 
+                                    </div>
                                     <div class="am-custom-tooltip am-tooltip-textimp">
                                         <span class="am-tooltip-text">
                                             <span>Anonimizar perfil</span>
@@ -179,7 +199,7 @@
                     </table>
                     {{ $users->links('pagination.custom') }}
                     @else
-                        <x-no-record :image="asset('images/empty.png')"  :title="__('general.no_record_title')"/>
+                    <x-no-record :image="asset('images/empty.png')" :title="__('general.no_record_title')" />
                     @endif
                 </div>
             </div>
@@ -200,7 +220,8 @@
                                         <label class="tb-label">{{__('general.first_name')}}</label>
                                         <input type="text"
                                             class="form-control @error('form.first_name') tk-invalid @enderror"
-                                            wire:model="form.first_name" placeholder="{{__('general.name_placeholder')}}">
+                                            wire:model="form.first_name"
+                                            placeholder="{{__('general.name_placeholder')}}">
                                         @error('form.first_name')
                                         <div class="tk-errormsg">
                                             <span>{{$message}}</span>
@@ -221,7 +242,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="tb-label">{{__('general.email')}}</label>
-                                        <input type="text" class="form-control @error('form.email') tk-invalid @enderror"
+                                        <input type="text"
+                                            class="form-control @error('form.email') tk-invalid @enderror"
                                             wire:model="form.email" placeholder="{{__('general.email_placeholder')}}">
                                         @error('form.email')
                                         <div class="tk-errormsg">

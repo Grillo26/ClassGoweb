@@ -9,7 +9,8 @@ use App\Mail\TutorTutoriaNotificationMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Mail\AdminNuevaTutoriaMail;
-
+use App\Models\Subject as Materia;
+use Illuminate\Support\Facades\Auth;
 class MailService
 {
     /**
@@ -39,19 +40,14 @@ class MailService
     private function sendStudentNotification($tutoria, $meetingLink)
     {
         try {
-
-            //dd("Enviando correo al estudiante", $tutoria); 
             $studentProfile = optional($tutoria->student)->profile;
             $studentName = $tutoria->student->first_name . ' ' . $tutoria->student->last_name;
             $studentUser = optional($tutoria->student)->user;
-
             if (!$studentUser || !$studentUser->email) {
-
                 return;
             }
             $tutorProfile = optional($tutoria->tutor)->profile;
             $tutorName = $tutoria->tutor->first_name . ' ' . $tutoria->tutor->last_name;
-
             // ✅ USAR MAILABLE EN LUGAR DE HTML CRUDO
             Mail::to($studentUser->email)->send(new StudentTutoriaNotificationMail(
                 $studentName,
@@ -60,9 +56,6 @@ class MailService
                 $meetingLink,
                 $tutorName
             ));
-
-
-
         } catch (\Exception $e) {
             Log::error('Error al enviar correo al estudiante', [
                 'tutoria_id' => $tutoria->id,
@@ -128,16 +121,18 @@ class MailService
 
 
 
-    public function sendAdminNuevaTutoria($estudiante,$fechayhora,$tutor)
+    public function sendAdminNuevaTutoria($tutor, $materia)
     {
-
-    
+        $studiante = Auth::user();
+        $nombreEstudiante = $studiante->profile->full_name;
         $adminEmail = env('MAIL_ADMIN');
-        
+        $materia = Materia::find($materia);
+        $fechaHora = now()->format('d/m/Y H:i');
         Mail::to($adminEmail)->send(new AdminNuevaTutoriaMail(
-            $estudiante->name ?? ($estudiante->first_name . ' ' . $estudiante->last_name),
-            $fechayhora,
-            $tutor->profile->full_name ?? ($tutor->first_name . ' ' . $tutor->last_name)
+            $nombreEstudiante,
+            $fechaHora,
+            $tutor,
+            $materia->name
         ));
     }
 

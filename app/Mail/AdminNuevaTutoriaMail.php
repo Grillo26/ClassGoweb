@@ -12,32 +12,32 @@ class AdminNuevaTutoriaMail extends Mailable
     use Queueable, SerializesModels;
 
     public $nombre_estudiante;
-    public $sessionDate;
+    public $fechaHora;
     public $sessionTime;
     public $meetingLink;
     public $nombre_tutor;
 
+    public $nombre_materia;
 
 
 
-    public function __construct($nombre_estudiante, $sessionDate, $sessionTime, $nombre_tutor)
+
+    public function __construct($nombre_estudiante, $fechayhora, $nombre_tutor,$materia)
     {
         $this->nombre_estudiante = $nombre_estudiante;
-        $this->sessionDate = $sessionDate;
-        $this->sessionTime = $sessionTime;
+        $this->fechaHora = $fechayhora;
+        $this->nombre_materia = $materia;
         $this->nombre_tutor = $nombre_tutor;
     }
 
     public function build()
     {
-        return $this->view('emails.student-tutoria-notification')
+        return $this->view('emails.admin-nueva-tutoria')
                     ->subject('🎓 Nueva tutoría programada - ClassGo')
                     ->with([
                         'nombre_estudiante' => $this->nombre_estudiante,
-                        'sessionDate' => $this->sessionDate,
-                        'sessionTime' => $this->sessionTime,
+                        'sessionDate' => $this->fechaHora,
                         'nombre_tutor' => $this->nombre_tutor,
-                        
                     ]);
     }
 }
