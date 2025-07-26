@@ -755,7 +755,7 @@
         max-width: 100vw !important;
         min-width: 0 !important;
         margin: 0 !important;
-        border-radius: 0 !important;
+        border-radius: 30px !important;
         box-sizing: border-box !important;
         overflow-x: hidden !important;
         padding: 0 !important;
@@ -767,9 +767,9 @@
         box-sizing: border-box !important;
         overflow-x: auto !important;
         margin: 0 !important;
-        padding: 0 0.5rem !important;
-        scrollbar-width: thin !important;
-        -ms-overflow-style: auto !important;
+        padding: 0.4rem 0.5rem !important;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
     }
     .tutor-tabs-list {
         display: flex !important;
@@ -780,8 +780,8 @@
         overflow-x: auto !important;
         margin: 0 !important;
         padding: 0 !important;
-        scrollbar-width: thin !important;
-        -ms-overflow-style: auto !important;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
     }
     .tutor-tabs-list::-webkit-scrollbar {
         height: 4px !important;
@@ -944,5 +944,10 @@
         min-width: 0 !important;
         box-sizing: border-box !important;
     }
+	.tutor-subtab-btn{
+		width: 100px;
+		padding: 0.7rem 0.4rem;
+	}
+	
 }
 .tutor-main-bg { background: #fff !important; } 

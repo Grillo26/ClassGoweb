@@ -117,7 +117,7 @@
                                                 @foreach($materiasGrupo as $materia)
                                                     <span class="tutor-skill-materia" style="font-size:1rem;color:#023047;">{{ $materia }}</span>
                                                 @endforeach
-
+                                                
                                             </div>
                                         </div>
                                     @endforeach
@@ -167,7 +167,7 @@
                             </div>
                         </div>
                         <div id="curriculum" class="tutor-tab-content hidden">
-                           <nav class="tutor-subtabs-nav"><button onclick="changeSubTab(event, 'educacion')" class="tutor-subtab-btn active">Educación</button><button onclick="changeSubTab(event, 'experiencia')" class="tutor-subtab-btn">Experiencia</button><button onclick="changeSubTab(event, 'certificaciones')" class="tutor-subtab-btn">Certificaciones</button></nav>
+                           <nav class="tutor-subtabs-nav"><button onclick="changeSubTab(event, 'educacion')" class="tutor-subtab-btn active">Educación</button><button onclick="changeSubTab(event, 'experiencia')" class="tutor-subtab-btn">Experiencia</button><button onclick="changeSubTab(event, 'certificaciones')" class="tutor-subtab-btn">Certificación</button></nav>
                             <div id="educacion" class="tutor-subtab-content">
                                 <div class="tutor-empty-box">
                                     {{-- LOGICA PARA MOSTRAR DE BASE DE DATOS --}}
