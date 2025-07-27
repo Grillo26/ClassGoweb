@@ -158,7 +158,7 @@
                                     <div class="tutor-time-selector-box">
                                         <p class="tutor-time-range">Horario disponible: <span id="available-range">16:00 - 21:40</span></p>
                                         <div id="time-slots" class="tutor-time-slots"></div>
-                                        <button class="tutor-time-exact-btn">Elegir hora exacta</button>
+                                        {{-- <button class="tutor-time-exact-btn">Elegir hora exacta</button> --}}
                                     </div>
                                 </div>
                             </div>
