@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\AlianzaController;
 use App\Http\Controllers\Api\SubjectController;
 use App\Http\Controllers\Api\UserSubjectController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\BookingStatusController;
 
 
 /*
@@ -98,8 +99,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('reviews/{id}', [ReviewController::class, 'update']);
     Route::delete('reviews/{id}', [ReviewController::class, 'destroy']);
     Route::get('reviews/stats/{userId}', [ReviewController::class, 'getStats']);
-
+    
+    
 });
+// Ruta para cambiar el estado de una tutoría a "Cursando"
+Route::post('booking/change-to-cursando', [BookingStatusController::class, 'changeToCursando']);
 
 // Ruta para obtener el tiempo disponible del tutor (pública)
 Route::get('tutor/{id}/available-slots', [\App\Http\Controllers\Api\SubjectSlotController::class, 'getTutorAvailableSlots']);
