@@ -5,13 +5,13 @@ namespace App\Livewire\Admin;
 use App\Models\SlotBooking;
 use App\Services\GoogleMeetService;
 use App\Services\MailService;
+use App\Services\BookingNotificationService;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Log;
 use App\Services\ZoomService;
 use App\Mail\SessionBookingMail;
 use Illuminate\Support\Facades\Mail;
-use App\Events\SlotBookingStatusChanged;
 
 class TutoriasTable extends Component
 {
@@ -132,12 +132,12 @@ class TutoriasTable extends Component
                 'completado' => 5,
                 'cursando' => 6,
             ];
-            \Log::info('Valor recibido en modalStatus:', ['modalStatus' => $this->modalStatus]);
+            Log::info('Valor recibido en modalStatus:', ['modalStatus' => $this->modalStatus]);
             $nuevoStatus = $this->modalStatus;
             if (!is_numeric($nuevoStatus)) {
                 $nuevoStatus = $estados[strtolower($nuevoStatus)] ?? 2;
             }
-            \Log::info('Valor de status que se guardará:', ['nuevoStatus' => $nuevoStatus]);
+            Log::info('Valor de status que se guardará:', ['nuevoStatus' => $nuevoStatus]);
             $tutoria->status = $nuevoStatus;
             // Si el nuevo estado es 'Aceptada' (3), crear reunión Zoom y enviar correos
             if ($nuevoStatus == 1) {
@@ -189,9 +189,14 @@ class TutoriasTable extends Component
                 $tutorUser = $tutoria->tutor?->user;
 
             }
+            // Guardar el estado anterior para comparar
+            $oldStatus = $tutoria->status;
+            
             $tutoria->save();
-            // Emitir evento para notificación en tiempo real
-            event(new SlotBookingStatusChanged($tutoria->id, $tutoria->status));
+
+            // Usar el servicio centralizado para manejar notificaciones
+            $notificationService = new BookingNotificationService();
+            $notificationService->handleStatusChangeNotification($tutoria, $oldStatus, $nuevoStatus);
         }
         $this->dispatch('cerrar-modal-tutoria');
     }
