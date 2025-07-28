@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\SlotBooking;
+use App\Services\BookingNotificationService;
 use Illuminate\Http\Request;
-use function event;
 use function view;
 use function compact;
 use function redirect;
@@ -39,20 +39,17 @@ class SlotBookingAdminController extends Controller
     {
         $request->validate(['status' => 'required|string']);
         $tutoria = SlotBooking::findOrFail($id);
+        
+        // Guardar el estado anterior para comparar
+        $oldStatus = $tutoria->status;
+        
+        // Actualizar el estado
         $tutoria->status = $request->status;
         $tutoria->save();
 
-        \Log::info('Antes de emitir evento SlotBookingStatusChanged', [
-            'id' => $tutoria->id,
-            'status' => $tutoria->status
-        ]);
-
-        event(new \App\Events\SlotBookingStatusChanged($tutoria->id, $tutoria->status));
-
-        \Log::info('Después de emitir evento SlotBookingStatusChanged', [
-            'id' => $tutoria->id,
-            'status' => $tutoria->status
-        ]);
+        // Usar el servicio centralizado para manejar notificaciones
+        $notificationService = new BookingNotificationService();
+        $notificationService->handleStatusChangeNotification($tutoria, $oldStatus, $request->status);
 
         return redirect()->route('admin.tutorias.index')->with('success', 'Estado actualizado');
     }

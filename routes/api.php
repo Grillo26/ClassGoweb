@@ -105,6 +105,9 @@ Route::middleware('auth:sanctum')->group(function () {
 // Ruta para cambiar el estado de una tutoría a "Cursando"
 Route::post('booking/change-to-cursando', [BookingStatusController::class, 'changeToCursando']);
 
+// Ruta para cambiar el estado de una tutoría a "Aceptado" con notificación intensa
+Route::post('booking/change-to-aceptado', [BookingStatusController::class, 'changeToAceptado']);
+
 // Ruta para obtener el tiempo disponible del tutor (pública)
 Route::get('tutor/{id}/available-slots', [\App\Http\Controllers\Api\SubjectSlotController::class, 'getTutorAvailableSlots']);
 

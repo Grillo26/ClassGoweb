@@ -248,6 +248,38 @@ class NotificationService
         return $emailTemplate;
     }
 
+    /**
+     * Genera email de notificación intensa para cambios de estado de tutoría
+     */
+    public function getIntensiveBookingStatusEmail($content, $data)
+    {
+        $emailTemplate = array();
+        foreach ($content as $key => &$value) {
+            $content[$key] = Str::replace('{tutorName}', $data['tutorName'] ?? '', $value);
+            $content[$key] = Str::replace('{studentName}', $data['studentName'] ?? '', $value);
+            $content[$key] = Str::replace('{sessionDate}', $data['sessionDate'] ?? '', $value);
+            $content[$key] = Str::replace('{sessionTime}', $data['sessionTime'] ?? '', $value);
+            $content[$key] = Str::replace('{subject}', $data['subject'] ?? '', $value);
+            $content[$key] = Str::replace('{status}', $data['status'] ?? '', $value);
+            $content[$key] = Str::replace('{meetingLink}', $data['meetingLink'] ?? '', $value);
+            $content[$key] = Str::replace('{urgency}', $data['urgency'] ?? 'normal', $value);
+        }
+
+        $emailTemplate = $content;
+
+        // Agregar botón de acción urgente si es necesario
+        if (Str::contains($emailTemplate['content'], '{actionButton}')) {
+            $btnHtml = view('components.email.urgent-button', [
+                'btnText' => 'Ver Detalles de la Tutoría',
+                'btnUrl' => route('tutor.bookings.show', $data['bookingId'] ?? '#'),
+                'urgency' => $data['urgency'] ?? 'normal'
+            ]);
+            $emailTemplate['content'] = Str::replace("{actionButton}", $btnHtml, $emailTemplate['content']);
+        }
+        
+        return $emailTemplate;
+    }
+
     public function getSessionRequestEmail($content, $data)
     {
         $emailTemplate = array();
