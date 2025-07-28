@@ -44,7 +44,7 @@
 				</ul>
 			</div>
 
-			<button class="btn-outline">Empezar</button>
+			<a href=" {{ route('login')}} "><button class="btn-outline"> Empezar</button></a>
 			<div class="navbar-icon">
 				<i class="fa-solid fa-user-plus icon-white"></i>
 			</div>

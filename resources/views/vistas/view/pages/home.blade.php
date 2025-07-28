@@ -21,6 +21,9 @@
                 Alcanza tus metas con tutorías personalizadas de los mejores expertos.<br>
                 Conéctate con tutores dedicados para asegurar tu éxito.
             </p>
+            <p class="hero-subtext mobile">
+                Conéctate con tutores dedicados para asegurar tu éxito.
+            </p>
 
             <!-- Buscador -->
             <div class="search-box">
@@ -36,15 +39,15 @@
                     <i class="fa-solid fa-bolt-lightning"></i>
                     Tutor al Instante
                 </button>
-                <button><i class="fa-solid fa-calendar"></i>Agendar Tutoría</button>
+                <a href=" {{ route('buscar.tutor')}}"><button><i class="fa-solid fa-calendar"></i>Agendar Tutoría</button></a>
                 <button><i class="fa-solid fa-compass"></i>Explorar Tutores</button>
             </div>
         </div>
 
         <!-- Columna derecha: imagen -->
-        <div class="hero-image">
-            <img src="{{ asset('storage/optionbuilder/uploads/740102-17-2025_0859pmTugo-saludando.gif') }}" alt="Mascota ClassGo">
-        </div>
+       
+        <img src="{{ asset('storage/optionbuilder/uploads/740102-17-2025_0859pmTugo-saludando.gif') }}" alt="Mascota ClassGo">
+
 
        
     </div>
@@ -62,6 +65,7 @@
         <h1>Conoce a Nuestros Tutores Cuidadosamente Seleccionados</h1>
         <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p> 
     
+        <!--Componente tutor destacado-->
         <div class="tutors-carousel-viewport">
             <div class="tutors" id="tutorsContainer">
                 @include('components.tutors', [
