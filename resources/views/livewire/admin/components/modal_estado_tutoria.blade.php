@@ -1,4 +1,4 @@
-  <div wire:ignore.self class="modal fade" id="modalEstadoTutoria" tabindex="-1"
+<div wire:ignore.self class="modal fade" id="modalEstadoTutoria" tabindex="-1"
         aria-labelledby="modalEstadoTutoriaLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -23,3 +23,4 @@
             </div>
         </div>
     </div>
+</div>

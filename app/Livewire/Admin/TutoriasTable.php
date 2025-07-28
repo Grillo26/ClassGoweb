@@ -25,8 +25,21 @@ class TutoriasTable extends Component
     public $modalTutoriaId;
     public $modalStatus;
 
-    protected $paginationTheme = 'bootstrap';
-    protected $queryString = ['tutor', 'student', 'status'];
+    public $fecha; // Para una sola fecha
+    public $fecha_inicio;
+    public $fecha_fin;
+
+    public $modalPaymentStatus;
+    public $modalPaymentMethod;
+    public $modalPaymentMessage;
+    public $modalPaymentId;
+
+    public $successMessage = '';
+
+    public $errorMessage = '';
+
+
+    //protected $queryString = ['tutor', 'student', 'status'];
 
     public function updating($property)
     {
@@ -37,22 +50,61 @@ class TutoriasTable extends Component
 
     public function render()
     {
-        $query = SlotBooking::with(['tutor', 'student', 'paymentSlotBooking']);
+        $query = SlotBooking::with(['tutor', 'student', 'paymentSlotBooking', 'payment']);
+
+
+
         if ($this->status) {
             $query->where('status', $this->status);
         }
+
         if ($this->tutor) {
             $query->whereHas('tutor', function ($q) {
                 $q->where('first_name', 'like', '%' . $this->tutor . '%');
             });
         }
+
         if ($this->student) {
             $query->whereHas('student', function ($q) {
                 $q->where('first_name', 'like', '%' . $this->student . '%');
             });
         }
+
+        if ($this->status) {
+            $this->status = $this->estado($this->status);
+            $query->where('status', $this->status);
+        }
+
+        // Filtro por una sola fecha
+        if ($this->fecha) {
+            $query->whereDate('start_time', $this->fecha);
+        } elseif ($this->fecha_inicio && $this->fecha_fin) {
+            $query->whereBetween('start_time', [$this->fecha_inicio, $this->fecha_fin . ' 23:59:59']);
+        }
         $tutorias = $query->orderByDesc('start_time')->paginate($this->perPage);
+
         return view('livewire.admin.tutorias-table', compact('tutorias'));
+    }
+
+
+
+    public function estado($status)
+    {
+        switch ($status) {
+            case 'pendiente':
+                return 2;
+            case 'aceptado':
+                return 1;
+            case 'no_completado':
+                return 3;
+            case 'rechazado':
+                return 4;
+            case 'completado':
+                return 5;
+            default:
+                return 'Desconocido';
+        }
+
     }
 
     public function abrirModalTutoria($id, $status)
@@ -89,8 +141,9 @@ class TutoriasTable extends Component
             $tutoria->status = $nuevoStatus;
             // Si el nuevo estado es 'Aceptada' (3), crear reunión Zoom y enviar correos
             if ($nuevoStatus == 1) {
-                //$zoomService = new ZoomService();
+
                 $googlemeetservice = new GoogleMeetService;
+                $zoomService = new ZoomService();
                 $startTime = $tutoria->start_time ? date('c', strtotime($tutoria->start_time)) : null;
                 $duration = null;
                 if ($tutoria->start_time && $tutoria->end_time) {
@@ -98,7 +151,6 @@ class TutoriasTable extends Component
                     $end = strtotime($tutoria->end_time);
                     $duration = 20;
                 }
-
                 $meetingData = [
                     'host_email' => $tutoria->tutor?->email,
                     'topic' => 'Tutoría',
@@ -117,52 +169,143 @@ class TutoriasTable extends Component
                     'timezone' => 'America/La_Paz',
                 ];
 
-                //$zoomResponse = $zoomService->createMeeting($meetingData);
-                $result = $googlemeetservice->createMeeting($meetingDatameet);
+                $zoomResponse = $zoomService->createMeeting($meetingData);
+                $joinUrl = $zoomResponse['data']['join_url'];
+                //dd($joinUrl);
+                //$result = $googlemeetservice->createMeeting($meetingDatameet);
+
                 //dd($result); //
-                $tutoria->meeting_link = $result;
-               // dd($result);
-               /*  $studentProfile = $tutoria->student->profile;
+                $tutoria->meeting_link = $joinUrl;
+                // dd($result);
+                $studentProfile = $tutoria->student->profile;
                 $studentName = $studentProfile ? ($studentProfile->first_name . ' ' . $studentProfile->last_name) : '';
                 $studentUser = $tutoria->student?->user;
                 $mailService = new MailService();
-                $mailService->sendTutoriaNotification($tutoria, $result); */
-               /*  if ($studentUser) {
-                    Mail::to($studentUser->email)->send(new SessionBookingMail([
-                        'userName' => $studentName,
-                        'sessionDate' => date('d/m/Y', strtotime($tutoria->start_time)),
-                        'sessionTime' => date('H:i', strtotime($tutoria->start_time)),
-                        'meetingLink' => $result,
-                        'role' => 'Tutor',
-                        'oppositeName' => $tutoria->tutor?->profile?->first_name . ' ' . $tutoria->tutor?->profile?->last_name,
-                    ]));
-                } */
+                $mailService->sendTutoriaNotification($tutoria, $joinUrl);
+
                 // Enviar correo al tutor
-               /*  $tutorProfile = $tutoria->tutor->profile;
+                $tutorProfile = $tutoria->tutor->profile;
                 $tutorName = $tutorProfile ? ($tutorProfile->first_name . ' ' . $tutorProfile->last_name) : '';
                 $tutorUser = $tutoria->tutor?->user;
-                if ($tutorUser) {
-                     $mailService->sendTutoriaNotification($tutoria, $result);
-                     Mail::to($tutorUser->email)->send(new SessionBookingMail([
-                        'userName' => $tutorName,
-                        'sessionDate' => date('d/m/Y', strtotime($tutoria->start_time)),
-                        'sessionTime' => date('H:i', strtotime($tutoria->start_time)),
-                        'meetingLink' => $tutoria->meeting_link,
-                        'role' => 'Estudiante',
-                        'oppositeName' => $studentName,
-                    ])); 
-                } */
+
             }
             $tutoria->save();
-
             // Emitir evento para notificación en tiempo real
             event(new SlotBookingStatusChanged($tutoria->id, $tutoria->status));
         }
         $this->dispatch('cerrar-modal-tutoria');
     }
 
+
+
+    public function clearFilters()
+    {
+        $this->reset(['tutor', 'student', 'fecha', 'fecha_inicio', 'fecha_fin', 'status']);
+    }
+
+
+
+    public function abrirModalPagoTutor($tutoria)
+    {
+
+        $bookingId = is_array($tutoria) ? $tutoria['id'] : $tutoria->id;
+        
+        $pago = \App\Models\SlotPayment::where('slot_booking_id', $bookingId)->first();
+        
+        if ($pago) {
+            $this->modalPaymentId = $pago->id;
+            $this->modalPaymentStatus = $pago->status;
+            $this->modalPaymentMethod = $pago->payment_method;
+            $this->modalPaymentMessage = $pago->message;
+        }
+    }
+
+
+
+
+    public function updatePayment()
+    {
+
+        try {
+            $pago = \App\Models\SlotPayment::find($this->modalPaymentId);
+              //dd($pago,"adahsgdas");
+            if ($pago) {
+
+               
+                $estadoActual = (int) $pago->status;
+                $nuevoEstado = (int) $this->modalPaymentStatus;
+
+                // Definir transiciones válidas
+                $transicionesValidas = [
+                    1 => [2, 3], // pendiente -> pagado u observado
+                    3 => [2, 4], // observado -> pagado o cancelado
+                ];
+                // Si la transición no es válida, mostrar error y salir
+                if (
+                    ($estadoActual !== $nuevoEstado) && (
+                        !isset($transicionesValidas[$estadoActual]) ||
+                        !in_array($nuevoEstado, $transicionesValidas[$estadoActual])
+                    )
+                ) {
+                    $this->errorMessage = 'Transición de estado no válida.';
+
+                    $this->dispatch('cerrar-modal-pago-tutor');
+                    $this->dispatch('mostrar-modal-error', ['message' => $this->errorMessage]);
+                    return;
+                }
+
+                $pago->status = $nuevoEstado;
+                $pago->payment_method = $this->modalPaymentMethod;
+                $pago->message = $this->modalPaymentMessage;
+                $pago->save();
+
+
+                $this->dispatch('cerrar-modal-pago-tutor');
+            }
+            $this->successMessage = 'Pago actualizado correctamente.';
+            $this->dispatch('mostrar-modal-success', ['message' => $this->successMessage]);
+        } catch (\Exception $e) {
+            Log::error('Error al actualizar el pago: ' . $e->getMessage());
+            $this->dispatch('mostrar-mensaje-error', ['message' => 'Error al actualizar el pago.']);
+        }
+    }
+
+
+
+
     public function cerrarModalTutoria()
     {
         $this->showModal = false;
     }
+
+
+
 }
+
+
+
+
+/*  if ($tutorUser) {
+                      $mailService->sendTutoriaNotification($tutoria, $result);
+                      Mail::to($tutorUser->email)->send(new SessionBookingMail([
+                         'userName' => $tutorName,
+                         'sessionDate' => date('d/m/Y', strtotime($tutoria->start_time)),
+                         'sessionTime' => date('H:i', strtotime($tutoria->start_time)),
+                         'meetingLink' => $tutoria->meeting_link,
+                         'role' => 'Estudiante',
+                         'oppositeName' => $studentName,
+                     ])); 
+                 }  */
+
+
+
+/*  if ($studentUser) {
+                 Mail::to($studentUser->email)->send(new SessionBookingMail([
+                     'userName' => $studentName,
+                     'sessionDate' => date('d/m/Y', strtotime($tutoria->start_time)),
+                     'sessionTime' => date('H:i', strtotime($tutoria->start_time)),
+                     'meetingLink' => $result,
+                     'role' => 'Tutor',
+                     'oppositeName' => $tutoria->tutor?->profile?->first_name . ' ' . $tutoria->tutor?->profile?->last_name,
+                 ]));
+             }  */

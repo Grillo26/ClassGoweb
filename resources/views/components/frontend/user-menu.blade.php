@@ -35,11 +35,15 @@
     @endhasanyrole
     <div class="am-header_user_menu">
         <a href="javascript:void(0);">
-            <figure class="am-shimmer userImg">
+            {{-- <figure class="am-shimmer userImg">
                 <img x-cloak src="{{ $userImage }}" alt="{{ auth()?->user()?->profile?->full_name }}">
+            </figure> --}}
+            <figure class="am-shimmer userImg">
+                <img  src="{{ $userImage }}" alt="{{ auth()?->user()?->profile?->full_name }}">
             </figure>
+        
         </a>
-        <ul>
+      {{--   <ul>
             <li>
                 <div class="am-user_info">
                     <figure>
@@ -219,6 +223,6 @@
                     <i class="am-icon-sign-out-02"></i>
                     {{ __('general.sign_out') }}</a>
             </li>
-        </ul>
+        </ul> --}}
     </div>
 </div>
