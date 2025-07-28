@@ -38,6 +38,7 @@ use App\Livewire\Pages\Tutor\ManageSessions\MyCalendar;
 use App\Livewire\Pages\Tutor\ManageSessions\SessionDetail;
 use App\Livewire\Payouts;
 use App\Livewire\BuscarTutor;
+use App\Livewire\BuscadorTutor;
 use App\Http\Controllers\GoogleMeetController;
 use App\Services\GoogleMeetService;
 use Illuminate\Support\Facades\Route;
@@ -124,6 +125,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     //Route::get('/tutors', [HomeController::class, 'buscarTutor'])->name('buscar.tutor');
 
     Route::get('/buscar-tutor', BuscarTutor::class)->name('buscar.tutor');
+    Route::get('/kkkk', BuscadorTutor::class)->name('buscador.tutor');
 
 
 

@@ -20,14 +20,14 @@
             <div class="footer-about"> <!--List about-->
                 <div class="box">
                     <h1>Tutores</h1>
-                    <p>Tutores en linea</p>
+                    <a href=" {{ route('buscar.tutor')}}"><p>Tutores en linea</p></a>
 
                 </div>
                 <div class="box">
                     <h1>Inicia Hoy</h1>
    
-                    <p>Registrate</p>
-                    <p>Encontrar Tutor</p>
+                    <a href=" {{ route('register')}}"><p>Registrate</p></a>
+                    <a href="{{ route('buscar.tutor')}}"><p>Encontrar Tutor</p></a>
                 </div>
                 <div class="box">
                     <h1>Blog</h1>
@@ -36,25 +36,26 @@
                 <div class="box">
                     <h1>Opten la App</h1>
                     <p>¡Lleva tu educación a todas partes!</p>
+                    <img src="{{ asset('/uploads/216402-19-2025_0608pmgoogle-play.png')}}" alt="">
                 </div>
                 <div class="box">
-                    <h1>Nosotros</h1>
-                    <p>Mision</p>
-                    <p>Vision</p>
-                    <p>Logros clave</p>  
+                    <a href="{{ route('nosotros')}}"><h1>Nosotros</h1></a>
+                    <a href=" {{ route('nosotros')}}"><p>Mision</p></a>
+                    <a href=" {{ route('nosotros')}}"><p>Vision</p></a>
+                    <a href="{{ route('nosotros')}}"><p>Logros clave</p></a>
                 </div>
                 <div class="box">
                     <h1>Preguntas</h1>
-                    <p>Preguntas frecuentes</p> 
+                    <a href="preguntas"><p>Preguntas frecuentes</p> </a>
                 </div>
             </div>
 
         </div>
         <div class="container-redes">
-            <div class="circle-icon"><i class="fa-brands fa-tiktok fa-2x"></i></div>
-            <div class="circle-icon"><i class="fa-brands fa-facebook-f"></i></div>
-            <div class="circle-icon"><i class="fa-brands fa-instagram"></i></div>
-            <div class="circle-icon"><i class="fa-brands fa-whatsapp"></i></div>
+            <a href="https://www.tiktok.com/@classgoapp"><div class="circle-icon"><i class="fa-brands fa-tiktok fa-2x"></i></div></a>
+            <a href="https://www.facebook.com/profile.php?id=61578383078347"><div class="circle-icon"><i class="fa-brands fa-facebook-f"></i></div></a>
+            <a href="https://www.instagram.com/classgo_app/"><div class="circle-icon"><i class="fa-brands fa-instagram"></i></div></a>
+            <a href="https://wa.link/yiegi5"><div class="circle-icon"><i class="fa-brands fa-whatsapp"></i></div></a>
         </div>
         <hr>
         <p class="derechos-reservados">© 2025 classgobol. Todos los derechos reservados.</p>

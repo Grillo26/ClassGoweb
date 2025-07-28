@@ -26,12 +26,14 @@
             </p>
 
             <!-- Buscador -->
-            <div class="search-box">
+            {{-- <div class="search-box">
                 <input type="text" placeholder="Buscar Tutor...">
                 <button>
                     <i class="fa-solid fa-magnifying-glass icon-search"></i>
                 </button>
-            </div>
+            </div> --}}
+            @livewire('buscador-tutor')
+
 
             <!--Botones-->
             <div class="hero-buttons">
@@ -40,7 +42,7 @@
                     Tutor al Instante
                 </button>
                 <a href=" {{ route('buscar.tutor')}}"><button><i class="fa-solid fa-calendar"></i>Agendar Tutoría</button></a>
-                <button><i class="fa-solid fa-compass"></i>Explorar Tutores</button>
+                <a href=" {{ route('buscar.tutor')}}"><button><i class="fa-solid fa-compass"></i>Explorar Tutores</button></a>
             </div>
         </div>
 
@@ -87,31 +89,31 @@
 <section class="potencial-container">
     <h1 class="over-text"><div class="linea"></div>Una guía paso a paso<div class="linea"></div></h1>
     <h1>Desbloquea Tu Potencial Con Pasos Sencillos</h1>
-    <p>Descubra cómo nuestra plataforma simplifica la búsqueda y reserva de los mejores tutores para mejorar sus habilidades y alcanzar sus objetivos de aprendizaje.</p>
+    <p>Mejora tus habilidades con los mejores tutores, fácil y rápido.</p>
     <div class="steps">
         <!--CARD-->
         <div class="steps-card">
             <div class="numero-paso">Paso 1</div>
-            <img src="{{ asset('images/paso1.png') }}" alt="Pasos">
+            <img src="{{ asset('images/img2.jpg') }}" alt="Pasos">
             <h1>Inscríbete</h1>
             <p>Crea tu cuenta rápidamente para comenzar a utilizar nuestra plataforma</p>
-            <button>Empezar</button>
+            <a href=" {{ route('login')}}"><button>Empezar</button></a>
         </div> <!--FIN CARD-->
         <!--CARD-->
         <div class="steps-card">
             <div class="numero-paso">Paso 2</div>
-            <img src="{{ asset('images/paso2.png') }}" alt="Pasos">
+            <img src="{{ asset('images/img3.jpg') }}" alt="Pasos">
             <h1>Encuentra un tutor</h1>
             <p>Busca y selecciona entre tutores calificados según tus necesidades</p>
-            <button>Buscar Ahora</button>
+            <a href=" {{ route('buscar.tutor')}}"><button>Buscar Ahora</button></a>
         </div> <!--FIN CARD-->
         <!--CARD-->
         <div class="steps-card">
             <div class="numero-paso">Paso 3</div>
-            <img src="{{ asset('images/paso3.png') }}" alt="Pasos">
-            <h1>Programar una Sesión</h1>
-            <p>Reserva fácilmente un horario conveniente para tu Sesión</p>
-            <button>Empecemos</button>
+            <img src="{{ asset('images/img1.jpg') }}" alt="Pasos">
+            <h1>Reserva ahora</h1>
+            <p>Encuentra el mejor momento y agenda tu sesión fácilmente en nuestra palaforma.</p>
+            <a href=" {{ route('login')}}"><button>Empecemos</button></a>
         </div> <!--FIN CARD-->
 
         <!--COMIENZA TU JORNADA CARD-->
@@ -120,8 +122,8 @@
                 <i class="fa-solid fa-person-running"></i>
             </div>
             <h1>Comienza tu jornada</h1>
-            <p>Comienza tu viaje educativo con nosotros. ¡Encuentra un tutor y reserva tu primera sesión hoy mismo!</p>
-            <button class="button-go">Empieza ahora</button>
+            <p>Comienza tu viaje educativo con nosotros. ¡Reserva tu primera sesión hoy mismo!</p>
+            <a href="{{ route('buscar.tutor')}}"><button class="button-go">Empieza ahora</button></a>
         </div>
     </div>
 </section>
@@ -139,13 +141,16 @@
                 <li>Tutores Expertos</li>
                 <li>Tarifas asequibles</li>
             </ul>
-            <button class="button-comienza">Comienza Ahora</button>
+            <a href=" {{ route('login')}}"><button class="button-comienza">Comienza Ahora</button></a>
         </div>
         <!-- Imagen -->
         <div class="tutores-img">
-            <img src="{{ asset('images/tutorias.png') }}" alt="Mascota">
+            <img src="{{ asset('images/img4.jpg') }}" alt="Mascota">
         </div>
     </div>
+
+
+    <!-- ALIANZAS-->
     @include('components.alianzas', ['alianzas' => $alianzas])
 </section>
 

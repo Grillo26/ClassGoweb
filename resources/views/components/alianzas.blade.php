@@ -7,7 +7,9 @@
         @foreach($alianzas as $alianza)
             <div class="alianzas-card">
                 <img src="{{ $alianza->imagen ? asset('storage/' . $alianza->imagen) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $alianza->imagen }}">
-                <p>{{ $alianza->titulo }}</p>
+                <div class="centro">
+                    <p>{{ $alianza->titulo }}</p>
+                </div>
             </div>
         @endforeach
     </div>

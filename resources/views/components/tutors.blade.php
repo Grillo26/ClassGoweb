@@ -43,9 +43,11 @@
 			</div>
 		</div>
 		<div class="tutor-card-actions">
-			<button class="btn-profile">Ver Perfil</button>
+			<a href="{{ route('tutor', parameters: ['slug' => $profile->slug]) }}" ><button class="btn-profile">Ver Perfil</button></a>
+
 			<button class="btn-reserve">Reservar</button>
 		</div>
+
 	</div>
 </div>
  
