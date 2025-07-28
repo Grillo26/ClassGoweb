@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\SlotBooking;
+use App\Models\User;
 use App\Jobs\SendNotificationJob;
 use App\Events\SlotBookingStatusChanged;
 use Illuminate\Support\Facades\Log;
@@ -27,7 +28,7 @@ class BookingNotificationService
         ]);
 
         // Cargar relaciones necesarias
-        $booking->load(['tutor.user', 'booker.user', 'subject']);
+        $booking->load(['tutor', 'booker', 'subject']);
 
         // Caso 1: Cambio a "Aceptado" - Notificar al tutor Y al estudiante
         if ($newStatus === 'Aceptado' || $newStatus === '1') {
@@ -53,19 +54,22 @@ class BookingNotificationService
     private function sendAcceptedNotificationToTutor(SlotBooking $booking): void
     {
         try {
-            if (!$booking->tutor || !$booking->tutor->user) {
-                Log::warning('Tutor no encontrado para notificación de aceptación', [
-                    'booking_id' => $booking->id
+            // Obtener el usuario tutor directamente
+            $tutor = User::find($booking->tutor_id);
+            if (!$tutor) {
+                Log::warning('Usuario tutor no encontrado', [
+                    'booking_id' => $booking->id,
+                    'tutor_id' => $booking->tutor_id
                 ]);
                 return;
             }
 
-            $tutor = $booking->tutor->user;
-            $student = $booking->booker;
+            // Obtener el usuario estudiante directamente
+            $student = User::find($booking->student_id);
 
             $notificationData = [
-                'tutorName' => $booking->tutor->full_name ?? 'Tutor',
-                'studentName' => $student ? ($student->full_name ?? 'Estudiante') : 'Estudiante',
+                'tutorName' => $tutor->profile->full_name ?? 'Tutor',
+                'studentName' => $student ? ($student->profile->full_name ?? 'Estudiante') : 'Estudiante',
                 'sessionDate' => $booking->start_time ? date('d/m/Y', strtotime($booking->start_time)) : 'Fecha no definida',
                 'sessionTime' => $booking->start_time ? date('H:i', strtotime($booking->start_time)) : 'Hora no definida',
                 'subject' => $booking->subject ? $booking->subject->name : 'Materia no definida',
@@ -114,19 +118,22 @@ class BookingNotificationService
     private function sendAcceptedNotificationToStudent(SlotBooking $booking): void
     {
         try {
-            if (!$booking->booker || !$booking->booker->user) {
-                Log::warning('Estudiante no encontrado para notificación de aceptación', [
-                    'booking_id' => $booking->id
+            // Obtener el usuario estudiante directamente
+            $student = User::find($booking->student_id);
+            if (!$student) {
+                Log::warning('Usuario estudiante no encontrado', [
+                    'booking_id' => $booking->id,
+                    'student_id' => $booking->student_id
                 ]);
                 return;
             }
 
-            $student = $booking->booker->user;
-            $tutor = $booking->tutor;
+            // Obtener el usuario tutor directamente
+            $tutor = User::find($booking->tutor_id);
 
             $notificationData = [
-                'studentName' => $booking->booker->full_name ?? 'Estudiante',
-                'tutorName' => $tutor ? ($tutor->full_name ?? 'Tutor') : 'Tutor',
+                'studentName' => $student->profile->full_name ?? 'Estudiante',
+                'tutorName' => $tutor ? ($tutor->profile->full_name ?? 'Tutor') : 'Tutor',
                 'sessionDate' => $booking->start_time ? date('d/m/Y', strtotime($booking->start_time)) : 'Fecha no definida',
                 'sessionTime' => $booking->start_time ? date('H:i', strtotime($booking->start_time)) : 'Hora no definida',
                 'subject' => $booking->subject ? $booking->subject->name : 'Materia no definida',
@@ -175,19 +182,22 @@ class BookingNotificationService
     private function sendCursandoNotificationToStudent(SlotBooking $booking): void
     {
         try {
-            if (!$booking->booker || !$booking->booker->user) {
-                Log::warning('Estudiante no encontrado para notificación de cursando', [
-                    'booking_id' => $booking->id
+            // Obtener el usuario estudiante directamente
+            $student = User::find($booking->student_id);
+            if (!$student) {
+                Log::warning('Usuario estudiante no encontrado', [
+                    'booking_id' => $booking->id,
+                    'student_id' => $booking->student_id
                 ]);
                 return;
             }
 
-            $student = $booking->booker->user;
-            $tutor = $booking->tutor;
+            // Obtener el usuario tutor directamente
+            $tutor = User::find($booking->tutor_id);
 
             $notificationData = [
-                'studentName' => $booking->booker->full_name ?? 'Estudiante',
-                'tutorName' => $tutor ? ($tutor->full_name ?? 'Tutor') : 'Tutor',
+                'studentName' => $student->profile->full_name ?? 'Estudiante',
+                'tutorName' => $tutor ? ($tutor->profile->full_name ?? 'Tutor') : 'Tutor',
                 'sessionDate' => $booking->start_time ? date('d/m/Y', strtotime($booking->start_time)) : 'Fecha no definida',
                 'sessionTime' => $booking->start_time ? date('H:i', strtotime($booking->start_time)) : 'Hora no definida',
                 'subject' => $booking->subject ? $booking->subject->name : 'Materia no definida',
