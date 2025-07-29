@@ -59,7 +59,7 @@
     </div>
     <h1>Explora más tutores</h1>
     <p>Comienza tu viaje educativo con nosotros. ¡Encuentra un tutor y reserva tu primera sesión hoy mismo!</p>
-    <button class="button-go">Buscar Tutor</button>
+    <a href="{{ route('buscar.tutor')}}"><button class="button-go">Buscar Tutor</button></a>
 </div>
 </div>
   

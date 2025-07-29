@@ -54,7 +54,7 @@
                             </p>
                         </div>
                         <div class="trabajamos-image">
-                            <img src="{{ asset('images/Tugo tecnológico2.png') }}" alt="Estudiante completando datos">
+                            <img src="{{ asset('images/home/Tugotecnológico.webp') }}" alt="Estudiante completando datos">
                         </div>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
                             </p>
                         </div>
                         <div class="trabajamos-image">
-                            <img src="{{ asset('images/TuGo con laptop.png') }}" alt="Estudiante usando filtros">
+                            <img src="{{ asset('images/home/Tugoconlaptop.webp') }}" alt="tugoconlaptop">
                         </div>
                     </div>
                 </div>
@@ -99,7 +99,7 @@
                             </ol>
                         </div>
                         <div class="trabajamos-image">
-                            <img src="{{ asset('images/Tugo profesor.png') }}" alt="Estudiante reservando">
+                            <img src="{{ asset('images/home/Tugoprofesor.webp') }}" alt="tugoprofesor">
                         </div>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                             </p>
                         </div>
                         <div class="trabajamos-image">
-                            <img src="{{ asset('images/Tugo_With_Phone.png') }}" alt="Estudiante en clase">
+                            <img src="{{ asset('images/home/Tugo_With_Phone.webp') }}" alt="Estudiante en clase">
                         </div>
                     </div>
                 </div>
@@ -140,7 +140,7 @@
                             </p>
                         </div>
                         <div class="trabajamos-image">
-                            <img src="{{ asset('images/TuGo con Megáfono.png') }}" alt="Estudiante dando feedback">
+                                <img src="{{ asset('images/home/TuGoconMegafono.webp') }}" alt="Estudiante dando feedback">
                         </div>
                     </div>
                 </div>
@@ -161,7 +161,7 @@
                             </p>
                         </div>
                         <div class="trabajamos-image">
-                            <img src="{{ asset('images/tugoprofesor2.png') }}" alt="Tutor completando perfil">
+                            <img src="{{ asset('images/home/Tugoprofesor2.webp') }}" alt="Tutor completando perfil">
                         </div>
                     </div>
                 </div>
@@ -170,7 +170,7 @@
                 <div class="trabajamos-section-white">
                     <div class="trabajamos-section-content">
                         <div class="trabajamos-image">
-                            <img src="{{ asset('images/Tugo_With_Glasses2.png') }}" alt="Tutor completando perfil">
+                            <img src="{{ asset('images/home/Tugo_With_Glasses2.webp') }}" alt="Tutor completando perfil">
                         </div>
                         <div class="trabajamos-text">
                             <div class="trabajamos-icon">
@@ -199,7 +199,7 @@
                             </p>
                         </div>
                         <div class="trabajamos-image">
-                            <img src="{{ asset('images/Tugo profesor.png') }}" alt="Estudiante reservando">
+                            <img src="{{ asset('images/home/Tugoprofesor.webp') }}" alt="Estudiante reservando">
                         </div>
                     </div>
                 </div>
@@ -219,7 +219,7 @@
                             </p>
                         </div>
                         <div class="trabajamos-image">
-                            <img src="{{ asset('images/Tugo_With_Phone.png') }}" alt="Estudiante en clase">
+                            <img src="{{ asset('images/home/Tugo_With_Phone.webp') }}" alt="Estudiante en clase">
                         </div>
                     </div>
                 </div>

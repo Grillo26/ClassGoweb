@@ -13,9 +13,10 @@
                 </div>
                 <div class="info-text">
                     <i class="fa-brands fa-whatsapp icon"></i>
-                    <p>77573997</p>
+                    <a href="https://wa.link/yiegi5"><p>77573997</p>    </a>
                 </div>
-                <button class="btn-registrate">Registrate Gratis</button>
+                <a href=" {{ route('register')}}"><button class="btn-registrate">Registrate Gratis</button></a>
+
             </div>
             <div class="footer-about"> <!--List about-->
                 <div class="box">
@@ -36,7 +37,7 @@
                 <div class="box">
                     <h1>Opten la App</h1>
                     <p>¡Lleva tu educación a todas partes!</p>
-                    <img src="{{ asset('/uploads/216402-19-2025_0608pmgoogle-play.png')}}" alt="">
+                    <a href="https://play.google.com/store/apps/details?id=com.neurasoft.classgo"><img src="{{ asset('images/googleplay.png')}}" alt="" style=" width: 150px; padding-top: 1rem;"></a>
                 </div>
                 <div class="box">
                     <a href="{{ route('nosotros')}}"><h1>Nosotros</h1></a>

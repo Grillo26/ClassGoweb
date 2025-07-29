@@ -94,7 +94,7 @@
         <!--CARD-->
         <div class="steps-card">
             <div class="numero-paso">Paso 1</div>
-            <img src="{{ asset('images/img2.jpg') }}" alt="Pasos">
+            <img src="{{ asset('images/home/img1.webp') }}" alt="Pasos">
             <h1>Inscríbete</h1>
             <p>Crea tu cuenta rápidamente para comenzar a utilizar nuestra plataforma</p>
             <a href=" {{ route('login')}}"><button>Empezar</button></a>
@@ -102,15 +102,15 @@
         <!--CARD-->
         <div class="steps-card">
             <div class="numero-paso">Paso 2</div>
-            <img src="{{ asset('images/img3.jpg') }}" alt="Pasos">
+            <img src="{{ asset('images/home/img22.webp') }}" alt="Pasos">
             <h1>Encuentra un tutor</h1>
-            <p>Busca y selecciona entre tutores calificados según tus necesidades</p>
+            <p>Busca y selecciona entre tutores calificados según tus necesidades.</p>
             <a href=" {{ route('buscar.tutor')}}"><button>Buscar Ahora</button></a>
         </div> <!--FIN CARD-->
         <!--CARD-->
         <div class="steps-card">
             <div class="numero-paso">Paso 3</div>
-            <img src="{{ asset('images/img1.jpg') }}" alt="Pasos">
+            <img src="{{ asset('images/home/img3.webp') }}" alt="Pasos">
             <h1>Reserva ahora</h1>
             <p>Encuentra el mejor momento y agenda tu sesión fácilmente en nuestra palaforma.</p>
             <a href=" {{ route('login')}}"><button>Empecemos</button></a>
@@ -128,6 +128,60 @@
     </div>
 </section>
 
+<!-- Contenedor principal de la sección -->
+<section class="section-app">
+  <div class="container-app">
+    <!-- Grid responsivo -->
+    <div class="grid-app">
+
+      <!-- Columna Izquierda: Contenido de texto -->
+      <div class="text-app">
+        <p>Fácil, simple y rápido</p>
+        <h1>Instala nuestra App</h1>
+        <p>Comienza tu viaje educativo con nosotros. ¡Instalate hoy mismo nuestra app!</p>
+
+        <!-- Lista de características -->
+        <ul class="list-app">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <span>Acceso 24/7</span>
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <span>Tutores Expertos</span>
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <span>Tarifas Asequibles</span>
+          </li>
+        </ul>
+
+        <!-- Botón -->
+        <div>
+          <a href="https://play.google.com/store/apps/details?id=com.neurasoft.classgo" class="btn-app">Descargar Ahora</a>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Imagen -->
+      <div class="image-app">
+        <img 
+          src="{{ asset('images/home/iphone.webp')}}" 
+          alt="ClassGo"
+          onerror="this.onerror=null;this.src='https://placehold.co/400x800/023047/FFFFFF?text=App';"
+        >
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
 <!--HERO TUTORIAS Y ALIANZAS-->
 <section class="tutorias-container">
     <div class="tutorias">
@@ -136,16 +190,13 @@
             <p class="tutores-text-encima">¿Buscas tutorías personalizadas?</p>
             <h1>En Classgo, te conectamos con los mejores tutores</h1>
             <p>Accede a sesiones cortas y prácticas, diseñadas por tutores expertos para ser pequeños salvavidas en el aprendizaje</p>
-            <ul class="tutores-list">
-                <li>Acceso 25/7</li>
-                <li>Tutores Expertos</li>
-                <li>Tarifas asequibles</li>
-            </ul>
+
             <a href=" {{ route('login')}}"><button class="button-comienza">Comienza Ahora</button></a>
+            
         </div>
         <!-- Imagen -->
         <div class="tutores-img">
-            <img src="{{ asset('images/img4.jpg') }}" alt="Mascota">
+            <img src="{{ asset('images/home/img2.webp') }}" alt="Mascota">
         </div>
     </div>
 

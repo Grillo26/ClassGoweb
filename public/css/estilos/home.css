@@ -361,7 +361,7 @@ body{
 }
 
 .indicator.active {
-  background: #667eea;
+  background: var(--primary-color);
 }
 
 .carousel-info {
@@ -628,7 +628,7 @@ i.fa-solid.fa-book.icon::before{
 /* === Potencial Container === */
 .potencial-container {
   width: 100%;
-  background: var(--primary-color);
+  background: linear-gradient(135deg, #219EBC 0%, #023047 100%);
   color: white;
   padding: 3rem;
   display: flex;
@@ -683,22 +683,23 @@ i.fa-solid.fa-book.icon::before{
   scroll-snap-align: start;
 }
 .steps-card button, .go button {
-  width: 90%;
-  min-width: 120px;
-  max-width: 100%;
-  height: 40px;
-  font-size: 1rem;
+  font-size: 1.125rem;
+    font-weight: 200;
+  padding: 0.75rem 2rem;
+
   background-color: var(--terciary-color2);
-  border-radius: 10px;
+  border-radius: 9999px;
   border: none;
   color: white;
-  margin: 0 auto 0.5rem auto;
   box-sizing: border-box;
   margin-top: auto;
-  position: static;
+    transition: opacity 0.3s ease;
+      display: inline-block;
 }
 .go button {
   background-color: var(--primary-color);
+  min-width: 130px;
+
 }
 .steps::-webkit-scrollbar {
   display: none;
@@ -798,17 +799,7 @@ i.fa-solid.fa-book.icon::before{
   -webkit-box-orient: vertical;
 }
 .steps-card button, .go button {
-  width: 90%;
-  min-width: 120px;
-  max-width: 100%;
-  height: 40px;
-  font-size: 1rem;
-  background-color: var(--terciary-color2);
-  border-radius: 10px;
-  border: none;
-  color: white;
-  margin: 0 auto 0.5rem auto;
-  box-sizing: border-box;
+  
 }
 .go {
   background: var(--secundary-color);
@@ -861,10 +852,12 @@ i.fa-solid.fa-book.icon::before{
   flex-wrap: wrap; /* permite que los elementos se acomoden en pantallas pequeñas */
   align-items: center;
   justify-content: space-between;
-  max-width: 1200px;
-  margin: 0 auto;
+  margin: 0rem;
+  padding: 0rem 4rem;
+  height: 40vw;
   gap: 2rem;
   color: var(--primary-color);
+  background: var(--panel-background);
 }
 
 /* Texto izquierdo */
@@ -901,15 +894,17 @@ i.fa-solid.fa-book.icon::before{
 
 /* Botón */
 .button-comienza {
-  width: 200px;
-  height: 50px;
-  font-size: 1rem;
+   margin-top: 2rem;
   background-color: var(--secundary-color);
-  border-radius: 10px;
-  border: none;
   color: white;
-  cursor: pointer;
-  transition: background 0.3s ease;
+  font-weight: bold;
+  padding: 0.90rem 2rem;
+  border-radius: 9999px;
+  font-size: 1.125rem;
+  text-decoration: none;
+  display: inline-block;
+  transition: opacity 0.3s ease;
+  border: none;
 }
 
 .button-comienza:hover {
@@ -918,7 +913,7 @@ i.fa-solid.fa-book.icon::before{
 
 /* Imagen derecha */
 .tutores-img {
-  flex: 1 1 300px;
+  flex: 1 1 350px;
   display: flex;
   justify-content: center;
   padding: 1rem;
@@ -926,8 +921,134 @@ i.fa-solid.fa-book.icon::before{
 
 .tutores-img img {
   max-width: 100%;
-  height: auto;
+  height: 360px;
+  width: 800px;
   border-radius: 20px;
+} 
+
+/*----- seccion instalate nuestra aplicion------*/
+/* Contenedor principal */
+.section-app {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 10rem;
+  background: white;
+}
+
+/* Contenedor interno */
+.container-app {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 1.5rem;
+}
+
+/* Grid de contenido */
+.grid-app {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+.grid-app .text-app p{
+  margin-bottom: 0.8rem !important;
+}
+
+/* Para pantallas medianas y grandes */
+@media (min-width: 768px) {
+  .grid-app {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Columna de texto */
+.text-app {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .text-app {
+    text-align: left;
+  }
+}
+
+.text-app h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.text-app p {
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+}
+
+.list-app {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 300px;
+  text-align: left;
+}
+
+.list-app li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+  font-size: 1rem;
+}
+
+.list-app svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--terciary-color2);
+}
+
+.btn-app {
+  margin-top: 2rem;
+  background-color: var(--secundary-color);
+  color: white;
+  font-weight: bold;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-size: 1.125rem;
+  text-decoration: none;
+  display: inline-block;
+  transition: opacity 0.3s ease;
+}
+
+.btn-app:hover {
+  opacity: 0.9;
+}
+
+/* Columna de imagen */
+.image-app {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+  background: transparent;
+}
+
+.image-app img {
+  border-radius: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.20);
+  transition: transform 0.5s ease;
+  transform: rotate(6deg);
+  max-width: 450px;
+  width: 270px;
+  background-color: transparent;
+  height: auto;
+}
+
+.image-app img:hover {
+  transform: rotate(0deg) scale(1.05);
 }
 
 /* ====== MEDIA QUERIES ====== */
@@ -947,7 +1068,7 @@ i.fa-solid.fa-book.icon::before{
 /* Contenedor general */
 .alianzas {
   text-align: center;
-  padding: 2rem 1rem;
+  padding: 5rem 1rem 1rem 1rem;
 }
 
 /* Línea decorativa */
@@ -955,7 +1076,7 @@ i.fa-solid.fa-book.icon::before{
   display: inline-block;
   width: 40px;
   height: 3px;
-  background-color: var(--primary-color);
+  background-color: var(--secundary-color);
   margin: 0 10px;
   vertical-align: middle;
 }
@@ -1378,7 +1499,9 @@ i.fa-solid.fa-book.icon::before{
 .mas-tutor-card button {
   margin-bottom: 0rem;
 }
-  /* Guía paso a paso: cards ocupan ancho */
+
+
+  /* ------Guía paso a paso -----*/
   .potencial-container {
     align-items: center;
     padding: 3rem 1rem;
@@ -1386,11 +1509,9 @@ i.fa-solid.fa-book.icon::before{
   .potencial-container h1{
     line-height: 40px;
   }
-  .potencial-container h1,p{
-    padding: 1rem;
-  }
   .potencial-container p{
-    text-align: justify;
+    text-align: center;
+    padding: 1rem;
   }
   .numero-paso{
     justify-content: center;
@@ -1414,30 +1535,55 @@ i.fa-solid.fa-book.icon::before{
   width: 100%;
   max-width: 300px;
   min-height: 120px;
+  height: 200px;
   border-radius: 10px;
   margin: 0 auto;
   display: block;
 }
 .steps-card button, .go button {
-  width: 40vw;
-  height: 50px;
-  font-size: 1rem;
+  
+  font-size: 1.125rem;
+    font-weight: bold;
+  padding: 0.75rem 2rem;
+
   background-color: var(--terciary-color2);
-  border-radius: 10px;
+  border-radius: 9999px;
   border: none;
   color: white;
-  margin: 0 auto 0.5rem auto;
   box-sizing: border-box;
   margin-top: auto;
-  position: static;
+    transition: opacity 0.3s ease;
+      display: inline-block;
+
+
+}
+
+.steps-card p{
+  height: 100%;
+  padding: 0rem 1rem;
+  margin: 0rem;
+}
+.go p{
+  height: 100%;
+  padding: 0rem 1rem;
+}
+
+.go .numero-paso i{
+  font-size: 2rem;
 }
 
 
-  /* ------------- SECCION TUTORIAS -------------- */
 
+
+
+  /* ------------- SECCION TUTORIAS -------------- */
+.tutorias-container{
+  padding: 0rem;
+}
   .tutorias {
     flex-direction: column-reverse;
     text-align: center;
+    display: none;
   }
 
   .tutores-text {
@@ -1475,7 +1621,9 @@ i.fa-solid.fa-book.icon::before{
     font-size: 0.95rem;
     padding: 0 1rem;
   }
-
+.alianzas .over-text h1{
+  font-size: 1px !important;
+}
   .steps-alianzas {
   display: flex;
   flex-wrap: nowrap;
@@ -1497,6 +1645,7 @@ i.fa-solid.fa-book.icon::before{
 }
 
 /* Cards individuales */
+
 .alianzas-card {
   flex: 0 0 auto; /* Impide que se encogen y define ancho fijo */
   width: 90%;
@@ -1529,6 +1678,15 @@ i.fa-solid.fa-book.icon::before{
   .steps-alianzas::-webkit-scrollbar-thumb {
     background-color: var(--primary-color);
     border-radius: 4px;
+  }
+
+  /*<-------- SECCION APP ------->*/
+  .section-app {
+  padding: 0rem 0rem;
+  margin: 0rem 0rem;
+  }
+  .grid-app .text-app p{
+  margin-bottom: 0rem;
   }
 
 

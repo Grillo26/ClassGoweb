@@ -23,7 +23,7 @@
                         </p>
                     </div>
                     <div class="nosotros-header-image">
-                        <img src="{{ asset('storage/optionbuilder/uploads/72002-15-2025_1048pmTugo 2.png') }}"
+                        <img src="{{ asset('images/home/tugo2.webp') }}"
                             alt="Misión ClassGo" class="tugo-image">
                     </div>
                 </div>
@@ -56,13 +56,13 @@
                             Tutorías disponibles
                         </span>
                     </p>
-                    <img src="{{ asset('images/mision.png') }}" alt="Misión ClassGo" class="tugo-image">
+                    <img src="{{ asset('images/home/mision.webp') }}" alt="Misión ClassGo" class="tugo-image">
                 </div>
             </div>
 
             <div class="nosotros-vision">
                 <div class="vision-image">
-                    <img src="{{ asset('images/tutorias.png') }}"
+                    <img src="{{ asset('images/home/vision.webp') }}"
                         alt="Visión ClassGo" class="tugo-image">
                 </div>
                 <div class="nosotros-vision-text">

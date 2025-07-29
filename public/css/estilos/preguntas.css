@@ -27,7 +27,7 @@
 }
 
 .preguntas-header-content {
-  background: var(--primary-color);
+  background: var(--bg-gradient2);
   border-bottom-left-radius: 40px;
   border-bottom-right-radius: 40px;
   display: flex;

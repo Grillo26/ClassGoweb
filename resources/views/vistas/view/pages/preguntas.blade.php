@@ -110,7 +110,7 @@
                             </div>
                         </div>
                         <div class="preguntas-image">
-                            <img src="{{ asset('images/TugoUniversitario.png') }}" alt="Estudiante con preguntas">
+                            <img src="{{ asset('images/home/TugoUniversitario.webp') }}" alt="Estudiante con preguntas">
                         </div>
                     </div>
                 </div>
@@ -170,7 +170,7 @@
                             </div>
                         </div>
                         <div class="preguntas-image">
-                            <img src="{{ asset('images/Tugo_Ing.Sistemas.png') }}" alt="Tutor con preguntas">
+                            <img src="{{ asset('images/home/Tugotecnológico.webp') }}" alt="Tutor con preguntas">
                         </div>
                     </div>
                 </div>

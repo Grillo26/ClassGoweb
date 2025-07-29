@@ -24,14 +24,14 @@
 }
 
 .trabajamos-header-content {
-  background: var(--primary-color);
+  background: var(--bg-gradient2);
   /* background: linear-gradient(180deg, rgba(7, 59, 76, 1) 64%, rgba(24, 77, 94, 1) 77%, rgba(33, 158, 188, 1) 100%); */
   border-bottom-left-radius: 40px;
   border-bottom-right-radius: 40px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 11rem 5rem 0rem 5rem;
+  padding: 13rem 5rem 0rem 5rem;
   color: white;
   text-align: left;
   flex-direction: column;
