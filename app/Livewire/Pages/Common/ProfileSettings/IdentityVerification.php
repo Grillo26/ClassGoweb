@@ -174,7 +174,6 @@ class IdentityVerification extends Component
             $this->data['address']['lat'] = 0.0;
             $this->data['address']['long'] = 0.0;
             DB::beginTransaction();
-            //dd($this->data, "data");
             $userIdentity = $this->userIdentity->setUserIdentityVerification($this->data['identityInfo']);
             $this->userIdentity->setUserAddress($userIdentity?->id, $this->data['address']);
             DB::commit();
