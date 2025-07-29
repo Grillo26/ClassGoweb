@@ -45,9 +45,16 @@
 			</div>
 
 			<a href=" {{ route('login')}} "><button class="btn-outline"> Empezar</button></a>
-			<div class="navbar-icon">
-				<i class="fa-solid fa-user-plus icon-white"></i>
-			</div>
+			@auth
+			    <a href="#"><img src="{{ Auth::user()->img ?? asset('images/default.png') }}" 
+			        alt="Foto de perfil" 
+			        class="navbar-profile-img"
+			        style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; cursor: pointer;"></a>
+			@else
+				<div class="navbar-icon">
+					<a href=" {{ route('login')}}"><i class="fa-solid fa-user-plus icon-white"></i></a>
+				</div>			
+			@endauth
 
 			<!-- Menú Hamburguesa -->
 			<div class="hamburger-menu" id="hamburger-menu">

@@ -1,0 +1,216 @@
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 20px;
+    display: none; /* Oculto por defecto */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 800px;
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Modal Container */
+.modal-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+/* Column Left (QR) */
+.modal-left {
+    width: 100%;
+    max-width: 250px;
+    background-color: #f7f7f7;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qr-image {
+    max-width: 100%;
+    border-radius: 10px;
+    object-fit: contain;
+}
+
+/* Column Right (Form) */
+.modal-right {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Title */
+.modal-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+/* Labels and Inputs */
+.label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a4a4a;
+    margin-bottom: 8px;
+}
+
+.file-input-label {
+    cursor: pointer;
+    color: #007bff;
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+.hidden {
+    display: none;
+}
+
+.file-name {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* Select */
+.select-container {
+    margin-bottom: 16px;
+}
+
+.select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+.select:focus {
+    border-color: #007bff;
+}
+
+/* Date and Time */
+.datetime-container {
+    background-color: #f8f9fa;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #495057;
+    margin-top: 12px;
+}
+
+/* Buttons */
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.btn {
+    padding: 14px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-btn {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.cancel-btn:hover {
+    background-color: #e2e2e2;
+}
+
+.reserve-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.reserve-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Button Box */
+.tutor-pay-btn-box {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.tutor-pay-btn {
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tutor-pay-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .modal-container {
+        flex-direction: column;
+    }
+
+    /* Columna Izquierda (QR) */
+    .modal-left {
+        width: 100%;
+        max-width: none;
+        margin-bottom: 20px;
+    }
+
+    /* Columna Derecha (Formulario) */
+    .modal-right {
+        padding: 15px;
+    }
+
+    /* Ajustes a la imagen QR */
+    .qr-image {
+        width: 100%;
+        max-width: 200px;
+    }
+
+    /* Botones de Acción */
+    .buttons-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* Botones */
+    .btn {
+        padding: 12px;
+    }
+}
