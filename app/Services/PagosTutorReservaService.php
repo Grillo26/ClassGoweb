@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class PagosTutorReservaService
 {
     /**
-     * Crear un pago para una reserva.
+     * Crear un pago para una reserva desde la reserva que genero el estudiante.
      */
     public function create(
         $slot_booking_id,

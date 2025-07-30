@@ -1,8 +1,8 @@
 
 <div class="profile-photo-card">
     <div class="profile-photo-content">
-        <h3 class="profile-photo-title">Foto de perfil</h3>
-        <p class="profile-photo-sub">Una imagen vale más que mil palabras.</p>
+        <h3 class="profile-photo-title"> {{__('profile.upload_image')}} </h3>
+        <p class="profile-photo-sub">{{ __('profile.profile_picture')}} </p>
         <div class="profile-photo-img-row">
             @if($image && !$image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile)
                 <img src="{{ asset('storage/' . $image) }}" alt="Profile" class="profile-photo-img">
@@ -16,12 +16,13 @@
         </div>
         <div class="profile-photo-btn-row">
             <label for="image-upload" class="profile-photo-btn profile-photo-btn-main">
-                Cambiar foto
+                {{__('profile.change_photo') }}
                 <input id="image-upload" type="file" class="d-none" wire:model="image" wire:loading.attr="disabled">
             </label>
             @if($image)
-            <button type="button" class="profile-photo-btn profile-photo-btn-remove" wire:click="removeMedia('image')">
-                Quitar
+            <button type="button" class="profile-photo-btn profile-photo-btn-remove" style="background-color: red !important;color:white;" wire:click="removeMedia('image')">
+               {{ __('profile.remove') }}
+                <i class="bi bi-trash"></i>
             </button>
             @endif
         </div>

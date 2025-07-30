@@ -1,13 +1,13 @@
-<div wire:ignore.self class="modal am-modal fade am-subject_modal" id="subject_modal" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+<div wire:ignore.self class="modal am-modal fade am-subject_modal" id="subject_modal" data-bs-backdrop="static" >
+    <div class="modal-dialog modal-dialog-centered" >
+        <div class="modal-content" style="background-color: white!important;">
             <!-- Modal  Header-->
             <div class="am-modal-header">
                 <template x-if="sessionData.edit_id">
-                    <h2>{{ __('subject.edit_subject') }} </h2>
+                    <h2 style="color: black!important">{{ __('subject.edit_subject') }} </h2>
                 </template>
                 <template x-if="sessionData.edit_id == ''">
-                    <h2>{{ __('subject.add_subject') }}</h2>
+                    <h2 style="color: black!important">{{ __('subject.add_subject') }}</h2>
                 </template>
                 <span class="am-closepopup" wire:target="saveNewSubject" data-bs-dismiss="modal"
                     wire:loading.attr="disabled">
@@ -26,7 +26,7 @@
                                     id="subjects" data-wiremodel="form.subject_id"
                                     data-placeholder="{{ __('subject.select_subject') }}"
                                     wire:model="form.subject_id" data-parent="#subject_modal">
-                                    <option value="">{{ __('subject.select_subject') }}</option>
+                                    <option style="" value="">{{ __('subject.select_subject') }}</option>
                                 </select>
                             </span>
                             <x-input-error field_name="form.subject_id" />

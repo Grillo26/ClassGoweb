@@ -31,13 +31,13 @@
                 </div>
             </fieldset>
         </form>
-        <div class="am-title_wrap">
+        {{-- <div class="am-title_wrap">
             <div class="am-title">
                 <h2  style="color: black">{{ __('settings.update_time_zone') }}</h2>
                 <p  style="color: black"> {{ __('settings.time_zone_settings_easily') }}</p>
             </div>
-        </div>
-        <form  class="am-themeform am-accountsetting">
+        </div> --}}
+        {{-- <form  class="am-themeform am-accountsetting">
             <fieldset>
                 <div class="form-group @error('timezone') tu-invalid @enderror">
                     <label class="am-label am-important" style="color: black">{{ __('settings.timezone') }}</label>
@@ -59,7 +59,7 @@
                     <button wire:click="saveTimezone" wire:target="saveTimezone" type="button" wire:loading.class="am-btn_disable" class="am-btn">{{ __('settings.save_update') }}</button>
                 </div>
             </fieldset>
-        </form>
+        </form> --}}
      {{--    <div class="am-title_wrap">
             <div class="am-title">
                 <h2>{{ __('passwords.link_google_calendar') }}</h2>

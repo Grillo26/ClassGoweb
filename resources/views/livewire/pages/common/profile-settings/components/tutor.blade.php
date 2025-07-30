@@ -2,30 +2,30 @@
 <div class="tutor-profile-section">
     <form wire:submit.prevent="updateInfo" class="tutor-profile-section row g-4 am-themeform am-themeform_personalinfo">
         <div class="tutor-profile-data-card">
-            <h2 class="tutor-profile-title">Detalles personales</h2>
-            <p class="tutor-profile-sub">Proporciona información básica para completar su perfil.</p>
+            <h2 class="tutor-profile-title"> {{__('profile.personal_details')}} </h2>
+            <p class="tutor-profile-sub"> {{__('profile.personal_detail_desc')}} </p>
             <div class="tutor-profile-grid">
                 <div class="tutor-profile-field">
-                    <label>Nombre</label>
+                    <label>{{__('profile.first_name')}} </label>
                     <input type="text" class="tutor-profile-input" wire:model="first_name">
                     @error('first_name') <span style="color:rgb(251,133,0); font-size: medium;">{{ $message
                         }}</span>
                     @enderror
                 </div>
                 <div class="tutor-profile-field">
-                    <label>Apellido</label>
+                    <label> {{__('profile.last_name')}} </label>
                     <input type="text" class="tutor-profile-input" wire:model="last_name">
                     @error('last_name') <span style="color:rgb(251,133,0);font-size: medium;">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="tutor-profile-field">
-                    <label>Email</label>
+                    <label> {{__('profile.email')}} </label>
                     <input type="email" class="tutor-profile-input" wire:model="email" disabled>
                     @error('email') <span style="color:rgb(251,133,0);font-size: medium;">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="tutor-profile-field">
-                    <label>Phone number</label>
+                    <label> {{ __('profile.phone_number')}} </label>
                     <input type="text" class="tutor-profile-input" wire:model="phone_number">
                     @error('phone_number') <span style="color:rgb(251,133,0);font-size: medium;">{{ $message }}</span>
                     @enderror
@@ -33,7 +33,7 @@
             </div>
             @include('livewire.pages.common.profile-settings.components.genero')
             <div class="tutor-profile-field">
-                <label>Una breve introducción</label>
+                <label> {{__('profile.description')}} </label>
                 <textarea class="tutor-profile-input-textarea" rows="3" wire:model="description"></textarea>
             </div>
             <div class="tutor-profile-grid">
@@ -73,6 +73,13 @@
                                 @endforeach
                             </div>
                         </div>
+
+
+
+
+
+
+
                     </div>
                     @error('native_language')
                     <span style="color: #ef4444; font-size: 14px; margin-top: 4px; display: block;">
@@ -81,11 +88,28 @@
                     @enderror
                 </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 {{-- idiomas adicionales --}}
                 <div class="tutor-profile-field" style="margin-bottom: 1.5rem;">
                     <label for="languages" class="form-label m-2 text-black" style="margin-bottom: 0.5rem;">
                         {{ __('profile.other_languages') }} <span class="text-danger"></span>
                     </label>
+
                     <div class="modern-dropdown" tabindex="0">
                         <div class="modern-dropdown-toggle" onclick="toggleModernDropdown(this)">
                             <span class="modern-dropdown-placeholder">{{ __('Selecciona los idiomas') }}</span>
@@ -93,7 +117,7 @@
                         </div>
                         <div class="modern-dropdown-menu">
                             <div class="modern-dropdown-search">
-                                <input type="text" placeholder="Buscar idioma..."
+                                <input type="text" placeholder="Buscar idiomas....."
                                     onkeyup="filterModernLanguage(this, 'languages-list')">
                             </div>
                             <div class="modern-dropdown-options" id="languages-list">
@@ -111,56 +135,15 @@
                         </div>
                     </div>
                 </div>
-                @push('styles')
-                <style>
-                    .modern-dropdown-options input[type="checkbox"] {
-                        accent-color: #3b82f6;
-                        margin-right: 10px;
-                        width: 18px;
-                        height: 18px;
-                        cursor: pointer;
-                    }
 
-                    .modern-dropdown-option.selected {
-                        background-color: #eff6ff;
-                        color: #1d4ed8;
-                        font-weight: 500;
-                    }
 
-                    .modern-dropdown-option.selected::after {
-                        content: '✓';
-                        margin-left: auto;
-                        font-weight: bold;
-                        color: #3b82f6;
-                    }
-                </style>
-                @endpush
-                @push('scripts')
-                <script>
-                    // Filtrado reutilizable para ambos dropdowns
-window.filterModernLanguage = function(input, listId = null) {
-    const filter = input.value.toLowerCase();
-    const listSelector = listId ? '#' + listId + ' .modern-dropdown-option' : '.modern-dropdown-option';
-    const options = input.closest('.modern-dropdown-menu').querySelectorAll(listSelector);
-    options.forEach(function(option) {
-        const label = option.querySelector('label');
-        if (label) {
-            const text = label.textContent.toLowerCase();
-            option.style.display = text.includes(filter) ? '' : 'none';
-        }
-    });
-}
-// Selección múltiple visual
-window.selectModernMultiOption = function(input) {
-    const option = input.closest('.modern-dropdown-option');
-    if (input.checked) {
-        option.classList.add('selected');
-    } else {
-        option.classList.remove('selected');
-    }
-}
-                </script>
-                @endpush
+
+
+
+
+
+
+
 
                 <div class="d-flex flex-wrap gap-2 mt-3">
                     @if(count($user_languages) > 0)
@@ -208,40 +191,78 @@ window.selectModernMultiOption = function(input) {
 
 </div>
 
+
+
+
+
+
+
 <!-- Botón guardar -->
+@push('styles')
+<style>
+    .modern-dropdown-options input[type="checkbox"] {
+        accent-color: #3b82f6;
+        margin-right: 10px;
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .modern-dropdown-option.selected {
+        background-color: #eff6ff;
+        color: #1d4ed8;
+        font-weight: 500;
+    }
+
+    .modern-dropdown-option.selected::after {
+        content: '✓';
+        margin-left: auto;
+        font-weight: bold;
+        color: #3b82f6;
+    }
+</style>
+@endpush
+
+
 
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/livewire/pages/common/profile-settings/components/tutor.css') }}">
 @endpush
+
+
 @push('scripts')
 <script>
-    /*  window.filterNativeLanguage = function(input) {
-    var filter = input.value.toLowerCase();
-    var list = input.parentNode.querySelectorAll('#native-languages-list .form-check');
-    list.forEach(function(item) {
-        var label = item.querySelector('label').innerText.toLowerCase();
-        item.style.display = label.includes(filter) ? '' : 'none';
+    /* window.filterModernLanguage = function(input, listId = null) {
+    console.log('llega al filtro');
+    const filter = input.value.toLowerCase();
+    const listSelector = listId ? '#' + listId + ' .modern-dropdown-option' : '.modern-dropdown-option';
+    const options = input.closest('.modern-dropdown-menu').querySelectorAll(listSelector);
+    options.forEach(function(option) {
+        const label = option.querySelector('label');
+        if (label) {
+            const text = label.textContent.toLowerCase();
+            option.style.display = text.includes(filter) ? '' : 'none';
+        }
     });
-}
-window.closeNativeDropdown = function(input) {
-    var dropdown = input.closest('.custom-dropdown');
-    dropdown.classList.remove('open');
-    // Cambia el label del toggle visualmente (Livewire lo actualizará en el siguiente render)
-    var label = dropdown.querySelector('.custom-dropdown-toggle');
-    var selected = dropdown.querySelector('input[type=radio]:checked + label');
-    if(selected) {
-        label.textContent = selected.textContent;
+} */
+// Selección múltiple visual
+window.selectModernMultiOption = function(input) {
+    const option = input.closest('.modern-dropdown-option');
+    if (input.checked) {
+        option.classList.add('selected');
+    } else {
+        option.classList.remove('selected');
     }
 }
-document.addEventListener('click', function(e) {
-    document.querySelectorAll('.custom-dropdown').forEach(function(drop) {
-        if (!drop.contains(e.target)) drop.classList.remove('open');
-    });
-}); */
+</script>
+@endpush
 
 
-// Función para alternar el dropdown
+
+@push('scripts')
+<script>
+    // Función para alternar el dropdown
 window.toggleModernDropdown = function(toggle) {
     const dropdown = toggle.closest('.modern-dropdown');
     const isOpen = dropdown.classList.contains('open');
@@ -269,26 +290,34 @@ window.toggleModernDropdown = function(toggle) {
 
 // Función para filtrar idiomas
 window.filterModernLanguage = function(input) {
+    //console.log('llega al filtro',input);
     const filter = input.value.toLowerCase();
+    console.log('Filtrando idiomas con:', filter); 
     const options = input.closest('.modern-dropdown-menu').querySelectorAll('.modern-dropdown-option');
-    let hasVisibleOptions = false;
-    
+    console.log('idiomas encontrados ', options);
+    let hasVisibleOptions = false; 
     options.forEach(function(option) {
-        const label = option.querySelector('label');
-        if (label) {
-            const text = label.textContent.toLowerCase();
-            const isVisible = text.includes(filter);
-            option.style.display = isVisible ? '' : 'none';
-            if (isVisible) hasVisibleOptions = true;
-        }
-    });
-    
-    // Mostrar mensaje si no hay resultados (opcional)
-    // Puedes agregar un div para "No se encontraron resultados" si lo deseas
+    // Si option es un label (otros idiomas), úsalo directamente
+    // Si option es un div (idioma nativo), busca el label hijo
+    let label;
+    if (option.tagName.toLowerCase() === 'label') {
+        label = option;
+    } else {
+        label = option.querySelector('label');
+    }
+    console.log('que es esto', label);
+    if (label) {
+        const text = label.textContent.toLowerCase();
+        const isVisible = text.includes(filter);
+        option.style.display = isVisible ? '' : 'none';
+        if (isVisible) hasVisibleOptions = true;
+    }
+});
 }
 
 // Función para seleccionar una opción
 window.selectModernOption = function(input) {
+    console.log('Selecting option:', input.value);
     const dropdown = input.closest('.modern-dropdown');
     const toggle = dropdown.querySelector('.modern-dropdown-toggle span:first-child');
     const label = input.nextElementSibling;

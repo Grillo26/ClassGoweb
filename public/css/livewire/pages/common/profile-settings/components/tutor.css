@@ -1,15 +1,22 @@
 
     .tutor-profile-section {
         margin-bottom: 2rem;
+       
+        
     }
 
     .tutor-profile-data-card {
-        background: #fff;
-        border-radius: 18px;
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.04);
-        padding: 2.5rem 2rem;
-        margin-bottom: 2rem;
-    }
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.04);
+    padding: 2.5rem 2rem;
+    margin-bottom: 2rem;
+           /* Limita el ancho máximo */
+    margin-left: 20px;        /* Desplaza hacia la derecha */
+    width: 97%;               /* Que no ocupe todo el contenedor */
+    box-sizing: border-box;   /* Incluye el padding en el ancho */
+}
+
 
     .tutor-profile-title {
         color: #1a2a36;

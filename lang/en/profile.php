@@ -71,4 +71,15 @@ return [
     'resume_highlights' => 'Resume Highlights',
     'social_profile_placeholder' => 'Enter :profile_name :type',
     'basic_info' => 'Provide basic information to complete your profile',
+    'email' => 'Email',
+    'phone_number' => 'Phone Number',
+    'other_languages' => 'Other Languages',
+    'upload_video' => 'Upload Video',
+    'upload_image' => 'Upload Image',
+    'allowed_formats'=> 'Allowed formats: :formats',
+    'max'=> 'Max ',
+    'change_photo' => 'Change Photo',
+    'remove' => 'Remove',
+     'profile_picture' => 'A picture is worth a thousand words.',
+    
 ];
