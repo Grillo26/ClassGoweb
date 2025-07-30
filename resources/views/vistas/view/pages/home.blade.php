@@ -21,14 +21,19 @@
                 Alcanza tus metas con tutorías personalizadas de los mejores expertos.<br>
                 Conéctate con tutores dedicados para asegurar tu éxito.
             </p>
+            <p class="hero-subtext mobile">
+                Conéctate con tutores dedicados para asegurar tu éxito.
+            </p>
 
             <!-- Buscador -->
-            <div class="search-box">
+            {{-- <div class="search-box">
                 <input type="text" placeholder="Buscar Tutor...">
                 <button>
                     <i class="fa-solid fa-magnifying-glass icon-search"></i>
                 </button>
-            </div>
+            </div> --}}
+            @livewire('buscador-tutor')
+
 
             <!--Botones-->
             <div class="hero-buttons">
@@ -36,15 +41,15 @@
                     <i class="fa-solid fa-bolt-lightning"></i>
                     Tutor al Instante
                 </button>
-                <button><i class="fa-solid fa-calendar"></i>Agendar Tutoría</button>
-                <button><i class="fa-solid fa-compass"></i>Explorar Tutores</button>
+                <a href=" {{ route('buscar.tutor')}}"><button><i class="fa-solid fa-calendar"></i>Agendar Tutoría</button></a>
+                <a href=" {{ route('buscar.tutor')}}"><button><i class="fa-solid fa-compass"></i>Explorar Tutores</button></a>
             </div>
         </div>
 
         <!-- Columna derecha: imagen -->
-        <div class="hero-image">
-            <img src="{{ asset('storage/optionbuilder/uploads/740102-17-2025_0859pmTugo-saludando.gif') }}" alt="Mascota ClassGo">
-        </div>
+       
+        <img src="{{ asset('storage/optionbuilder/uploads/740102-17-2025_0859pmTugo-saludando.gif') }}" alt="Mascota ClassGo">
+
 
        
     </div>
@@ -62,6 +67,7 @@
         <h1>Conoce a Nuestros Tutores Cuidadosamente Seleccionados</h1>
         <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p> 
     
+        <!--Componente tutor destacado-->
         <div class="tutors-carousel-viewport">
             <div class="tutors" id="tutorsContainer">
                 @include('components.tutors', [
@@ -83,31 +89,31 @@
 <section class="potencial-container">
     <h1 class="over-text"><div class="linea"></div>Una guía paso a paso<div class="linea"></div></h1>
     <h1>Desbloquea Tu Potencial Con Pasos Sencillos</h1>
-    <p>Descubra cómo nuestra plataforma simplifica la búsqueda y reserva de los mejores tutores para mejorar sus habilidades y alcanzar sus objetivos de aprendizaje.</p>
+    <p>Mejora tus habilidades con los mejores tutores, fácil y rápido.</p>
     <div class="steps">
         <!--CARD-->
         <div class="steps-card">
             <div class="numero-paso">Paso 1</div>
-            <img src="{{ asset('images/paso1.png') }}" alt="Pasos">
+            <img src="{{ asset('images/home/img1.webp') }}" alt="Pasos">
             <h1>Inscríbete</h1>
             <p>Crea tu cuenta rápidamente para comenzar a utilizar nuestra plataforma</p>
-            <button>Empezar</button>
+            <a href=" {{ route('login')}}"><button>Empezar</button></a>
         </div> <!--FIN CARD-->
         <!--CARD-->
         <div class="steps-card">
             <div class="numero-paso">Paso 2</div>
-            <img src="{{ asset('images/paso2.png') }}" alt="Pasos">
+            <img src="{{ asset('images/home/img22.webp') }}" alt="Pasos">
             <h1>Encuentra un tutor</h1>
-            <p>Busca y selecciona entre tutores calificados según tus necesidades</p>
-            <button>Buscar Ahora</button>
+            <p>Busca y selecciona entre tutores calificados según tus necesidades.</p>
+            <a href=" {{ route('buscar.tutor')}}"><button>Buscar Ahora</button></a>
         </div> <!--FIN CARD-->
         <!--CARD-->
         <div class="steps-card">
             <div class="numero-paso">Paso 3</div>
-            <img src="{{ asset('images/paso3.png') }}" alt="Pasos">
-            <h1>Programar una Sesión</h1>
-            <p>Reserva fácilmente un horario conveniente para tu Sesión</p>
-            <button>Empecemos</button>
+            <img src="{{ asset('images/home/img3.webp') }}" alt="Pasos">
+            <h1>Reserva ahora</h1>
+            <p>Encuentra el mejor momento y agenda tu sesión fácilmente en nuestra palaforma.</p>
+            <a href=" {{ route('login')}}"><button>Empecemos</button></a>
         </div> <!--FIN CARD-->
 
         <!--COMIENZA TU JORNADA CARD-->
@@ -116,11 +122,65 @@
                 <i class="fa-solid fa-person-running"></i>
             </div>
             <h1>Comienza tu jornada</h1>
-            <p>Comienza tu viaje educativo con nosotros. ¡Encuentra un tutor y reserva tu primera sesión hoy mismo!</p>
-            <button class="button-go">Empieza ahora</button>
+            <p>Comienza tu viaje educativo con nosotros. ¡Reserva tu primera sesión hoy mismo!</p>
+            <a href="{{ route('buscar.tutor')}}"><button class="button-go">Empieza ahora</button></a>
         </div>
     </div>
 </section>
+
+<!-- Contenedor principal de la sección -->
+<section class="section-app">
+  <div class="container-app">
+    <!-- Grid responsivo -->
+    <div class="grid-app">
+
+      <!-- Columna Izquierda: Contenido de texto -->
+      <div class="text-app">
+        <p>Fácil, simple y rápido</p>
+        <h1>Instala nuestra App</h1>
+        <p>Comienza tu viaje educativo con nosotros. ¡Instalate hoy mismo nuestra app!</p>
+
+        <!-- Lista de características -->
+        <ul class="list-app">
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <span>Acceso 24/7</span>
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <span>Tutores Expertos</span>
+          </li>
+          <li>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <span>Tarifas Asequibles</span>
+          </li>
+        </ul>
+
+        <!-- Botón -->
+        <div>
+          <a href="https://play.google.com/store/apps/details?id=com.neurasoft.classgo" class="btn-app">Descargar Ahora</a>
+        </div>
+      </div>
+
+      <!-- Columna Derecha: Imagen -->
+      <div class="image-app">
+        <img 
+          src="{{ asset('images/home/iphone.webp')}}" 
+          alt="ClassGo"
+          onerror="this.onerror=null;this.src='https://placehold.co/400x800/023047/FFFFFF?text=App';"
+        >
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
 <!--HERO TUTORIAS Y ALIANZAS-->
 <section class="tutorias-container">
@@ -130,18 +190,18 @@
             <p class="tutores-text-encima">¿Buscas tutorías personalizadas?</p>
             <h1>En Classgo, te conectamos con los mejores tutores</h1>
             <p>Accede a sesiones cortas y prácticas, diseñadas por tutores expertos para ser pequeños salvavidas en el aprendizaje</p>
-            <ul class="tutores-list">
-                <li>Acceso 25/7</li>
-                <li>Tutores Expertos</li>
-                <li>Tarifas asequibles</li>
-            </ul>
-            <button class="button-comienza">Comienza Ahora</button>
+
+            <a href=" {{ route('login')}}"><button class="button-comienza">Comienza Ahora</button></a>
+            
         </div>
         <!-- Imagen -->
         <div class="tutores-img">
-            <img src="{{ asset('images/tutorias.png') }}" alt="Mascota">
+            <img src="{{ asset('images/home/img2.webp') }}" alt="Mascota">
         </div>
     </div>
+
+
+    <!-- ALIANZAS-->
     @include('components.alianzas', ['alianzas' => $alianzas])
 </section>
 

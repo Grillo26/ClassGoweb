@@ -1,0 +1,403 @@
+@import '.variables.css';
+
+/* =================== buscartutor.css =================== */
+.container-buscartutor{
+    margin: 0;
+    padding: 0;
+    background-color: var(--panel-background);
+}
+.buscador-mobile{
+    display: none;
+}
+.buscartutor-hero-section {
+    background: linear-gradient(135deg, #023047 0%, #219EBC 100%);
+    color: #fff;
+    padding: 80px 0 60px 0;
+    height: 100vh;
+    width: 100%;
+}
+.buscartutor-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 32px;
+}
+.buscartutor-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    
+}
+.buscartutor-hero-label {
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+}
+.buscartutor-hero-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+.buscartutor-hero-desc {
+    margin-top: 24px;
+    font-size: 1.15rem;
+    color: #e0e0e0;
+}
+
+.mobile-only{
+    display: none;
+}
+
+
+.buscartutor-hero-img-col {
+    display: flex;
+    justify-content: flex-end;
+}
+.buscartutor-hero-img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 1.5rem;
+}
+
+.buscartutor-search-section {
+    max-width: 1200px;
+    margin: -40px auto 0 auto;
+    padding: 0 32px;
+}
+.buscartutor-search-box {
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 32px;
+}
+.buscartutor-search-grid {
+    display: grid;
+    grid-template-columns: 1fr ;
+    gap: 24px;
+}
+.buscartutor-search-keyword, .buscartutor-search-group {
+    display: flex;
+    flex-direction: column;
+}
+.buscartutor-search-input-wrap {
+    position: relative;
+}
+.buscartutor-search-input {
+    width: 100%;
+    padding: 14px 44px 14px 16px;
+    border: 1px solid #ccc;
+    border-radius: 0.7rem;
+    font-size: 1rem;
+    outline: none;
+}
+.buscartutor-search-icon {
+    position: absolute;
+    right: 12px;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    color: #bdbdbd;
+}
+.buscartutor-search-svg {
+    width: 20px;
+    height: 20px;
+}
+.buscartutor-search-select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #ccc;
+    border-radius: 0.7rem;
+    font-size: 1rem;
+    outline: none;
+}
+.buscartutor-search-btn {
+    width: 100%;
+    background: var(--terciary-color2);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 14px 0;
+    border-radius: 0.7rem;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.buscartutor-search-btn:hover {
+    opacity: 0.9;
+}
+
+.buscartutor-tutorlist-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 32px;
+}
+.buscartutor-tutorlist-space {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.buscartutor-tutor-card {
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    padding: 32px;
+    align-items: flex-start;
+}
+.buscartutor-tutor-img {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--terciary-color);
+}
+.buscartutor-tutor-info {
+    flex: 1;
+}
+.buscartutor-tutor-name {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+.buscartutor-tutor-special {
+    font-size: 1rem;
+    color: #888;
+    font-weight: 500;
+    margin-top: 4px;
+}
+.buscartutor-tutor-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #888;
+    font-size: 0.98rem;
+    margin-top: 8px;
+}
+.buscartutor-tutor-desc {
+    margin-top: 16px;
+    color: #555;
+    font-size: 1rem;
+}
+.buscartutor-tutor-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    min-width: 180px;
+}
+.buscartutor-tutor-btn {
+    width: 100%;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 12px 0;
+    border-radius: 0.7rem;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.buscartutor-tutor-btn-orange {
+    background: var(--terciary-color2);
+    color: #fff;
+}
+.buscartutor-tutor-btn-blue {
+    background: var(--secundary-color);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+
+}
+.buscartutor-tutor-btn-orange:hover, .buscartutor-tutor-btn-blue:hover {
+    opacity: 0.9;
+} 
+
+/* =================== buscartutor-tablet.css =================== */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .buscartutor-hero-section {
+    padding: 1rem;
+  }
+  .buscartutor-container {
+    padding: 0 16px;
+  }
+  .buscartutor-hero-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .buscartutor-hero-img-col {
+    justify-content: center;
+  }
+  .buscartutor-hero-img {
+    max-width: 240px;
+    border-radius: 1.2rem;
+  }
+  .buscartutor-hero-title {
+    font-size: 2rem;
+  }
+  .buscartutor-hero-desc {
+    font-size: 1.05rem;
+  }
+  .buscartutor-search-section {
+    padding: 0 16px;
+    margin-top: -30px;
+  }
+  .buscartutor-search-box {
+    padding: 24px;
+  }
+  .buscartutor-search-grid {
+    grid-template-columns: 1fr 1fr 0.7fr;
+    gap: 16px;
+  }
+  .buscartutor-tutor-card {
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 1.2rem;
+    gap: 1.2rem;
+  }
+  .buscartutor-tutor-img {
+    max-width: 100px;
+    max-height: 100px;
+  }
+  .buscartutor-tutor-info {
+    margin-left: 0.5rem;
+    padding-left: 0.5rem;
+    margin-top: 0;
+  }
+  .buscartutor-tutor-name {
+    font-size: 1.2rem;
+  }
+  .buscartutor-tutor-meta {
+    flex-direction: row;
+    gap: 0.7rem;
+    font-size: 1rem;
+  }
+  .buscartutor-tutor-actions {
+    flex-direction: column;
+    gap: 0.7rem;
+    width: 100%;
+  }
+  .buscartutor-tutor-btn {
+    width: 100%;
+    font-size: 1.05rem;
+  }
+  .buscartutor-pagination {
+    margin-top: 2rem;
+  }
+}
+
+/* =================== buscartutor-mobile.css =================== */
+@media (max-width: 600px) {
+    .desktop-only{
+        display: none;
+    }
+    .mobile-only{
+    font-size: 1rem;
+    margin-top: 0;
+    display: block;
+    text-align: center;
+  }
+
+  .buscador-desktop{
+    display: none;
+  }
+  .buscador-mobile{
+    display: block;
+  }
+  .buscartutor-hero-section {
+    padding: 9rem 1rem 1rem 1rem;
+  }
+  .buscartutor-container {
+    padding: 0 8px;
+  }
+  .buscartutor-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .buscartutor-hero-img-col {
+    justify-content: center;
+  }
+  .buscartutor-hero-label{
+    display: none;
+  }
+  .buscartutor-hero-img {
+    max-width: 200px;
+    border-radius: 1rem;
+  }
+  .buscartutor-hero-title {
+    font-size: 2.5rem;
+    text-align: center;
+}
+  .buscartutor-hero-desc {
+    display: none;
+  }
+  
+  .buscartutor-search-section {
+    padding: 0 8px;
+    margin-top: -20px;
+  }
+  .buscartutor-search-box {
+    padding: 16px;
+  }
+  .buscartutor-search-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Cards de los tutores */
+
+  .buscartutor-tutor-card {
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    gap: 0.3rem;
+    width: 100%;
+  }
+  .buscartutor-tutor-img {
+    max-width: 80px;
+    max-height: 80px;
+  }
+.buscartutor-tutorlist-section{
+    padding-top: 2rem;
+}
+  .buscartutor-tutorlist-space {
+    gap: 32px;
+    }
+    .buscartutor-tutor-img{
+        margin: 0 auto;
+    }
+  .buscartutor-tutor-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;  /* centra horizontalmente */
+    justify-content: center;  /* opcional, si quieres centrar verticalmente dentro de un contenedor padre con altura */
+    text-align: center; 
+    padding: 0rem;
+    margin: 0rem;
+  }
+  .buscartutor-tutor-name {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+  .buscartutor-tutor-meta {
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.95rem;
+  }
+  .buscartutor-tutor-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  .buscartutor-tutor-btn {
+    width: 100%;
+    font-size: 1rem;
+  }
+  .buscartutor-pagination {
+    margin-top: 1.5rem;
+  }
+} 

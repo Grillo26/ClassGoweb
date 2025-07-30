@@ -25,14 +25,14 @@
 
 
 .nosotros-header-content {
-  background: var(--primary-color); /* Color azul oscuro */
+  background: var(--bg-gradient2); /* Color azul oscuro */
   border-bottom-left-radius: 40px; /* Un radio ligeramente menor para que encaje bien */
   border-bottom-right-radius: 40px;
   
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8rem 5rem 3rem 5rem ;
+  padding: 10rem 5rem 3rem 5rem ;
   color: white; /* Añadido para que el texto sea visible */
 }
 
@@ -108,7 +108,7 @@
   width: 100%;
   justify-content: space-between; /* Cambiar para que los elementos se distribuyan adecuadamente */
   background-color: none;
-  padding: 3rem 0;
+  padding: 3rem 3rem;
   align-items: center; /* Aseguramos que los elementos estén alineados verticalmente */
 }
 
@@ -202,7 +202,7 @@
   width: 100%;
   justify-content: space-between; /* Asegura que el texto y la imagen estén distribuidos correctamente */
   background-color: white;
-  padding: 5rem 4rem; /* Aumentamos el relleno superior para dar más espacio */
+  padding: 3rem 5rem; /* Aumentamos el relleno superior para dar más espacio */
   /*align-items: center; /* Alinea los elementos verticalmente */
 }
 
@@ -210,6 +210,7 @@
   font-size: 1.1rem;
   line-height: 1.5;
   padding: 3rem;
+  text-align: end;
   color: var(--primary-color);
   font-family: var(--font-family);
   width: 50%; /* Ajustamos para que el texto no ocupe todo el espacio */
@@ -220,6 +221,7 @@
   font-weight: bold;
   color: var(--primary-color);
   margin-bottom: 1rem; /* Agregamos un poco de espacio debajo del título */
+  text-align: ends;
 }
 
 .nosotros-vision-subtext{
@@ -227,15 +229,16 @@
   line-height: 1.5;
   margin-top: 1rem;
   color: var(--primary-color);
-  text-align: left;
+  text-align: end;
   font-weight: bold;
+
 }
 .nosotros-vision-subtext2 {
   font-size: 1.2rem;
   line-height: 1.5;
   margin-top: 1rem;
   color: var(--primary-color);
-  text-align: left;
+  text-align: end;
 }
 
 .vision-image {

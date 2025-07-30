@@ -1,3 +1,4 @@
+{{-- CARD DEL TUTOR --}} 
 @foreach($profiles as $profile) @php $data = $subjectsByUser[$profile->user_id] ?? ['materias' => [], 'grupos' => []]; @endphp
 <div class="tutor-card">
 	<div class="tutor-card-img">
@@ -13,13 +14,13 @@
 		</div>
 		@php $maxGrupos = 4; $grupos = $data['grupos']; $countGrupos = count($grupos); @endphp
 		<p class="tutor-card-sub mas" title="{{ implode(', ', $grupos) }}">
-			{{ implode(', ', $grupos) }}<span class="tutor-card-mas" style="display:none;"> +más</span>
+			Puedo enseñar: {{ implode(', ', $grupos) }}<span class="tutor-card-mas" style="display:none;"> +más</span>
 		</p>
-		<div class="tutor-card-rating-row">
+		<div class="tutor-card-rating-row desktop">
 			<div class="tutor-card-rating">
 				<span class="star">⭐</span>
-				<span>{{ $profile->avg_rating}}</span>
-				<span class="rating-count">( {{ $profile->total_reviews}} reseñas)</span>
+					<span>{{ $profile->avg_rating}}</span>
+					<span class="rating-count">( {{ $profile->total_reviews}} reseñas)</span>
 			</div>
 			<div class="tutor-card-price">
 				<p class="price"><i class="fa-solid fa-book icon"></i>10</p>
@@ -32,10 +33,33 @@
 			<span class="tutor-card-tag">{{ $materia }}</span> @endforeach
 			<span class="tutor-card-tag tutor-card-mas" style="display:none;">+más</span>
 		</div> --}}
+
+		<!--SOLO MOBILE-->
+		<div class="mobile">
+			<div class="tutor-card-rating">
+				<span class="star">⭐</span>
+					<span>{{ $profile->avg_rating}}</span>
+					<span class="rating-count">( {{ $profile->total_reviews}} reseñas)</span>
+			</div>
+		</div>
 		<div class="tutor-card-actions">
-			<button class="btn-profile">Ver Perfil</button>
+			<a href="{{ route('tutor', parameters: ['slug' => $profile->slug]) }}" ><button class="btn-profile">Ver Perfil</button></a>
+
 			<button class="btn-reserve">Reservar</button>
 		</div>
+
 	</div>
 </div>
+ 
 @endforeach
+<div class="tutor-card">
+	<div class="mas-tutor-card">
+    <div class="numero-paso">
+        <i class="fa-solid fa-book"></i>
+    </div>
+    <h1>Explora más tutores</h1>
+    <p>Comienza tu viaje educativo con nosotros. ¡Encuentra un tutor y reserva tu primera sesión hoy mismo!</p>
+    <a href="{{ route('buscar.tutor')}}"><button class="button-go">Buscar Tutor</button></a>
+</div>
+</div>
+  

@@ -1,5 +1,6 @@
 @import "./variables.css";
 
+/* =================== preguntas.css =================== */
 /* ------------------------------------------------------------ */
 /* Estilos para la Página Preguntas */
 /* ------------------------------------------------------------ */
@@ -26,7 +27,7 @@
 }
 
 .preguntas-header-content {
-  background: var(--primary-color);
+  background: var(--bg-gradient2);
   border-bottom-left-radius: 40px;
   border-bottom-right-radius: 40px;
   display: flex;
@@ -263,6 +264,27 @@
   padding-bottom: 1.5rem;
 }
 
+/* Fondo gradiente reutilizable para secciones principales */
+/* Puedes modificar el gradiente aquí o en el componente fondo-seccion.blade.php */
+.fondo-seccion {
+  width: 100%;
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  padding-bottom: 20px;
+  /* El gradiente está en el atributo style del componente */
+}
+
+.tabs-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 2rem;
+  margin-bottom: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 /*-----RESPONSIVE-----*/
 @media (max-width: 900px) {
   .preguntas-content {
@@ -288,25 +310,4 @@
   .preguntas-image img {
     max-width: 90%;
   }
-}
-
-/* Fondo gradiente reutilizable para secciones principales */
-/* Puedes modificar el gradiente aquí o en el componente fondo-seccion.blade.php */
-.fondo-seccion {
-  width: 100%;
-  border-bottom-left-radius: 50px;
-  border-bottom-right-radius: 50px;
-  padding-bottom: 20px;
-  /* El gradiente está en el atributo style del componente */
-}
-
-.tabs-centered {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-top: 2rem;
-  margin-bottom: 0;
-  background: transparent;
-  box-shadow: none;
 } 

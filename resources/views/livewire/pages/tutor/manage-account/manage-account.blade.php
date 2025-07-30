@@ -126,32 +126,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        {{-- <tr>
                             <td>10 Jun, 2025</td>
                             <td class="transaction-amount">150.00 Bs</td>
                             <td class="transaction-method">Pago con QR</td>
                             <td><span class="transaction-status">Completado</span></td>
-                        </tr>
-                        <tr>
-                            <td>25 May, 2025</td>
-                            <td class="transaction-amount">230.50 Bs</td>
-                            <td class="transaction-method">Pago con QR</td>
-                            <td><span class="transaction-status">Completado</span></td>
-                        </tr>
-                        <tr>
-                            <td>10 May, 2025</td>
-                            <td class="transaction-amount">95.00 Bs</td>
-                            <td class="transaction-method">Pago con QR</td>
-                            <td><span class="transaction-status">Completado</span></td>
-                        </tr>
-                        <tr>
-                            <td>24 Abr, 2025</td>
-                            <td class="transaction-amount">310.00 Bs</td>
-                            <td class="transaction-method">Pago con QR</td>
-                            <td><span class="transaction-status">Completado</span></td>
-                        </tr>
+                        </tr> --}}
+                        
                     </tbody>
+                    
                 </table>
+                <p style="display: flex; justify-content: center; align-items: center; font-weight: bold;padding:2rem">Muy pronto...</p>
             </div>
         </div>  --}}
         @include('livewire.pages.tutor.manage-account.components.modal-por-definir')
