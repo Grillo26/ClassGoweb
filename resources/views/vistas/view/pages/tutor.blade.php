@@ -137,34 +137,11 @@
                         </div>
                         <div id="disponibilidad" class="tutor-tab-content hidden">
                             <h3 class="tutor-section-title-lg">Reserva una sesión</h3>
-                            <div class="tutor-availability-grid">
-                                <!-- Columna del Calendario -->
-                                <div>
-                                    <h4 class="tutor-section-title">Selecciona un día</h4>
-                                    <div class="tutor-calendar-box">
-                                        <div class="tutor-calendar-header">
-                                            <button class="tutor-calendar-nav-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-calendar-nav-icon"><path d="m15 18-6-6 6-6"></path></svg></button>
-                                            <h5 class="tutor-calendar-month">Julio 2025</h5>
-                                            <button class="tutor-calendar-nav-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-calendar-nav-icon"><path d="m9 18 6-6-6-6"></path></svg></button>
-                                        </div>
-                                        <div id="calendar-grid" class="tutor-calendar-grid">
-                                            <div class="tutor-calendar-day-label">L</div><div class="tutor-calendar-day-label">M</div><div class="tutor-calendar-day-label">M</div><div class="tutor-calendar-day-label">J</div><div class="tutor-calendar-day-label">V</div><div class="tutor-calendar-day-label">S</div><div class="tutor-calendar-day-label">D</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Columna del Selector de Hora -->
-                                <div id="time-selector-column" class="tutor-time-selector-col hidden">
-                                    <h4 class="tutor-section-title">Selecciona una hora</h4>
-                                    <div class="tutor-time-selector-box">
-                                        <p class="tutor-time-range">Horario disponible: <span id="available-range">16:00 - 21:40</span></p>
-                                        <div id="time-slots" class="tutor-time-slots"></div>
-                                        {{-- <button class="tutor-time-exact-btn">Elegir hora exacta</button> --}}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tutor-pay-btn-box">
-                                <button class="tutor-pay-btn">Pagar y reservar</button>
-                            </div>
+                            {{-- <<<<======LOGICA PARA RESERVAR=======>>>>>>--}}
+                            <livewire:reserva />
+                            
+                            
+
                         </div>
                         <div id="curriculum" class="tutor-tab-content hidden">
                            <nav class="tutor-subtabs-nav"><button onclick="changeSubTab(event, 'educacion')" class="tutor-subtab-btn active">Educación</button><button onclick="changeSubTab(event, 'experiencia')" class="tutor-subtab-btn">Experiencia</button><button onclick="changeSubTab(event, 'certificaciones')" class="tutor-subtab-btn">Certificación</button></nav>
@@ -259,6 +236,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-btn-icon"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg>
                             <span>Compartir perfil</span>
                         </button>
+
                     </div>
                 </div>
             </div>
@@ -283,6 +261,61 @@
             </div>
         </div>
     </div>
+    <!-- Modal Reservar -->
+    <div id="modal-share-profile1" style="display:none;position:fixed;top:0;left:0;width:70vw;height:70vh;background:rgba(0,0,0,0.4);z-index:9999;align-items:center;justify-content:center;">
+
+        <!-- Columna Izquierda: QR -->
+            <div style="width: 100%; background-color: #f3f4f6; padding: 1.5rem; display: flex; justify-content: center; align-items: center;">
+                <img src="http://googleusercontent.com/file_content/0" alt="Código QR de Notion" style="width: 100%; max-width: 250px; height: auto; border-radius: 0.75rem; object-fit: contain;" onerror="this.onerror=null;this.src='https://placehold.co/250x250/e2e8f0/334155?text=QR+Code';">
+            </div>
+            <!-- Columna Derecha: Formulario -->
+            <div style="width: 100%; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
+                <h2 style="font-size: 1.5rem; font-weight: bold; color: #333;">Selecciona la materia</h2>
+
+                <!-- Input de Archivo -->
+                <div style="margin-bottom: 1rem;">
+                    <label for="comprobante" style="cursor: pointer; display: inline-flex; align-items: center; padding: 0.75rem 1rem; border-radius: 0.5rem; background-color: #f3f4f6; color: #374151; font-weight: 500; border: 1px solid #d1d5db; transition: background-color 0.2s;">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="margin-right: 0.5rem; height: 20px; width: 20px;" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Subir archivo
+                    </label>
+                    <input type="file" id="comprobante" style="display: none;">
+                    <p id="fileName" style="margin-top: 0.5rem; font-size: 0.875rem; color: #6b7280;">Ningún archivo seleccionado</p>
+                </div>
+
+                <!-- Select de Materias -->
+                <div style="margin-bottom: 1rem;">
+                    <label for="materia" style="font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem; display: block;">Materia</label>
+                    <select id="materia" name="materia" style="width: 100%; padding: 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; transition: all 0.3s;">
+                        <option value="">-- Elige una materia --</option>
+                        <option value="calculo1">Cálculo I</option>
+                        <option value="algebra">Álgebra Lineal</option>
+                        <option value="fisica2">Física II</option>
+                        <option value="programacion">Programación Avanzada</option>
+                        <option value="basedatos">Bases de Datos</option>
+                    </select>
+                </div>
+
+                <!-- Fecha y Hora -->
+                <div style="background-color: #f3f4f6; padding: 1rem; border-radius: 0.5rem; font-size: 0.875rem;">
+                    <p style="color: #6b7280;"><strong>Fecha:</strong> <span id="currentDate"></span></p>
+                    <p style="color: #6b7280; margin-top: 0.5rem;"><strong>Hora:</strong> <span id="currentTime"></span></p>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem;">
+                    <button id="close-modal-share" style="width: 100%; padding: 1rem; border-radius: 0.5rem; font-weight: bold; text-align: center; cursor: pointer; background-color: #e5e7eb; color: #374151;">
+                        Cancelar
+                    </button>
+                    <button style="width: 100%; padding: 1rem; border-radius: 0.5rem; font-weight: bold; text-align: center; cursor: pointer; background-color: #3b82f6; color: white;">
+                        Reservar
+                    </button>
+                </div>
+            </div>
+    </div>
+
+
     <script>
         // --- SCRIPT PARA PESTAÑAS ---
         function changeTab(event, tabID) {
@@ -429,6 +462,7 @@
             showOverlay();
         });
 
+        // ================ Modal para compartir perfil ======================
         document.addEventListener('DOMContentLoaded', function() {
             const btnShare = document.getElementById('btn-share-profile');
             const modalShare = document.getElementById('modal-share-profile');
@@ -457,26 +491,21 @@
             });
         });
 
-        // Ir a la pestaña de disponibilidad al presionar reservar
+        //===================== Modal para reserva ===================
         document.addEventListener('DOMContentLoaded', function() {
-            const btnReservar = document.getElementById('btn-go-disponibilidad');
-            if(btnReservar) {
-                btnReservar.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    // Oculta todas las tabs
-                    document.querySelectorAll('.tutor-tab-content').forEach(el => el.classList.add('hidden'));
-                    document.getElementById('disponibilidad').classList.remove('hidden');
-                    // Quita active de todos los botones
-                    document.querySelectorAll('.tutor-tab-btn').forEach(el => el.classList.remove('active'));
-                    // Activa el botón de disponibilidad
-                    document.querySelectorAll('.tutor-tab-btn').forEach(el => {
-                        if(el.textContent.trim() === 'Disponibilidad') el.classList.add('active');
-                    });
-                    // Scroll al área de tabs
-                    document.getElementById('disponibilidad').scrollIntoView({behavior:'smooth'});
-                });
-            }
+            const btnShare = document.getElementById('btn-share-profile1');
+            const modalShare = document.getElementById('modal-share-profile1');
+            const closeModal = document.getElementById('close-modal-share');
+        
+            btnShare.addEventListener('click', function() {
+                modalShare.style.display = 'flex';
+            });
+            closeModal.addEventListener('click', function() {
+                modalShare.style.display = 'none';
+            });
+
         });
+        
     </script>
 </div>
 @endsection
