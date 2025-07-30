@@ -19,16 +19,10 @@ class IdentityVerificationForm extends Form
     public $identity;
     public $transcript;
     public string $city = '';
-    public string $name = '';
     public string $state = '';
     public $dateOfBirth;
     public string $country = '';
     public string $zipcode = '';
-    public string $schoolId = '';
-    public string $parentName = '';
-    public string $schoolName = '';
-    public string $parentPhone = '';
-    public string $parentEmail = '';
     public $identificationCard;
     public string $address = '';
     public $enableGooglePlaces;
@@ -116,17 +110,12 @@ class IdentityVerificationForm extends Form
         }
 
         $identityInfo = [
-            'name' => $this->name,
             'personal_photo' => !empty($this->image) ? $personalPhoto : null,
             'user_id' => Auth::user()->id,
             'dob' => $dob,
             'attachments' => $this->user->hasRole('tutor') && !empty($this->identificationCard) ? $identificationCard : null,
-            'school_id' => $this->user->hasRole('student') ? $this->schoolId : null,
-            'school_name' => $this->user->hasRole('student') ? $this->schoolName : null,
             'transcript' => $this->user->hasRole('student') && !empty($this->transcript) ? $transcript : null,
-            'parent_name' => $this->user->hasRole('student') ? $this->parentName : null,
-            'parent_email' => $this->user->hasRole('student') ? $this->parentEmail : null,
-            'parent_phone' => $this->user->hasRole('student') ? $this->parentPhone : null,
+
         ];
 
         $address = [

@@ -73,7 +73,7 @@ return [
     'basic_info' => 'Proporcionar información básica para completar su perfil',
     'email' => 'Email',
     'phone_number' => 'Número de teléfono',
-    'profile_picture' => 'Profile photo',
+    'profile_picture' => 'Una imagen vale más que mil palabras.',
     'upload_image' => 'Cargar Imagen',
     'upload_video' => 'Cargar Video',
     'upload_resume' => 'Upload resume',
@@ -81,10 +81,9 @@ return [
     'upload_other' => 'Upload other',
     'allowed_formats' => 'Formatos permitidos',
     'max' => 'Máximo',
-    'other_languages' => 'Other languages',
+    'other_languages' => 'otros idiomas',
     'remove' => 'Eliminar',
-    'phone_number' => 'Número de teléfono',
-    'profile_picture' => 'Foto de perfil',
-    'other_languages' => 'Otros idiomas',
+    'change_photo' => 'Cambiar foto',
+    
    
 ];

@@ -21,7 +21,7 @@ class GoogleMeetService
             'start_date_time' => 'required|date',
             'end_date_time' => 'required|date|after:start_date_time',
         ]); */
-
+       //dd('prueba');
         $title = $meetingData['title'] ?? 'Tutoría';
         $description = $meetingData['description'] ?? 'Sesión de tutoría';
         $start_date_time = $meetingData['start_time'] ?? now()->addMinutes(10)->format('Y-m-d H:i:s');
@@ -30,7 +30,7 @@ class GoogleMeetService
 
 
         $client = new Google_Client();
-        $client->setAuthConfig(base_path('app/Credentials/credential.json'));
+        $client->setAuthConfig(base_path('app/credentials/credential.json'));
         $client->setAccessToken([
             'access_token' => env('GOOGLE_ADMIN_ACCESS_TOKEN'),
             'refresh_token' => env('GOOGLE_ADMIN_REFRESH_TOKEN'),
@@ -62,6 +62,7 @@ class GoogleMeetService
         ]);
 
         $calendarId = 'primary';
+       
         $event = $service->events->insert($calendarId, $event, ['conferenceDataVersion' => 1]);
         return $event->getHangoutLink();
     }

@@ -35,9 +35,13 @@
     @endhasanyrole
     <div class="am-header_user_menu">
         <a href="javascript:void(0);">
-            <figure class="am-shimmer userImg">
+             <figure class="am-shimmer userImg">
                 <img x-cloak src="{{ $userImage }}" alt="{{ auth()?->user()?->profile?->full_name }}">
-            </figure>
+            </figure> 
+           {{--  <figure class="am-shimmer userImg">
+                <img  src="{{ $userImage }}" alt="{{ auth()?->user()?->profile?->full_name }}">
+            </figure> --}}
+        
         </a>
         <ul>
             <li>

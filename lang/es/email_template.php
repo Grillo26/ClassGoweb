@@ -98,6 +98,49 @@ return [
     'session_request_admin_variables' => '{userName} - Para nombre de usuario <br> {studentName} - Para nombre de estudiante <br> {studentEmail} - Para correo electrónico de estudiante <br> {sessionType} - Para tipo de sesión <br> {message} - Para mensaje',
     'session_request_subject' => 'Nueva solicitud de sesión personalizada de {studentName}',
     'session_request_content' => 'Ha recibido una solicitud de nueva sesión de un estudiante. Aquí están los detalles:<br /> <br /> <strong> Nombre del estudiante </strong>: {studentName}<br /><strong> Correo electrónico del estudiante </strong>: {studentEmail}<br ><strong> Sesión Tipo </strong>: {sessionType}<br /><strong> Mensaje </strong>: {message}',
+    
+    // Plantilla para notificaciones intensas de cambio de estado de tutoría
+    'intensive_booking_status_subject' => '🚨 ¡URGENTE! Nueva tutoría aceptada - {tutorName}',
+    'intensive_booking_status_content' => '
+    <div style="background-color: #fff3cd; border: 2px solid #ffc107; padding: 20px; border-radius: 10px; margin: 20px 0;">
+        <h2 style="color: #856404; margin: 0 0 15px 0;">🎉 ¡FELICITACIONES! Tu tutoría ha sido aceptada</h2>
+        <p style="color: #856404; font-size: 16px; margin: 0 0 10px 0;"><strong>Hola {tutorName},</strong></p>
+        <p style="color: #856404; font-size: 16px; margin: 0 0 15px 0;">¡Excelente noticia! Una nueva tutoría ha sido aceptada y está lista para comenzar.</p>
+    </div>
+    
+    <div style="background-color: #f8f9fa; border: 1px solid #dee2e6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <h3 style="color: #495057; margin: 0 0 15px 0;">📋 Detalles de la Sesión:</h3>
+        <ul style="color: #495057; font-size: 14px; line-height: 1.6;">
+            <li><strong>Estudiante:</strong> {studentName}</li>
+            <li><strong>Materia:</strong> {subject}</li>
+            <li><strong>Fecha:</strong> {sessionDate}</li>
+            <li><strong>Hora:</strong> {sessionTime}</li>
+            <li><strong>Estado:</strong> <span style="color: #28a745; font-weight: bold;">{status}</span></li>
+        </ul>
+    </div>
+    
+    <div style="background-color: #e7f3ff; border: 1px solid #b3d9ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
+        <h4 style="color: #0056b3; margin: 0 0 10px 0;">🔗 Enlace de la Reunión:</h4>
+        <p style="color: #0056b3; font-size: 14px; margin: 0 0 10px 0;"><strong>{meetingLink}</strong></p>
+        <p style="color: #0056b3; font-size: 12px; margin: 0;">Guarda este enlace para acceder a la sesión cuando sea el momento.</p>
+    </div>
+    
+    <div style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 8px; margin: 20px 0;">
+        <h4 style="color: #155724; margin: 0 0 10px 0;">⚡ Acción Requerida:</h4>
+        <p style="color: #155724; font-size: 14px; margin: 0 0 15px 0;">Por favor, revisa los detalles de la sesión y prepárate para la tutoría. ¡Tu estudiante está esperando!</p>
+        {actionButton}
+    </div>
+    
+    <div style="background-color: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin: 20px 0;">
+        <p style="color: #666; font-size: 12px; margin: 0; text-align: center;">
+            <strong>Importante:</strong> Esta es una notificación de alta prioridad. Por favor, responde lo antes posible.
+        </p>
+    </div>
+    
+    <p style="color: #495057; font-size: 14px; margin: 20px 0 0 0;">
+        ¡Gracias por ser parte de nuestra comunidad de tutores!<br>
+        <strong>Equipo ClassGo</strong>
+    </p>',
     'session_request_greeting_admin' => 'Hola administrador,',
     'session_request_subject_admin' => 'Nueva solicitud de sesión personalizada enviada por {studentName}',
     'session_request_content_admin' => 'Un estudiante ha enviado una nueva solicitud de sesión personalizada. A continuación se detallan los detalles:<br /> <br /> <strong> Nombre del estudiante </strong>: {studentName}<br /><strong> Correo electrónico del estudiante </strong>: {studentEmail}<br ><strong> Sesión Tipo </strong>: {sessionType}<br /><strong> Mensaje </strong>: {message}',

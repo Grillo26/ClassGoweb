@@ -92,29 +92,41 @@
                             </tr>
                         </thead>
                         <tbody>
+                          
                             @foreach($users as $single)
                             <tr>
                                 <td data-label="{{ __('#' )}}"><span>{{ $single->id }}</span></td>
                                 <td data-label="{{ __('Name' )}}">
                                     <div class="tb-varification_userinfo">
-                                        <strong class="tb-adminhead__img">
+                                        
+                                         
+
+                                         <strong class="tb-adminhead__img">
                                          
                                           
-                                         
-                                         @if (!empty($single->profile->image) && file_exists(public_path('storage/' . $single->profile->image)))
-                                                <img src="{{ asset('storage/' . $single->profile->image) }}" alt="{{ $single->profile->image }}" />
+                                         @if($single->profile && $single->profile->image)
+                                            @if ( file_exists(public_path('storage/' . $single->profile->image)))
+                                              <img src="{{ asset('storage/' . $single->profile->image) }}" alt="{{ $single->profile->image }}" />
                                             @else
-                                                   <img src="{{ setting('_general.default_avatar_for_user') ? asset('storage/' . setting('_general.default_avatar_for_user')[0]['path']) : asset('images/placeholder.png') }}" alt="{{ $single->profile->image }}" />   
+                                                 <img src="{{ setting('_general.default_avatar_for_user') ? asset('storage/' . setting('_general.default_avatar_for_user')[0]['path']) : asset('images/placeholder.png') }}" alt="{{ $single->profile->image }}" />   
                                             @endif
-                                        </strong>
-                                        <span>{{ $single->profile->full_name }}</span>
+                                        @endif
+                                        </strong> 
+                                        @if( $single->profile && $single->profile->full_name) 
+                                         <span>{{ $single->profile->full_name }}</span> 
+                                        @else
+                                            <span>{{ $single->first_name . ' ' . $single->last_name }}</span>
+                                        @endif
+                                        
                                         @if($single->roles()->first()->name == 'tutor')
-                                            <a href="{{ route('tutor-detail',['slug' => $single->profile->slug]) }}" class="am-custom-tooltip">
+                                           @if($single->profile && $single->profile->slug)  
+                                              <a href="{{ route('tutor-detail',['slug' => $single->profile->slug]) }}" class="am-custom-tooltip">
                                                 <span class="am-tooltip-text">
                                                     <span>{{ __('general.visit_profile') }}</span>
                                                 </span>
                                                 <i class="icon-external-link"></i>
-                                            </a>
+                                             </a>
+                                            @endif
                                         @endif
                                     </div>
                                 </td>

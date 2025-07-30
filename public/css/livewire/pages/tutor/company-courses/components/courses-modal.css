@@ -1,0 +1,263 @@
+/* Modal principal */
+.am-modal {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.am-modal.am-show {
+    display: flex;
+}
+
+.am-modal-dialog {
+    position: relative;
+    margin: auto;
+   /*  max-width: 400px;
+    width: 100%; */
+}
+
+ .am-modal-content {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    border: none;
+} 
+
+/* Header */
+.am-modal-header {
+    background: white;
+    color: #333;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.am-modal-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.am-close {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 24px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+    padding: 0;
+    cursor: pointer;
+}
+
+.am-close:hover {
+    color: #666;
+}
+
+/* Body */
+.am-modal-body {
+    padding: 24px;
+    background: white;
+}
+
+.am-form-group {
+    margin-bottom: 20px;
+}
+
+.am-form-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.am-form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #504f4f !important;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.am-form-control:focus {
+    outline: none;
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 3px rgba(119, 118, 118, 0.1);
+}
+
+.am-form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+.am-form-control.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.am-input-hint {
+    color: #999;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+/* Footer */
+.am-modal-footer {
+    background: white;
+    border-top: 1px solid #e5e5e5;
+    padding: 16px 24px;
+    gap: 12px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.am-btn,
+.am-btn-primary,
+.am-btn-secondary {
+    border-radius: 6px;
+    font-weight: 500;
+    padding: 10px 20px;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.am-btn-secondary {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.am-btn-secondary:hover {
+    background: #e8e8e8;
+    color: #333;
+}
+
+.am-btn-primary {
+    background: #ff6b35;
+    color: white;
+}
+
+.am-btn-primary:hover:not(:disabled) {
+    background: #e55a2b;
+}
+
+.am-btn-primary:disabled {
+    background: #ccc;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .am-modal-body {
+        padding: 16px;
+    }
+
+    .am-modal-footer {
+        padding: 12px 16px;
+        flex-direction: column-reverse;
+    }
+
+    .am-btn,
+    .am-btn-primary,
+    .am-btn-secondary {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .am-btn-primary {
+        margin-bottom: 0;
+    }
+}
+
+
+
+/* Pregunta y bloque de opciones */
+.am-question-block {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 18px 16px 12px 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 6px rgba(60,60,60,0.04);
+    border: 1px solid #e5e7eb;
+}
+
+.am-form-group:last-child {
+    margin-bottom: 0;
+}
+
+/* Opciones de respuesta */
+.am-form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 8px;
+}
+
+.am-form-check-input[type="radio"] {
+    accent-color: #ff6b35;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+}
+
+.am-form-check-label {
+    font-size: 14px;
+    color: #334155;
+    cursor: pointer;
+    user-select: none;
+}
+
+.am-form-error {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+
+.am-alert {
+    padding: 1.5rem 2rem;
+    border-radius: 10px;
+    margin: 2rem 0;
+    border-left: 4px solid;
+    font-weight: 500;
+}
+
+.am-alert-info {
+    background: var(--secundary-color);
+    color: white;
+    
+}

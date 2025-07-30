@@ -32,7 +32,7 @@
             @else
             @foreach ($filteredGroups as $index => $group)
             <div class="am-group-card" wire:key="subject-group-{{ $group?->id }}">
-                <div x-data="{ open: true }">
+                <div x-data="{ open: false }">
                     <div class="am-group-header" @click="open = !open">
                         <span class="am-group-title">{{ $group->name }}</span>
                         <span class="am-group-toggle" :class="{'open': open}"></span>

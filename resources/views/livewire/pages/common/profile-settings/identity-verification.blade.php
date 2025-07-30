@@ -21,8 +21,8 @@
             <div class="am-userid">
                 <div class="am-title_wrap">
                     <div class="am-title">
-                        <h2>{{ __('ps rofile.identity_verification') }}</h2> {{-- Título principal --}}
-                        <p>{{ __('profile.identity_detail_desc') }}</p> {{-- Descripción --}}
+                        <h2 style="color: black">{{ __('profile.identity_verification') }}</h2> {{-- Título principal --}}
+                        <p style="color: black">{{ __('profile.identity_detail_desc') }}</p> {{-- Descripción --}}
                     </div>
                 </div>
                 <form wire:submit="updateInfo" class="am-themeform am-themeform_personalinfo">
@@ -34,19 +34,9 @@
  
 
                            
-                            {{-- Campo: Nombre completo --}}
-                            <div class="form-group">
-                                <x-input-label for="name" class="am-important" :value="__('profile.full_name')" />
-                                <div class="form-group-two-wrap">
-                                    <div @class(['form-control_wrap', 'am-invalid' => $errors->has('form.name')])>
-                                        <x-text-input wire:model="form.name" placeholder="{{ __('profile.full_name') }}" type="text"  autofocus autocomplete="name" />
-                                        <x-input-error field_name="form.name" />
-                                    </div>
-                                </div>
-                            </div>
                             {{-- Campo: Fecha de nacimiento --}}
                             <div class="form-group">
-                                <x-input-label for="name" class="am-important" :value="__('profile.date_of_birth')" />
+                                <x-input-label style="color: black"  for="name" class="am-important" :value="__('profile.date_of_birth')" />
                                 <div class="form-group-two-wrap">
                                     <div @class(['form-control_wrap', 'am-invalid' => $errors->has('form.dateOfBirth')])>
                                         <x-text-input class="flat-date" id="dof" data-format="F-d-Y" wire:model="form.dateOfBirth" placeholder="{{ __('profile.date_of_birth') }}" type="text" id="datepicker"  autofocus autocomplete="name" />
@@ -57,7 +47,7 @@
 
                               {{-- Campo: Foto personal --}}
                             <div class="form-group">
-                                <x-input-label class="am-important" for="profile_photo" :value="__('profile.personal_photo')" />
+                                <x-input-label style="color: black" class="am-important" for="profile_photo" :value="__('profile.personal_photo')" />
                                 <div class="am-uploadoption" x-data="{isUploading:false}" wire:key="uploading-profile-photo-{{ time() }}" >
                                     <div class="tk-draganddrop"
                                         x-bind:class="{ 'am-dragfile' : isDragging, 'am-uploading' : isUploading }"
@@ -70,7 +60,7 @@
                                             x-ref="file_upload_image"
                                             accept="{{ !empty($allowImgFileExt) ? join(',', array_map(function($ex){return('.'.$ex);}, $allowImgFileExt)) : '*' }}"
                                             x-on:change="isUploading = true; $wire.upload('form.image', $refs.file_upload_image.files[0])" />
-                                        <label for="at_upload_photo" class="am-uploadfile">
+                                        <label style="color: black" for="at_upload_photo" class="am-uploadfile">
                                             <span class="am-dropfileshadow">
                                                 <svg class="am-border-svg "><rect width="100%" height="100%" rx="12"></rect></svg>
                                                 <i class="am-icon-plus-02"></i>
@@ -108,7 +98,7 @@
                             @if($user->hasRole('tutor'))
                                 {{-- Documento: Identificación tutor --}}
                                 <div class="form-group">
-                                    <x-input-label for="coverphoto1" class="am-important" :value="__('profile.identification_card')" />
+                                    <x-input-label style="color: black" for="coverphoto1" class="am-important" :value="__('profile.identification_card')" />
                                     <div class="am-uploadoption" x-data="{isUploading:false}" wire:key="uploading-identification-card-{{ time() }}">
                                         <div class="tk-draganddrop"
                                             x-bind:class="{ 'am-dragfile' : isDragging, 'am-uploading' : isUploading }"
@@ -156,25 +146,8 @@
                                 </div>
                             @endif
                             @if($user->hasRole('student'))
-                                {{-- Campos y documentos para estudiantes: matrícula, escuela, transcript, datos de padres --}}
-                                <div class="form-group">
-                                    <x-input-label for="name" class="am-important" :value="__('profile.school_enrollment_id')" />
-                                    <div class="form-group-two-wrap">
-                                        <div @class(['form-control_wrap', 'am-invalid' => $errors->has('form.schoolId')])>
-                                            <x-text-input wire:model="form.schoolId" placeholder="{{ __('profile.school_enrollment_id') }}" type="text"  autofocus autocomplete="name" />
-                                            <x-input-error field_name="form.schoolId" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <x-input-label for="name" class="am-important" :value="__('profile.school_name')" />
-                                    <div class="form-group-two-wrap">
-                                        <div @class(['form-control_wrap', 'am-invalid' => $errors->has('form.schoolName')])>
-                                            <x-text-input wire:model="form.schoolName" placeholder="{{ __('profile.school_name') }}" type="text"  autofocus autocomplete="name" />
-                                            <x-input-error field_name="form.schoolName" />
-                                        </div>
-                                    </div>
-                                </div>
+                               
+                                {{-- Documento: Identificación estudiante --}}
                                 <div class="form-group">
                                     <x-input-label class="am-important" for="coverphoto1" :value="__('profile.identification_card')" />
                                     <div class="am-uploadoption" x-data="{isUploading:false}" wire:key="uploading-transcript-{{ time() }}">
@@ -189,7 +162,7 @@
                                                 x-ref="file_upload"
                                                 accept="{{ !empty($allowImgFileExt) ?  join(',', array_map(function($ex){return('.'.$ex);}, $allowImgFileExt)) : '*' }}"
                                                 x-on:change=" isUploading = true; $wire.upload('form.transcript', $refs.file_upload.files[0])"/>
-                                            <label for="at_upload_transcript" class="am-uploadfile">
+                                            <label style="color: black" for="at_upload_transcript" class="am-uploadfile">
                                                 <span class="am-dropfileshadow">
                                                     <svg class="am-border-svg "><rect width="100%" height="100%" rx="12"></rect></svg>
                                                     <i class="am-icon-plus-02"></i>
@@ -222,33 +195,9 @@
                                         <x-input-error field_name="form.transcript" />
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <x-input-label for="name" class="am-important" :value="__('profile.parent_name')" />
-                                    <div class="form-group-two-wrap">
-                                        <div @class(['form-control_wrap', 'am-invalid' => $errors->has('form.parentName')])>
-                                            <x-text-input wire:model="form.parentName" placeholder="{{ __('profile.parent_name') }}" type="text"  autofocus autocomplete="name" />
-                                            <x-input-error field_name="form.parentName" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <x-input-label for="name" class="am-important" :value="__('profile.parent_email')" />
-                                    <div class="form-group-two-wrap">
-                                        <div @class(['form-control_wrap', 'am-invalid' => $errors->has('form.parentEmail')])>
-                                            <x-text-input wire:model="form.parentEmail" placeholder="{{ __('profile.parent_email') }}" type="text"  autofocus autocomplete="name" />
-                                            <x-input-error field_name="form.parentEmail" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <x-input-label for="name" class="am-important" :value="__('profile.parent_phone')" />
-                                    <div class="form-group-two-wrap">
-                                        <div @class(['form-control_wrap', 'am-invalid' => $errors->has('form.parentPhone')])>
-                                            <x-text-input wire:model="form.parentPhone" placeholder="{{ __('profile.parent_phone') }}" type="text"  autofocus autocomplete="name" />
-                                            <x-input-error field_name="form.parentPhone" />
-                                        </div>
-                                    </div>
-                                </div>
+                              
+                               
+                               
                             @endif
 
 
@@ -256,7 +205,7 @@
 
                             {{-- Campo: Dirección y país/estado/ciudad/código postal --}}                          
                             <div class="form-group am-addressform">
-                                <x-input-label for="address" class="am-important" :value="__('profile.address')" />
+                                <x-input-label style="color: black" for="address" class="am-important" :value="__('profile.address')" />
                                 <div class="am-user-location">
                                     @if($enableGooglePlaces == '1')
                                         {{-- Autocompletado con Google Places --}}
@@ -270,7 +219,7 @@
                                         {{-- Selección de país --}}
                                         @if (!empty($countries))
                                             <div class="form-group-half">
-                                                <x-input-label for="country" :value="__('profile.country')" />
+                                                <x-input-label style="color: black !important" for="country" :value="__('profile.country')" />
                                                 <div @class(['form-control_wrap', 'am-invalid' => $errors->has('form.country')])>
                                                     <span class="am-select">
                                                       <select id="user_country" wire:model.live="form.country">
@@ -287,7 +236,7 @@
                                         {{-- Selección de estado (solo si hay país seleccionado y existen estados) --}}
                                         @if(!empty($form->country) && !empty($states) && count($states) > 0)
                                             <div class="form-group-half">
-                                                <x-input-label for="state" :value="__('profile.state')" />
+                                                <x-input-label style="color: black !important" for="state" :value="__('profile.state')" />
                                                 <div @class(['form-control_wrap', 'am-invalid' => $errors->has('form.state')])>
                                                     <span class="am-select">
                                                         <select class="am-select2" id="country_state" wire:model="form.state">
@@ -300,23 +249,7 @@
                                                 </div>
                                                 <x-input-error field_name="form.state" />
                                             </div>
-                                        @endif
-                                        {{-- Campo: Ciudad --}}
-                                        <div class="form-group-half">
-                                            <div @class(['form-control_wrap', 'am-invalid' => $errors->has('form.city')])>
-                                                <x-input-label for="city" :value="__('profile.city')" />
-                                                <x-text-input wire:model="form.city" placeholder="{{ __('profile.city_placeholder') }}" type="text"  autofocus autocomplete="name" />
-                                                <x-input-error field_name="form.city" />
-                                            </div>
-                                        </div>
-                                        {{-- Campo: Código postal --}}
-                                        <div class="form-group-half">
-                                            <x-input-label for="Zip" :value="__('profile.zipcode')" />
-                                            <div @class(['form-control_wrap', 'am-invalid' => $errors->has('form.zipcode')])>
-                                                <x-text-input wire:model="form.zipcode" placeholder="{{ __('profile.zipcode_placeholder') }}" type="text"  autofocus autocomplete="name" />
-                                                <x-input-error field_name="form.zipcode" />
-                                            </div>
-                                        </div>
+                                        @endif 
                                     @endif
                                 </div>
                             </div>

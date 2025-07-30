@@ -8,6 +8,8 @@ use App\Livewire\Forms\Frontend\RequestSessionForm;
 use App\Models\SlotBooking;
 use App\Models\User;
 use App\Services\BookingService;
+use App\Services\ImagenesService;
+use App\Services\PagosTutorReservaService;
 use App\Services\SubjectService;
 use App\Services\UserService;
 use Carbon\Carbon;
@@ -20,6 +22,7 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\WithFileUploads;
 use App\Models\PaymentSlotBooking;
 use Illuminate\Support\Facades\Log;
+use App\Services\MailService;
 
 
 class TutorSessions extends Component
@@ -27,7 +30,7 @@ class TutorSessions extends Component
     use WithFileUploads;
 
     public $currentDate, $startOfWeek, $timezone;
-    public $activeId;
+    
     public $disablePrevious, $showCurrent = false, $isCurrent = false;
     public $dateRange = [];
     public $availableSlots = [];
@@ -56,6 +59,10 @@ class TutorSessions extends Component
     public $enableTimes = [];
     private $bookingService, $subjectService;
 
+    private $imageService;
+
+    private $emailService;
+
     public RequestSessionForm $requestSessionForm;
 
     protected $listeners = ['closeConfirmationDiv'];
@@ -65,6 +72,7 @@ class TutorSessions extends Component
      */
     public function render()
     {
+        //dd($this->userId,$this->timezone,"time", $this->pageLoaded ,"page", $this->availableSlots,"avibalos solt" , $this->dateRange, $this->filter);
         if (!empty($this->timezone) && !empty($this->pageLoaded)) {
             $this->availableSlots = $this->bookingService->getTutorAvailableSlots($this->userId, $this->timezone, $this->dateRange, $this->filter);
         }
@@ -89,7 +97,9 @@ class TutorSessions extends Component
     public function boot()
     {
         $this->bookingService = new BookingService($this->user);
-    }
+        $this->emailService = new MailService();
+         $this->imageService = new ImagenesService();
+    } 
 
     /**
      * Configura las propiedades iniciales del componente al montarlo.
@@ -104,7 +114,9 @@ class TutorSessions extends Component
         $this->currentDate = parseToUserTz(Carbon::now());
         $this->startOfWeek = (int) (setting('_lernen.start_of_week') ?? Carbon::SUNDAY);
         $this->subjectService = new SubjectService($user);
+        
         $this->subjectGroups = $this->subjectService->getSubjectsByUserRole();
+        
         if (Auth::check()) {
             $this->timezone = getUserTimezone();
         }
@@ -115,22 +127,18 @@ class TutorSessions extends Component
         }
     }
 
-    /**
-     * Muestra los detalles de un slot específico en un modal.
-     *
-     * @param int $id ID del slot.
-     */
+    
     public function showSlotDetail($id)
     {
         $this->currentSlot = $this->bookingService->getSlotDetail($id);
         $this->dispatch('toggleModel', id: 'slot-detail', action: 'show');
     }
 
-    /**
-     * Reserva un slot para el usuario actual.
-     *
-     * @param int $id ID del slot a reservar.
-     */
+
+
+
+
+
     public function bookSession($id)
     {
         $slot = $this->bookingService->getSlotDetail($id);
@@ -174,24 +182,6 @@ class TutorSessions extends Component
             }
         }
     }
-
-    /**
-     * Elimina un elemento del carrito y libera el slot reservado.
-     *
-     * @param array $params Parámetros del elemento a eliminar.
-     */
-    /* #[On('remove-cart')]
-    public function removeCartItem($params)
-    {
-        if (!empty($params['cartable_id']) && !empty($params['cartable_type'])) {
-            $this->bookingService->removeReservedBooking($params['cartable_id']);
-            Cart::remove(
-                cartableId: $params['cartable_id'],
-                cartableType: $params['cartable_type']
-            );
-            $this->dispatch('cart-updated', cart_data: Cart::content(), discount: formatAmount(Cart::discount(), true), total: formatAmount(Cart::total(), true), subTotal: formatAmount(Cart::subtotal(), true), toggle_cart: 'open');
-        }
-    } */
 
     /**
      * Salta a una fecha específica en el calendario.
@@ -310,114 +300,69 @@ class TutorSessions extends Component
      */
     public function estudianteReserva($slotId)
     {
-
-        $this->subjectError = '';
+        $this->logueado(); 
+        $pagostutorreserva = new PagosTutorReservaService();
         if (empty($this->selectedSubject)) {
             $this->subjectError = 'Debes seleccionar una materia.';
             return;
         }
         $slot = UserSubjectSlot::find($slotId);
-        if (!empty($slot)) {
-            $sessionFee = $slot->session_fee ?? 15;
-
-            if (!Auth::check()) {
-                session()->put('url.intended', url()->current());
-                return redirect()->route('login');
-            }
-
-            /* if (!Auth::check()) {
-                return redirect()->route('login');
-            } */
-
-            $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->selectedSubject, $this->selectedHour);
-            $data = [
-                'id' => $bookedSlot->id,
-                'slot_id' => $slot->id,
-                'tutor_id' => $this->user->id,
-                'tutor_name' => $this->user?->profile?->full_name,
-                'session_time' => parseToUserTz($slot->start_time, $this->timezone)->format('h:i a') . ' - ' . parseToUserTz($slot->end_time, $this->timezone)->format('h:i a'),
-                'currency_symbol' => $this->currency_symbol,
-                'price' => number_format($sessionFee, 2),
-            ];
-            if (Module::has('subscriptions') && Module::isEnabled('subscriptions')) {
-                $data['allowed_for_subscriptions'] = $slot->meta_data['allowed_for_subscriptions'] ?? 0;
-            }
-
-            Cart::add(
-                cartableId: $data['id'],
-                cartableType: SlotBooking::class,
-                name: $data['tutor_name'],
-                qty: 1,
-                price: $sessionFee,
-                options: $data
-            );
-            $this->dispatch('scrollToTop');
-
-            if (\Nwidart\Modules\Facades\Module::has('kupondeal') && \Nwidart\Modules\Facades\Module::isEnabled('kupondeal')) {
-                // $response = \Modules\KuponDeal\Facades\KuponDeal::applyCouponIfAvailable($slot->subjectGroupSubjects->id, UserSubjectGroupSubject::class);
-            } else {
-                $this->dispatch('cart-updated', cart_data: Cart::content(), total: formatAmount(Cart::total(), true), subTotal: formatAmount(Cart::subtotal(), true), toggle_cart: 'open');
-            }
-
-            // Guardar la imagen del comprobante si existe
-            if ($this->uploadedImage) {
-                try {
-                    // Nombre único para evitar sobrescribir archivos
-                    $fileName = uniqid() . '_' . $this->uploadedImage->getClientOriginalName();
-
-                    // Guarda el archivo en storage/app/public/uploads/bookings
-                    $this->uploadedImage->storeAs('uploads/bookings', $fileName, 'public');
-
-                    // Copia el archivo a public/storage/uploads/bookings
-                    $source = storage_path('app/public/uploads/bookings/' . $fileName);
-                    $destination = public_path('storage/uploads/bookings/' . $fileName);
-                    if (!file_exists(dirname($destination))) {
-                        mkdir(dirname($destination), 0775, true);
-                    }
-                    copy($source, $destination);
-
-                    // Guarda la ruta relativa en la base de datos
-                    $path = 'uploads/bookings/' . $fileName;
-
+        try {
+            if (!empty($slot)) {
+                $sessionFee = $slot->session_fee ?? 15;
+                $bookedSlot = $this->bookingService->reservarSlotBoooking($slot, $this->selectedSubject, $this->selectedHour);
+                $data = [
+                    'id' => $bookedSlot->id,
+                    'slot_id' => $slot->id,
+                    'tutor_id' => $this->user->id,
+                    'tutor_name' => $this->user?->profile?->full_name,
+                    'session_time' => parseToUserTz($slot->start_time, $this->timezone)->format('h:i a') . ' - ' . parseToUserTz($slot->end_time, $this->timezone)->format('h:i a'),
+                    'currency_symbol' => $this->currency_symbol,
+                    'price' => number_format($sessionFee, 2),
+                ];
+                if (Module::has('subscriptions') && Module::isEnabled('subscriptions')) {
+                    $data['allowed_for_subscriptions'] = $slot->meta_data['allowed_for_subscriptions'] ?? 0;
+                }
+                Cart::add(
+                    cartableId: $data['id'],
+                    cartableType: SlotBooking::class,
+                    name: $data['tutor_name'],
+                    qty: 1,
+                    price: $sessionFee,
+                    options: $data
+                );
+                $this->dispatch('scrollToTop');
+                if ($this->uploadedImage) {
+                   
+                    $path = $this->imageService->guardarqrEstudianteReserva($this->uploadedImage, );
                     PaymentSlotBooking::create([
                         'slot_booking_id' => $bookedSlot->id,
                         'image_url' => $path,
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
-
-
-                    $student = Auth::user();
-                    $fechaHora = now()->format('d/m/Y H:i');
-                    $contenido = "Se ha registrado una nueva reserva de tutoría el {$fechaHora}.\n\n";
-                    $contenido .= "Detalles de la reserva:\n";
-                    $contenido .= "Estudiante: {$student->name} ({$student->email})\n";
-                    $contenido .= "Tutor: {$this->user?->profile?->full_name}\n";
-                    $contenido .= "Materia: {$this->selectedSubject}\n";
-                    $contenido .= "Horario: " . parseToUserTz($slot->start_time, $this->timezone)->format('d/m/Y H:i') . " - " . parseToUserTz($slot->end_time, $this->timezone)->format('H:i') . "\n";
-                    $contenido .= "Precio: {$this->currency_symbol}" . number_format($sessionFee, 2) . "\n\n";
-                    $contenido .= "Por favor, revise el panel de administración para más detalles.";
-                    \Mail::raw($contenido, function ($message) {
-                        $message->to(env('MAIL_ADMIN'))
-                            ->subject('Nueva reserva de tutoría registrada');
-                    });
-
-
-                } catch (\Exception $e) {
-                    Log::error('Error al guardar el comprobante: ' . $e->getMessage());
-                    $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: 'Error al guardar el comprobante de pago.');
-                    return;
+                    $pagostutorreserva->create(
+                        slot_booking_id: $bookedSlot->id,
+                        payment_date: now(),
+                        amount: $sessionFee,
+                        message: '',
+                    );
+                    $this->emailService->sendAdminNuevaTutoria(  $this->user?->profile?->full_name, $this->selectedSubject);
                 }
+                if (!empty($this->currentSlot)) {
+                    $this->dispatch('toggleModel', id: 'slot-detail', action: 'hide');
+                }
+                $this->successMessage = '¡Tutoría reservada exitosamente!';
+                $this->reset(['selectedSubject', 'uploadedImage']);
+                $this->dispatch('showSuccessAndCloseModal');
             }
-
-            if (!empty($this->currentSlot)) {
-                $this->dispatch('toggleModel', id: 'slot-detail', action: 'hide');
-            }
-            $this->successMessage = '¡Tutoría reservada exitosamente!';
-            $this->reset(['selectedSubject', 'uploadedImage']);
-            $this->dispatch('showSuccessAndCloseModal');
+        } catch (\Exception $e) {
+            Log::error('Error al reservar la tutoría: ' . $e->getMessage());
+            $this->dispatch('showAlertMessage', type: 'error', title: __('general.error_title'), message: 'Error al reservar la tutoría. Por favor, inténtalo de nuevo más tarde.');
         }
     }
+
+
 
     /**
      * Avanza al siguiente rango de fechas en el calendario.
@@ -572,5 +517,15 @@ class TutorSessions extends Component
         $this->minTime = null;
         $this->maxTime = null;
         $this->enableTimes = [];
+    }
+
+
+
+    public function logueado()
+    {
+        if (!Auth::check()) {
+            session()->put('url.intended', url()->current());
+            return redirect()->route('login');
+        }
     }
 }

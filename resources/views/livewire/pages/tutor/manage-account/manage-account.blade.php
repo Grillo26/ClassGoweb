@@ -1,14 +1,15 @@
-<div class="dashboard-container" wire:init="loadData">
+<div class="dashboard-container" style="min-height:100vh" wire:init="loadData">
     @slot('title')
     {{ __('general.dashboard') }}
     @endslot
-    @if($isLoading)
+    {{-- @if($isLoading)
     @include('skeletons.manage-account')
-    @else
+    @else --}}
     <div class="am-section-load" wire:loading wire:target="refresh">
         @include('skeletons.manage-account')
     </div>
     <div>
+        {{--
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Ganancias totales</div>
@@ -23,7 +24,7 @@
                 <div class="stat-label">Tutorías completadas</div>
                 <div class="stat-value">82</div>
             </div>
-        </div>
+        </div>  --}}
 
         <!-- Payment Methods Section -->
         <div class="payment-methods-section">
@@ -110,7 +111,7 @@
         </div>
 
         <!-- Transaction History -->
-        <div class="transaction-history">
+       {{-- <div class="transaction-history">
             <div class="section-header">
                 <h2 class="section-title">Historial de Transacciones</h2>
             </div>
@@ -126,19 +127,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- <tr>
+                         <tr>
                             <td>10 Jun, 2025</td>
                             <td class="transaction-amount">150.00 Bs</td>
                             <td class="transaction-method">Pago con QR</td>
                             <td><span class="transaction-status">Completado</span></td>
-                        </tr> --}}
+                        </tr> 
                         
                     </tbody>
                     
                 </table>
                 <p style="display: flex; justify-content: center; align-items: center; font-weight: bold;padding:2rem">Muy pronto...</p>
             </div>
-        </div>
+        </div>  --}}
         @include('livewire.pages.tutor.manage-account.components.modal-por-definir')
         @include('livewire.pages.tutor.manage-account.components.modal-cuenta-bancaria')
         @include('livewire.pages.tutor.manage-account.components.modal-qr-nuevo')
@@ -149,7 +150,7 @@
         'showSocialShare' => true
         ])
     </div>
-    @endif
+    {{-- @endif --}}
 </div>
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/livewire/pages/tutor/manage-account/components/modal-qr-fixed.css') }}">

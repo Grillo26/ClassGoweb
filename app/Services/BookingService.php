@@ -122,17 +122,7 @@ class BookingService
         return $myData;
     }
 
-    // public function getSlotDetail($id, $relations = true){
-    //     return UserSubjectSlot::when(!empty($relations), function($relations) {
-    //             $relations->with(['subjectGroupSubjects' => function ($query) {
-    //                 $query->select('id', 'user_subject_group_id', 'subject_id', 'hour_rate', 'image', );
-    //                 $query->withWhereHas('userSubjectGroup', function ($subjectGroup) {
-    //                     $subjectGroup->with('group:id,name');
-    //                     $query->with('subject:id,name');
-    //                 });
-    //             }]);
-    //         })->find($id);
-    // }
+   
 
     public function getSessionSlots()
     {

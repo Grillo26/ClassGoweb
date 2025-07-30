@@ -3,39 +3,11 @@
         <div class="row">
             <div class="col-lg-12 col-md-12">
                 <div class="tb-dhb-mainheading">
-                    <h4> {{ __('Tutorías') . ' (' . $tutorias->total() . ')' }}</h4>
+                    <h4> {{ __('Tutorías') }}</h4>
                     <div class="tb-sortby">
                         <form class="tb-themeform tb-displistform" wire:submit.prevent>
                             <fieldset>
-                                <div class="tb-themeform__wrap">
-                                    <div class="tb-actionselect">
-                                        <input type="text" wire:model.live="tutor" class="form-control"
-                                            placeholder="Buscar tutor">
-                                    </div>
-                                    <div class="tb-actionselect">
-                                        <input type="text" wire:model.live="student" class="form-control"
-                                            placeholder="Buscar estudiante">
-                                    </div>
-
-                                    <div class="tb-actionselect">
-                                        <a href="{{ route('google.authenticate') }}" class="tb-btn tb-btn-primary">
-                                            <i class="fab fa-google me-2"></i>
-                                            Autenticar Google
-                                        </a>
-                                    </div>
-                                    <div class="tb-actionselect">
-                                        <select wire:model.live="status" class="form-control">
-                                            <option value="">Todos los estados</option>
-                                            @foreach (['pendiente', 'rechazado', 'aceptado', 'no_completado',
-                                            'completado'] as $estado)
-                                            <option value="{{ $estado }}">{{ ucfirst($estado) }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="tb-actionselect">
-                                        <button class="tb-btn" type="submit">Filtrar</button>
-                                    </div>
-                                </div>
+                                @include('livewire.admin.components.filtros_tutorias')
                             </fieldset>
                         </form>
                     </div>
@@ -56,10 +28,13 @@
                                     <th style="width: 120px; text-align: center;">Estado</th>
                                     <th style="width: 110px; text-align: center;">Comprobante</th>
                                     <th style="width: 110px; text-align: center;">QR de Pago Tutor</th>
+                                    <th style="width: 110px; text-align: center;">Pago Tutor</th>
+
                                 </tr>
                             </thead>
                             <tbody>
                                 @php
+                                //dd($tutoria);
                                 $statusColors = [
                                 1 => '#22C55E', // aceptado
                                 2 => '#FACC15', // pendiente
@@ -87,7 +62,14 @@
                                 'completado' => 'Completado',
                                 ];
                                 @endphp
+
+
                                 @foreach ($tutorias as $tutoria)
+                                {{-- @php
+                                dd($tutoria->tutor->user->userPayouts);
+                                @endphp --}}
+
+
                                 <tr>
                                     <td style="text-align: center;">{{ $tutoria->id }}</td>
                                     <td style="text-align: left;">{{ $tutoria->tutor?->full_name ?? '-' }}</td>
@@ -123,22 +105,70 @@
                                             @endif
                                         </div>
                                     </td>
+
                                     <td style="text-align: center;">
+                                        @php
+                                        $qrPayout = $tutoria->tutor->user->userPayouts->firstWhere('payout_method',
+                                        'QR');
+                                        $bankPayout = $tutoria->tutor->user->userPayouts->firstWhere('payout_method',
+                                        'bank');
+                                        $bankDetails = is_array($bankPayout?->payout_details)
+                                        ? $bankPayout->payout_details
+                                        : (is_string($bankPayout?->payout_details) ?
+                                        json_decode($bankPayout->payout_details, true) : []);
+                                        @endphp
                                         <div
                                             style="display: flex; align-items: center; justify-content: center; width: 100%;">
-                                            @if (!empty($tutoria->tutor->user->userPayouts->first()?->img_qr))
-                                            <a href="{{ Storage::url($tutoria->tutor->user->userPayouts->first()?->img_qr) }}"
-                                                target="_blank" style="margin-left: 12px;">
-                                                <img src="{{ Storage::url($tutoria->tutor->user->userPayouts->first()?->img_qr) }}"
-                                                    alt="QR de Pago Tutor"
+                                            @if (!empty($qrPayout?->img_qr))
+                                            <a href="{{ Storage::url($qrPayout->img_qr) }}" target="_blank"
+                                                style="margin-left: 12px;">
+                                                <img src="{{ Storage::url($qrPayout->img_qr) }}" alt="QR de Pago Tutor"
                                                     style="max-width: 60px; max-height: 60px; border-radius: 6px; display: block;" />
                                             </a>
                                             @else
-                                            <span style="margin-left: 12px;">Sin comprobante</span>
+                                            @if(!empty($bankDetails))
+                                            <span style="margin-left: 12px;">
+                                                <strong>{{ $bankDetails['bankName'] ?? '-' }}</strong><br>
+                                                Tipo: {{ $bankDetails['title'] ?? '-' }}<br>
+                                                Cuenta: {{ $bankDetails['accountNumber'] ?? '-' }}<br>
+                                                Ruta: {{ $bankDetails['bankRoutingNumber'] ?? '-' }}
+                                            </span>
+                                            @else
+                                            <span style="margin-left: 12px;">Sin datos bancarios</span>
+                                            @endif
+
                                             @endif
                                         </div>
                                     </td>
 
+
+                                    @php
+                                    $paymentStatusMap = [
+                                    1 => 'Pendiente',
+                                    2 => 'Pagado',
+                                    3 => 'Observado',
+                                    4 => 'Cancelado',
+                                    ];
+                                    $paymentStatusColors = [
+                                    1 => '#FACC15', // Pendiente (amarillo)
+                                    2 => '#22C55E', // Pagado (verde)
+                                    3 => '#FF9800', // Observado (naranja)
+                                    4 => '#64748B', // Cancelado (gris)
+                                    ];
+                                    $paymentStatus = $tutoria->payment?->status ?? 1;
+                                    @endphp
+                                    <td>
+                                        <div
+                                            style="display: flex; align-items: center; justify-content: center; width: 100%;">
+                                            <button class="" data-bs-toggle="modal" data-bs-target="#modalPagoTutor"
+                                                wire:click="abrirModalPagoTutor({{ $tutoria }})">
+                                                <span class="badge"
+                                                    style=" color: white !important; background: {{ $paymentStatusColors[$paymentStatus] ?? '#FACC15' }};">
+                                                    {{ $paymentStatusMap[$paymentStatus] ?? 'Pendiente' }}
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -150,50 +180,88 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
-    @if ($showModal)
-    <div>
-        DEBUG: Modal debería estar abierto para tutoría {{ $modalTutoriaId }} (status: {{ $modalStatus }})
-    </div>
-    @livewire('admin.tutoria-status-modal', ['tutoriaId' => $modalTutoriaId, 'status' => $modalStatus], key('modal-' .
-    $modalTutoriaId))
-    @endif
-    <!-- Modal para cambiar estado de tutoría -->
-    <div wire:ignore.self class="modal fade" id="modalEstadoTutoria" tabindex="-1"
-        aria-labelledby="modalEstadoTutoriaLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEstadoTutoriaLabel">Cambiar estado de la tutoría</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body">
-                    <select wire:model="modalStatus" class="form-control">
-                        <option value="aceptado">Aceptado</option>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="no_completado">No completado</option>
-                        <option value="rechazado">Observado</option>
-                        <option value="completado">Completado</option>
-                        <option value="cursando">Cursando</option>
-                    </select>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" wire:click="updateStatus">Guardar</button>
+
+            <!-- Modal de éxito -->
+            <div wire:ignore.self class="modal fade" id="modalSuccess" tabindex="-1" aria-labelledby="modalSuccessLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content bg-success text-white">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalSuccessLabel">¡Éxito!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+                            {{ $successMessage }}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 
-@push('scripts')
-<script>
-    window.addEventListener('cerrar-modal-tutoria', function() {
+            <!-- Modal de error -->
+            <div wire:ignore.self class="modal fade" id="modalError" tabindex="-1" aria-labelledby="modalErrorLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content bg-danger text-white">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalErrorLabel">¡Error!</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            {{ $errorMessage }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        @include('livewire.admin.components.modal_pago_tutor')
+    </main>
+    @include('livewire.admin.components.modal_estado_tutoria')
+    @push('scripts')
+    <script>
+        window.addEventListener('cerrar-modal-tutoria', function() {
             var modal = bootstrap.Modal.getInstance(document.getElementById('modalEstadoTutoria'));
             if (modal) {
                 modal.hide();
             }
         });
-</script>
-@endpush
+    </script>
+
+
+    <script>
+    window.addEventListener('cerrar-modal-pago-tutor', function() {
+        console.log('cerrar-modal-pago-tutor llega');    
+        var modal = bootstrap.Modal.getInstance(document.getElementById('modalPagoTutor'));
+            if (modal) {
+                modal.hide();
+            }
+        });
+    </script>
+
+
+
+
+    <script>
+        window.addEventListener('mostrar-modal-success', function() {
+        var modal = new bootstrap.Modal(document.getElementById('modalSuccess'));
+        modal.show();
+    });
+    </script>
+    @endpush
+
+    @push('scripts')
+
+
+    <script>
+        window.addEventListener('mostrar-modal-error', function(event) {
+            var message = event.detail.message;
+            alert(message); // Puedes cambiar esto por un modal o notificación personalizada
+        });
+    @endpush

@@ -1,0 +1,93 @@
+
+    /* Nuevo CSS para tabs modernos */
+    .am-tabs-nav {
+        display: flex;
+        align-items: flex-end;
+        gap: 24px;
+        background: transparent;
+        margin-bottom: 18px;
+        padding-left: 10px;
+        position: relative;
+    }
+
+
+
+    .am-tabs-nav::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 2px;
+        background: #e5e7eb;
+        z-index: 0;
+    }
+
+
+    .am-tab-item {
+        list-style: none;
+        position: relative;
+        z-index: 1;
+       
+        
+    }
+
+    .am-tab-link {
+        display: block;
+        padding: 10px 20px; 
+        border-radius: 10px 10px 0 0;
+        font-size: 15px;
+        font-weight: 600;
+        color: #64748b;
+        background: transparent;
+        text-decoration: none;
+        transition: background 0.18s, color 0.18s;
+        box-shadow: none;
+        position: relative;
+        
+        z-index: 2;
+    }
+
+    /* Tab activo "tapa" la línea */
+    .am-tab-item.am-tab-active .am-tab-link,
+    .am-tab-link.am-tab-active {
+        background: #21a0bc;
+        color: #fff;
+        box-shadow: 0 2px 8px rgba(33, 160, 188, 0.08);
+        font-weight: 700;
+        position: relative;
+    }
+
+    .am-tab-item.am-tab-active .am-tab-link::after,
+    .am-tab-link.am-tab-active::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -2px;
+       
+        background: #21a0bc;
+        border-radius: 0 0 4px 4px;
+        z-index: 3;
+    }
+
+    /* Hover */
+     .am-tab-link:hover:not(.am-tab-active) {
+        color: black;
+        
+    } 
+
+    /* Responsive */
+    @media (max-width: 700px) {
+        .am-tabs-nav {
+            gap: 8px;
+            padding-left: 0;
+        }
+
+        .am-tab-link,
+        .am-tab-item.am-tab-active .am-tab-link {
+            padding: 12px 10px 10px 10px;
+            font-size: 1rem;
+            border-radius: 8px 8px 0 0;
+        }
+    }

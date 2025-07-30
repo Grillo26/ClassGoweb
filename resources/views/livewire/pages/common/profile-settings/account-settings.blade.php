@@ -5,18 +5,18 @@
     @include('livewire.pages.common.profile-settings.tabs')
     <div class="am-userperinfo">
         <div class="am-title_wrap">
-            <div class="am-title">
-                <h2>{{ __('passwords.change_password') }}</h2>
-                <p>{{ __('passwords.change_password_detail') }}</p>
+            <div class="am-title" >
+                <h2 style="color: black">{{ __('passwords.change_password') }}</h2>
+                <p style="color: black">{{ __('passwords.change_password_detail') }}</p>
             </div>
         </div>
-        <form  class="am-themeform am-accountsetting">
+        <form  class="am-themeform am-accountsetting" >
             <fieldset>
-                <div class="form-group">
-                    <x-input-label for="gender" class="am-important" :value="__('passwords.update_password')" />
+                <div class="form-group" >
+                    <x-input-label for="gender" style="color: black" class="am-important" :value="__('passwords.update_password')" />
                     <div class="form-group-two-wrap">
                         <div class="form-control_wrap @error('password') am-invalid @enderror">
-                            <x-text-input wire:model="password"  placeholder="{{ __('passwords.password') }}" type="password"  autofocus autocomplete="name" />
+                            <x-text-input   wire:model="password"  placeholder="{{ __('passwords.password') }}" type="password"  autofocus autocomplete="name" />
                             <x-input-error field_name="password" />
                         </div>
                         <div class="form-control_wrap  @error('confirm') am-invalid @enderror">
@@ -26,21 +26,21 @@
                     </div>
                 </div>
                 <div class="form-group am-form-btns">
-                    <span>{{ __('passwords.latest_changes_live') }}</span>
+                    <span  style="color: black">{{ __('passwords.latest_changes_live') }}</span>
                     <button wire:click="updatePassword" wire:target="updatePassword" type="button" wire:loading.class="am-btn_disable" class="am-btn">{{ __('passwords.update_password') }}</button>
                 </div>
             </fieldset>
         </form>
-        <div class="am-title_wrap">
+        {{-- <div class="am-title_wrap">
             <div class="am-title">
-                <h2>{{ __('settings.update_time_zone') }}</h2>
-                <p>{{ __('settings.time_zone_settings_easily') }}</p>
+                <h2  style="color: black">{{ __('settings.update_time_zone') }}</h2>
+                <p  style="color: black"> {{ __('settings.time_zone_settings_easily') }}</p>
             </div>
-        </div>
-        <form  class="am-themeform am-accountsetting">
+        </div> --}}
+        {{-- <form  class="am-themeform am-accountsetting">
             <fieldset>
                 <div class="form-group @error('timezone') tu-invalid @enderror">
-                    <label class="am-label am-important">{{ __('settings.timezone') }}</label>
+                    <label class="am-label am-important" style="color: black">{{ __('settings.timezone') }}</label>
                     <div class="am-select @error('timezone') am-invalid @enderror" wire:ignore>
                         <select data-componentid="@this" class="am-select2" value={{  $timezone}} data-searchable="true" id="timezone" data-wiremodel="timezone" id="timezone"
                             data-placeholder="{{ __('settings.timezone_placeholder') }}"
@@ -55,11 +55,11 @@
                 </div>
                     <x-input-error field_name="timezone" />
                 <div class="form-group am-form-btns">
-                    <span>{{ __('passwords.latest_changes_live') }}</span>
+                    <span  style="color: black">{{ __('passwords.latest_changes_live') }}</span>
                     <button wire:click="saveTimezone" wire:target="saveTimezone" type="button" wire:loading.class="am-btn_disable" class="am-btn">{{ __('settings.save_update') }}</button>
                 </div>
             </fieldset>
-        </form>
+        </form> --}}
      {{--    <div class="am-title_wrap">
             <div class="am-title">
                 <h2>{{ __('passwords.link_google_calendar') }}</h2>
