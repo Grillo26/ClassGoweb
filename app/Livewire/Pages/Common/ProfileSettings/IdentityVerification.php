@@ -18,7 +18,7 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Code;
-use App\Models\Coupon;  
+use App\Models\Coupon;
 use Illuminate\Support\Str;
 use App\Models\UserCoupon;
 
@@ -88,7 +88,7 @@ class IdentityVerification extends Component
         $this->dispatch('initSelect2', target: '.am-select2');
     }
 
-    
+
     public function updatedForm($value, $key)
     {
         if ($key == 'countryName') {
@@ -165,23 +165,26 @@ class IdentityVerification extends Component
     public function updateInfo()
     {
         $this->data = $this->form->updateInfo($this->hasStates);
-        $response = isDemoSite();
-        if ($response) {
+  
+        
+        //$response = isDemoSite();
+       /*  if ($response) {
             $this->dispatch('showAlertMessage', type: 'error', title: __('general.demosite_res_title'), message: __('general.demosite_res_txt'));
             return;
-        }
+        } */
         try {
             $this->data['address']['lat'] = 0.0;
             $this->data['address']['long'] = 0.0;
             DB::beginTransaction();
+            $this->data['identityInfo']['name'] = $this->user->profile->first_name . ' ' . $this->user->profile->last_name;
+           
             $userIdentity = $this->userIdentity->setUserIdentityVerification($this->data['identityInfo']);
+           
             $this->userIdentity->setUserAddress($userIdentity?->id, $this->data['address']);
             DB::commit();
             $this->Coupons();
-
-
             try {
-                $adminEmail =env('MAIL_FROM_ADDRESS');
+                $adminEmail = env('MAIL_FROM_ADDRESS');
                 $user = Auth::user();
                 $contenido = "El usuario {$user->profile->first_name} - {$user->profile->last_name}  ({$user->email}) ha hecho una solicitud de verificación de identidad.";
                 \Mail::raw($contenido, function ($message) use ($adminEmail) {
@@ -194,9 +197,10 @@ class IdentityVerification extends Component
 
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-
+            
             //dd($e->errors());
             DB::rollBack();
+             //dd('errores');  
         }
         $this->data['identityInfo']['gender'] = $this->profile?->gender;
         $this->data['identityInfo']['email'] = Auth::user()->email;
@@ -210,16 +214,17 @@ class IdentityVerification extends Component
 
 
 
-     /**
-      * funccion que agrega 5 cupones al usuario estudiante
-      * @return void
-      */
-     public function Coupons(){
-        $user = Auth::user();    
+    /**
+     * funccion que agrega 5 cupones al usuario estudiante
+     * @return void
+     */
+    public function Coupons()
+    {
+        $user = Auth::user();
         // Buscar el UserCoupon del usuario que tenga cantidad 5 y esté asociado a un cupón creado en la fecha de registro
         $userCoupon = UserCoupon::where('user_id', $user->id)
             ->where('cantidad', 5)
-            ->whereHas('coupon', function($query) use ($user) {
+            ->whereHas('coupon', function ($query) use ($user) {
                 $query->whereDate('created_at', $user->created_at->toDateString());
             })
             ->first();
@@ -231,5 +236,5 @@ class IdentityVerification extends Component
                 'fecha_caducidad' => now()->addDays(30)
             ]);
         }
-     }
+    }
 }

@@ -21,7 +21,9 @@ class IdentityService {
     }
 
     public function setUserIdentityVerification($identityInfo) {
-        return  $this->user->identityVerification()->create($identityInfo);
+        
+            return  $this->user->identityVerification()->create($identityInfo);
+        
     }
 
     public function deleteUserIdentityVerification(): void {

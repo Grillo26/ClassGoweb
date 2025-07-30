@@ -21,7 +21,7 @@
             <div class="am-userid">
                 <div class="am-title_wrap">
                     <div class="am-title">
-                        <h2 style="color: black">{{ __('ps rofile.identity_verification') }}</h2> {{-- Título principal --}}
+                        <h2 style="color: black">{{ __('profile.identity_verification') }}</h2> {{-- Título principal --}}
                         <p style="color: black">{{ __('profile.identity_detail_desc') }}</p> {{-- Descripción --}}
                     </div>
                 </div>
@@ -249,7 +249,7 @@
                                                 </div>
                                                 <x-input-error field_name="form.state" />
                                             </div>
-                                        @endif
+                                        @endif 
                                     @endif
                                 </div>
                             </div>
