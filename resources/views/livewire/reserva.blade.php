@@ -40,6 +40,7 @@
    </div>
    <!-- Botón para abrir el modal -->
     <div class="tutor-pay-btn-box"> 
-        <button class="tutor-pay-btn" id="btn-share-profile1">Pagar y reservar</button>
+        <button class="tutor-pay-btn" id="openModalBtn">Pagar y reservar</button>
+
     </div>
 </div>

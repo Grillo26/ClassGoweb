@@ -678,7 +678,245 @@
 	padding-top: 2rem;
 }
 
+/* Botón de ejemplo para abrir el modal */
+.main-button {
+    cursor: pointer;
+    background-color: #3b82f6;
+    color: white;
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    display: block;
+    margin: 40px auto;
+    transition: background-color 0.2s;
+}
+.main-button:hover {
+    background-color: #2563eb;
+}
 
+
+/* --- Estilos del Modal --- */
+/* Botón de ejemplo para abrir el modal */
+.main-button {
+    cursor: pointer;
+    background-color: #3b82f6;
+    color: white;
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    display: block;
+    margin: 40px auto;
+    transition: background-color 0.2s;
+}
+.main-button:hover {
+    background-color: #2563eb;
+}
+
+
+/* --- Estilos del Modal --- */
+
+/* Capa oscura de fondo */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 50;
+    display: none; /* Inicia oculto */
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+/* Clase para mostrar el modal */
+.modal-overlay.is-visible {
+    display: flex;
+}
+
+/* Contenedor principal del modal */
+.modal-content {
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 900px;
+    overflow: hidden;
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Animación de entrada */
+.modal-overlay.is-visible .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Cuerpo del modal (contenedor flex) */
+.modal-body {
+    display: flex;
+    flex-direction: column; /* Diseño para móviles: QR arriba */
+}
+
+/* Columna del QR */
+.modal-qr-column {
+    width: 100%;
+    background-color: #f9fafb;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-image {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    border-radius: 0.5rem;
+    object-fit: contain;
+}
+
+/* Columna del Formulario */
+.modal-form-column {
+    width: 100%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Espacio entre los elementos del formulario */
+}
+
+.form-title {
+    font-size: 1.5rem; /* 24px */
+    font-weight: bold;
+    color: #1f2937;
+}
+
+.input-label {
+    display: block;
+    font-size: 0.875rem; /* 14px */
+    font-weight: 500;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+}
+
+/* Estilos para el input de archivo personalizado */
+.file-input-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: #374151;
+    transition: background-color 0.2s;
+}
+.file-input-label:hover {
+    background-color: #f9fafb;
+}
+.upload-icon {
+    width: 1.25rem; /* 20px */
+    height: 1.25rem;
+}
+.file-input-hidden {
+    display: none;
+}
+.file-name-display {
+    font-size: 0.875rem; /* 14px */
+    color: #6b7281;
+    margin-top: 0.25rem;
+}
+
+/* Estilos para el select */
+.select-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: #fff;
+    font-size: 1rem;
+}
+.select-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Caja de información de Fecha y Hora */
+.info-box {
+    background-color: #f3f4f6;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem; /* 14px */
+    color: #4b5563;
+}
+.info-box p + p {
+    margin-top: 0.25rem;
+}
+
+/* Contenedor de botones de acción */
+.action-buttons {
+    display: flex;
+    flex-direction: column; /* Botones apilados en móvil */
+    gap: 1rem;
+    padding-top: 1rem;
+}
+
+/* Estilos de botones genéricos */
+.btn {
+    width: 100%;
+    font-weight: bold;
+    padding: 0.85rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #2563eb;
+}
+
+.btn-secondary {
+    background-color: #e5e7eb;
+    color: #1f2937;
+}
+.btn-secondary:hover {
+    background-color: #d1d5db;
+}
+
+/* --- Media Query para Responsividad (Desktop) --- */
+@media (min-width: 768px) {
+    .modal-body {
+        flex-direction: row; /* QR a la izquierda, form a la derecha */
+    }
+
+    .modal-qr-column {
+        width: 33.333%;
+    }
+
+    .modal-form-column {
+        width: 66.667%;
+    }
+
+    .action-buttons {
+        flex-direction: row; /* Botones en la misma fila */
+    }
+}
 
 
 /* =================== RESPONSIVE DESIGN TABLETS=================== */
@@ -951,6 +1189,23 @@
 		width: 100px;
 		padding: 0.7rem 0.4rem;
 	}
+
+    /*---------- modal reservar -------------*/
+    .modal-body {
+        flex-direction: row; /* QR a la izquierda, form a la derecha */
+    }
+
+    .modal-qr-column {
+        width: 33.333%;
+    }
+
+    .modal-form-column {
+        width: 66.667%;
+    }
+
+    .action-buttons {
+        flex-direction: row; /* Botones en la misma fila */
+    }
 	
 }
 .tutor-main-bg { background: #fff !important; } 

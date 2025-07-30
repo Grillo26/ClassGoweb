@@ -261,60 +261,54 @@
             </div>
         </div>
     </div>
-    <!-- Modal Reservar -->
-    <div id="modal-share-profile1" style="display:none;position:fixed;top:0;left:0;width:70vw;height:70vh;background:rgba(0,0,0,0.4);z-index:9999;align-items:center;justify-content:center;">
-
-        <!-- Columna Izquierda: QR -->
-            <div style="width: 100%; background-color: #f3f4f6; padding: 1.5rem; display: flex; justify-content: center; align-items: center;">
-                <img src="http://googleusercontent.com/file_content/0" alt="Código QR de Notion" style="width: 100%; max-width: 250px; height: auto; border-radius: 0.75rem; object-fit: contain;" onerror="this.onerror=null;this.src='https://placehold.co/250x250/e2e8f0/334155?text=QR+Code';">
-            </div>
-            <!-- Columna Derecha: Formulario -->
-            <div style="width: 100%; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
-                <h2 style="font-size: 1.5rem; font-weight: bold; color: #333;">Selecciona la materia</h2>
-
-                <!-- Input de Archivo -->
-                <div style="margin-bottom: 1rem;">
-                    <label for="comprobante" style="cursor: pointer; display: inline-flex; align-items: center; padding: 0.75rem 1rem; border-radius: 0.5rem; background-color: #f3f4f6; color: #374151; font-weight: 500; border: 1px solid #d1d5db; transition: background-color 0.2s;">
-                        <svg xmlns="http://www.w3.org/2000/svg" style="margin-right: 0.5rem; height: 20px; width: 20px;" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                        </svg>
-                        Subir archivo
-                    </label>
-                    <input type="file" id="comprobante" style="display: none;">
-                    <p id="fileName" style="margin-top: 0.5rem; font-size: 0.875rem; color: #6b7280;">Ningún archivo seleccionado</p>
+    
+    <div id="reservationModal" class="modal-overlay">
+        <div id="modalContent" class="modal-content">
+            <div class="modal-body">
+                <div class="modal-qr-column">
+                    <img src="https://placehold.co/250x250/f9fafb/334155?text=QR+Notion" alt="Código QR de Notion" class="qr-image">
                 </div>
 
-                <!-- Select de Materias -->
-                <div style="margin-bottom: 1rem;">
-                    <label for="materia" style="font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 0.5rem; display: block;">Materia</label>
-                    <select id="materia" name="materia" style="width: 100%; padding: 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; transition: all 0.3s;">
-                        <option value="">-- Elige una materia --</option>
-                        <option value="calculo1">Cálculo I</option>
-                        <option value="algebra">Álgebra Lineal</option>
-                        <option value="fisica2">Física II</option>
-                        <option value="programacion">Programación Avanzada</option>
-                        <option value="basedatos">Bases de Datos</option>
-                    </select>
-                </div>
+                <div class="modal-form-column">
+                    <h2 class="form-title">Selecciona la materia</h2>
 
-                <!-- Fecha y Hora -->
-                <div style="background-color: #f3f4f6; padding: 1rem; border-radius: 0.5rem; font-size: 0.875rem;">
-                    <p style="color: #6b7280;"><strong>Fecha:</strong> <span id="currentDate"></span></p>
-                    <p style="color: #6b7280; margin-top: 0.5rem;"><strong>Hora:</strong> <span id="currentTime"></span></p>
-                </div>
+                    <div>
+                        <label for="comprobante" class="input-label">Comprobante de pago</label>
+                        <label for="comprobante" class="file-input-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="upload-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Subir archivo
+                        </label>
+                        <input type="file" id="comprobante" class="file-input-hidden">
+                        <p id="fileName" class="file-name-display">Ningún archivo seleccionado</p>
+                    </div>
 
-                <!-- Botones de Acción -->
-                <div style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem;">
-                    <button id="close-modal-share" style="width: 100%; padding: 1rem; border-radius: 0.5rem; font-weight: bold; text-align: center; cursor: pointer; background-color: #e5e7eb; color: #374151;">
-                        Cancelar
-                    </button>
-                    <button style="width: 100%; padding: 1rem; border-radius: 0.5rem; font-weight: bold; text-align: center; cursor: pointer; background-color: #3b82f6; color: white;">
-                        Reservar
-                    </button>
+                    <div>
+                        <label for="materia" class="input-label">Materia</label>
+                        <select id="materia" name="materia" class="select-input">
+                            <option value="">-- Elige una materia --</option>
+                            <option value="calculo1">Cálculo I</option>
+                            <option value="algebra">Álgebra Lineal</option>
+                            <option value="fisica2">Física II</option>
+                            <option value="programacion">Programación Avanzada</option>
+                            <option value="basedatos">Bases de Datos</option>
+                        </select>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>Fecha:</strong> <span id="currentDate"></span></p>
+                        <p><strong>Hora:</strong> <span id="currentTime"></span></p>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="cancelBtn" class="btn btn-secondary">Cancelar</button>
+                        <button class="btn btn-primary">Reservar</button>
+                    </div>
                 </div>
             </div>
+        </div>
     </div>
-
 
     <script>
         // --- SCRIPT PARA PESTAÑAS ---
@@ -492,19 +486,98 @@
         });
 
         //===================== Modal para reserva ===================
-        document.addEventListener('DOMContentLoaded', function() {
-            const btnShare = document.getElementById('btn-share-profile1');
-            const modalShare = document.getElementById('modal-share-profile1');
-            const closeModal = document.getElementById('close-modal-share');
-        
-            btnShare.addEventListener('click', function() {
-                modalShare.style.display = 'flex';
-            });
-            closeModal.addEventListener('click', function() {
-                modalShare.style.display = 'none';
-            });
+        document.addEventListener('DOMContentLoaded', () => {
 
+        // --- Selección de Elementos del DOM ---
+        const openModalBtn = document.getElementById('openModalBtn');
+        const reservationModal = document.getElementById('reservationModal');
+        const modalContent = document.getElementById('modalContent');
+        const cancelBtn = document.getElementById('cancelBtn');
+        
+        // Elementos del formulario
+        const fileInput = document.getElementById('comprobante');
+        const fileNameDisplay = document.getElementById('fileName');
+        const dateSpan = document.getElementById('currentDate');
+        const timeSpan = document.getElementById('currentTime');
+
+        // --- Funciones ---
+
+        /**
+         * Actualiza la fecha y la hora en el modal.
+         */
+        const updateDateTime = () => {
+            const now = new Date();
+            // Opciones para formatear la fecha y hora según la localidad
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+            const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+
+            dateSpan.textContent = now.toLocaleDateString('es-ES', dateOptions);
+            timeSpan.textContent = now.toLocaleTimeString('es-ES', timeOptions);
+        };
+
+        /**
+         * Abre el modal.
+         */
+        const openModal = () => {
+            updateDateTime(); // Actualiza la fecha y hora cada vez que se abre
+            reservationModal.classList.add('is-visible');
+            document.body.classList.add('modal-open'); // Bloquea el scroll
+        };
+
+        /**
+         * Cierra el modal.
+         */
+        const closeModal = () => {
+            reservationModal.classList.remove('is-visible');
+            document.body.classList.remove('modal-open'); // Desbloquea el scroll
+        };
+
+        /**
+         * Actualiza el nombre del archivo seleccionado.
+         */
+        const handleFileChange = (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                fileNameDisplay.textContent = file.name;
+            } else {
+                fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+            }
+        };
+
+        // --- Asignación de Eventos ---
+
+        // Abrir modal con el botón principal
+        if (openModalBtn) {
+            openModalBtn.addEventListener('click', openModal);
+        }
+        
+        // Cerrar modal con el botón "Cancelar"
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', closeModal);
+        }
+
+        // Cerrar modal al hacer clic en la capa oscura de fondo
+        if (reservationModal) {
+            reservationModal.addEventListener('click', (event) => {
+                // Si el clic fue en el overlay y no en el contenido del modal
+                if (event.target === reservationModal) {
+                    closeModal();
+                }
+            });
+        }
+
+        // Cerrar modal al presionar la tecla "Escape"
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && reservationModal.classList.contains('is-visible')) {
+                closeModal();
+            }
         });
+
+        // Manejar el cambio en el input de archivo
+        if (fileInput) {
+            fileInput.addEventListener('change', handleFileChange);
+        }
+    });
         
     </script>
 </div>
