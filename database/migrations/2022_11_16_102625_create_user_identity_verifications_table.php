@@ -14,7 +14,6 @@ return new class extends Migration {
         Schema::create('user_identity_verifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->string('name', 100)->fulltext();
             $table->date('dob')->nullable();
             $table->string('school_id', 100)->nullable();
             $table->string('school_name', 255)->nullable();
