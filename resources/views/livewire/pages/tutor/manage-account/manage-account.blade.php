@@ -8,7 +8,8 @@
     <div class="am-section-load" wire:loading wire:target="refresh">
         @include('skeletons.manage-account')
     </div>
-    {{-- <div>
+    <div>
+        {{--
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Ganancias totales</div>
