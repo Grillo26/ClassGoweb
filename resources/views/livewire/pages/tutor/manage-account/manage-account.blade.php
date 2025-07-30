@@ -127,12 +127,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- <tr>
+                         <tr>
                             <td>10 Jun, 2025</td>
                             <td class="transaction-amount">150.00 Bs</td>
                             <td class="transaction-method">Pago con QR</td>
                             <td><span class="transaction-status">Completado</span></td>
-                        </tr> --}}
+                        </tr> 
                         
                     </tbody>
                     
