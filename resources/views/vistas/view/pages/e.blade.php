@@ -3,172 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modal de Reserva con QR</title>
+    <title>Carrusel de Tutores Mejorado</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Estilos para una apariencia más limpia y moderna */
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
         }
-        /* Estilos para el input de archivo personalizado */
-        .file-input-label {
-            cursor: pointer;
-            display: inline-flex;
+        .carousel-container {
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .carousel-card {
+            flex: 0 0 100%; /* En móvil, 1 tarjeta */
+        }
+        @media (min-width: 768px) {
+            .carousel-card {
+                flex: 0 0 50%; /* En tablet, 2 tarjetas */
+            }
+        }
+        @media (min-width: 1024px) {
+            .carousel-card {
+                flex: 0 0 33.3333%; /* En desktop, 3 tarjetas */
+            }
+        }
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
             align-items: center;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            background-color: #f3f4f6;
-            color: #374151;
-            font-weight: 500;
-            border: 1px solid #d1d5db;
-            transition: background-color 0.2s;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            color: #333;
         }
-        .file-input-label:hover {
-            background-color: #e5e7eb;
+        .nav-button:hover {
+            background-color: white;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
         }
-        .file-input-label svg {
-            margin-right: 0.5rem;
+        .nav-button.prev {
+            left: -20px;
         }
-        #fileName {
-            margin-top: 0.5rem;
-            font-size: 0.875rem;
-            color: #6b7280;
+        .nav-button.next {
+            right: -20px;
+        }
+        .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
+<body class="flex items-center justify-center min-h-screen">
 
-    <!-- Botón para abrir el modal -->
-    <button id="openModalBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
-        Abrir Modal de Reserva
-    </button>
+    <section class="w-full max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <!-- Título de la sección -->
+        <div class="text-center mb-12">
+            <p class="text-sm font-semibold text-cyan-600 uppercase tracking-wider">Tutores Destacados</p>
+            <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                Conoce a Nuestros Tutores
+            </h2>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-500">
+                Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje.
+            </p>
+        </div>
 
-    <!-- El Modal -->
-    <div id="reservationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-        <!-- Contenedor del Modal -->
-        <div id="modalContent" class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden transform transition-all duration-300 scale-95 opacity-0">
-            <div class="flex flex-col md:flex-row">
-                <!-- Columna Izquierda: QR -->
-                <div class="w-full md:w-1/3 bg-gray-50 p-6 flex items-center justify-center">
-                    <img src="http://googleusercontent.com/file_content/0" alt="Código QR de Notion" class="w-full max-w-[250px] h-auto rounded-lg object-contain" onerror="this.onerror=null;this.src='https://placehold.co/250x250/e2e8f0/334155?text=QR+Code';">
-                </div>
-
-                <!-- Columna Derecha: Formulario -->
-                <div class="w-full md:w-2/3 p-8 flex flex-col space-y-6">
-                    <h2 class="text-2xl font-bold text-gray-800">Selecciona la materia</h2>
-
-                    <!-- Input de Archivo -->
-                    <div>
-                        <label for="comprobante" class="text-sm font-medium text-gray-700 mb-2 block">Comprobante de pago</label>
-                        <label for="comprobante" class="file-input-label">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                            </svg>
-                            Subir archivo
-                        </label>
-                        <input type="file" id="comprobante" class="hidden">
-                        <p id="fileName" class="text-sm text-gray-500 mt-1">Ningún archivo seleccionado</p>
-                    </div>
-
-                    <!-- Select de Materias -->
-                    <div>
-                        <label for="materia" class="text-sm font-medium text-gray-700 mb-2 block">Materia</label>
-                        <select id="materia" name="materia" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                            <option value="">-- Elige una materia --</option>
-                            <option value="calculo1">Cálculo I</option>
-                            <option value="algebra">Álgebra Lineal</option>
-                            <option value="fisica2">Física II</option>
-                            <option value="programacion">Programación Avanzada</option>
-                            <option value="basedatos">Bases de Datos</option>
-                        </select>
-                    </div>
-
-                    <!-- Fecha y Hora -->
-                    <div class="bg-gray-100 p-4 rounded-lg text-sm">
-                        <p class="text-gray-600"><strong>Fecha:</strong> <span id="currentDate"></span></p>
-                        <p class="text-gray-600 mt-1"><strong>Hora:</strong> <span id="currentTime"></span></p>
-                    </div>
-
-                    <!-- Botones de Acción -->
-                    <div class="flex flex-col sm:flex-row gap-4 pt-4">
-                        <button id="cancelBtn" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded-lg transition">
-                            Cancelar
-                        </button>
-                        <button class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition">
-                            Reservar
-                        </button>
-                    </div>
+        <!-- Contenedor principal del carrusel -->
+        <div id="carousel-wrapper" class="relative">
+            <div class="carousel-container">
+                <div class="carousel-track">
+                    <!-- Tarjeta de Tutor (Plantilla) -->
+                    <!-- Se generarán dinámicamente con JavaScript -->
                 </div>
             </div>
+
+            <!-- Botones de Navegación -->
+            <button id="prev-btn" class="nav-button prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button id="next-btn" class="nav-button next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
-    </div>
+    </section>
 
     <script>
-        // --- MANEJO DEL MODAL ---
-        const openModalBtn = document.getElementById('openModalBtn');
-        const reservationModal = document.getElementById('reservationModal');
-        const modalContent = document.getElementById('modalContent');
-        const cancelBtn = document.getElementById('cancelBtn');
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- Datos de ejemplo para los tutores ---
+            const tutors = [
+                { name: 'Carlos Ríos', subject: 'Ciencias Exactas', reviews: 15, rating: 5, img: 'https://placehold.co/400x225/EBF4FF/333333?text=Tutor+1' },
+                { name: 'Valeria Gómez', subject: 'Humanidades', reviews: 8, rating: 4, img: 'https://placehold.co/400x225/D6F6E6/333333?text=Tutor+2' },
+                { name: 'Daniel Ortiz', subject: 'Programación', reviews: 25, rating: 5, img: 'https://placehold.co/400x225/FFF0E5/333333?text=Tutor+3' },
+                { name: 'Ana Mendoza', subject: 'Idiomas', reviews: 12, rating: 4, img: 'https://placehold.co/400x225/F3E8FF/333333?text=Tutor+4' },
+                { name: 'Jorge Luna', subject: 'Diseño Gráfico', reviews: 18, rating: 5, img: 'https://placehold.co/400x225/FFE8E8/333333?text=Tutor+5' },
+                { name: 'Sofía Castro', subject: 'Música', reviews: 5, rating: 5, img: 'https://placehold.co/400x225/E5F9FF/333333?text=Tutor+6' },
+                { name: 'Miguel Ángel', subject: 'Matemáticas Avanzadas', reviews: 30, rating: 5, img: 'https://placehold.co/400x225/FFFDE5/333333?text=Tutor+7' },
+                { name: 'Lucía Fernández', subject: 'Biología', reviews: 10, rating: 4, img: 'https://placehold.co/400x225/E5FFF0/333333?text=Tutor+8' },
+                { name: 'David Salas', subject: 'Física Cuántica', reviews: 22, rating: 5, img: 'https://placehold.co/400x225/F0F0F0/333333?text=Tutor+9' }
+            ];
 
-        // --- MANEJO DEL INPUT DE ARCHIVO ---
-        const fileInput = document.getElementById('comprobante');
-        const fileNameDisplay = document.getElementById('fileName');
+            const track = document.querySelector('.carousel-track');
 
-        // --- MANEJO DE FECHA Y HORA ---
-        const currentDateEl = document.getElementById('currentDate');
-        const currentTimeEl = document.getElementById('currentTime');
+            // --- Generar las tarjetas de los tutores ---
+            tutors.forEach(tutor => {
+                const cardHTML = `
+                    <div class="carousel-card p-4">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden h-full flex flex-col transition-transform duration-300 hover:transform hover:-translate-y-1">
+                            <div class="relative">
+                                <img class="w-full h-48 object-cover" src="${tutor.img}" alt="Foto de ${tutor.name}">
+                                <div class="absolute top-2 right-2 bg-white rounded-full p-2 cursor-pointer">
+                                    <i class="fas fa-heart text-red-500"></i>
+                                </div>
+                            </div>
+                            <div class="p-6 flex-grow flex flex-col">
+                                <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                                    ${tutor.name}
+                                    <i class="fas fa-check-circle text-cyan-500 ml-2 text-lg"></i>
+                                </h3>
+                                <p class="text-gray-500 mt-1">Puedo enseñar: ${tutor.subject}</p>
+                                <div class="flex justify-between items-center mt-4 text-gray-600">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                        <span class="font-bold">${tutor.rating}</span>
+                                        <span class="ml-1">(${tutor.reviews} reseñas)</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-briefcase text-cyan-500 mr-2"></i>
+                                        <span class="font-bold">${tutor.reviews}</span>
+                                        <span class="ml-1 text-sm">Tutorías</span>
+                                    </div>
+                                </div>
+                                <div class="mt-6 pt-4 border-t border-gray-200 flex-grow"></div>
+                                <div class="flex space-x-3 mt-auto">
+                                    <button class="w-full bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors">Ver Perfil</button>
+                                    <button class="w-full bg-cyan-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-cyan-600 transition-colors">Reservar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                track.innerHTML += cardHTML;
+            });
 
-        // Función para actualizar la fecha y hora
-        function updateDateTime() {
-            const now = new Date();
-            const optionsDate = { year: 'numeric', month: 'long', day: 'numeric' };
-            const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            
-            currentDateEl.textContent = now.toLocaleDateString('es-ES', optionsDate);
-            currentTimeEl.textContent = now.toLocaleTimeString('es-ES', optionsTime);
-        }
+            // --- Lógica del Carrusel ---
+            const prevButton = document.getElementById('prev-btn');
+            const nextButton = document.getElementById('next-btn');
+            const carouselWrapper = document.getElementById('carousel-wrapper');
+            let currentIndex = 0;
+            let slideInterval;
 
-        // Función para abrir el modal
-        const openModal = () => {
-            updateDateTime(); // Actualiza la fecha y hora al abrir
-            reservationModal.classList.remove('hidden');
-            // Pequeño delay para la animación de entrada
-            setTimeout(() => {
-                modalContent.classList.remove('scale-95', 'opacity-0');
-                modalContent.classList.add('scale-100', 'opacity-100');
-            }, 50);
-        };
-
-        // Función para cerrar el modal
-        const closeModal = () => {
-            modalContent.classList.add('scale-95', 'opacity-0');
-            modalContent.classList.remove('scale-100', 'opacity-100');
-            // Espera a que termine la animación para ocultar el modal
-            setTimeout(() => {
-                reservationModal.classList.add('hidden');
-            }, 300);
-        };
-
-        // Event Listeners
-        openModalBtn.addEventListener('click', openModal);
-        cancelBtn.addEventListener('click', closeModal);
-
-        // Cerrar el modal al hacer clic fuera del contenido
-        reservationModal.addEventListener('click', (event) => {
-            if (event.target === reservationModal) {
-                closeModal();
+            function getVisibleSlides() {
+                if (window.innerWidth >= 1024) return 3;
+                if (window.innerWidth >= 768) return 2;
+                return 1;
             }
-        });
 
-        // Mostrar el nombre del archivo seleccionado
-        fileInput.addEventListener('change', () => {
-            if (fileInput.files.length > 0) {
-                fileNameDisplay.textContent = fileInput.files[0].name;
-            } else {
-                fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+            function updateCarousel() {
+                const visibleSlides = getVisibleSlides();
+                const totalSlides = tutors.length;
+                const maxIndex = totalSlides - visibleSlides;
+
+                if (currentIndex > maxIndex) {
+                    currentIndex = maxIndex;
+                }
+                 if (currentIndex < 0) {
+                    currentIndex = 0;
+                }
+
+                const offset = -currentIndex * (100 / visibleSlides);
+                track.style.transform = `translateX(${offset}%)`;
+
+                // Actualizar estado de los botones
+                prevButton.classList.toggle('disabled', currentIndex === 0);
+                nextButton.classList.toggle('disabled', currentIndex >= maxIndex);
             }
-        });
 
+            function moveToNextSlide() {
+                const visibleSlides = getVisibleSlides();
+                const totalSlides = tutors.length;
+                const maxIndex = totalSlides - visibleSlides;
+
+                if (currentIndex >= maxIndex) {
+                    currentIndex = 0; // Vuelve al inicio
+                } else {
+                    currentIndex++;
+                }
+                updateCarousel();
+            }
+
+            function startSlideShow() {
+                stopSlideShow(); // Asegurarse de que no haya múltiples intervalos corriendo
+                slideInterval = setInterval(moveToNextSlide, 5000); // Avanza cada 5 segundos
+            }
+
+            function stopSlideShow() {
+                clearInterval(slideInterval);
+            }
+
+            nextButton.addEventListener('click', () => {
+                const visibleSlides = getVisibleSlides();
+                const totalSlides = tutors.length;
+                if (currentIndex < totalSlides - visibleSlides) {
+                    currentIndex++;
+                    updateCarousel();
+                }
+            });
+
+            prevButton.addEventListener('click', () => {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateCarousel();
+                }
+            });
+
+            // Pausar al pasar el ratón por encima
+            carouselWrapper.addEventListener('mouseenter', stopSlideShow);
+            carouselWrapper.addEventListener('mouseleave', startSlideShow);
+
+            // Actualizar en el cambio de tamaño de la ventana
+            window.addEventListener('resize', updateCarousel);
+
+            // Iniciar todo
+            updateCarousel();
+            startSlideShow();
+        });
     </script>
 </body>
 </html>

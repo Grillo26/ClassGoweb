@@ -29,12 +29,12 @@
         <!-- Payment Methods Section -->
         <div class="payment-methods-section">
             <div class="section-header">
-                Configurar métodos de pago
+                Métodos de pago
             </div>
             <div class="payment-methods-grid">
 
-                <div class="payment-method-card">
-                    <div class="method-left">
+                <div class="payment-method-card" style="display: flex; flex-flow: row wrap; justify-content: center;">
+                    <div class="method-left" >
                         <div class="method-icon bank">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -46,14 +46,14 @@
                         </div>
                     </div>
                     <div class="method-right">
-                        <div class="method-header">
-                            <div class="method-info">
+                        <div class="method-header" style="display: flex; justify-content: center;">
+                            <div class="method-info" >
                                 <h3>Transferencia bancaria</h3>
                                 {{-- <div class="no-account-message">Aún no se ha agregado ninguna cuenta.</div> --}}
                             </div>
                         </div>
-                        <div class="method-controls">
-                            <div class="method-actions">
+                        <div>
+                            <div class="method-actions" class="method-controls" style="display: flex; justify-content: center;">
                                 <button class="btn btn-primary"
                                     wire:click="openPayout('cuentabancaria', 'setupaccountpopup')">Configurar
                                     cuenta</button>
@@ -63,7 +63,7 @@
                 </div>
 
 
-                <div class="payment-method-card active">
+                <div class="payment-method-card active" style="display: flex; flex-flow: row wrap; justify-content: center;">
                     <div class="method-left">
                         <div class="method-icon qr">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     <div class="method-right">
-                        <div class="method-header">
+                        <div class="method-header" style="display: flex; justify-content: center;">
                             <div class="method-info">
                                 <h3>Pago con QR</h3>
                                 {{-- <span class="method-status active">Activo</span> --}}
@@ -98,7 +98,7 @@
                                 <input type="radio" id="default_qr" name="payment_method" checked>
                                 <label for="default_qr">Método de pago predeterminado</label>
                             </div> --}}
-                            <div class="method-actions">
+                            <div class="method-actions" style="display: flex; flex-wrap: wrap; justify-content: center;">
                                 <button class="btn btn-secondary" wire:click="openPayout('QR', 'modalQR')">Gestionar
                                     QR</button>
                                 <button class="btn btn-danger" wire:click="openPayout('QR', 'deletepopup')">Eliminar
