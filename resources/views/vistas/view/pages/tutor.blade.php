@@ -262,11 +262,12 @@
         </div>
     </div>
     
+    <!-- Modal Reserva -->
     <div id="reservationModal" class="modal-overlay">
         <div id="modalContent" class="modal-content">
             <div class="modal-body">
                 <div class="modal-qr-column">
-                    <img src="https://placehold.co/250x250/f9fafb/334155?text=QR+Notion" alt="Código QR de Notion" class="qr-image">
+                    <img src="{{ asset('storage/qr/77b1a7da.jpg')}}" alt="Código QR de Notion" class="qr-image">
                 </div>
 
                 <div class="modal-form-column">

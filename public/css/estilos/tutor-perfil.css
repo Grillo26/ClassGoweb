@@ -678,43 +678,6 @@
 	padding-top: 2rem;
 }
 
-/* Botón de ejemplo para abrir el modal */
-.main-button {
-    cursor: pointer;
-    background-color: #3b82f6;
-    color: white;
-    font-weight: bold;
-    padding: 12px 24px;
-    border-radius: 8px;
-    border: none;
-    display: block;
-    margin: 40px auto;
-    transition: background-color 0.2s;
-}
-.main-button:hover {
-    background-color: #2563eb;
-}
-
-
-/* --- Estilos del Modal --- */
-/* Botón de ejemplo para abrir el modal */
-.main-button {
-    cursor: pointer;
-    background-color: #3b82f6;
-    color: white;
-    font-weight: bold;
-    padding: 12px 24px;
-    border-radius: 8px;
-    border: none;
-    display: block;
-    margin: 40px auto;
-    transition: background-color 0.2s;
-}
-.main-button:hover {
-    background-color: #2563eb;
-}
-
-
 /* --- Estilos del Modal --- */
 
 /* Capa oscura de fondo */
@@ -759,7 +722,7 @@
 /* Cuerpo del modal (contenedor flex) */
 .modal-body {
     display: flex;
-    flex-direction: column; /* Diseño para móviles: QR arriba */
+    flex-direction: row; /* Diseño para móviles: QR arriba */
 }
 
 /* Columna del QR */
@@ -899,24 +862,6 @@
     background-color: #d1d5db;
 }
 
-/* --- Media Query para Responsividad (Desktop) --- */
-@media (min-width: 768px) {
-    .modal-body {
-        flex-direction: row; /* QR a la izquierda, form a la derecha */
-    }
-
-    .modal-qr-column {
-        width: 33.333%;
-    }
-
-    .modal-form-column {
-        width: 66.667%;
-    }
-
-    .action-buttons {
-        flex-direction: row; /* Botones en la misma fila */
-    }
-}
 
 
 /* =================== RESPONSIVE DESIGN TABLETS=================== */
@@ -1191,20 +1136,57 @@
 	}
 
     /*---------- modal reservar -------------*/
+    .modal-content{
+        width: 90%;
+        height: 95%;
+        overflow: hidden;
+        padding: 0rem;
+        margin: 0rem;
+
+    }
     .modal-body {
-        flex-direction: row; /* QR a la izquierda, form a la derecha */
+        display: flex;
+        flex-direction: column; /* QR a la izquierda, form a la derecha */
     }
 
     .modal-qr-column {
-        width: 33.333%;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        padding: 0.6rem 0.6rem 0rem 0.6rem;
+
+    }
+    .qr-image{
+        width: 100%;
+        height: auto;
     }
 
     .modal-form-column {
-        width: 66.667%;
+        width: 100%;
+        padding: 1rem;
+        display: flex;
+        justify-content: flex-start;
     }
 
     .action-buttons {
         flex-direction: row; /* Botones en la misma fila */
+    }
+
+    .form-title {
+        display: none;
+        }
+    
+    /* Estilos para el input de archivo personalizado */
+    .file-input-label {
+        gap: 0.2rem;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+    }
+    .file-name-display {
+        font-size: 0.675rem; /* 14px */
+        color: #6b7281;
+        margin-top: 0.25rem;
+        padding: 0rem;
     }
 	
 }
