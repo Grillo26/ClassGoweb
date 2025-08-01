@@ -441,6 +441,9 @@
     .navbar-mobile a {
         font-size: 1rem;
     }
+    .navbar-profile-img{
+        display: none;
+    }
 }
 
 /* Móvil muy pequeño */
