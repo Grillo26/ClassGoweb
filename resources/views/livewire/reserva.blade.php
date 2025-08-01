@@ -67,12 +67,14 @@
         @endif
     </div>
 
-    <!-- Botón para abrir el modal -->
-   <div class="tutor-pay-btn-box">
+   <!-- Botón para abrir el modal -->
+   {{-- <div class="tutor-pay-btn-box">
       <button class="tutor-pay-btn" id="openModalBtn">Pagar y reservar</button>
+   </div> --}}
+
+   <div class="tutor-pay-btn-box">
+      <button wire:click="openReservationModal" class="tutor-pay-btn">Pagar y reservar</button>
    </div>
-
-
    <!-- ========================== MODAL RESERVA =========================-->
     <div id="reservationModal" class="modal-overlay">
         <div id="modalContent" class="modal-content">
@@ -115,7 +117,6 @@
                 </div>
             </form>
         </div>
-    </div> 
+   </div> 
 
-   {{--  --}}
 </div>

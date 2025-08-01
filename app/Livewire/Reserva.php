@@ -101,19 +101,16 @@ class Reserva extends Component
         }
     }
 
-    /**
-     * Prepara los datos y le ordena a JS abrir el modal.
-     */
     public function openReservationModal()
     {
-        // Valida que se haya seleccionado un día y una hora
+        // Opcional: Puedes añadir una validación aquí para asegurarte
+        // de que el usuario ya ha seleccionado un día y una hora.
         if (!$this->selectedDay || !$this->selectedTime) {
-            // Opcional: Enviar un mensaje de error al frontend
-            $this->dispatch('show-error', message: 'Por favor, selecciona un día y una hora.');
+            $this->dispatch('show-error', message: 'Por favor, selecciona un día y una hora antes de continuar.');
             return;
         }
 
-        $this->reset(['paymentReceipt', 'selectedSubject']);
+        // Emite un evento global que el JavaScript del frontend escuchará.
         $this->dispatch('open-modal');
     }
 
