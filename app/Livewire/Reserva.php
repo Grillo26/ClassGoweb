@@ -1,83 +1,79 @@
 <?php
 
 namespace App\Livewire;
-use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 
+use Carbon\Carbon;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Reserva extends Component
 {
+    use WithFileUploads;
+
     public Carbon $currentDate;
     public ?int $selectedDay = null;
+    public ?string $selectedTime = null; // Para guardar la hora seleccionada
+    
+    // Datos de ejemplo que simulan la BBDD
+    public array $daysWithAvailability = []; // Días con horas disponibles (para el círculo naranja)
+    public array $timeSlotsByDay = [];     // Todas las horas (libres y ocupadas) por día
+    public array $availableTimeSlots = []; // Horas que se muestran al seleccionar un día
 
-    // Propiedades para almacenar datos de la BBDD (ejemplos)
-    public array $bookedDates = [];
-    public array $availableSlots = [];
+    // Propiedades para el formulario del modal
+    public $paymentReceipt;
+    public $selectedSubject;
 
-    // Esta función se ejecuta una sola vez al cargar el componente
     public function mount()
     {
         $this->currentDate = Carbon::now();
-        $this->loadBookedDatesForMonth();
+        $this->loadMonthData();
     }
 
     /**
-     * Carga las fechas reservadas para el mes actual.
-     * En un caso real, aquí harías una consulta a la BBDD.
+     * Carga los datos de disponibilidad para el mes actual.
+     * En un caso real, aquí harías una única consulta a tu BBDD para el mes visible.
      */
-    public function loadBookedDatesForMonth()
+    public function loadMonthData()
     {
-        // EJEMPLO: Simula que estos días de Agosto 2025 están reservados
-        // El formato clave-valor es 'dia' => true para una búsqueda rápida
-        $this->bookedDates = [
-            5 => true,
-            12 => true,
-            19 => true,
+        // EJEMPLO: Simula datos de la BBDD para Agosto 2025
+        $this->timeSlotsByDay = [
+            // Día 8: Tiene horas disponibles y algunas ocupadas
+            8 => [
+                ['time' => '10:00', 'status' => 'free'],
+                ['time' => '10:20', 'status' => 'occupied'],
+                ['time' => '10:40', 'status' => 'free'],
+            ],
+            // Día 15: Todas sus horas están ocupadas (no debería aparecer en naranja)
+            15 => [
+                ['time' => '16:00', 'status' => 'occupied'],
+                ['time' => '16:20', 'status' => 'occupied'],
+            ],
+            // Día 22: Tiene solo horas libres
+            22 => [
+                ['time' => '09:00', 'status' => 'free'],
+                ['time' => '09:20', 'status' => 'free'],
+            ],
         ];
+
+        // Determina qué días tienen al menos una hora libre para marcarlos en naranja
+        $this->daysWithAvailability = collect($this->timeSlotsByDay)
+            ->filter(fn($slots) => collect($slots)->where('status', 'free')->isNotEmpty())
+            ->keys()
+            ->toArray();
     }
 
-    /**
-     * Obtiene las horas disponibles para un día seleccionado.
-     * En un caso real, aquí consultarías la BBDD para esa fecha.
-     */
-    public function getAvailableSlotsForDay(int $day)
-    {
-        // EJEMPLO: Simula las horas disponibles según el día
-        if (isset($this->bookedDates[$day])) {
-            return []; // No hay horas si el día está totalmente reservado
-        }
-
-        // Devuelve un array de horas si el día tiene disponibilidad
-        switch ($day) {
-            case 15:
-                return ['16:00', '16:20', '16:40', '17:00'];
-            case 22:
-                return ['09:00', '09:20', '09:40', '10:00', '10:20', '10:40'];
-            default:
-                // Horas por defecto para un día cualquiera
-                return ['18:00', '18:20', '18:40', '19:00', '19:20', '19:40'];
-        }
-    }
-
-    /**
-     * Cambia al mes anterior.
-     */
     public function goToPreviousMonth()
     {
         $this->currentDate->subMonth();
         $this->resetSelection();
-        $this->loadBookedDatesForMonth();
+        $this->loadMonthData(); // Recarga los datos para el nuevo mes
     }
 
-    /**
-     * Cambia al mes siguiente.
-     */
     public function goToNextMonth()
     {
         $this->currentDate->addMonth();
         $this->resetSelection();
-        $this->loadBookedDatesForMonth();
+        $this->loadMonthData(); // Recarga los datos para el nuevo mes
     }
 
     /**
@@ -85,46 +81,87 @@ class Reserva extends Component
      */
     public function selectDay(int $day)
     {
-        // No permite seleccionar días pasados
-        if ($this->isPastDay($day)) {
+        if ($this->isPastDay($day)) return;
+
+        $this->selectedDay = $day;
+        $this->selectedTime = null; // Resetea la hora al cambiar de día
+        $this->availableTimeSlots = $this->timeSlotsByDay[$day] ?? [];
+    }
+
+    /**
+     * Se ejecuta cuando el usuario hace clic en una hora.
+     */
+    public function selectTime(string $time)
+    {
+        // Busca el slot para asegurarse de que está libre
+        $slot = collect($this->availableTimeSlots)->firstWhere('time', $time);
+
+        if ($slot && $slot['status'] === 'free') {
+            $this->selectedTime = $time;
+        }
+    }
+
+    /**
+     * Prepara los datos y le ordena a JS abrir el modal.
+     */
+    public function openReservationModal()
+    {
+        // Valida que se haya seleccionado un día y una hora
+        if (!$this->selectedDay || !$this->selectedTime) {
+            // Opcional: Enviar un mensaje de error al frontend
+            $this->dispatch('show-error', message: 'Por favor, selecciona un día y una hora.');
             return;
         }
 
-        $this->selectedDay = $day;
-        $this->availableSlots = $this->getAvailableSlotsForDay($day);
+        $this->reset(['paymentReceipt', 'selectedSubject']);
+        $this->dispatch('open-modal');
+    }
+
+    /**
+     * Finaliza la reserva. Se llama desde el formulario del modal.
+     */
+    public function makeReservation()
+    {
+        $this->validate([
+            'paymentReceipt' => 'required|image|max:2048', // 2MB Max
+            'selectedSubject' => 'required',
+        ]);
+
+        // --- LÓGICA DE BACKEND ---
+        // 1. Guardar el archivo de comprobante
+        // $path = $this->paymentReceipt->store('receipts');
+
+        // 2. Crear la reserva en la base de datos
+        // Reservation::create([
+        //     'user_id' => auth()->id(),
+        //     'date' => $this->currentDate->copy()->setDay($this->selectedDay),
+        //     'time' => $this->selectedTime,
+        //     'subject' => $this->selectedSubject,
+        //     'receipt_path' => $path,
+        // ]);
+        
+        // 3. Marcar la hora como 'occupied' para futuras consultas.
+
+        // Resetea el estado y envía un mensaje de éxito
+        $this->resetSelection();
+        session()->flash('success_message', '¡Hora reservada correctamente!');
+        $this->dispatch('close-modal-and-refresh');
     }
     
-    /**
-     * Reinicia la selección de día y horas.
-     */
     private function resetSelection()
     {
-        $this->selectedDay = null;
-        $this->availableSlots = [];
+        $this->reset(['selectedDay', 'selectedTime', 'availableTimeSlots']);
     }
 
-    /**
-     * Verifica si un día ya pasó.
-     */
     private function isPastDay(int $day): bool
     {
-        $today = Carbon::now();
-        $checkingDate = $this->currentDate->copy()->setDay($day);
-
-        // Compara si la fecha a verificar es anterior a hoy (sin contar la hora)
-        return $checkingDate->isBefore($today->startOfDay());
+        return $this->currentDate->copy()->setDay($day)->isBefore(Carbon::today());
     }
 
-
-    /**
-     * Renderiza el componente.
-     */
     public function render()
     {
-        $firstDayOfMonth = $this->currentDate->copy()->startOfMonth()->dayOfWeek;
-        // Ajuste para que Lunes sea el primer día (1) y Domingo el último (0 o 7)
-        $startDay = ($firstDayOfMonth === 0) ? 6 : $firstDayOfMonth - 1;
-
+        // ... (lógica de renderizado sin cambios)
+        $startDay = ($this->currentDate->copy()->startOfMonth()->dayOfWeekIso % 7);
         $daysInMonth = $this->currentDate->daysInMonth;
 
         return view('livewire.reserva', [
