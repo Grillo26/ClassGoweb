@@ -322,7 +322,74 @@
 	padding: 0.5rem 1.5rem;
 	border-radius: 1rem;
 }
+/* ======= CALENDARIO ==========*/
+/* Estilos para los días del calendario */
+.tutor-calendar-day {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 38px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+}
 
+.tutor-calendar-day:not(.past):hover {
+    background-color: #f0f0f0;
+}
+
+/* Día pasado (no se puede seleccionar) */
+.tutor-calendar-day.past {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Día reservado (marcado en naranja) */
+.tutor-calendar-day.booked {
+    background-color: #ffe8d6; /* Naranja suave */
+    color: #d9534f; /* Texto oscuro para contraste */
+    font-weight: bold;
+}
+
+/* Día seleccionado por el usuario (azul) */
+.tutor-calendar-day.selected {
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+}
+
+/* Contenedor de las horas */
+.tutor-time-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.75rem;
+}
+
+.tutor-time-slot-btn {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.tutor-time-slot-btn:hover {
+    border-color: #3498db;
+    color: #3498db;
+    font-weight: bold;
+}
+
+.tutor-no-availability {
+    text-align: center;
+    padding: 2rem;
+    color: #777;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+/* ==================================*/
 .tutor-availability-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
