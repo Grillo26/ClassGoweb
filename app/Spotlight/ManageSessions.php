@@ -10,12 +10,12 @@ class ManageSessions extends SpotlightCommand
     /**
      * This is the name of the command that will be shown in the Spotlight component.
      */
-    protected string $name = 'Manage Sessions';
+    protected string $name = 'Administrar sesiones';
 
     /**
      * This is the description of your command which will be shown besides the command name.
      */
-    protected string $description = 'Redirect to user manage sessions page';
+    protected string $description = 'Redirigir a la página de administración de sesiones de usuarios';
 
     /**
      * You can define any number of additional search terms (also known as synonyms)
