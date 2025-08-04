@@ -114,11 +114,6 @@ class Reserva extends Component
         $this->dispatch('open-modal');
     }
 
-    public function someAction()
-    {
-        // ... tu lógica ...
-        $this->dispatch('open-modal');
-    }
 
     /**
      * Finaliza la reserva. Se llama desde el formulario del modal.

@@ -1,8 +1,4 @@
 <header class="navbar">
-	<!-- INICIO: Inclusión de CSS responsivos para navbar -->
-	<link rel="stylesheet" href="{{ asset('css/estilos/navbar-tablet.css') }}">
-	<link rel="stylesheet" href="{{ asset('css/estilos/navbar-mobile.css') }}">
-	<!-- FIN: Inclusión de CSS responsivos para navbar -->
 	<div class="navbar-container">
 		<div class="navbar-left">
 			<!-- Logo -->
