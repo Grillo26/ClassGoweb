@@ -2,7 +2,7 @@
 /* =====================
    Estilos para Perfil de Tutor
    ===================== */
-@import './estilos/variables.css';
+@import 'variables.css';
 
 .tutor-bg{
 	margin: 0;
