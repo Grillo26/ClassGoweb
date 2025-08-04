@@ -2,7 +2,7 @@
 /* =====================
    Estilos para Perfil de Tutor
    ===================== */
-@import './estilos/variables.css';
+@import 'variables.css';
 
 .tutor-bg{
 	margin: 0;
@@ -322,7 +322,111 @@
 	padding: 0.5rem 1.5rem;
 	border-radius: 1rem;
 }
+/* ======= CALENDARIO ==========*/
+/* Estilos para los días del calendario */
+/* Día con horas disponibles */
+.tutor-calendar-day.has-availability {
+    border: 2px solid var(--terciary-color2); /* Naranja */
+}
 
+/* Día seleccionado (mantenemos el celeste) */
+.tutor-calendar-day.selected {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: #3498db;
+}
+
+/* Botón de hora ocupada */
+.tutor-time-slot-btn.occupied {
+    background-color: #e74c3c; /* Rojo */
+    color: white;
+    text-decoration: line-through;
+    cursor: not-allowed;
+    border-color: #e74c3c;
+}
+
+/* Botón de hora seleccionada */
+.tutor-time-slot-btn.selected {
+    background-color: #3498db; /* Celeste */
+    color: white;
+    border-color: #2980b9;
+}
+
+/* Mensaje de éxito */
+.alert-success {
+    background-color: #2ecc71;
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+.tutor-calendar-day {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 38px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+}
+
+.tutor-calendar-day:not(.past):hover {
+    background-color: #f0f0f0;
+}
+
+/* Día pasado (no se puede seleccionar) */
+.tutor-calendar-day.past {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Día reservado (marcado en naranja) */
+.tutor-calendar-day.booked {
+    background-color: #ffe8d6; /* Naranja suave */
+    color: #d9534f; /* Texto oscuro para contraste */
+    font-weight: bold;
+}
+
+/* Día seleccionado por el usuario (azul) */
+.tutor-calendar-day.selected {
+    background-color: #3498db;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* Contenedor de las horas */
+.tutor-time-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.75rem;
+}
+
+.tutor-time-slot-btn {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.tutor-time-slot-btn:hover {
+    border-color: #0c70b3;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.tutor-no-availability {
+    text-align: center;
+    padding: 2rem;
+    color: #777;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+/* ==================================*/
 .tutor-availability-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -347,7 +451,7 @@
 	background: none;
 	border: none;
 	border-radius: 50%;
-	padding: 0.5rem;
+	padding: 0.6rem;
 	cursor: pointer;
 	transition: var(--transition);
 }
@@ -678,6 +782,197 @@
 	padding-top: 2rem;
 }
 
+/* --- Estilos del Modal --- */
+body.modal-open {
+    overflow: hidden;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 50;
+    display: none; /* Inicialmente oculto */
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+/* Clase para mostrar el modal */
+.modal-overlay.is-visible {
+    display: flex; /* Cambiar a flex para centrar el contenido */
+    z-index: 999999999;
+}
+
+/* Contenedor principal del modal */
+.modal-content {
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 900px;
+    overflow: hidden;
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    display: block;
+}
+
+/* Animación de entrada */
+.modal-overlay.is-visible .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Cuerpo del modal (contenedor flex) */
+.modal-body {
+    display: flex;
+    flex-direction: row; /* Diseño horizontal por defecto */
+}
+
+/* Columna del QR */
+.modal-qr-column {
+    width: 100%;
+    background-color: #f9fafb;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-image {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 0.5rem;
+    object-fit: contain;
+}
+
+/* Columna del Formulario */
+.modal-form-column {
+    width: 100%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Espacio entre los elementos del formulario */
+}
+
+
+.form-title {
+    font-size: 1.5rem; /* 24px */
+    font-weight: bold;
+    color: #1f2937;
+}
+
+.input-label {
+    display: block;
+    font-size: 0.875rem; /* 14px */
+    font-weight: 500;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+}
+
+/* Estilos para el input de archivo personalizado */
+.file-input-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: #374151;
+    transition: background-color 0.2s;
+}
+.file-input-label:hover {
+    background-color: #f9fafb;
+}
+.upload-icon {
+    width: 1.25rem; /* 20px */
+    height: 1.25rem;
+}
+.file-input-hidden {
+    display: none;
+}
+.file-name-display {
+    font-size: 0.875rem; /* 14px */
+    color: #6b7281;
+    margin-top: 0.25rem;
+}
+
+/* Estilos para el select */
+.select-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: #fff;
+    font-size: 1rem;
+}
+.select-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Caja de información de Fecha y Hora */
+.info-box {
+    background-color: #f3f4f6;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem; /* 14px */
+    color: #4b5563;
+}
+.info-box p + p {
+    margin-top: 0.25rem;
+}
+
+/* Contenedor de botones de acción */
+.action-buttons {
+    display: flex;
+    flex-direction: row; /* Botones apilados en móvil */
+    gap: 1rem;
+    padding-top: 1rem;
+}
+
+/* Estilos de botones genéricos */
+.btn {
+    width: 100%;
+    font-weight: bold;
+    padding: 0.85rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background-color: var(--terciary-color2);
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #ffa640;
+}
+
+.btn-secondary {
+    background-color: #e5e7eb;
+    color: #1f2937;
+}
+.btn-secondary:hover {
+    background-color: #d1d5db;
+}
+
+
+
 /* =================== RESPONSIVE DESIGN TABLETS=================== */
 @media (max-width: 900px) {
 
@@ -715,11 +1010,15 @@
 @media (max-width: 600px) {
     html, body {
         width: 100vw !important;
-        overflow-x: hidden !important;
         box-sizing: border-box !important;
         margin: 0 !important;
         padding: 0 !important;
     }
+
+    body.modal-open {
+    overflow: hidden;
+    }
+
 	.tutor-breadcrumbs{
 		display: none;
 	}
@@ -948,6 +1247,71 @@
 		width: 100px;
 		padding: 0.7rem 0.4rem;
 	}
+
+    /*---------- modal reservar -------------*/
+    .modal-content{
+        width: 90%;
+        height: 95%;
+        padding: 0rem;
+        margin: 0rem;
+        overflow: scroll;
+
+    }
+    .modal-body {
+        display: flex;
+        flex-direction: column; /* QR a la izquierda, form a la derecha */
+    }
+
+    .modal-qr-column {
+        height: auto;
+        display: flex;
+        justify-content: center;
+        padding: 0.6rem 0.6rem 0rem 0.6rem;
+
+    }
+    .qr-image{
+        width: 100%;
+        height: auto;
+    }
+
+    .modal-form-column {
+        width: 100%;
+        padding: 1rem;
+        display: flex;
+        justify-content: start;
+        gap: 10px;
+    }
+
+    .action-buttons {
+        flex-direction: row; /* Botones en la misma fila */
+    }
+
+    .form-title {
+        display: none;
+        }
+    
+    /* Estilos para el input de archivo personalizado */
+    .file-input-label {
+        gap: 0.2rem;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        width: 100%;
+    }
+    .file-name-display {
+        font-size: 0.675rem; /* 14px */
+        color: #6b7281;
+        margin-top: 0.25rem;
+        padding: 0rem;
+    }
+
+    .info-box p {
+        margin-top: 0.25rem;
+        padding: 0.4rem 1rem;
+    }
+    .select-input{
+        font-weight: 500;
+
+    }
 	
 }
 .tutor-main-bg { background: #fff !important; } 

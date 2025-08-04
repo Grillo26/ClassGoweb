@@ -1,8 +1,4 @@
 <footer>
-    <!-- INICIO: Inclusión de CSS responsivos para footer -->
-    <link rel="stylesheet" href="{{ asset('css/estilos/footer-tablet.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/estilos/footer-mobile.css') }}">
-    <!-- FIN: Inclusión de CSS responsivos para footer -->
     <div class="footer-container">
         <div class="container-info">
             <div class="footer-info"><!--ClassGo Logo + info-->

@@ -137,34 +137,9 @@
                         </div>
                         <div id="disponibilidad" class="tutor-tab-content hidden">
                             <h3 class="tutor-section-title-lg">Reserva una sesión</h3>
-                            <div class="tutor-availability-grid">
-                                <!-- Columna del Calendario -->
-                                <div>
-                                    <h4 class="tutor-section-title">Selecciona un día</h4>
-                                    <div class="tutor-calendar-box">
-                                        <div class="tutor-calendar-header">
-                                            <button class="tutor-calendar-nav-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-calendar-nav-icon"><path d="m15 18-6-6 6-6"></path></svg></button>
-                                            <h5 class="tutor-calendar-month">Julio 2025</h5>
-                                            <button class="tutor-calendar-nav-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-calendar-nav-icon"><path d="m9 18 6-6-6-6"></path></svg></button>
-                                        </div>
-                                        <div id="calendar-grid" class="tutor-calendar-grid">
-                                            <div class="tutor-calendar-day-label">L</div><div class="tutor-calendar-day-label">M</div><div class="tutor-calendar-day-label">M</div><div class="tutor-calendar-day-label">J</div><div class="tutor-calendar-day-label">V</div><div class="tutor-calendar-day-label">S</div><div class="tutor-calendar-day-label">D</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Columna del Selector de Hora -->
-                                <div id="time-selector-column" class="tutor-time-selector-col hidden">
-                                    <h4 class="tutor-section-title">Selecciona una hora</h4>
-                                    <div class="tutor-time-selector-box">
-                                        <p class="tutor-time-range">Horario disponible: <span id="available-range">16:00 - 21:40</span></p>
-                                        <div id="time-slots" class="tutor-time-slots"></div>
-                                        {{-- <button class="tutor-time-exact-btn">Elegir hora exacta</button> --}}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tutor-pay-btn-box">
-                                <button class="tutor-pay-btn">Pagar y reservar</button>
-                            </div>
+                            {{-- <<<<======LOGICA PARA RESERVAR=======>>>>>>--}}
+                            <livewire:reserva />
+                            
                         </div>
                         <div id="curriculum" class="tutor-tab-content hidden">
                            <nav class="tutor-subtabs-nav"><button onclick="changeSubTab(event, 'educacion')" class="tutor-subtab-btn active">Educación</button><button onclick="changeSubTab(event, 'experiencia')" class="tutor-subtab-btn">Experiencia</button><button onclick="changeSubTab(event, 'certificaciones')" class="tutor-subtab-btn">Certificación</button></nav>
@@ -264,6 +239,7 @@
             </div>
         </div>
     </main>
+
     <!-- Modal Compartir -->
     <div id="modal-share-profile" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);z-index:9999;align-items:center;justify-content:center;">
         <div style="position: absolute; background:#fff;padding:2rem 1.5rem;border-radius:1rem;max-width:350px;width:90%; display:flex; justify-content:center; flex-flow: column wrap;">
@@ -281,8 +257,60 @@
                     Compartir en Facebook
                 </button>
             </div>
+
+            
         </div>
     </div>
+    
+    {{-- <!-- Modal Reserva -->
+    <div id="reservationModal" class="modal-overlay">
+        <div id="modalContent" class="modal-content">
+            <div class="modal-body">
+                <div class="modal-qr-column">
+                    <img src="{{ asset('storage/qr/77b1a7da.jpg')}}" alt="Código QR de Notion" class="qr-image">
+                </div>
+
+                <div class="modal-form-column">
+                    <h2 class="form-title">Selecciona la materia</h2>
+
+                    <div>
+                        <label for="comprobante" class="input-label">Comprobante de pago</label>
+                        <label for="comprobante" class="file-input-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="upload-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Subir archivo
+                        </label>
+                        <input type="file" id="comprobante" class="file-input-hidden">
+                        <p id="fileName" class="file-name-display">Ningún archivo seleccionado</p>
+                    </div>
+
+                    <div>
+                        <label for="materia" class="input-label">Materia</label>
+                        <select id="materia" name="materia" class="select-input">
+                            <option value="">-- Elige una materia --</option>
+                            <option value="calculo1">Cálculo I</option>
+                            <option value="algebra">Álgebra Lineal</option>
+                            <option value="fisica2">Física II</option>
+                            <option value="programacion">Programación Avanzada</option>
+                            <option value="basedatos">Bases de Datos</option>
+                        </select>
+                    </div>
+
+                    <div class="info-box">
+                        <p><strong>Fecha:</strong> <span id="currentDate"></span></p>
+                        <p><strong>Hora:</strong> <span id="currentTime"></span></p>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="cancelBtn" class="btn btn-secondary">Cancelar</button>
+                        <button class="btn btn-primary">Reservar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> --}}
+
     <script>
         // --- SCRIPT PARA PESTAÑAS ---
         function changeTab(event, tabID) {
@@ -429,6 +457,7 @@
             showOverlay();
         });
 
+        // ================ Modal para compartir perfil ======================
         document.addEventListener('DOMContentLoaded', function() {
             const btnShare = document.getElementById('btn-share-profile');
             const modalShare = document.getElementById('modal-share-profile');
@@ -457,26 +486,219 @@
             });
         });
 
-        // Ir a la pestaña de disponibilidad al presionar reservar
-        document.addEventListener('DOMContentLoaded', function() {
-            const btnReservar = document.getElementById('btn-go-disponibilidad');
-            if(btnReservar) {
-                btnReservar.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    // Oculta todas las tabs
-                    document.querySelectorAll('.tutor-tab-content').forEach(el => el.classList.add('hidden'));
-                    document.getElementById('disponibilidad').classList.remove('hidden');
-                    // Quita active de todos los botones
-                    document.querySelectorAll('.tutor-tab-btn').forEach(el => el.classList.remove('active'));
-                    // Activa el botón de disponibilidad
-                    document.querySelectorAll('.tutor-tab-btn').forEach(el => {
-                        if(el.textContent.trim() === 'Disponibilidad') el.classList.add('active');
-                    });
-                    // Scroll al área de tabs
-                    document.getElementById('disponibilidad').scrollIntoView({behavior:'smooth'});
-                });
+        //===================== Modal para reserva ===================
+        // document.addEventListener('DOMContentLoaded', () => {
+        //     // --- Selección de Elementos del DOM ---
+        //     const openModalBtn = document.getElementById('openModalBtn');
+        //     const reservationModal = document.getElementById('reservationModal');
+        //     const modalContent = document.getElementById('modalContent');
+        //     const cancelBtn = document.getElementById('cancelBtn');
+        //     const body = document.body; // Seleccionamos el body para manipularlo
+
+        //     // Elementos del formulario
+        //     const fileInput = document.getElementById('comprobante');
+        //     const fileNameDisplay = document.getElementById('fileName');
+        //     const dateSpan = document.getElementById('currentDate');
+        //     const timeSpan = document.getElementById('currentTime');
+
+        //     // --- Funciones ---
+
+        //     /**
+        //      * Actualiza la fecha y la hora en el modal.
+        //      */
+        //     const updateDateTime = () => {
+        //         const now = new Date();
+        //         const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+        //         // He ajustado las opciones de hora para usar la de Santa Cruz, Bolivia (GMT-4)
+        //         const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'America/La_Paz' };
+                
+        //         // Usamos 'es-BO' para el formato de Bolivia
+        //         dateSpan.textContent = now.toLocaleDateString('es-BO', dateOptions);
+        //         timeSpan.textContent = now.toLocaleTimeString('es-BO', timeOptions);
+        //     };
+
+        //     /**
+        //      * Abre el modal y bloquea el scroll del fondo.
+        //      */
+        //     const openModal = () => {
+        //         updateDateTime(); // Actualiza la fecha y hora
+
+        //         // 1. Calcula el ancho de la barra de scroll
+        //         const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+        //         // 2. Aplica el padding-right al body para compensar el espacio de la barra
+        //         body.style.paddingRight = `${scrollbarWidth}px`;
+
+        //         // 3. Añade la clase que oculta el overflow (bloquea el scroll)
+        //         body.classList.add('modal-open');
+                
+        //         // 4. Muestra el modal
+        //         reservationModal.classList.add('is-visible');
+        //     };
+
+        //     /**
+        //      * Cierra el modal y restaura el scroll del fondo.
+        //      */
+        //     const closeModal = () => {
+        //         // 1. Oculta el modal
+        //         reservationModal.classList.remove('is-visible');
+
+        //         // 2. Elimina la clase que bloquea el scroll
+        //         body.classList.remove('modal-open');
+                
+        //         // 3. Restaura el padding-right del body a su estado original
+        //         body.style.paddingRight = '';
+        //     };
+
+        //     /**
+        //      * Actualiza el nombre del archivo seleccionado.
+        //      */
+        //     const handleFileChange = (event) => {
+        //         const file = event.target.files[0];
+        //         if (file) {
+        //             fileNameDisplay.textContent = file.name;
+        //         } else {
+        //             fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+        //         }
+        //     };
+
+        //     // --- Asignación de Eventos (sin cambios aquí) ---
+
+        //     if (openModalBtn) {
+        //         openModalBtn.addEventListener('click', openModal);
+        //     }
+            
+        //     if (cancelBtn) {
+        //         cancelBtn.addEventListener('click', closeModal);
+        //     }
+
+        //     if (reservationModal) {
+        //         reservationModal.addEventListener('click', (event) => {
+        //             if (event.target === reservationModal) {
+        //                 closeModal();
+        //             }
+        //         });
+        //     }
+
+        //     document.addEventListener('keydown', (event) => {
+        //         if (event.key === 'Escape' && reservationModal.classList.contains('is-visible')) {
+        //             closeModal();
+        //         }
+        //     });
+
+        //     if (fileInput) {
+        //         fileInput.addEventListener('change', handleFileChange);
+        //     }
+        // });
+
+
+    document.addEventListener('livewire:initialized', () => {
+        // --- Selección de Elementos del DOM ---
+        const reservationModal = document.getElementById('reservationModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const body = document.body;
+
+        // Verificar que los elementos existen
+        if (!reservationModal) {
+            console.error('Modal element not found');
+            return;
+        }
+
+        // --- Funciones ---
+        const openModal = () => {
+            try {
+                // Calcular ancho de scrollbar para evitar saltos
+                const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+                body.style.paddingRight = `${scrollbarWidth}px`;
+                body.classList.add('modal-open');
+                reservationModal.classList.add('is-visible');
+                
+                console.log('Modal opened successfully');
+                
+            } catch (error) {
+                console.error('Error opening modal:', error);
+            }
+        };
+
+        const closeModal = () => {
+            try {
+                reservationModal.classList.remove('is-visible');
+                body.classList.remove('modal-open');
+                body.style.paddingRight = '';
+                
+                console.log('Modal closed successfully');
+            } catch (error) {
+                console.error('Error closing modal:', error);
+            }
+        };
+
+        // --- Asignación de Eventos Livewire ---
+        
+        // 1. Escucha el evento 'open-modal' que viene desde Livewire
+        if (window.Livewire) {
+            Livewire.on('open-modal', (event) => {
+            console.log('Received open-modal event:', event);
+            setTimeout(() => {
+                openModal();
+            }, 1); // Un retraso mínimo es suficiente
+        });
+
+            // 2. Escucha un evento de error (opcional pero recomendado)
+            Livewire.on('show-error', (event) => {
+                console.log('Received error event:', event);
+                alert(event.message || 'Ha ocurrido un error');
+            });
+        } else {
+            console.error('Livewire not found. Make sure Livewire is properly loaded.');
+        }
+
+        // --- Eventos de Cierre del Modal ---
+        
+        // Cierra el modal con el botón de cancelar
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeModal();
+            });
+        }
+
+        // Cierra el modal al hacer clic en el fondo
+        reservationModal.addEventListener('click', (event) => {
+            if (event.target === reservationModal) {
+                closeModal();
             }
         });
+
+        // Cierra el modal con la tecla Escape
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && reservationModal.classList.contains('is-visible')) {
+                closeModal();
+            }
+        });
+
+        // --- Manejo del Input de Archivo ---
+        const fileInput = document.getElementById('comprobante');
+        const fileNameDisplay = document.getElementById('fileName');
+        
+        if (fileInput && fileNameDisplay) {
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                fileNameDisplay.textContent = file ? file.name : 'Ningún archivo seleccionado';
+            });
+        }
+
+        // --- Debug: Función para probar el modal manualmente ---
+        window.testModal = () => {
+            console.log('Testing modal...');
+            openModal();
+        };
+        
+        console.log('Modal JavaScript initialized successfully');
+    });
+
+    
+    
+    
     </script>
 </div>
 @endsection

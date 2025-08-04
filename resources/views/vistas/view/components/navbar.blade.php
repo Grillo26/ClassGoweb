@@ -1,13 +1,9 @@
 <header class="navbar">
-	<!-- INICIO: Inclusión de CSS responsivos para navbar -->
-	<link rel="stylesheet" href="{{ asset('css/estilos/navbar-tablet.css') }}">
-	<link rel="stylesheet" href="{{ asset('css/estilos/navbar-mobile.css') }}">
-	<!-- FIN: Inclusión de CSS responsivos para navbar -->
 	<div class="navbar-container">
 		<div class="navbar-left">
 			<!-- Logo -->
 			<a href="/home">
-				<img src="{{ asset('storage/optionbuilder/uploads/453302-18-2025_0409pmClassGo%20Logo-23%20(1).png') }}" class="nav-i" alt="Mascota">
+				<img src="{{ asset('/images/home/logoclassgo.png') }}" class="nav-i" alt="Mascota">
 			</a>	
 
 			<!-- Enlaces Desktop -->
@@ -43,11 +39,18 @@
 					</li>
 				</ul>
 			</div>
-
+			
 			<a href=" {{ route('login')}} "><button class="btn-outline"> Empezar</button></a>
-			<div class="navbar-icon">
-				<i class="fa-solid fa-user-plus icon-white"></i>
-			</div>
+			@auth
+			    <a href="#"><img src="{{ Auth::user()->img ?? asset('images/default.png') }}" 
+			        alt="Foto de perfil" 
+			        class="navbar-profile-img"
+			        style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; cursor: pointer;"></a>
+			@else
+				<div class="navbar-icon">
+					<a href=" {{ route('register')}}"><i class="fa-solid fa-user-plus icon-white"></i></a>
+				</div>			
+			@endauth
 
 			<!-- Menú Hamburguesa -->
 			<div class="hamburger-menu" id="hamburger-menu">
@@ -64,8 +67,14 @@
 				<li><a href="{{ route('como-trabajamos')}}" class="{{ request()->is('como-trabajamos*') ? 'active' : '' }}">Cómo trabajamos</a></li>
 				<li><a href="{{ route('preguntas')}}" class="{{ request()->is('preguntas*') ? 'active' : '' }}">Preguntas</a></li>
 				{{-- <li><a href="{{ route('')}}" class="{{ request()->is('blog*') ? 'active' : '' }}">Blog</a></li> --}}
-				<li><a href="#">Empezar</a></li>
-				<li><a href="#">Login</a></li>
+				@auth
+					<li><a href="#">{{ Auth::user()->profile->first_name}}</a></li>
+
+				@else
+					<li><a href="{{ route('register')}}">Empezar</a></li>
+					<li><a href="{{ route('login')}}">Login</a></li>
+				@endauth
+				
 			</ul>
 		</nav>
 	</div>
