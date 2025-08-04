@@ -4,10 +4,6 @@
 
 @section('content')
 
-<!-- INICIO: Inclusión de CSS responsivos para tablet y móvil -->
-<link rel="stylesheet" href="{{ asset('css/estilos/home-tablet.css') }}">
-<link rel="stylesheet" href="{{ asset('css/estilos/home-mobile.css') }}">
-<!-- FIN: Inclusión de CSS responsivos para tablet y móvil -->
 
 <!-- HERO -->
 <section class="hero">
@@ -68,7 +64,7 @@
         <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p> 
     
         <!--Componente tutor destacado-->
-        <div class="tutors-carousel-viewport">
+        {{-- <div class="tutors-carousel-viewport">
             <div class="tutors" id="tutorsContainer">
                 @include('components.tutors', [
                     'profiles' => $profiles,
@@ -80,7 +76,26 @@
             <button class="carousel-nav prev" onclick="prevSlide()">‹</button>
             <button class="carousel-nav next" onclick="nextSlide()">›</button>
         </div>
-        <div class="carousel-indicators" id="indicators"></div>
+        <div class="carousel-indicators" id="indicators"></div> --}}
+
+        <!-- ======= NUEVO TUTORES DESTACADOS =======-->
+        <div id="carousel-wrapper">
+            <div class="carousel-container">
+                <div class="carousel-track">
+                     @include('components.tutors', [
+                    'profiles' => $profiles,
+                    'subjectsByUser' => $subjectsByUser,
+                ])
+                </div>
+            </div>
+
+            <button id="prev-btn" class="nav-button prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button id="next-btn" class="nav-button next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
 
     </div>
 </section>
@@ -321,6 +336,95 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { once: true });
     });
 });
+
+
+
+    //================= Script para el nuevo carrusel =================
+    document.addEventListener('DOMContentLoaded', function () {
+        const carouselWrapper = document.getElementById('carousel-wrapper');
+        if (!carouselWrapper) return; // Si no hay carrusel, no hacer nada
+
+        const track = carouselWrapper.querySelector('.carousel-track');
+        const prevButton = carouselWrapper.querySelector('#prev-btn');
+        const nextButton = carouselWrapper.querySelector('#next-btn');
+        
+        // Detectamos las tarjetas que ya existen en el HTML
+        const cards = carouselWrapper.querySelectorAll('.carousel-card');
+        const totalSlides = cards.length;
+
+        if (totalSlides === 0) return; // Si no hay tarjetas, no continuar
+
+        let currentIndex = 0;
+        let slideInterval;
+
+        function getVisibleSlides() {
+            // Esta función determina cuántas tarjetas son visibles a la vez
+            if (window.innerWidth >= 1024) return 3; // Mismo valor que en el CSS
+            if (window.innerWidth >= 768) return 2;  // Mismo valor que en el CSS
+            return 1;
+        }
+
+        function updateCarousel() {
+            const visibleSlides = getVisibleSlides();
+            const maxIndex = Math.max(0, totalSlides - visibleSlides);
+
+            if (currentIndex > maxIndex) currentIndex = maxIndex;
+            if (currentIndex < 0) currentIndex = 0;
+
+            const offset = -currentIndex * (100 / visibleSlides);
+            track.style.transform = `translateX(${offset}%)`;
+
+            // Actualizar estado de los botones
+            prevButton.classList.toggle('disabled', currentIndex === 0);
+            nextButton.classList.toggle('disabled', currentIndex >= maxIndex);
+        }
+
+        function moveToNextSlide() {
+            const visibleSlides = getVisibleSlides();
+            const maxIndex = totalSlides - visibleSlides;
+
+            if (currentIndex >= maxIndex) {
+                currentIndex = 0; // Vuelve al inicio
+            } else {
+                currentIndex++;
+            }
+            updateCarousel();
+        }
+
+        function startSlideShow() {
+            stopSlideShow(); // Evita múltiples intervalos simultáneos
+            slideInterval = setInterval(moveToNextSlide, 5000); // Cambia de slide cada 5 segundos
+        }
+
+        function stopSlideShow() {
+            clearInterval(slideInterval);
+        }
+
+        // --- Event Listeners para los botones y el ratón ---
+        nextButton.addEventListener('click', () => {
+            const visibleSlides = getVisibleSlides();
+            const maxIndex = totalSlides - visibleSlides;
+            if (currentIndex < maxIndex) {
+                currentIndex++;
+                updateCarousel();
+            }
+        });
+
+        prevButton.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCarousel();
+            }
+        });
+
+        carouselWrapper.addEventListener('mouseenter', stopSlideShow);
+        carouselWrapper.addEventListener('mouseleave', startSlideShow);
+        window.addEventListener('resize', updateCarousel);
+
+        // --- Inicialización del carrusel ---
+        updateCarousel();
+        startSlideShow();
+    });
 
 </script>
 

@@ -28,7 +28,7 @@
 /// END TABLE OF CONTENTS 
 ------------------------------------------------------------/
 
-/**--- 1 - Hero Principal --**/
+/**---============ 1 - Hero Principal ===============--**/
 body{
   background-color:  rgba(33, 158, 188, 1)!important;
 }
@@ -94,8 +94,107 @@ body{
    /*box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); Sombra suave y moderna */
 }
 
-/**--- 1.3 - Hero Buscador --**/
-.search-box {
+/**-- ========== 1.3 - Hero Buscador ===========--**/
+
+/* Estilos para el Buscador con Livewire */
+
+    /* 1. Contenedor principal (.search-box) */
+    /* Este div necesita ser 'relative' para que la lista de resultados (ul)
+       pueda posicionarse de forma absoluta con respecto a él. */
+       .search-box {
+  display: flex;
+  max-width: 480px;
+  border-radius: 50px;
+  background-color: white;
+  height: 50px;
+  transition: all 0.2s;
+  position: relative;
+        max-width: 32rem; /* Ancho máximo para el buscador */
+        margin-left: 0;
+        margin-right: 0; /* Centrar el componente */
+
+}
+
+    /* 2. Icono de Lupa (.icon-search) */
+    /* Lo posicionamos de forma absoluta DENTRO del .search-box */
+    .search-box .icon-search {
+        position: absolute;
+        top: 50%;
+        left: 1rem; /* 16px desde la izquierda */
+        transform: translateY(-50%); /* Truco para centrarlo verticalmente a la perfección */
+        color: #9ca3af; /* Un color gris sutil */
+    }
+
+    /* 3. Campo de Búsqueda (.form-control) */
+    /* Le damos el estilo de píldora redondeada */
+    .search-box .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.75rem; /* Padding: arriba/abajo, derecha, e izquierda (para dejar espacio al icono) */
+        border: 1px solid #d1d5db; /* border-gray-300 */
+        border-radius: 9999px; /* rounded-full */
+        font-size: 1rem;
+        transition: box-shadow 150ms, border-color 150ms;
+    }
+
+    /* Estilo para cuando el input está seleccionado (focus) */
+    .search-box .form-control:focus {
+        border-color: #3b82f6; /* focus:border-blue-500 */
+        box-shadow: 0 0 0 2px #3b82f6; /* focus:ring-2 focus:ring-blue-500 */
+        outline: none;
+    }
+
+    /* 4. Lista de Resultados (ul) */
+    /* ¡Esta es la parte clave! La posicionamos de forma absoluta */
+    .search-box ul {
+        position: absolute;
+        top: 100%;           /* La colocamos justo debajo del contenedor del input */
+        left: 0;
+        width: 100%;
+        margin-top: 0.5rem;  /* Pequeño espacio entre el input y la lista */
+
+        /* Estilos visuales del contenedor de resultados */
+        background-color: white;
+        border-radius: 0.75rem; /* Bordes redondeados */
+        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        border: 1px solid #e5e7eb; /* border-gray-200 */
+        max-height: 20rem;
+        overflow-y: auto;
+        z-index: 10;
+
+        /* Limpieza de estilos por defecto de las listas */
+        list-style: none;
+        padding: 0;
+    }
+
+    /* 5. Ítems de la Lista (li) */
+    .search-box ul li {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        transition: background-color 150ms;
+        border-bottom: 1px solid #f3f4f6; /* Línea separadora */
+    }
+    
+    /* Para que el último ítem no tenga línea separadora */
+    .search-box ul li:last-child {
+        border-bottom: none;
+    }
+
+    .search-box ul li:hover {
+        background-color: #f9fafb; /* Color sutil al pasar el mouse */
+    }
+
+    /* Estilos para el texto dentro de los li */
+    .search-box ul li strong {
+        color: #1f2937;
+    }
+    .search-box ul li small {
+        color: #6b7281;
+        font-size: 0.875rem;
+    }
+
+
+/* =========================*/
+/* .search-box {
   display: flex;
   max-width: 480px;
   border-radius: 50px;
@@ -135,7 +234,7 @@ body{
 
 .icon-search {
   color: #e0f7fa;
-}
+} */
 /**--- 1.4 Botones --**/
 .hero-buttons {
   display: flex;
@@ -262,7 +361,7 @@ body{
     text-transform: none;
 }
 
-/**--- 3 - Tutores Destacados --**/
+/**--- ============= 3 - Tutores Destacados =============== --**/
 
 .tutors-container {
   display: flex;
@@ -299,107 +398,12 @@ body{
   height: 4px;
   width: 50px;
 }
-
-/*---------BUTTONES--------------------*/
-.tutors-carousel-viewport {
-  width: 1100px; /* 3 tarjetas + 2 gaps */
-  max-width: 100%;
-  margin: 0 auto;
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  background-color: var(--panel-background);
-  
-}
-
-.carousel-nav {
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  font-size: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  z-index: 10;
-}
-
-.carousel-controls {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.carousel-nav.prev {
-  left: 10px;
-}
-
-.carousel-nav.next {
-  right: 10px;
-}
-
-.carousel-indicators {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 1rem;
-}
-
-.indicator {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #ddd;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.indicator.active {
-  background: var(--primary-color);
-}
-
-.carousel-info {
-  text-align: center;
-  margin-bottom: 1rem;
-  color: #666;
-}
-
-/**---- 3.1 Cards Tutores ---**/
-.tutors {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  padding: 2rem 0;
-  background: var(--panel-background);
-  justify-content: flex-start;
-  align-items: stretch;
-  transition: transform 0.5s cubic-bezier(.4,0,.2,1);
-  position: relative;
-  width: calc(3 * 350px + 2 * 20px); /* 3 tarjetas + 2 gaps */
-  min-width: calc(3 * 350px + 2 * 20px);
-  max-width: 100%;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-
-}
-.tutors::-webkit-scrollbar {
-  height: 8px;
-  background: #f0f0f0;
-}
-.tutors::-webkit-scrollbar-thumb {
-  background: #b0b0b0;
-  border-radius: 4px;
-}
+ /* =================== CARDS TUTORES DESTACADOS ===============*/
 .tutor-card {
   flex: 0 0 350px;
-  max-width: 350px;
-  min-width: 350px;
+  max-width: 330px;
+  min-width: 270px;
+  height: 410px;
   margin: 0;
   box-sizing: border-box;
   box-shadow: 0 8px 8px rgba(0,0,0,0.1);
@@ -415,14 +419,14 @@ body{
 }
 
 .tutor-card .tutor-card-img {
-  height: 160px;
+  height: 140px;
   background-position: center;
   width: 100%;
 }
 
 .tutor-card .tutor-card-img video{
   width: 100%;
-  height: 180px;
+  height: 140px;
   object-fit: cover;
   border-radius: 12px 12px 0 0;
   display: block;
@@ -430,14 +434,13 @@ body{
 
 }
 
-
 .mobile{
   display: none;
 }
 
 
-.tutor-card-content {
-  padding: 2rem 1.25rem 1.25rem 1.25rem;
+.tutor-card-content { /* CONTENIDO DE LA CARD*/
+  padding: 0.5rem 1.25rem 0.5rem 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -624,7 +627,117 @@ i.fa-solid.fa-book.icon::before{
   font-size: 3rem;
 }
 
-/**--- 3 - Anuncio Potencial --**/
+
+/*
+ * ========================================================
+ * == ESTILOS ESENCIALES PARA EL MECANISMO DEL CARRUSEL ===
+ * ========================================================
+ * Estos estilos NO dan formato a tus tarjetas, solo
+ * controlan el comportamiento del carrusel.
+*/
+
+/* --- Contenedor Principal y Posicionamiento --- */
+#carousel-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1100px; /* Ajusta el ancho máximo según tu diseño */
+    margin: 0 auto;
+    padding: 0 40px; /* Espacio para que los botones no se superpongan */
+    box-sizing: border-box;
+}
+
+/* --- Contenedor Visible del Carrusel --- */
+.carousel-container {
+    overflow: hidden;
+    position: relative;
+}
+
+/* --- NUEVO: Degradados Laterales --- */
+.carousel-container::before,
+.carousel-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 75px; /* Ancho del degradado. ¡Puedes ajustarlo! */
+    z-index: 2;
+    pointer-events: none; 
+}
+
+.carousel-container::before {
+    left: 0;
+    /* IMPORTANTE: Si tu fondo no es blanco, cámbialo aquí */
+    background: linear-gradient(to right, var(--panel-background), transparent);
+}
+
+.carousel-container::after {
+    right: 0;
+    /* IMPORTANTE: Si tu fondo no es blanco, cámbialo aquí */
+    background: linear-gradient(to left, var(--panel-background), transparent);
+}
+
+/* --- Pista de Deslizamiento --- */
+/* Esta pista contiene todas tus tarjetas y es lo que se mueve. */
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    gap: 10px;
+    padding: 2rem 0.2rem 2rem 0rem;
+    justify-content: space-around;
+}
+
+/* --- Envoltura de cada Tarjeta --- */
+/* Esta es la clase que debes agregar a cada una de tus tarjetas. */
+/* Controla el tamaño que ocupa cada tarjeta en la pista. */
+.carousel-card {
+    flex-shrink: 0;
+    width: 100%; /* En móvil, 1 tarjeta visible */
+    box-sizing: border-box;
+    padding: 0 ; /* Espacio entre tarjetas (gutter) */
+}
+
+/* --- Botones de Navegación --- */
+.nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+    color: #333;
+    z-index: 10;
+    border: none;
+}
+
+.nav-button:hover {
+    background-color: white;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.nav-button.prev {
+    left: 0px; /* Posicionado dentro del padding del wrapper */
+}
+
+.nav-button.next {
+    right: 0px; /* Posicionado dentro del padding del wrapper */
+}
+
+.nav-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+
+
+/**--- ?=========== 3 - Anuncio Potencial ==================== --**/
 /* === Potencial Container === */
 .potencial-container {
   width: 100%;
