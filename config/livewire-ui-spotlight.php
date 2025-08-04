@@ -1,8 +1,14 @@
 <?php
 
+use App\Livewire\Components\SearchTutor;
 use App\Spotlight\Logout;
 use App\Spotlight\ManageSessions;
+use App\Spotlight\perfildetailsearch;
 use App\Spotlight\Search;
+use App\Spotlight\SearchTutorCourses;
+use App\Spotlight\StudenBookings;
+use App\Spotlight\StudentFavourites;
+
 
 return [
 
@@ -36,6 +42,11 @@ return [
        Logout::class,
        Search::class,
        ManageSessions::class,
+       perfildetailsearch::class,
+       SearchTutorCourses::class,
+       StudenBookings::class,
+       StudentFavourites::class,
+       
     ],
 
     /*
