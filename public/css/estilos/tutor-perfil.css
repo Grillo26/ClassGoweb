@@ -783,7 +783,6 @@
 }
 
 /* --- Estilos del Modal --- */
-/* Capa oscura de fondo */
 body.modal-open {
     overflow: hidden;
 }
@@ -796,17 +795,16 @@ body.modal-open {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 50;
-    display: none; /* Inicia oculto */
+    display: none; /* Inicialmente oculto */
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    
-    
 }
 
 /* Clase para mostrar el modal */
 .modal-overlay.is-visible {
-    display: flex;
+    display: flex; /* Cambiar a flex para centrar el contenido */
+    z-index: 999999999;
 }
 
 /* Contenedor principal del modal */
@@ -820,7 +818,7 @@ body.modal-open {
     transform: scale(0.95);
     opacity: 0;
     transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-    display: none;
+    display: block;
 }
 
 /* Animación de entrada */
@@ -832,7 +830,7 @@ body.modal-open {
 /* Cuerpo del modal (contenedor flex) */
 .modal-body {
     display: flex;
-    flex-direction: row; /* Diseño para móviles: QR arriba */
+    flex-direction: row; /* Diseño horizontal por defecto */
 }
 
 /* Columna del QR */
@@ -861,6 +859,7 @@ body.modal-open {
     flex-direction: column;
     gap: 1.5rem; /* Espacio entre los elementos del formulario */
 }
+
 
 .form-title {
     font-size: 1.5rem; /* 24px */

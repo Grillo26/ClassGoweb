@@ -591,73 +591,110 @@
         //     }
         // });
 
-      document.addEventListener('livewire:initialized', () => {
-         // --- Selección de Elementos del DOM ---
-         const reservationModal = document.getElementById('reservationModal');
-         const cancelBtn = document.getElementById('cancelBtn');
-         const body = document.body;
 
-         // --- Funciones ---
-         const openModal = () => {
-            // La fecha y hora ya no se actualizan aquí,
-            // Livewire ya las muestra correctamente en el HTML del modal.
+    document.addEventListener('livewire:initialized', () => {
+        // --- Selección de Elementos del DOM ---
+        const reservationModal = document.getElementById('reservationModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const body = document.body;
 
-            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-            body.style.paddingRight = `${scrollbarWidth}px`;
-            body.classList.add('modal-open');
-            reservationModal.classList.add('is-visible');
-            reservationModal.style.display = 'flex';
-         };
-         
-         const closeModal = () => {
-            reservationModal.classList.remove('is-visible');
-            body.classList.remove('modal-open');
-            body.style.paddingRight = '';
-         };
+        // Verificar que los elementos existen
+        if (!reservationModal) {
+            console.error('Modal element not found');
+            return;
+        }
 
-         // --- Asignación de Eventos ---
-
-         // 1. Escucha el evento 'open-modal' que viene desde Livewire
-         // @ts-ignore
-         Livewire.on('open-modal', openModal);
-
-         // 2. Escucha un evento de error (opcional pero recomendado)
-         // @ts-ignore
-         Livewire.on('show-error', (event) => {
-            alert(event.message);
-         });
-
-         // Cierra el modal con el botón de cancelar (esto no cambia)
-         if (cancelBtn) {
-            cancelBtn.addEventListener('click', closeModal);
-         }
-         
-         // Cierra el modal al hacer clic en el fondo (esto no cambia)
-         if (reservationModal) {
-            reservationModal.addEventListener('click', (event) => {
-                  if (event.target === reservationModal) {
-                     closeModal();
-                  }
-            });
-         }
-
-         // Cierra el modal con la tecla Escape (esto no cambia)
-         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && reservationModal.classList.contains('is-visible')) {
-                  closeModal();
+        // --- Funciones ---
+        const openModal = () => {
+            try {
+                // Calcular ancho de scrollbar para evitar saltos
+                const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+                body.style.paddingRight = `${scrollbarWidth}px`;
+                body.classList.add('modal-open');
+                reservationModal.classList.add('is-visible');
+                
+                console.log('Modal opened successfully');
+                
+            } catch (error) {
+                console.error('Error opening modal:', error);
             }
-         });
+        };
 
-         // La lógica para el nombre del archivo se mantiene igual si la necesitas.
-         const fileInput = document.getElementById('comprobante');
-         const fileNameDisplay = document.getElementById('fileName');
-         if(fileInput && fileNameDisplay) {
-            fileInput.addEventListener('change', (event) => {
-                  const file = event.target.files[0];
-                  fileNameDisplay.textContent = file ? file.name : 'Ningún archivo seleccionado';
+        const closeModal = () => {
+            try {
+                reservationModal.classList.remove('is-visible');
+                body.classList.remove('modal-open');
+                body.style.paddingRight = '';
+                
+                console.log('Modal closed successfully');
+            } catch (error) {
+                console.error('Error closing modal:', error);
+            }
+        };
+
+        // --- Asignación de Eventos Livewire ---
+        
+        // 1. Escucha el evento 'open-modal' que viene desde Livewire
+        if (window.Livewire) {
+            Livewire.on('open-modal', (event) => {
+            console.log('Received open-modal event:', event);
+            setTimeout(() => {
+                openModal();
+            }, 1); // Un retraso mínimo es suficiente
+        });
+
+            // 2. Escucha un evento de error (opcional pero recomendado)
+            Livewire.on('show-error', (event) => {
+                console.log('Received error event:', event);
+                alert(event.message || 'Ha ocurrido un error');
             });
-         }
-      });
+        } else {
+            console.error('Livewire not found. Make sure Livewire is properly loaded.');
+        }
+
+        // --- Eventos de Cierre del Modal ---
+        
+        // Cierra el modal con el botón de cancelar
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeModal();
+            });
+        }
+
+        // Cierra el modal al hacer clic en el fondo
+        reservationModal.addEventListener('click', (event) => {
+            if (event.target === reservationModal) {
+                closeModal();
+            }
+        });
+
+        // Cierra el modal con la tecla Escape
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && reservationModal.classList.contains('is-visible')) {
+                closeModal();
+            }
+        });
+
+        // --- Manejo del Input de Archivo ---
+        const fileInput = document.getElementById('comprobante');
+        const fileNameDisplay = document.getElementById('fileName');
+        
+        if (fileInput && fileNameDisplay) {
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                fileNameDisplay.textContent = file ? file.name : 'Ningún archivo seleccionado';
+            });
+        }
+
+        // --- Debug: Función para probar el modal manualmente ---
+        window.testModal = () => {
+            console.log('Testing modal...');
+            openModal();
+        };
+        
+        console.log('Modal JavaScript initialized successfully');
+    });
 
     
     
