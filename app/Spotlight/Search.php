@@ -16,12 +16,12 @@ class Search extends SpotlightCommand
     /**
      * This is the name of the command that will be shown in the Spotlight component.
      */
-    protected string $name = 'Search by tutor name or subject';
+    protected string $name = 'Buscar por nombre del tutor o materia';
 
     /**
      * This is the description of your command which will be shown besides the command name.
      */
-    protected string $description = 'This will redirect to find-tutors page';
+    protected string $description = 'Esto te redireccionará a la página de búsqueda de tutores.';
 
     /**
      * You can define any number of additional search terms (also known as synonyms)
@@ -38,7 +38,7 @@ class Search extends SpotlightCommand
         return SpotlightCommandDependencies::collection()
             ->add(
                 SpotlightCommandDependency::make('tutor')
-                ->setPlaceholder('Enter Keyword to Search tutor by name or subject he teaches')
+                ->setPlaceholder('Introduzca una palabra clave para buscar un tutor por nombre o materia que enseña')
             );
     }
 
@@ -52,7 +52,7 @@ class Search extends SpotlightCommand
             return new SpotlightSearchResult(
                 $tutor->id,
                 $tutor->profile->full_name,
-                sprintf('View Detail profile of Tutor %s', $tutor->profile->full_name)
+                sprintf('Ver perfil detallado del Tutor%s', $tutor->profile->full_name)
             );
         });
     }

@@ -10,12 +10,12 @@ class Logout extends SpotlightCommand
     /**
      * This is the name of the command that will be shown in the Spotlight component.
      */
-    protected string $name = 'Logout';
+    protected string $name = 'Cerrar sesión';
 
     /**
      * This is the description of your command which will be shown besides the command name.
      */
-    protected string $description = 'Redirect to user to login screen by clearing user session';
+    protected string $description = 'Redirigir al usuario a la pantalla de inicio de sesión borrando la sesión del usuario';
 
     /**
      * You can define any number of additional search terms (also known as synonyms)
