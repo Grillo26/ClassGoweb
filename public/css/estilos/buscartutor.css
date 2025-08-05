@@ -1,6 +1,17 @@
 @import 'variables.css';
 
 /* =================== buscartutor.css =================== */
+.subjects-matched strong {
+    background-color: #fff3cd; /* Un fondo amarillo para resaltar */
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+.more-subjects {
+    color: var(--secundary-color); /* Un color azul para indicar que es un extra */
+    font-weight: bold;
+    margin-left: 5px;
+}
 .container-buscartutor{
     margin: 0;
     padding: 0;
