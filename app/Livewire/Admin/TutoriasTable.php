@@ -9,7 +9,7 @@ use App\Services\BookingNotificationService;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Log;
-use App\Services\ZoomService;
+
 use App\Mail\SessionBookingMail;
 use Illuminate\Support\Facades\Mail;
 
@@ -143,7 +143,27 @@ class TutoriasTable extends Component
             if ($nuevoStatus == 1) {
 
                 $googlemeetservice = new GoogleMeetService;
-                $zoomService = new ZoomService();
+                
+                // Debug: Verificar configuraciones de Zoom desde .env
+                Log::info('TutoriasTable: Verificando configuraciones de Zoom desde .env', [
+                    'zoom_account_id' => env('ZOOM_ACCOUNT_ID') ? 'CONFIGURED' : 'EMPTY',
+                    'zoom_client_id' => env('ZOOM_CLIENT_ID') ? 'CONFIGURED' : 'EMPTY',
+                    'zoom_client_secret' => env('ZOOM_CLIENT_SECRET') ? 'CONFIGURED' : 'EMPTY'
+                ]);
+                
+                // Crear instancia de Zoom driver directamente con credenciales del .env
+                $meetingService = null;
+                if (env('ZOOM_ACCOUNT_ID') && env('ZOOM_CLIENT_ID') && env('ZOOM_CLIENT_SECRET')) {
+                    $meetingService = new \Modules\MeetFusion\Drivers\Zoom();
+                    $meetingService->setKeys([
+                        'account_id' => env('ZOOM_ACCOUNT_ID'),
+                        'client_id' => env('ZOOM_CLIENT_ID'),
+                        'client_secret' => env('ZOOM_CLIENT_SECRET'),
+                    ]);
+                    Log::info('TutoriasTable: Servicio de Zoom configurado con credenciales del .env');
+                } else {
+                    Log::warning('TutoriasTable: Credenciales de Zoom no encontradas en .env');
+                }
                 $startTime = $tutoria->start_time ? date('c', strtotime($tutoria->start_time)) : null;
                 $duration = null;
                 if ($tutoria->start_time && $tutoria->end_time) {
@@ -169,18 +189,31 @@ class TutoriasTable extends Component
                     'timezone' => 'America/La_Paz',
                 ];
 
-                $zoomResponse = $zoomService->createMeeting($meetingData);
+                $joinUrl = null; // Inicializar la variable
                 
-                if ($zoomResponse['status']) {
-                    $joinUrl = $zoomResponse['data']['join_url'];
-                    $tutoria->meeting_link = $joinUrl;
-                    Log::info('TutoriasTable: Enlace de Zoom creado exitosamente', ['join_url' => $joinUrl]);
+                if ($meetingService) {
+                    Log::info('TutoriasTable: Servicio de reuniones obtenido, creando reunión');
+                    $zoomResponse = $meetingService->createMeeting($meetingData);
+                    
+                    Log::info('TutoriasTable: Respuesta del servicio de reuniones', ['response' => $zoomResponse]);
+                    
+                    if ($zoomResponse['status']) {
+                        // MeetFusion devuelve el enlace en ['data']['link'], no ['data']['join_url']
+                        $joinUrl = $zoomResponse['data']['link'] ?? $zoomResponse['data']['join_url'] ?? null;
+                        $tutoria->meeting_link = $joinUrl;
+                        Log::info('TutoriasTable: Enlace de reunión creado exitosamente', ['join_url' => $joinUrl]);
+                    } else {
+                        Log::warning('TutoriasTable: No se pudo crear reunión', [
+                            'error' => $zoomResponse['message'] ?? 'Error desconocido',
+                            'booking_id' => $tutoria->id,
+                            'response' => $zoomResponse
+                        ]);
+                        $tutoria->meeting_link = null;
+                    }
                 } else {
-                    Log::warning('TutoriasTable: No se pudo crear reunión de Zoom', [
-                        'error' => $zoomResponse['message'] ?? 'Error desconocido',
+                    Log::warning('TutoriasTable: Servicio de reuniones no configurado', [
                         'booking_id' => $tutoria->id
                     ]);
-                    // Continuar sin enlace de reunión
                     $tutoria->meeting_link = null;
                 }
                 // dd($result);
