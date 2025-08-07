@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Jobs\SendNotificationJob;
 use App\Events\SlotBookingStatusChanged;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class BookingNotificationService
 {
@@ -84,14 +85,15 @@ class BookingNotificationService
                 ]
             ];
 
-            // Enviar notificación por email
-            dispatch(new SendNotificationJob('sessionBooking', $tutor, $notificationData));
+            // Enviar notificación por email usando template manual
+            $this->sendManualEmailToTutor($tutor, $notificationData);
 
             // Enviar push notification si está configurado
             if ($tutor->fcm_token) {
+                $sessionDate = $booking->start_time ? date('d/m/Y', strtotime($booking->start_time)) : 'Fecha no definida';
                 $this->sendPushNotification($tutor, [
                     'title' => '🎉 ¡Tutoría Aceptada!',
-                    'body' => "Tu tutoría con {$notificationData['studentName']} ha sido aceptada para el {$notificationData['sessionDate']}",
+                    'body' => "Tu tutoría con {$notificationData['studentName']} ha sido aceptada para el {$sessionDate}",
                     'data' => [
                         'booking_id' => $booking->id,
                         'type' => 'booking_accepted',
@@ -148,14 +150,15 @@ class BookingNotificationService
                 ]
             ];
 
-            // Enviar notificación por email
-            dispatch(new SendNotificationJob('sessionBooking', $student, $notificationData));
+            // Enviar notificación por email usando template manual
+            $this->sendManualEmailToStudent($student, $notificationData);
 
             // Enviar push notification si está configurado
             if ($student->fcm_token) {
+                $sessionDate = $booking->start_time ? date('d/m/Y', strtotime($booking->start_time)) : 'Fecha no definida';
                 $this->sendPushNotification($student, [
                     'title' => '✅ Tutoría Aceptada',
-                    'body' => "Tu tutoría con {$notificationData['tutorName']} ha sido aceptada para el {$notificationData['sessionDate']}",
+                    'body' => "Tu tutoría con {$notificationData['tutorName']} ha sido aceptada para el {$sessionDate}",
                     'data' => [
                         'booking_id' => $booking->id,
                         'type' => 'booking_accepted',
@@ -212,8 +215,8 @@ class BookingNotificationService
                 ]
             ];
 
-            // Enviar notificación por email
-            dispatch(new SendNotificationJob('sessionBooking', $student, $notificationData));
+            // Enviar notificación por email usando template manual
+            $this->sendManualEmailToStudent($student, $notificationData);
 
             // Enviar push notification si está configurado
             if ($student->fcm_token) {
@@ -292,5 +295,195 @@ class BookingNotificationService
                 'error' => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * Envía email manual al tutor usando template personalizado
+     *
+     * @param User $tutor
+     * @param array $data
+     * @return void
+     */
+    private function sendManualEmailToTutor(User $tutor, array $data): void
+    {
+        try {
+            $subject = '🎉 ¡Tutoría Aceptada! - ' . ($data['studentName'] ?? 'Estudiante');
+            
+            $emailContent = $this->generateTutorEmailContent($data);
+            
+            // Enviar email usando Mail facade
+            Mail::send([], [], function ($message) use ($tutor, $subject, $emailContent) {
+                $message->to($tutor->email)
+                        ->subject($subject)
+                        ->html($emailContent);
+            });
+
+            Log::info('Email manual enviado al tutor', [
+                'tutor_id' => $tutor->id,
+                'email' => $tutor->email
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error al enviar email manual al tutor', [
+                'tutor_id' => $tutor->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Envía email manual al estudiante usando template personalizado
+     *
+     * @param User $student
+     * @param array $data
+     * @return void
+     */
+    private function sendManualEmailToStudent(User $student, array $data): void
+    {
+        try {
+            $subject = '✅ Tu tutoría ha sido aceptada - ' . ($data['tutorName'] ?? 'Tutor');
+            
+            $emailContent = $this->generateStudentEmailContent($data);
+            
+            // Enviar email usando Mail facade
+            Mail::send([], [], function ($message) use ($student, $subject, $emailContent) {
+                $message->to($student->email)
+                        ->subject($subject)
+                        ->html($emailContent);
+            });
+
+            Log::info('Email manual enviado al estudiante', [
+                'student_id' => $student->id,
+                'email' => $student->email
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error al enviar email manual al estudiante', [
+                'student_id' => $student->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Genera el contenido del email para el tutor
+     *
+     * @param array $data
+     * @return string
+     */
+    private function generateTutorEmailContent(array $data): string
+    {
+        $booking = $data['bookingDetails'];
+        $sessionDate = $booking['start_time'] ? date('d/m/Y', strtotime($booking['start_time'])) : 'Fecha no definida';
+        $sessionTime = $booking['start_time'] ? date('H:i', strtotime($booking['start_time'])) : 'Hora no definida';
+
+        return '
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Tutoría Aceptada</title>
+        </head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background-color: #fff3cd; border: 2px solid #ffc107; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h2 style="color: #856404; margin: 0 0 15px 0;">🎉 ¡FELICITACIONES! Tu tutoría ha sido aceptada</h2>
+                <p style="color: #856404; font-size: 16px; margin: 0 0 10px 0;"><strong>Hola ' . ($data['tutorName'] ?? 'Tutor') . ',</strong></p>
+                <p style="color: #856404; font-size: 16px; margin: 0 0 15px 0;">¡Excelente noticia! Una nueva tutoría ha sido aceptada y está lista para comenzar.</p>
+            </div>
+            
+            <div style="background-color: #f8f9fa; border: 1px solid #dee2e6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="color: #495057; margin: 0 0 15px 0;">📋 Detalles de la Sesión:</h3>
+                <ul style="color: #495057; font-size: 14px; line-height: 1.6;">
+                    <li><strong>Estudiante:</strong> ' . ($data['studentName'] ?? 'Estudiante') . '</li>
+                    <li><strong>Materia:</strong> ' . ($booking['subject'] ?? 'Materia no definida') . '</li>
+                    <li><strong>Fecha:</strong> ' . $sessionDate . '</li>
+                    <li><strong>Hora:</strong> ' . $sessionTime . '</li>
+                    <li><strong>Estado:</strong> <span style="color: #28a745; font-weight: bold;">' . ($booking['status'] ?? 'Aceptado') . '</span></li>
+                </ul>
+            </div>
+            
+            <div style="background-color: #e7f3ff; border: 1px solid #b3d9ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <h4 style="color: #0056b3; margin: 0 0 10px 0;">🔗 Enlace de la Reunión:</h4>
+                <p style="color: #0056b3; font-size: 14px; margin: 0 0 10px 0;"><strong>' . ($booking['meeting_link'] ?? 'Enlace no disponible') . '</strong></p>
+                <p style="color: #0056b3; font-size: 12px; margin: 0;">Guarda este enlace para acceder a la sesión cuando sea el momento.</p>
+            </div>
+            
+            <div style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <h4 style="color: #155724; margin: 0 0 10px 0;">⚡ Acción Requerida:</h4>
+                <p style="color: #155724; font-size: 14px; margin: 0 0 15px 0;">Por favor, revisa los detalles de la sesión y prepárate para la tutoría. ¡Tu estudiante está esperando!</p>
+                <a href="' . route('tutor.bookings.show', $booking['id']) . '" style="background-color: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">Ver Detalles de la Tutoría</a>
+            </div>
+            
+            <div style="background-color: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <p style="color: #666; font-size: 12px; margin: 0; text-align: center;">
+                    <strong>Importante:</strong> Esta es una notificación de alta prioridad. Por favor, responde lo antes posible.
+                </p>
+            </div>
+            
+            <p style="color: #495057; font-size: 14px; margin: 20px 0 0 0;">
+                ¡Gracias por ser parte de nuestra comunidad de tutores!<br>
+                <strong>Equipo ClassGo</strong>
+            </p>
+        </body>
+        </html>';
+    }
+
+    /**
+     * Genera el contenido del email para el estudiante
+     *
+     * @param array $data
+     * @return string
+     */
+    private function generateStudentEmailContent(array $data): string
+    {
+        $booking = $data['bookingDetails'];
+        $sessionDate = $booking['start_time'] ? date('d/m/Y', strtotime($booking['start_time'])) : 'Fecha no definida';
+        $sessionTime = $booking['start_time'] ? date('H:i', strtotime($booking['start_time'])) : 'Hora no definida';
+
+        return '
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Tutoría Aceptada</title>
+        </head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background-color: #d4edda; border: 2px solid #28a745; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h2 style="color: #155724; margin: 0 0 15px 0;">✅ ¡Excelente! Tu tutoría ha sido aceptada</h2>
+                <p style="color: #155724; font-size: 16px; margin: 0 0 10px 0;"><strong>Hola ' . ($data['studentName'] ?? 'Estudiante') . ',</strong></p>
+                <p style="color: #155724; font-size: 16px; margin: 0 0 15px 0;">¡Buenas noticias! Tu tutor ha aceptado la tutoría y está listo para comenzar.</p>
+            </div>
+            
+            <div style="background-color: #f8f9fa; border: 1px solid #dee2e6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <h3 style="color: #495057; margin: 0 0 15px 0;">📋 Detalles de la Sesión:</h3>
+                <ul style="color: #495057; font-size: 14px; line-height: 1.6;">
+                    <li><strong>Tutor:</strong> ' . ($data['tutorName'] ?? 'Tutor') . '</li>
+                    <li><strong>Materia:</strong> ' . ($booking['subject'] ?? 'Materia no definida') . '</li>
+                    <li><strong>Fecha:</strong> ' . $sessionDate . '</li>
+                    <li><strong>Hora:</strong> ' . $sessionTime . '</li>
+                    <li><strong>Estado:</strong> <span style="color: #28a745; font-weight: bold;">' . ($booking['status'] ?? 'Aceptado') . '</span></li>
+                </ul>
+            </div>
+            
+            <div style="background-color: #e7f3ff; border: 1px solid #b3d9ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <h4 style="color: #0056b3; margin: 0 0 10px 0;">🔗 Enlace de la Reunión:</h4>
+                <p style="color: #0056b3; font-size: 14px; margin: 0 0 10px 0;"><strong>' . ($booking['meeting_link'] ?? 'Enlace no disponible') . '</strong></p>
+                <p style="color: #0056b3; font-size: 12px; margin: 0;">Usa este enlace para unirte a la sesión cuando sea el momento.</p>
+            </div>
+            
+            <div style="background-color: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <h4 style="color: #856404; margin: 0 0 10px 0;">📝 Preparación:</h4>
+                <p style="color: #856404; font-size: 14px; margin: 0 0 15px 0;">Asegúrate de tener todo listo para la sesión. ¡Tu tutor está esperando para ayudarte!</p>
+                <a href="' . route('student.bookings.show', $booking['id']) . '" style="background-color: #ffc107; color: #856404; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">Ver Detalles de la Tutoría</a>
+            </div>
+            
+            <p style="color: #495057; font-size: 14px; margin: 20px 0 0 0;">
+                ¡Gracias por usar ClassGo!<br>
+                <strong>Equipo ClassGo</strong>
+            </p>
+        </body>
+        </html>';
     }
 } 
