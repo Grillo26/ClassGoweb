@@ -171,31 +171,43 @@ class TutoriasTable extends Component
                 
                 // Crear instancia de Zoom driver directamente con credenciales del .env
                 $meetingService = null;
-                if (env('ZOOM_ACCOUNT_ID') && env('ZOOM_CLIENT_ID') && env('ZOOM_CLIENT_SECRET')) {
+                
+                // Debug: Verificar valores de las credenciales
+                $zoomAccountId = env('ZOOM_ACCOUNT_ID');
+                $zoomClientId = env('ZOOM_CLIENT_ID');
+                $zoomClientSecret = env('ZOOM_CLIENT_SECRET');
+                
+                Log::info('TutoriasTable: Verificando credenciales de Zoom', [
+                    'account_id_exists' => !empty($zoomAccountId),
+                    'client_id_exists' => !empty($zoomClientId),
+                    'client_secret_exists' => !empty($zoomClientSecret),
+                    'account_id_length' => strlen($zoomAccountId),
+                    'client_id_length' => strlen($zoomClientId),
+                    'client_secret_length' => strlen($zoomClientSecret)
+                ]);
+                
+                if ($zoomAccountId && $zoomClientId && $zoomClientSecret) {
                     try {
+                        Log::info('TutoriasTable: Creando instancia de Zoom driver');
                         $meetingService = new \Modules\MeetFusion\Drivers\Zoom();
+                        
+                        Log::info('TutoriasTable: Configurando credenciales en el driver');
                         $meetingService->setKeys([
-                            'account_id' => env('ZOOM_ACCOUNT_ID'),
-                            'client_id' => env('ZOOM_CLIENT_ID'),
-                            'client_secret' => env('ZOOM_CLIENT_SECRET'),
+                            'account_id' => $zoomAccountId,
+                            'client_id' => $zoomClientId,
+                            'client_secret' => $zoomClientSecret,
                         ]);
-                        Log::info('TutoriasTable: Servicio de Zoom configurado con credenciales del .env', [
-                            'account_id' => env('ZOOM_ACCOUNT_ID'),
-                            'client_id' => env('ZOOM_CLIENT_ID'),
-                            'client_secret_length' => strlen(env('ZOOM_CLIENT_SECRET'))
-                        ]);
+                        
+                        Log::info('TutoriasTable: Driver de Zoom configurado exitosamente');
                     } catch (\Exception $e) {
                         Log::error('TutoriasTable: Error al configurar servicio de Zoom', [
                             'error' => $e->getMessage(),
                             'trace' => $e->getTraceAsString()
                         ]);
+                        $meetingService = null;
                     }
                 } else {
-                    Log::warning('TutoriasTable: Credenciales de Zoom no encontradas en .env', [
-                        'account_id_exists' => !empty(env('ZOOM_ACCOUNT_ID')),
-                        'client_id_exists' => !empty(env('ZOOM_CLIENT_ID')),
-                        'client_secret_exists' => !empty(env('ZOOM_CLIENT_SECRET'))
-                    ]);
+                    Log::warning('TutoriasTable: Credenciales de Zoom no encontradas en .env');
                 }
                 // Formatear la fecha correctamente para Zoom (ISO 8601)
                 $startTime = $tutoria->start_time ? \Carbon\Carbon::parse($tutoria->start_time)->toIso8601String() : null;
@@ -222,17 +234,27 @@ class TutoriasTable extends Component
                 if ($meetingService) {
                     Log::info('TutoriasTable: Servicio de reuniones obtenido, creando reunión', [
                         'meeting_data' => $meetingData,
-                        'tutoria_id' => $tutoria->id
+                        'tutoria_id' => $tutoria->id,
+                        'start_time' => $startTime,
+                        'start_time_format' => $startTime ? date('Y-m-d H:i:s', strtotime($startTime)) : null
                     ]);
                     
                     try {
+                        Log::info('TutoriasTable: Llamando a createMeeting en el driver de Zoom');
                         $zoomResponse = $meetingService->createMeeting($meetingData);
-                        Log::info('TutoriasTable: Respuesta del servicio de reuniones', ['response' => $zoomResponse]);
+                        Log::info('TutoriasTable: Respuesta del servicio de reuniones', [
+                            'response' => $zoomResponse,
+                            'status' => $zoomResponse['status'] ?? 'N/A',
+                            'has_data' => isset($zoomResponse['data']),
+                            'has_link' => isset($zoomResponse['data']['link'])
+                        ]);
                     } catch (\Exception $e) {
                         Log::error('TutoriasTable: Error al crear reunión', [
                             'error' => $e->getMessage(),
+                            'error_class' => get_class($e),
                             'trace' => $e->getTraceAsString(),
-                            'tutoria_id' => $tutoria->id
+                            'tutoria_id' => $tutoria->id,
+                            'meeting_data' => $meetingData
                         ]);
                         $zoomResponse = [
                             'status' => false,
