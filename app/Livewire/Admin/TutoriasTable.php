@@ -134,8 +134,18 @@ class TutoriasTable extends Component
             ];
             Log::info('Valor recibido en modalStatus:', ['modalStatus' => $this->modalStatus]);
             $nuevoStatus = $this->modalStatus;
+            Log::info('TutoriasTable: Procesando modalStatus', [
+                'modalStatus' => $this->modalStatus,
+                'is_numeric' => is_numeric($nuevoStatus),
+                'lowercase' => strtolower($nuevoStatus),
+                'mapped_value' => $estados[strtolower($nuevoStatus)] ?? 'NOT_FOUND'
+            ]);
             if (!is_numeric($nuevoStatus)) {
                 $nuevoStatus = $estados[strtolower($nuevoStatus)] ?? 2;
+                Log::info('TutoriasTable: Estado mapeado', [
+                    'original' => $this->modalStatus,
+                    'mapped' => $nuevoStatus
+                ]);
             }
             // Guardar el estado anterior ANTES de cambiarlo
             $oldStatus = $tutoria->status;
@@ -153,13 +163,13 @@ class TutoriasTable extends Component
             Log::info('TutoriasTable: Verificando si debe crear reunión de Zoom', [
                 'nuevoStatus' => $nuevoStatus,
                 'nuevoStatus_type' => gettype($nuevoStatus),
-                'should_create_meeting' => ($nuevoStatus == 1),
-                'nuevoStatus_equals_1' => ($nuevoStatus === 1),
-                'nuevoStatus_equals_string_1' => ($nuevoStatus === '1')
+                'should_create_meeting' => ($nuevoStatus == 2),
+                'nuevoStatus_equals_2' => ($nuevoStatus === 2),
+                'nuevoStatus_equals_string_2' => ($nuevoStatus === '2')
             ]);
             
-            // Si el nuevo estado es 'Aceptada' (1), crear reunión Zoom y enviar correos
-            if ($nuevoStatus == 1) {
+            // Si el nuevo estado es 'Aceptada' (2), crear reunión Zoom y enviar correos
+            if ($nuevoStatus == 2) {
                 Log::info('TutoriasTable: ✅ CONDICIÓN CUMPLIDA - Entrando al bloque de creación de reunión de Zoom');
                 Log::info('TutoriasTable: Entrando al bloque de creación de reunión de Zoom');
 
@@ -304,11 +314,11 @@ class TutoriasTable extends Component
                     'meeting_link' => $tutoria->meeting_link
                 ]);
             } else {
-                Log::info('TutoriasTable: ❌ NO SE CUMPLE LA CONDICIÓN - No se creará reunión de Zoom - estado diferente a 1', [
+                Log::info('TutoriasTable: ❌ NO SE CUMPLE LA CONDICIÓN - No se creará reunión de Zoom - estado diferente a 2', [
                     'nuevoStatus' => $nuevoStatus,
                     'nuevoStatus_type' => gettype($nuevoStatus),
-                    'nuevoStatus_equals_1' => ($nuevoStatus === 1),
-                    'nuevoStatus_equals_string_1' => ($nuevoStatus === '1')
+                    'nuevoStatus_equals_2' => ($nuevoStatus === 2),
+                    'nuevoStatus_equals_string_2' => ($nuevoStatus === '2')
                 ]);
             }
             
