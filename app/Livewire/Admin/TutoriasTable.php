@@ -153,11 +153,14 @@ class TutoriasTable extends Component
             Log::info('TutoriasTable: Verificando si debe crear reunión de Zoom', [
                 'nuevoStatus' => $nuevoStatus,
                 'nuevoStatus_type' => gettype($nuevoStatus),
-                'should_create_meeting' => ($nuevoStatus == 1)
+                'should_create_meeting' => ($nuevoStatus == 1),
+                'nuevoStatus_equals_1' => ($nuevoStatus === 1),
+                'nuevoStatus_equals_string_1' => ($nuevoStatus === '1')
             ]);
             
             // Si el nuevo estado es 'Aceptada' (1), crear reunión Zoom y enviar correos
             if ($nuevoStatus == 1) {
+                Log::info('TutoriasTable: ✅ CONDICIÓN CUMPLIDA - Entrando al bloque de creación de reunión de Zoom');
                 Log::info('TutoriasTable: Entrando al bloque de creación de reunión de Zoom');
 
                 $googlemeetservice = new GoogleMeetService;
@@ -301,9 +304,11 @@ class TutoriasTable extends Component
                     'meeting_link' => $tutoria->meeting_link
                 ]);
             } else {
-                Log::info('TutoriasTable: No se creará reunión de Zoom - estado diferente a 1', [
+                Log::info('TutoriasTable: ❌ NO SE CUMPLE LA CONDICIÓN - No se creará reunión de Zoom - estado diferente a 1', [
                     'nuevoStatus' => $nuevoStatus,
-                    'nuevoStatus_type' => gettype($nuevoStatus)
+                    'nuevoStatus_type' => gettype($nuevoStatus),
+                    'nuevoStatus_equals_1' => ($nuevoStatus === 1),
+                    'nuevoStatus_equals_string_1' => ($nuevoStatus === '1')
                 ]);
             }
             
