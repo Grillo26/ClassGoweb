@@ -24,20 +24,24 @@ class BookingNotificationService
         Log::info('BookingNotificationService: Procesando cambio de estado', [
             'booking_id' => $booking->id,
             'old_status' => $oldStatus,
-            'new_status' => $newStatus
+            'new_status' => $newStatus,
+            'old_status_type' => gettype($oldStatus),
+            'new_status_type' => gettype($newStatus)
         ]);
 
         // Cargar relaciones necesarias
         $booking->load(['tutor', 'booker', 'subject']);
 
         // Caso 1: Cambio a "Aceptado" - Notificar al tutor Y al estudiante
-        if ($newStatus === 'Aceptado' || $newStatus === '1') {
+        if ($newStatus === 'Aceptado' || $newStatus === '1' || $newStatus === 1) {
+            Log::info('BookingNotificationService: Enviando notificaciones de aceptación');
             $this->sendAcceptedNotificationToTutor($booking);
             $this->sendAcceptedNotificationToStudent($booking);
         }
 
         // Caso 2: Cambio a "Cursando" - Notificar solo al estudiante
-        if ($newStatus === 'Cursando' || $newStatus === '6') {
+        if ($newStatus === 'Cursando' || $newStatus === '6' || $newStatus === 6) {
+            Log::info('BookingNotificationService: Enviando notificación de cursando');
             $this->sendCursandoNotificationToStudent($booking);
         }
 
@@ -70,18 +74,18 @@ class BookingNotificationService
             $notificationData = [
                 'tutorName' => $tutor->profile->full_name ?? 'Tutor',
                 'studentName' => $student ? ($student->profile->full_name ?? 'Estudiante') : 'Estudiante',
-                'sessionDate' => $booking->start_time ? date('d/m/Y', strtotime($booking->start_time)) : 'Fecha no definida',
-                'sessionTime' => $booking->start_time ? date('H:i', strtotime($booking->start_time)) : 'Hora no definida',
-                'subject' => $booking->subject ? $booking->subject->name : 'Materia no definida',
-                'bookingId' => $booking->id,
-                'status' => 'Aceptado',
-                'meetingLink' => $booking->meeting_link ?? 'Enlace no disponible',
-                'urgency' => 'high',
-                'notificationType' => 'booking_accepted_tutor'
+                'bookingDetails' => [
+                    'id' => $booking->id,
+                    'start_time' => $booking->start_time,
+                    'end_time' => $booking->end_time,
+                    'subject' => $booking->subject ? $booking->subject->name : 'Materia no definida',
+                    'meeting_link' => $booking->meeting_link ?? 'Enlace no disponible',
+                    'status' => 'Aceptado'
+                ]
             ];
 
             // Enviar notificación por email
-            dispatch(new SendNotificationJob('intensiveBookingStatus', $tutor, $notificationData));
+            dispatch(new SendNotificationJob('sessionBooking', $tutor, $notificationData));
 
             // Enviar push notification si está configurado
             if ($tutor->fcm_token) {
@@ -134,14 +138,14 @@ class BookingNotificationService
             $notificationData = [
                 'studentName' => $student->profile->full_name ?? 'Estudiante',
                 'tutorName' => $tutor ? ($tutor->profile->full_name ?? 'Tutor') : 'Tutor',
-                'sessionDate' => $booking->start_time ? date('d/m/Y', strtotime($booking->start_time)) : 'Fecha no definida',
-                'sessionTime' => $booking->start_time ? date('H:i', strtotime($booking->start_time)) : 'Hora no definida',
-                'subject' => $booking->subject ? $booking->subject->name : 'Materia no definida',
-                'bookingId' => $booking->id,
-                'status' => 'Aceptado',
-                'meetingLink' => $booking->meeting_link ?? 'Enlace no disponible',
-                'urgency' => 'normal',
-                'notificationType' => 'booking_accepted_student'
+                'bookingDetails' => [
+                    'id' => $booking->id,
+                    'start_time' => $booking->start_time,
+                    'end_time' => $booking->end_time,
+                    'subject' => $booking->subject ? $booking->subject->name : 'Materia no definida',
+                    'meeting_link' => $booking->meeting_link ?? 'Enlace no disponible',
+                    'status' => 'Aceptado'
+                ]
             ];
 
             // Enviar notificación por email
@@ -198,14 +202,14 @@ class BookingNotificationService
             $notificationData = [
                 'studentName' => $student->profile->full_name ?? 'Estudiante',
                 'tutorName' => $tutor ? ($tutor->profile->full_name ?? 'Tutor') : 'Tutor',
-                'sessionDate' => $booking->start_time ? date('d/m/Y', strtotime($booking->start_time)) : 'Fecha no definida',
-                'sessionTime' => $booking->start_time ? date('H:i', strtotime($booking->start_time)) : 'Hora no definida',
-                'subject' => $booking->subject ? $booking->subject->name : 'Materia no definida',
-                'bookingId' => $booking->id,
-                'status' => 'Cursando',
-                'meetingLink' => $booking->meeting_link ?? 'Enlace no disponible',
-                'urgency' => 'high',
-                'notificationType' => 'booking_cursando_student'
+                'bookingDetails' => [
+                    'id' => $booking->id,
+                    'start_time' => $booking->start_time,
+                    'end_time' => $booking->end_time,
+                    'subject' => $booking->subject ? $booking->subject->name : 'Materia no definida',
+                    'meeting_link' => $booking->meeting_link ?? 'Enlace no disponible',
+                    'status' => 'Cursando'
+                ]
             ];
 
             // Enviar notificación por email

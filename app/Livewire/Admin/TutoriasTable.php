@@ -189,14 +189,16 @@ class TutoriasTable extends Component
                 $tutorUser = $tutoria->tutor?->user;
 
             }
+            
             // Guardar el estado anterior para comparar
             $oldStatus = $tutoria->status;
             
-            $tutoria->save();
-
-            // Usar el servicio centralizado para manejar notificaciones
+            // Usar el servicio centralizado para manejar notificaciones ANTES de guardar
             $notificationService = new BookingNotificationService();
             $notificationService->handleStatusChangeNotification($tutoria, $oldStatus, $nuevoStatus);
+            
+            // Guardar después de procesar las notificaciones
+            $tutoria->save();
         }
         $this->dispatch('cerrar-modal-tutoria');
     }
