@@ -309,7 +309,17 @@ class BookingNotificationService
         try {
             $subject = '🎉 ¡Tutoría Aceptada! - ' . ($data['studentName'] ?? 'Estudiante');
             
+            Log::info('Iniciando generación de contenido de email para tutor', [
+                'tutor_id' => $tutor->id,
+                'subject' => $subject
+            ]);
+            
             $emailContent = $this->generateTutorEmailContent($data);
+            
+            Log::info('Contenido de email generado, enviando email', [
+                'tutor_id' => $tutor->id,
+                'content_length' => strlen($emailContent)
+            ]);
             
             // Enviar email usando Mail facade
             Mail::send([], [], function ($message) use ($tutor, $subject, $emailContent) {
@@ -318,15 +328,17 @@ class BookingNotificationService
                         ->html($emailContent);
             });
 
-            Log::info('Email manual enviado al tutor', [
+            Log::info('✅ Email manual enviado exitosamente al tutor', [
                 'tutor_id' => $tutor->id,
-                'email' => $tutor->email
+                'email' => $tutor->email,
+                'subject' => $subject
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Error al enviar email manual al tutor', [
+            Log::error('❌ Error al enviar email manual al tutor', [
                 'tutor_id' => $tutor->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
         }
     }
@@ -343,7 +355,17 @@ class BookingNotificationService
         try {
             $subject = '✅ Tu tutoría ha sido aceptada - ' . ($data['tutorName'] ?? 'Tutor');
             
+            Log::info('Iniciando generación de contenido de email para estudiante', [
+                'student_id' => $student->id,
+                'subject' => $subject
+            ]);
+            
             $emailContent = $this->generateStudentEmailContent($data);
+            
+            Log::info('Contenido de email generado, enviando email', [
+                'student_id' => $student->id,
+                'content_length' => strlen($emailContent)
+            ]);
             
             // Enviar email usando Mail facade
             Mail::send([], [], function ($message) use ($student, $subject, $emailContent) {
@@ -352,15 +374,17 @@ class BookingNotificationService
                         ->html($emailContent);
             });
 
-            Log::info('Email manual enviado al estudiante', [
+            Log::info('✅ Email manual enviado exitosamente al estudiante', [
                 'student_id' => $student->id,
-                'email' => $student->email
+                'email' => $student->email,
+                'subject' => $subject
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Error al enviar email manual al estudiante', [
+            Log::error('❌ Error al enviar email manual al estudiante', [
                 'student_id' => $student->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
         }
     }
@@ -412,7 +436,7 @@ class BookingNotificationService
             <div style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 8px; margin: 20px 0;">
                 <h4 style="color: #155724; margin: 0 0 10px 0;">⚡ Acción Requerida:</h4>
                 <p style="color: #155724; font-size: 14px; margin: 0 0 15px 0;">Por favor, revisa los detalles de la sesión y prepárate para la tutoría. ¡Tu estudiante está esperando!</p>
-                <a href="' . route('tutor.bookings.show', $booking['id']) . '" style="background-color: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">Ver Detalles de la Tutoría</a>
+                <a href="' . route('tutor.bookings.upcoming-bookings') . '" style="background-color: #28a745; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">Ver Mis Tutorías</a>
             </div>
             
             <div style="background-color: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin: 20px 0;">
@@ -476,7 +500,7 @@ class BookingNotificationService
             <div style="background-color: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 8px; margin: 20px 0;">
                 <h4 style="color: #856404; margin: 0 0 10px 0;">📝 Preparación:</h4>
                 <p style="color: #856404; font-size: 14px; margin: 0 0 15px 0;">Asegúrate de tener todo listo para la sesión. ¡Tu tutor está esperando para ayudarte!</p>
-                <a href="' . route('student.bookings.show', $booking['id']) . '" style="background-color: #ffc107; color: #856404; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">Ver Detalles de la Tutoría</a>
+                <a href="' . route('student.bookings') . '" style="background-color: #ffc107; color: #856404; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">Ver Mis Tutorías</a>
             </div>
             
             <p style="color: #495057; font-size: 14px; margin: 20px 0 0 0;">

@@ -170,12 +170,19 @@ class TutoriasTable extends Component
                 ];
 
                 $zoomResponse = $zoomService->createMeeting($meetingData);
-                $joinUrl = $zoomResponse['data']['join_url'];
-                //dd($joinUrl);
-                //$result = $googlemeetservice->createMeeting($meetingDatameet);
-
-                //dd($result); //
-                $tutoria->meeting_link = $joinUrl;
+                
+                if ($zoomResponse['status']) {
+                    $joinUrl = $zoomResponse['data']['join_url'];
+                    $tutoria->meeting_link = $joinUrl;
+                    Log::info('TutoriasTable: Enlace de Zoom creado exitosamente', ['join_url' => $joinUrl]);
+                } else {
+                    Log::warning('TutoriasTable: No se pudo crear reunión de Zoom', [
+                        'error' => $zoomResponse['message'] ?? 'Error desconocido',
+                        'booking_id' => $tutoria->id
+                    ]);
+                    // Continuar sin enlace de reunión
+                    $tutoria->meeting_link = null;
+                }
                 // dd($result);
                 $studentProfile = $tutoria->student->profile;
                 $studentName = $studentProfile ? ($studentProfile->first_name . ' ' . $studentProfile->last_name) : '';
