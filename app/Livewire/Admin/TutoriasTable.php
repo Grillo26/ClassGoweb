@@ -141,10 +141,14 @@ class TutoriasTable extends Component
                 'mapped_value' => $estados[strtolower($nuevoStatus)] ?? 'NOT_FOUND'
             ]);
             if (!is_numeric($nuevoStatus)) {
+                $estadoAnterior = $nuevoStatus;
                 $nuevoStatus = $estados[strtolower($nuevoStatus)] ?? 2;
                 Log::info('TutoriasTable: Estado mapeado', [
                     'original' => $this->modalStatus,
-                    'mapped' => $nuevoStatus
+                    'estado_anterior' => $estadoAnterior,
+                    'mapped' => $nuevoStatus,
+                    'es_aceptado' => strtolower($estadoAnterior) === 'aceptado',
+                    'valor_esperado' => $estados['aceptado']
                 ]);
             }
             // Guardar el estado anterior ANTES de cambiarlo
@@ -158,6 +162,9 @@ class TutoriasTable extends Component
             ]);
             
             $tutoria->status = $nuevoStatus;
+            
+            // Guardar el cambio de estado inmediatamente
+            $tutoria->save();
             
             // Debug: Verificar si entra al bloque de Zoom
             Log::info('TutoriasTable: Verificando si debe crear reunión de Zoom', [
@@ -322,12 +329,18 @@ class TutoriasTable extends Component
                 ]);
             }
             
-            // Usar el servicio centralizado para manejar notificaciones ANTES de guardar
+            // Usar el servicio centralizado para manejar notificaciones
             $notificationService = new BookingNotificationService();
             $notificationService->handleStatusChangeNotification($tutoria, $oldStatus, $nuevoStatus);
             
-            // Guardar después de procesar las notificaciones
-            $tutoria->save();
+            // Si se creó un enlace de Zoom, guardar la tutoría nuevamente
+            if ($tutoria->meeting_link) {
+                $tutoria->save();
+                Log::info('TutoriasTable: Enlace de Zoom guardado exitosamente', [
+                    'tutoria_id' => $tutoria->id,
+                    'meeting_link' => $tutoria->meeting_link
+                ]);
+            }
         }
         $this->dispatch('cerrar-modal-tutoria');
     }
