@@ -186,7 +186,10 @@ class TutoriasTable extends Component
                 Log::info('TutoriasTable: Verificando configuraciones de Zoom desde .env', [
                     'zoom_account_id' => env('ZOOM_ACCOUNT_ID') ? 'CONFIGURED' : 'EMPTY',
                     'zoom_client_id' => env('ZOOM_CLIENT_ID') ? 'CONFIGURED' : 'EMPTY',
-                    'zoom_client_secret' => env('ZOOM_CLIENT_SECRET') ? 'CONFIGURED' : 'EMPTY'
+                    'zoom_client_secret' => env('ZOOM_CLIENT_SECRET') ? 'CONFIGURED' : 'EMPTY',
+                    'zoom_account_id_value' => env('ZOOM_ACCOUNT_ID'),
+                    'zoom_client_id_value' => env('ZOOM_CLIENT_ID'),
+                    'zoom_client_secret_value' => env('ZOOM_CLIENT_SECRET') ? '***HIDDEN***' : 'EMPTY'
                 ]);
                 
                 // Crear instancia de Zoom driver directamente con credenciales del .env
@@ -194,7 +197,7 @@ class TutoriasTable extends Component
                 
                 // Debug: Verificar valores de las credenciales
                 $zoomAccountId = env('ZOOM_ACCOUNT_ID');
-                $zoomClientId = env('ZOOM_CLIENT_ID');
+                $zoomClientId = env('ZOOM_CLIENT_ID'); // Usar ZOOM_CLIENT_ID en lugar de ZOOM_CLIENT_KEY
                 $zoomClientSecret = env('ZOOM_CLIENT_SECRET');
                 
                 Log::info('TutoriasTable: Verificando credenciales de Zoom', [
