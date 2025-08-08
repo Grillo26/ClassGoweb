@@ -342,29 +342,61 @@ document.addEventListener('DOMContentLoaded', function() {
     //================= Script para el nuevo carrusel =================
     document.addEventListener('DOMContentLoaded', function () {
         const carouselWrapper = document.getElementById('carousel-wrapper');
-        if (!carouselWrapper) return; // Si no hay carrusel, no hacer nada
+        if (!carouselWrapper) return;
 
         const track = carouselWrapper.querySelector('.carousel-track');
         const prevButton = carouselWrapper.querySelector('#prev-btn');
         const nextButton = carouselWrapper.querySelector('#next-btn');
-        
-        // Detectamos las tarjetas que ya existen en el HTML
         const cards = carouselWrapper.querySelectorAll('.carousel-card');
         const totalSlides = cards.length;
 
-        if (totalSlides === 0) return; // Si no hay tarjetas, no continuar
+        if (totalSlides === 0) return;
 
         let currentIndex = 0;
         let slideInterval;
+        let isCarouselActive = false; // Un indicador para saber si el carrusel está activo
 
-        function getVisibleSlides() {
-            // Esta función determina cuántas tarjetas son visibles a la vez
-            if (window.innerWidth >= 1024) return 3; // Mismo valor que en el CSS
-            if (window.innerWidth >= 768) return 2;  // Mismo valor que en el CSS
-            return 1;
+        // --- FUNCIÓN DE CONTROL PRINCIPAL ---
+        function setupCarousel() {
+            const isMobile = window.innerWidth < 768; // Punto de quiebre (igual que en el CSS)
+
+            if (isMobile) {
+                // Si es móvil, nos aseguramos de que todo esté desactivado
+                if (isCarouselActive) {
+                    stopSlideShow();
+                    track.style.transform = 'none'; // Resetea la posición del track
+                    // Aquí podrías remover los event listeners si fuera necesario, pero con ocultar los botones es suficiente
+                    isCarouselActive = false;
+                }
+                return; // No continuamos con la inicialización
+            }
+            
+            // Si no es móvil, activamos el carrusel
+            if (!isCarouselActive) {
+                // Añadimos los eventos SOLO si el carrusel no estaba ya activo
+                nextButton.addEventListener('click', handleNextClick);
+                prevButton.addEventListener('click', handlePrevClick);
+                carouselWrapper.addEventListener('mouseenter', stopSlideShow);
+                carouselWrapper.addEventListener('mouseleave', startSlideShow);
+                
+                isCarouselActive = true;
+                startSlideShow();
+            }
+
+            // Siempre actualizamos la vista del carrusel en escritorio
+            updateCarouselView();
         }
 
-        function updateCarousel() {
+        // --- Funciones del carrusel (modificadas para claridad) ---
+        function getVisibleSlides() {
+            if (window.innerWidth >= 1024) return 3;
+            if (window.innerWidth >= 768) return 2;
+            return 1; // Este valor solo se usará en escritorio
+        }
+
+        function updateCarouselView() {
+            if (!isCarouselActive) return; // No hacer nada si el carrusel está inactivo
+
             const visibleSlides = getVisibleSlides();
             const maxIndex = Math.max(0, totalSlides - visibleSlides);
 
@@ -374,7 +406,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const offset = -currentIndex * (100 / visibleSlides);
             track.style.transform = `translateX(${offset}%)`;
 
-            // Actualizar estado de los botones
             prevButton.classList.toggle('disabled', currentIndex === 0);
             nextButton.classList.toggle('disabled', currentIndex >= maxIndex);
         }
@@ -382,50 +413,42 @@ document.addEventListener('DOMContentLoaded', function() {
         function moveToNextSlide() {
             const visibleSlides = getVisibleSlides();
             const maxIndex = totalSlides - visibleSlides;
-
-            if (currentIndex >= maxIndex) {
-                currentIndex = 0; // Vuelve al inicio
-            } else {
-                currentIndex++;
-            }
-            updateCarousel();
+            currentIndex = (currentIndex >= maxIndex) ? 0 : currentIndex + 1;
+            updateCarouselView();
         }
 
+        // --- Control del Slideshow ---
         function startSlideShow() {
-            stopSlideShow(); // Evita múltiples intervalos simultáneos
-            slideInterval = setInterval(moveToNextSlide, 5000); // Cambia de slide cada 5 segundos
+            if (!isCarouselActive) return;
+            stopSlideShow();
+            slideInterval = setInterval(moveToNextSlide, 5000);
         }
 
         function stopSlideShow() {
             clearInterval(slideInterval);
         }
-
-        // --- Event Listeners para los botones y el ratón ---
-        nextButton.addEventListener('click', () => {
+        
+        // --- Manejadores de eventos ---
+        function handleNextClick() {
             const visibleSlides = getVisibleSlides();
             const maxIndex = totalSlides - visibleSlides;
             if (currentIndex < maxIndex) {
                 currentIndex++;
-                updateCarousel();
+                updateCarouselView();
             }
-        });
-
-        prevButton.addEventListener('click', () => {
+        }
+        
+        function handlePrevClick() {
             if (currentIndex > 0) {
                 currentIndex--;
-                updateCarousel();
+                updateCarouselView();
             }
-        });
+        }
 
-        carouselWrapper.addEventListener('mouseenter', stopSlideShow);
-        carouselWrapper.addEventListener('mouseleave', startSlideShow);
-        window.addEventListener('resize', updateCarousel);
-
-        // --- Inicialización del carrusel ---
-        updateCarousel();
-        startSlideShow();
+        // --- INICIALIZACIÓN Y MANEJO DEL RESIZE ---
+        window.addEventListener('resize', setupCarousel);
+        setupCarousel(); // Llama a la función al cargar la página
     });
-
 </script>
 
 @endsection

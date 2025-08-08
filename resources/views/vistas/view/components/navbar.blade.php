@@ -221,7 +221,7 @@
 					@endrole
 						<li><a href="{{ route('logout')}}">Cerrar Sesión</a></li>
 				@else
-					<li><a href="{{ route('register')}}">Empezar</a></li>
+					<li><a href="{{ route('register')}}">Regístrate</a></li>
 					<li><a href="{{ route('login')}}">Login</a></li>
 				@endauth
 

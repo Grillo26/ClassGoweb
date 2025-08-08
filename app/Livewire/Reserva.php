@@ -23,7 +23,9 @@ class Reserva extends Component
     public $paymentReceipt;
     public $selectedSubject;
 
-    public function mount()
+    public $tutorId;
+
+    public function mount($tutorId)
     {
         $this->currentDate = Carbon::now();
         $this->loadMonthData();

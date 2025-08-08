@@ -8,6 +8,9 @@
         {{-- CALENDARIO --}}
         <div>
             <h4 class="tutor-section-title">Selecciona un día</h4>
+            <div>
+                <p>ID del tutor: {{ $tutorId }}</p>
+            </div>
             <div class="tutor-calendar-box">
                 <div class="tutor-calendar-header">
                   <button wire:click="goToPreviousMonth" class="tutor-calendar-nav-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-calendar-nav-icon"><path d="m15 18-6-6 6-6"></path></svg></button>
