@@ -5,12 +5,12 @@
     "isEntry": true
   },
   "public/admin/css/feather-icons.css": {
-    "file": "assets/feather-icons-zoMssNM2.css",
+    "file": "assets/feather-icons-4vF47ZKf.css",
     "src": "public/admin/css/feather-icons.css",
     "isEntry": true
   },
   "public/admin/css/fontawesome/all.min.css": {
-    "file": "assets/all-D7ECBqii.css",
+    "file": "assets/all-DcSiyyy5.css",
     "src": "public/admin/css/fontawesome/all.min.css",
     "isEntry": true
   },
@@ -19,7 +19,7 @@
     "src": "public/admin/css/fonts/icomoon.eot"
   },
   "public/admin/css/fonts/icomoon.svg": {
-    "file": "assets/icomoon-CJkqyi12.svg",
+    "file": "assets/icomoon-CWhiQTTR.svg",
     "src": "public/admin/css/fonts/icomoon.svg"
   },
   "public/admin/css/fonts/icomoon.ttf": {
@@ -35,7 +35,7 @@
     "src": "public/admin/css/fonts/themify.eot"
   },
   "public/admin/css/fonts/themify.svg": {
-    "file": "assets/themify-Bfliuhp5.svg",
+    "file": "assets/themify-DqOiMLGc.svg",
     "src": "public/admin/css/fonts/themify.svg"
   },
   "public/admin/css/fonts/themify.ttf": {
@@ -52,7 +52,7 @@
     "isEntry": true
   },
   "public/admin/css/themify-icons.css": {
-    "file": "assets/themify-icons-BDOV-7Md.css",
+    "file": "assets/themify-icons-BCCb7WK2.css",
     "src": "public/admin/css/themify-icons.css",
     "isEntry": true
   },
@@ -61,7 +61,7 @@
     "src": "public/admin/css/webfonts/fa-brands-400.eot"
   },
   "public/admin/css/webfonts/fa-brands-400.svg": {
-    "file": "assets/fa-brands-400-BFmE9D1H.svg",
+    "file": "assets/fa-brands-400-C3Yk61BC.svg",
     "src": "public/admin/css/webfonts/fa-brands-400.svg"
   },
   "public/admin/css/webfonts/fa-brands-400.ttf": {
@@ -81,7 +81,7 @@
     "src": "public/admin/css/webfonts/fa-regular-400.eot"
   },
   "public/admin/css/webfonts/fa-regular-400.svg": {
-    "file": "assets/fa-regular-400-DOFa6bga.svg",
+    "file": "assets/fa-regular-400-TSP2oef-.svg",
     "src": "public/admin/css/webfonts/fa-regular-400.svg"
   },
   "public/admin/css/webfonts/fa-regular-400.ttf": {
@@ -101,7 +101,7 @@
     "src": "public/admin/css/webfonts/fa-solid-900.eot"
   },
   "public/admin/css/webfonts/fa-solid-900.svg": {
-    "file": "assets/fa-solid-900-YtNbYKml.svg",
+    "file": "assets/fa-solid-900-Daof5SQZ.svg",
     "src": "public/admin/css/webfonts/fa-solid-900.svg"
   },
   "public/admin/css/webfonts/fa-solid-900.ttf": {
@@ -240,7 +240,7 @@
     "src": "public/css/icomoon/fonts/icomoon.eot"
   },
   "public/css/icomoon/fonts/icomoon.svg": {
-    "file": "assets/icomoon-Pg0qMFak.svg",
+    "file": "assets/icomoon-Cc2_NawR.svg",
     "src": "public/css/icomoon/fonts/icomoon.svg"
   },
   "public/css/icomoon/fonts/icomoon.ttf": {
@@ -252,7 +252,7 @@
     "src": "public/css/icomoon/fonts/icomoon.woff"
   },
   "public/css/icomoon/style.css": {
-    "file": "assets/style-B63I_HgV.css",
+    "file": "assets/style-BUMVG47b.css",
     "src": "public/css/icomoon/style.css",
     "isEntry": true
   },
@@ -262,7 +262,7 @@
     "isEntry": true
   },
   "public/css/main.css": {
-    "file": "assets/main-BzQH6W_2.css",
+    "file": "assets/main-cRUqumDr.css",
     "src": "public/css/main.css",
     "isEntry": true
   },
@@ -339,15 +339,15 @@
     "src": "public/images/login/fondo-login.png"
   },
   "public/images/play-two.svg": {
-    "file": "assets/play-two-DujRjbxC.svg",
+    "file": "assets/play-two-DveWMiEE.svg",
     "src": "public/images/play-two.svg"
   },
   "public/images/play.svg": {
-    "file": "assets/play-Bzmawmuj.svg",
+    "file": "assets/play-B_9jdYqv.svg",
     "src": "public/images/play.svg"
   },
   "public/images/playtwo.svg": {
-    "file": "assets/playtwo-82UzqacR.svg",
+    "file": "assets/playtwo-DmPBZFmO.svg",
     "src": "public/images/playtwo.svg"
   },
   "public/images/progressbar.png": {
@@ -428,7 +428,7 @@
     "isEntry": true
   },
   "resources/css/app.css": {
-    "file": "assets/app-DLwROcmB.css",
+    "file": "assets/app-C1Qhszle.css",
     "src": "resources/css/app.css",
     "isEntry": true
   }
