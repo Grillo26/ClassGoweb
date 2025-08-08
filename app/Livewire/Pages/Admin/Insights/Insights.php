@@ -67,6 +67,8 @@ class Insights extends Component
 
     public function mount()
     {
+       
+       
         $this->tutor_name = Str::plural(!empty(setting('_lernen.tutor_display_name')) ? setting('_lernen.tutor_display_name') : __('general.tutor'));
         $this->student_name = Str::plural(!empty(setting('_lernen.student_display_name')) ? setting('_lernen.student_display_name') : __('general.student'));
         $this->revenueStartDate = now()->startOfMonth()->format('Y-m-d');
@@ -76,25 +78,36 @@ class Insights extends Component
         $this->sessionEndDate = now()->endOfMonth()->format('Y-m-d');
 
         $users = $this->insightsService->getUsers(roles: ['tutor', 'student']);
-        $usuarios = UserIdentityVerification::get();
-        $this->ageStats = $this->processAgeData($usuarios);
-        //dd($usuarios);
+        
+        
+
+      
+        
+
 
         $this->usersCount = $users->count();
         $this->users = $users->take(3);
+ 
+
+       
+        //para grafico de generos
         $this->userforGenerous = Profile::get();
-        //dd($this->userforGenerous);
         $this->genderStats = $this->processGenderData($this->userforGenerous);
-
+        
+        //para grafico de horarios mas solicitados
         $this->reservasHorasPicos = SlotBooking::get();
-         $this->horariosStats = $this->processHorariosData($this->reservasHorasPicos);
+        $this->horariosStats = $this->processHorariosData($this->reservasHorasPicos);
    
-        //dd($this->reservasHorasPicos);
+         //para grafico de edades
+        $usuarios = UserIdentityVerification::get();
+        $this->ageStats = $this->processAgeData($usuarios);
 
+
+
+        
 
         $tutors = $this->insightsService->getUsers(roles: ['tutor']);
         $this->tutorsCount = $tutors->count();
-
         $this->tutors = $tutors->take(6);
 
 
@@ -123,8 +136,6 @@ class Insights extends Component
         $this->tutorEarnings = $this->insightsService->getTutorEarnings(type: 'add', revenueStartDate: $this->revenueStartDate, revenueEndDate: $this->revenueEndDate);
         $this->tutorPendingEarnings = $this->insightsService->getTutorEarnings(type: 'pending_available', revenueStartDate: $this->revenueStartDate, revenueEndDate: $this->revenueEndDate);
         $this->platformCommission = $this->insightsService->getPlatformCommission(revenueStartDate: $this->revenueStartDate, revenueEndDate: $this->revenueEndDate);
-
-        //$this->totalSessions                = $this->insightsService->getSessions(statuses: ['active', 'completed'], sessionStartDate: $this->sessionStartDate, sessionEndDate: $this->sessionEndDate);
         $this->totalSessions = SlotBooking::where('status', 5)->count();
         $this->totalsessionAcepted = SlotBooking::where('status', 1)->count();
 
