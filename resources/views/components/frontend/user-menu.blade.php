@@ -191,11 +191,11 @@
                 </li>       
             @endrole     
             @hasanyrole('tutor|student')
-            <li>
+           {{--  <li>
                 <a href="{{ route('laraguppy.messenger') }}">
                     <i class="am-icon-chat-03"></i>
                     {{ __('sidebar.messages') }}</a>
-            </li>
+            </li> --}}
             @if (\Nwidart\Modules\Facades\Module::has('subscriptions') && \Nwidart\Modules\Facades\Module::isEnabled('subscriptions'))
                 <li>
                     <a href="{{ url(auth()->user()->role.'-subscriptions') }}">
