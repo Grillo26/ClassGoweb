@@ -65,7 +65,7 @@ class HomeController extends Controller
         return view('vistas.view.pages.tutor', [
             'tutor' => $tutor,
             'materias' => $materias,
-            'grupos' => $grupos
+            'grupos' => $grupos,
         ]);
     }
 

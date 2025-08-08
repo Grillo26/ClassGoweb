@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\DB;
+use Str;
 
 class SiteService {
 
@@ -353,6 +354,8 @@ public function getTutors($data = array()) {
         return $allTutorRatings;
     }
 
+
+    //==================== TUTORES DEL HOME VISTA CARRUSEL ================================
     public function getTutorsWithSubjects()
     {
         // 1. Obtener IDs de usuarios con rol 'tutor'
@@ -421,29 +424,51 @@ public function getTutors($data = array()) {
 
     }
 
+
+    //========================== BUSCAR TUTOR =========================
     public function getTutorDato($perPage = 10, $search = null)
     {
-        $tutorIds = \DB::table('model_has_roles')
+        // 1. Obtenemos los IDs de usuarios que tienen el rol 'tutor'. Esto no cambia.
+        $tutorIds = DB::table('model_has_roles')
             ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
             ->where('roles.name', 'tutor')
             ->pluck('model_has_roles.model_id');
 
-        $tutors = User::whereIn('id', $tutorIds)
-            ->whereHas('profile', function ($q) use ($search) {
+        // 2. Construimos la consulta principal para obtener los tutores.
+        $tutorsQuery = User::whereIn('id', $tutorIds)
+            // Filtramos solo tutores con perfil verificado y con nombre/apellido.
+            ->whereHas('profile', function ($q) {
                 $q->whereNotNull('verified_at')
-                  ->whereNotNull('first_name')
-                  ->whereNotNull('last_name');
-                if ($search) {
-                    $q->where(function($query) use ($search) {
-                        $query->where('first_name', 'like', "%$search%")
-                              ->orWhere('last_name', 'like', "%$search%")
-                              ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
-                              ->orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE ?", ["%$search%"]);
-                    });
-                }
+                    ->whereNotNull('first_name')
+                    ->whereNotNull('last_name');
             })
-            ->whereHas('userSubjects.subject.group')
-            ->with([
+            // Aseguramos que el tutor tenga al menos una materia registrada.
+            ->whereHas('userSubjects.subject.group');
+
+        // 3. Si hay un término de búsqueda, aplicamos la lógica de filtrado.
+        if ($search) {
+            $tutorsQuery->where(function ($query) use ($search) {
+                // Opción A: Buscar por nombre o apellido del tutor.
+                $query->whereHas('profile', function ($q) use ($search) {
+                    $q->where(function($nameQuery) use ($search) {
+                        $nameQuery->where('first_name', 'like', "%$search%")
+                            ->orWhere('last_name', 'like', "%$search%")
+                            ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
+                            ->orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE ?", ["%$search%"]);
+                    });
+                })
+                // Opción B: O buscar por el nombre de la materia (tabla 'subjects').
+                ->orWhereHas('userSubjects.subject', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%");
+                })
+                // Opción C: O buscar por el nombre del grupo de materias (tabla 'subject_groups').
+                ->orWhereHas('userSubjects.subject.group', function ($q) use ($search) {
+                    $q->where('name', 'like', "%$search%");
+                });
+            });
+        }
+        // 4. Cargamos las relaciones y realizamos los cálculos.
+        $tutors = $tutorsQuery->with([
                 'profile:id,user_id,first_name,last_name,slug,image,description,native_language',
                 'languages:id,name',
                 'userSubjects.subject.group',
@@ -453,10 +478,26 @@ public function getTutors($data = array()) {
             ->orderByDesc('avg_rating')
             ->paginate($perPage);
 
-        $profiles = $tutors->map(function ($tutor) {
+        // 5. Mapeamos los resultados para darles el formato deseado. Esto no cambia.
+        $profiles = $tutors->map(function ($tutor) use ($search) {
             $profile = $tutor->profile;
             $materias = [];
             $grupos = [];
+
+            $allSubjects = [];
+            $matchedSubjects = []; 
+            foreach ($tutor->userSubjects as $userSubject) {
+                if ($userSubject->subject) {
+                    $subjectName = $userSubject->subject->name;
+                    $allSubjects[] = $subjectName;
+                    
+                    // Si hay una búsqueda, revisamos si esta materia coincide
+                    if ($search && Str::contains(strtolower($subjectName), strtolower($search))) {
+                        $matchedSubjects[] = $subjectName;
+                    }
+                }
+            }
+
             foreach ($tutor->userSubjects as $userSubject) {
                 if ($userSubject->subject) {
                     $materias[] = $userSubject->subject->name;
@@ -477,14 +518,21 @@ public function getTutors($data = array()) {
                 'total_reviews' => $tutor->total_reviews ?? 0,
                 'materias' => array_unique($materias),
                 'grupos' => array_unique($grupos),
+
+                // **NUEVOS DATOS PARA LA VISTA**
+                'all_subjects' => array_unique($allSubjects), // Todas las materias del tutor
+                'matched_subjects' => array_unique($matchedSubjects) // Solo las que coinciden con la búsqueda
             ];
         });
 
+        // 6. Devolvemos la colección paginada con los datos formateados. Esto no cambia.
         $result = $tutors;
         $result->setCollection($profiles);
         return $result;
     }
 
+
+    //=========================== HOME BUSCADOR ========================00
     public function getTutorBuscador($search = null)
 {
     $tutorIds = \DB::table('model_has_roles')

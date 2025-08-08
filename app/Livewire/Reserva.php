@@ -23,7 +23,9 @@ class Reserva extends Component
     public $paymentReceipt;
     public $selectedSubject;
 
-    public function mount()
+    public $tutorId;
+
+    public function mount($tutorId)
     {
         $this->currentDate = Carbon::now();
         $this->loadMonthData();
@@ -165,6 +167,7 @@ class Reserva extends Component
         return view('livewire.reserva', [
             'startDay' => $startDay,
             'daysInMonth' => $daysInMonth,
+            'ide'=> $this->tutorId, // Asegúrate de pasar el ID del tutor si es necesario
         ]);
     }
 }

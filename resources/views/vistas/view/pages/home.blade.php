@@ -4,10 +4,6 @@
 
 @section('content')
 
-<!-- INICIO: Inclusión de CSS responsivos para tablet y móvil -->
-<link rel="stylesheet" href="{{ asset('css/estilos/home-tablet.css') }}">
-<link rel="stylesheet" href="{{ asset('css/estilos/home-mobile.css') }}">
-<!-- FIN: Inclusión de CSS responsivos para tablet y móvil -->
 
 <!-- HERO -->
 <section class="hero">
@@ -68,7 +64,7 @@
         <p>Descubre una variedad de temáticas académicas y prácticas para potenciar tu experiencia de aprendizaje</p> 
     
         <!--Componente tutor destacado-->
-        <div class="tutors-carousel-viewport">
+        {{-- <div class="tutors-carousel-viewport">
             <div class="tutors" id="tutorsContainer">
                 @include('components.tutors', [
                     'profiles' => $profiles,
@@ -80,7 +76,26 @@
             <button class="carousel-nav prev" onclick="prevSlide()">‹</button>
             <button class="carousel-nav next" onclick="nextSlide()">›</button>
         </div>
-        <div class="carousel-indicators" id="indicators"></div>
+        <div class="carousel-indicators" id="indicators"></div> --}}
+
+        <!-- ======= NUEVO TUTORES DESTACADOS =======-->
+        <div id="carousel-wrapper">
+            <div class="carousel-container">
+                <div class="carousel-track">
+                     @include('components.tutors', [
+                    'profiles' => $profiles,
+                    'subjectsByUser' => $subjectsByUser,
+                ])
+                </div>
+            </div>
+
+            <button id="prev-btn" class="nav-button prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button id="next-btn" class="nav-button next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
 
     </div>
 </section>
@@ -322,6 +337,118 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+
+
+    //================= Script para el nuevo carrusel =================
+    document.addEventListener('DOMContentLoaded', function () {
+        const carouselWrapper = document.getElementById('carousel-wrapper');
+        if (!carouselWrapper) return;
+
+        const track = carouselWrapper.querySelector('.carousel-track');
+        const prevButton = carouselWrapper.querySelector('#prev-btn');
+        const nextButton = carouselWrapper.querySelector('#next-btn');
+        const cards = carouselWrapper.querySelectorAll('.carousel-card');
+        const totalSlides = cards.length;
+
+        if (totalSlides === 0) return;
+
+        let currentIndex = 0;
+        let slideInterval;
+        let isCarouselActive = false; // Un indicador para saber si el carrusel está activo
+
+        // --- FUNCIÓN DE CONTROL PRINCIPAL ---
+        function setupCarousel() {
+            const isMobile = window.innerWidth < 768; // Punto de quiebre (igual que en el CSS)
+
+            if (isMobile) {
+                // Si es móvil, nos aseguramos de que todo esté desactivado
+                if (isCarouselActive) {
+                    stopSlideShow();
+                    track.style.transform = 'none'; // Resetea la posición del track
+                    // Aquí podrías remover los event listeners si fuera necesario, pero con ocultar los botones es suficiente
+                    isCarouselActive = false;
+                }
+                return; // No continuamos con la inicialización
+            }
+            
+            // Si no es móvil, activamos el carrusel
+            if (!isCarouselActive) {
+                // Añadimos los eventos SOLO si el carrusel no estaba ya activo
+                nextButton.addEventListener('click', handleNextClick);
+                prevButton.addEventListener('click', handlePrevClick);
+                carouselWrapper.addEventListener('mouseenter', stopSlideShow);
+                carouselWrapper.addEventListener('mouseleave', startSlideShow);
+                
+                isCarouselActive = true;
+                startSlideShow();
+            }
+
+            // Siempre actualizamos la vista del carrusel en escritorio
+            updateCarouselView();
+        }
+
+        // --- Funciones del carrusel (modificadas para claridad) ---
+        function getVisibleSlides() {
+            if (window.innerWidth >= 1024) return 3;
+            if (window.innerWidth >= 768) return 2;
+            return 1; // Este valor solo se usará en escritorio
+        }
+
+        function updateCarouselView() {
+            if (!isCarouselActive) return; // No hacer nada si el carrusel está inactivo
+
+            const visibleSlides = getVisibleSlides();
+            const maxIndex = Math.max(0, totalSlides - visibleSlides);
+
+            if (currentIndex > maxIndex) currentIndex = maxIndex;
+            if (currentIndex < 0) currentIndex = 0;
+
+            const offset = -currentIndex * (100 / visibleSlides);
+            track.style.transform = `translateX(${offset}%)`;
+
+            prevButton.classList.toggle('disabled', currentIndex === 0);
+            nextButton.classList.toggle('disabled', currentIndex >= maxIndex);
+        }
+
+        function moveToNextSlide() {
+            const visibleSlides = getVisibleSlides();
+            const maxIndex = totalSlides - visibleSlides;
+            currentIndex = (currentIndex >= maxIndex) ? 0 : currentIndex + 1;
+            updateCarouselView();
+        }
+
+        // --- Control del Slideshow ---
+        function startSlideShow() {
+            if (!isCarouselActive) return;
+            stopSlideShow();
+            slideInterval = setInterval(moveToNextSlide, 5000);
+        }
+
+        function stopSlideShow() {
+            clearInterval(slideInterval);
+        }
+        
+        // --- Manejadores de eventos ---
+        function handleNextClick() {
+            const visibleSlides = getVisibleSlides();
+            const maxIndex = totalSlides - visibleSlides;
+            if (currentIndex < maxIndex) {
+                currentIndex++;
+                updateCarouselView();
+            }
+        }
+        
+        function handlePrevClick() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCarouselView();
+            }
+        }
+
+        // --- INICIALIZACIÓN Y MANEJO DEL RESIZE ---
+        window.addEventListener('resize', setupCarousel);
+        setupCarousel(); // Llama a la función al cargar la página
+    });
 </script>
 
 @endsection
