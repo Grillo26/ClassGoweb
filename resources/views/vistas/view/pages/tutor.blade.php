@@ -71,7 +71,6 @@
                         <nav class="tutor-tabs-list" aria-label="Tabs">
                             <button onclick="changeTab(event, 'introduccion')" class="tutor-tab-btn active">Tutoría</button>
                             {{-- ===== SOLO ROL ESTUDIANTE ===== --}}
-                            {{ $tutor->id }}
                             @role('student')
                                 <button onclick="changeTab(event, 'disponibilidad')" class="tutor-tab-btn">Disponibilidad</button>
                             @endrole
@@ -142,8 +141,7 @@
                         <div id="disponibilidad" class="tutor-tab-content hidden">
                             <h3 class="tutor-section-title-lg">Reserva una sesión</h3>
                             {{-- <<<<======LOGICA PARA RESERVAR=======>>>>>>--}}
-                            
-                            <livewire:reserva />
+                            <livewire:reserva :tutorId="$tutor->id" />
                             
                         </div>
                         <div id="curriculum" class="tutor-tab-content hidden">
