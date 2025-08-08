@@ -89,6 +89,13 @@ class BookingNotificationService
             $this->sendManualEmailToTutor($tutor, $notificationData);
 
             // Enviar push notification si está configurado
+            Log::info('Verificando FCM token del tutor', [
+                'tutor_id' => $tutor->id,
+                'has_fcm_token' => !empty($tutor->fcm_token),
+                'fcm_token_length' => strlen($tutor->fcm_token ?? ''),
+                'fcm_token_preview' => $tutor->fcm_token ? substr($tutor->fcm_token, 0, 20) . '...' : 'N/A'
+            ]);
+            
             if ($tutor->fcm_token) {
                 $sessionDate = $booking->start_time ? date('d/m/Y', strtotime($booking->start_time)) : 'Fecha no definida';
                 $this->sendPushNotification($tutor, [
@@ -154,6 +161,13 @@ class BookingNotificationService
             $this->sendManualEmailToStudent($student, $notificationData);
 
             // Enviar push notification si está configurado
+            Log::info('Verificando FCM token del estudiante (aceptado)', [
+                'student_id' => $student->id,
+                'has_fcm_token' => !empty($student->fcm_token),
+                'fcm_token_length' => strlen($student->fcm_token ?? ''),
+                'fcm_token_preview' => $student->fcm_token ? substr($student->fcm_token, 0, 20) . '...' : 'N/A'
+            ]);
+            
             if ($student->fcm_token) {
                 $sessionDate = $booking->start_time ? date('d/m/Y', strtotime($booking->start_time)) : 'Fecha no definida';
                 $this->sendPushNotification($student, [
@@ -219,6 +233,13 @@ class BookingNotificationService
             $this->sendManualEmailToStudent($student, $notificationData);
 
             // Enviar push notification si está configurado
+            Log::info('Verificando FCM token del estudiante (cursando)', [
+                'student_id' => $student->id,
+                'has_fcm_token' => !empty($student->fcm_token),
+                'fcm_token_length' => strlen($student->fcm_token ?? ''),
+                'fcm_token_preview' => $student->fcm_token ? substr($student->fcm_token, 0, 20) . '...' : 'N/A'
+            ]);
+            
             if ($student->fcm_token) {
                 $this->sendPushNotification($student, [
                     'title' => '🚀 ¡La tutoría está comenzando!',
@@ -278,21 +299,58 @@ class BookingNotificationService
     private function sendPushNotification($user, array $data): void
     {
         try {
-            // Aquí puedes implementar la lógica de push notification
-            // Por ejemplo, usando Firebase Cloud Messaging
-            
-            Log::info('Push notification preparada', [
+            // Verificar si el usuario tiene FCM token
+            if (!$user->fcm_token) {
+                Log::warning('Usuario no tiene FCM token configurado', [
+                    'user_id' => $user->id,
+                    'email' => $user->email
+                ]);
+                return;
+            }
+
+            Log::info('Iniciando envío de push notification', [
                 'user_id' => $user->id,
-                'data' => $data
+                'fcm_token_exists' => !empty($user->fcm_token),
+                'fcm_token_length' => strlen($user->fcm_token),
+                'title' => $data['title'] ?? 'Sin título',
+                'body' => $data['body'] ?? 'Sin contenido'
             ]);
 
-            // Implementar envío de push notification
-            // firebase()->messaging()->send($data, $user->fcm_token);
+            // Usar el servicio de Firebase para enviar la notificación
+            $fcmService = new \App\Services\FcmService();
+            
+            $title = $data['title'] ?? 'Notificación';
+            $body = $data['body'] ?? 'Tienes una nueva notificación';
+            $notificationData = $data['data'] ?? [];
+
+            Log::info('Enviando notificación a Firebase', [
+                'user_id' => $user->id,
+                'fcm_token' => substr($user->fcm_token, 0, 20) . '...',
+                'title' => $title,
+                'body' => $body,
+                'data' => $notificationData
+            ]);
+
+            $result = $fcmService->sendNotification(
+                $user->fcm_token,
+                $title,
+                $body,
+                $notificationData
+            );
+
+            Log::info('✅ Push notification enviada exitosamente', [
+                'user_id' => $user->id,
+                'result' => $result,
+                'title' => $title,
+                'body' => $body
+            ]);
 
         } catch (\Exception $e) {
-            Log::error('Error al enviar push notification', [
+            Log::error('❌ Error al enviar push notification', [
                 'user_id' => $user->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'error_class' => get_class($e),
+                'trace' => $e->getTraceAsString()
             ]);
         }
     }
