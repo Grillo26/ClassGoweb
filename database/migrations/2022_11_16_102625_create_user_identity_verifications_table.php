@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->date('dob')->nullable();
+            $table->string('name', 100);
             $table->string('school_id', 100)->nullable();
             $table->string('school_name', 255)->nullable();
             $table->string('transcript', 255)->nullable();
