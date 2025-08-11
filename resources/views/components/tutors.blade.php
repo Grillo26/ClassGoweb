@@ -2,11 +2,16 @@
 @foreach($profiles as $profile) @php $data = $subjectsByUser[$profile->user_id] ?? ['materias' => [], 'grupos' => []]; @endphp
 <div class="tutor-card carousel-card">
 	<div class="tutor-card-img">
-		<video controls muted playsinline preload="none" poster="{{ $profile->image ? asset('storage/' . $profile->image) : asset('storage/' . $profile->image) }}" src="{{ $profile->intro_video ? asset('storage/' . $profile->intro_video) : asset('storage/' . $profile->image) }}"></video>
+		<video controls 
+		muted playsinline preload="none" 
+		poster="{{ asset('images/classgo/banner1.png')}}"
+		{{-- poster="{{ $profile->image ? asset('storage/' . $profile->image) : asset('storage/' . $profile->image) }}"  --}}
+		src="{{ $profile->intro_video ? asset('storage/' . $profile->intro_video) : asset('storage/' . $profile->image) }}"></video>
 	</div>
 	<div class="tutor-card-content">
 		<div class="tutor-card-header">
 			<div class="tutor-card-header-left">
+				<img src="{{ $profile->image ? asset('storage/' . $profile->image) : asset('storage/' . $profile->image) }}" alt="">
 				<h3>{{ $profile->first_name }} {{ $profile->last_name }}</h3>
 				<span class="tutor-verified">✔️</span>
 			</div>

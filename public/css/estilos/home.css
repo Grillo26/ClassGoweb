@@ -115,6 +115,10 @@ body{
 
 }
 
+.buscador-home{
+  padding: 1rem 0rem;
+}
+
     /* 2. Icono de Lupa (.icon-search) */
     /* Lo posicionamos de forma absoluta DENTRO del .search-box */
     .search-box .icon-search {
@@ -241,7 +245,7 @@ body{
   gap: 1rem; /* espacio entre botones */
   flex-wrap: wrap; /* para que se acomoden en móviles */
   justify-content: left; /* o 'flex-start' si los quieres alineados a la izquierda */
-  margin-top: 1.7rem;
+  margin-top: 1.2rem;
 }
 
 .hero-buttons button {
@@ -440,7 +444,7 @@ body{
 
 
 .tutor-card-content { /* CONTENIDO DE LA CARD*/
-  padding: 0.5rem 1.25rem 0.5rem 1.25rem;
+  padding: 0rem 1.25rem 0.5rem 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -449,12 +453,20 @@ body{
 .tutor-card-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+
 }
 .tutor-card-header-left {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding-top: 0.7rem;
+}
+.tutor-card-header-left img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 .tutor-card-header-left h3 {
   font-size: 1.25rem;
@@ -556,7 +568,7 @@ i.fa-solid.fa-book.icon::before{
 }
 
 .tutor-card .tutor-card-actions {
-  margin-top: 1.25rem;
+  margin-top: 0rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
@@ -659,20 +671,18 @@ i.fa-solid.fa-book.icon::before{
     position: absolute;
     top: 0;
     height: 100%;
-    width: 75px; /* Ancho del degradado. ¡Puedes ajustarlo! */
+    width: 50px; /* Ancho del degradado. ¡Puedes ajustarlo! */
     z-index: 2;
     pointer-events: none; 
 }
 
 .carousel-container::before {
     left: 0;
-    /* IMPORTANTE: Si tu fondo no es blanco, cámbialo aquí */
     background: linear-gradient(to right, var(--panel-background), transparent);
 }
 
 .carousel-container::after {
     right: 0;
-    /* IMPORTANTE: Si tu fondo no es blanco, cámbialo aquí */
     background: linear-gradient(to left, var(--panel-background), transparent);
 }
 
@@ -1568,10 +1578,11 @@ i.fa-solid.fa-book.icon::before{
     background: red;
   }
   .tutors-container h1{
-    line-height: 1.9rem;
+    line-height: 2.3rem;
+    padding-top: 1rem;
   }
   .tutors-container p{
-    padding: 0rem 2rem;
+    padding: 1rem 2rem;
   }
 
   #prev-btn, #next-btn {
@@ -1585,6 +1596,7 @@ i.fa-solid.fa-book.icon::before{
     /* Muy importante: anular la transformación de JS */
     transform: none !important; 
     gap: 20px;
+    padding-top: 0rem;
   }
 
   /* 3. Hacer que cada tarjeta ocupe todo el ancho */
@@ -1602,7 +1614,7 @@ i.fa-solid.fa-book.icon::before{
     flex: 0 0 350px;
     max-width: 330px;
     min-width: 270px;
-    height: 410px;
+    height: 430px;
     margin: 0;
     box-sizing: border-box;
     box-shadow: 0 8px 8px rgba(0,0,0,0.1);
@@ -1633,7 +1645,18 @@ i.fa-solid.fa-book.icon::before{
 
   }
 
+  .tutor-card-header{
+    padding-top: 1rem;
+    display: flex;
+    justify-content: center;
+  }
 
+  .tutor-card-price .price{
+    padding: 0rem 0rem;
+  }
+  .tutor-card-price .price-desc{
+    padding: 0rem 0rem;
+  }
 
 
   

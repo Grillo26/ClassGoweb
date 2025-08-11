@@ -380,6 +380,7 @@
 
   .trabajamos-header-text h1 {
     font-size: 2rem;
+    padding-top: 0rem;
   }
 
   .trabajamos-header-text p {
@@ -422,5 +423,8 @@
 
   .trabajamos-text ol li {
     font-size: 0.8rem;
+  }
+  .trabajamos-image{
+    display: none;
   }
 } 

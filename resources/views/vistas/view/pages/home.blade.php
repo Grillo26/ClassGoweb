@@ -28,7 +28,9 @@
                     <i class="fa-solid fa-magnifying-glass icon-search"></i>
                 </button>
             </div> --}}
-            @livewire('buscador-tutor')
+            <div class="buscador-home">
+                @livewire('buscador-tutor')
+            </div>
 
 
             <!--Botones-->
