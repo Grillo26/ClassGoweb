@@ -328,16 +328,18 @@ let currentSlide = 0;
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Video lazy load: solo carga el src si el usuario da play
-    document.querySelectorAll('.tutor-card video').forEach(video => {
-        video.addEventListener('play', function() {
-            if (!video.src) {
-                video.src = video.getAttribute('data-src');
-            }
-        }, { once: true });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Video lazy load: solo carga el src si el usuario da play
+        document.querySelectorAll('.tutor-card video').forEach(video => {
+            video.addEventListener('play', function() {
+                if (!video.src) {
+                    video.src = video.getAttribute('data-src');
+                }
+            }, { once: true });
+        });
     });
-});
+
+    
 
 
 
