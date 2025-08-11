@@ -2,7 +2,7 @@
 	<div class="navbar-container">
 		<div class="navbar-left">
 			<!-- Logo -->
-			<a href="/home">
+			<a href="{{ route('home') }}">
 				<img src="{{ asset('/images/home/logoclassgo.png') }}" class="nav-i" alt="Mascota">
 			</a>	
 
