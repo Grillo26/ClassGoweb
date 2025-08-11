@@ -89,18 +89,7 @@
   display: block;
 }
 
-@media (max-width: 900px) {
-  .nosotros-header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 2rem 1rem 1.5rem 1rem;
-  }
-  .nosotros-header-image img {
-    margin-left: 0;
-    margin-top: 2rem;
-    width: 160px;
-  }
-}
+
 
 /*-------MISION----*/
 .nosotros-mision {
@@ -122,13 +111,14 @@
   width: 50%; /* Limitar el tamaño para que no ocupe toda la pantalla */
 }
 .nosotros-mision-title{
-  font-size: 1.5rem !important;
+  font-size: 1.5rem;
+  padding-top: 1rem;
 }
 
 .nosotros-mision-text-general1 {
   font-size: 2.5rem;
   margin: 0.5rem 0;
-  padding-right: 2.5rem;
+  padding-right: 1rem;
   color: var(--primary-color);
   font-weight: bold; /* Hacerlo más prominente */
 }
@@ -139,6 +129,7 @@
   margin-top: 0.5rem;
   color: var(--primary-color);
   text-align: left;
+  padding-left: 0rem;
 }
 
 .nosotros-mision-image {
@@ -367,17 +358,7 @@
   margin-top: 0.5rem;
 }
 
-/* Responsivo para pantallas pequeñas */
-@media (max-width: 768px) {
-  .nosotros-card {
-    flex-direction: column; /* Apilamos las tarjetas verticalmente en pantallas pequeñas */
-    gap: 2rem;
-  }
 
-  .nosotros-card .card {
-    width: 90%; /* Reducimos el ancho para móviles */
-  }
-}
 
 .counter-box h1 {
   color: #00bcd4;
@@ -391,4 +372,134 @@
     font-size: var(--h1-regular);
     color: white;
     text-transform: none;
+}
+
+/* =================== home-tablets.css =================== */
+/* home-tablet.css: Estilos responsivos para tablets (max-width: 900px) */
+
+@media (max-width: 900px) {
+  .nosotros-header-content {
+    flex-direction: column;
+    padding: 2rem 1rem 1.5rem 1rem;
+  }
+  .nosotros-header-image img {
+    margin-left: 0;
+    margin-top: 2rem;
+    width: 160px;
+  }
+}
+
+
+/* =================== home-mobile.css =================== */
+/* home-mobile.css: Estilos responsivos para móvil (max-width: 768px) */
+
+@media (max-width: 768px) {
+  
+
+  .nosotros-card .card {
+    width: 90%; /* Reducimos el ancho para móviles */
+  }
+  .nosotros-header-content{
+    padding: 6rem 2rem 2rem 2rem;
+  }
+  .nosotros-header-content h1{
+    padding: 0rem;
+  }
+  .nosotros-header-image{
+    display: none;
+  }
+
+  /*====== NOSOTROS =========*/
+  .nosotros-mision{
+    padding: 0rem;
+    display: flex;
+    flex-flow: column wrap;
+    padding: 1rem 0rem;
+    justify-content: center;
+    text-align: center;
+   
+  }
+  .nosotros-mision-text{
+    padding: 0rem;
+    display: flex;
+    flex-flow: column wrap;
+    margin: 0rem;
+  }
+  .nosotros-mision-title{
+    padding: 0rem;
+    margin: 0rem;
+    text-align: center;
+  }
+  .nosotros-mision-text-general1{
+    padding: 0rem;
+    margin: 0rem;
+    text-align: center;
+    padding-right: 0rem;
+    font-size: 1.5rem;
+    line-height: 30px;
+    font-style: italic;
+  }
+  .nosotros-mision-text-general2{
+    padding: 0rem;
+    text-align: center;
+  }
+  .nosotros-mision-image{
+    display: none;
+  }
+
+
+  /* ====== VISION =====*/
+  .nosotros-vision .vision-image{
+    display: none !important;
+  }
+  .nosotros-vision{
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    text-align: center;
+    padding: 1rem 0rem;
+  }
+  .nosotros-vision-text{
+    padding: 0rem 0rem 0rem 7rem;
+    display: flex;
+    flex-flow: column wrap;
+    margin: 0rem;
+  }
+  .nosotros-vision-title{
+    margin: 0rem;
+    text-align: center;
+    font-size: 2rem !important;
+
+  }
+  .nosotros-vision .vision-image{
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centra la imagen */
+  }
+  .nosotros-vision-subtext{
+    padding: 0rem;
+    margin: 0rem;
+    text-align: center;
+    padding-left: 0rem;
+    font-size: 1.5rem;
+    line-height: 30px;
+    font-style: italic;
+  }
+  .nosotros-vision-subtext2{
+    padding: 0rem;
+    text-align: center;
+  }
+
+  /* ====== LOGROS ===== */
+  .nosotros-logros{
+    padding: 0rem;
+    display: flex;
+    flex-flow: column wrap;
+  }
+  .nosotros-logros-subtext{
+    padding: 0rem 0rem;
+  }
+
 }
