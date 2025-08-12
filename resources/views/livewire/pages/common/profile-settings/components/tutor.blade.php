@@ -1,4 +1,4 @@
-<!-- Datos personales -->
++<!-- Datos personales -->
 <div class="tutor-profile-section">
     <form wire:submit.prevent="updateInfo" class="tutor-profile-section row g-4 am-themeform am-themeform_personalinfo">
         <div class="tutor-profile-data-card">

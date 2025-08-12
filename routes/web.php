@@ -90,8 +90,8 @@ Route::get('/verify', function (\Illuminate\Http\Request $request) {
 });
 Route::get('/prueba', function () {
     return '¡Ruta de prueba funcionando!';
-});
-;
+});;
+// web.php
 
 
 //OJO -------> Debe de estar dentro del grupo de rutas para el rol TUTOR
@@ -116,7 +116,7 @@ Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('soci
 Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::get('find-tutors', [SearchController::class, 'findTutors'])->name('find-tutors');
     //Route::get('find-tutors', [SearchController::class, 'findTutors'])->name('find-tutors');
-    
+
     Route::get('/blogs', Blogs::class)->name('blogs');
     Route::get('/blog/{slug}', BlogDetails::class)->name('blog-details');
     Route::view('/subscriptions-page', 'subscriptions-page');
@@ -127,6 +127,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::view('/como-trabajamos', 'vistas.view.pages.trabajamos')->name('como-trabajamos');
     Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');
     Route::get('/tutors/{slug}', [HomeController::class, 'tutor'])->name('tutor');
+    Route::view('/desarrolladores', 'vistas.view.pages.desarrolladores')->name('desarrolladores');
     //Route::get('/tutors', [HomeController::class, 'buscarTutor'])->name('buscar.tutor');
 
     Route::get('/buscar-tutor', BuscarTutor::class)->name('buscar.tutor');
@@ -145,9 +146,9 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
         Route::post('favourite-tutor', [SearchController::class, 'favouriteTutor'])->name('favourite-tutor');
         Route::get('logout', [SiteController::class, 'logout'])->name('logout');
         Route::get('user/identity-confirmation/{id}', [PersonalDetails::class, 'confirmParentVerification'])->name('confirm-identity');
-        
+
         Route::get('google/callback', [SiteController::class, 'getGoogleToken']);
-        
+
         Route::middleware('student')->get('checkout', Checkout::class)->name('checkout');
         Route::middleware('student')->get('thank-you/{id}', ThankYou::class)->name('thank-you');
         Route::middleware('role:tutor')->prefix('tutor')->name('tutor.')->group(function () {
@@ -222,5 +223,3 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
 });
 
 Route::get('/tutor/{id}', [TutorPerfilController::class, 'show'])->name('tutor.perfil');
-
-

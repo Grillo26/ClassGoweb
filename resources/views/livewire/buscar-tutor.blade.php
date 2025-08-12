@@ -60,7 +60,7 @@
             @forelse ($profiles as $profile)
                 <div class="buscartutor-tutor-card">
                     <img 
-                        src="{{ $profile['image'] ? asset('storage/' . $profile['image']) : asset('images/tutors/profile.jpg') }}" 
+                        src="{{ $profile['image'] ? asset('storage/' . $profile['image']) : asset('images/tutors/default.png') }}" 
                         alt="Foto de {{ $profile['full_name'] }}" 
                         class="buscartutor-tutor-img">
                     <div class="buscartutor-tutor-info">
@@ -104,7 +104,10 @@
                     <div class="buscartutor-tutor-actions">
                         @role('student')
                             <button class="buscartutor-tutor-btn buscartutor-tutor-btn-orange">Reservar una sesión</button>
-                        @endrole
+                        @endrole 
+                        <a href="{{ route('tutor', ['slug' => $profile['slug']]) }}#disponibilidad" class="buscartutor-tutor-btn buscartutor-tutor-btn-orange">
+                            Reservar una sesión
+                        </a>
                         <a href="{{ route('tutor', ['slug' => $profile['slug']]) }}" class="buscartutor-tutor-btn buscartutor-tutor-btn-blue">
                             Ver Perfil
                         </a>

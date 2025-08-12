@@ -80,8 +80,14 @@
       <button class="tutor-pay-btn" id="openModalBtn">Pagar y reservar</button>
    </div> --}}
 
+   @role('student')
    <div class="tutor-pay-btn-box">
       <button wire:click="openReservationModal" class="tutor-pay-btn">Pagar y reservar</button>
+   </div>
+   @endrole
+
+   <div class="tutor-pay-btn-box">
+      <p><i>Debes tener una cuenta "Estudiante" para poder reservar</i></p>
    </div>
    <!-- ========================== MODAL RESERVA =========================-->
   @if($showModal)

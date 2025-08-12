@@ -32,7 +32,7 @@
 	<div class="tutor-card-content">
 		<div class="tutor-card-header">
 			<div class="tutor-card-header-left">
-				<img src="{{ $profile->image ? asset('storage/' . $profile->image) : asset('storage/' . $profile->image) }}" alt="">
+				<img src="{{ $profile->image ? asset('storage/' . $profile->image) : asset('images/tutors/default.png') }}" alt="Foto de {{ $profile->first_name ?? '' }}">
 				<h3>{{ $profile->first_name }} {{ $profile->last_name }}</h3>
 				<span class="tutor-verified">✔️</span>
 			</div>
