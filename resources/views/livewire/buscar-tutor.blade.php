@@ -102,12 +102,7 @@
                         </p>
                     </div>
                     <div class="buscartutor-tutor-actions">
-                        @role('student')
-                            <button class="buscartutor-tutor-btn buscartutor-tutor-btn-orange">Reservar una sesión</button>
-                        @endrole 
-                        <a href="{{ route('tutor', ['slug' => $profile['slug']]) }}#disponibilidad" class="buscartutor-tutor-btn buscartutor-tutor-btn-orange">
-                            Reservar una sesión
-                        </a>
+                        
                         <a href="{{ route('tutor', ['slug' => $profile['slug']]) }}" class="buscartutor-tutor-btn buscartutor-tutor-btn-blue">
                             Ver Perfil
                         </a>
