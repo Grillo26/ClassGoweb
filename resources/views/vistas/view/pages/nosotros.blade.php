@@ -12,7 +12,7 @@
                 <div class="nosotros-header-content">
                     <div class="nosotros-header-text">
                         <nav class="breadcrumb">
-                            <a href="{{ route('home') }}" class="breadcrumb-link">Inicio</a> / <span class="breadcrumb-current">Nosotros</span>
+                            <a href="{{ route('/') }}" class="breadcrumb-link">Inicio</a> / <span class="breadcrumb-current">Nosotros</span>
                         </nav>
                         <h1>¿Quiénes Somos?</h1>
                         <p>
