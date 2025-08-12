@@ -325,7 +325,135 @@
     padding: 0 1rem;
 }
 
-/* Media Queries */
+/* ===================== icono perfil y confugación ==================*/
+/* Contenedor principal del menú */
+.user-menu {
+  position: relative;
+  display: inline-block;
+}
+
+/* El botón que contiene la foto de perfil */
+.user-menu__trigger {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%; /* Asegura que el foco se vea circular */
+}
+
+/* El avatar (foto de perfil) */
+.user-menu__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover; /* Evita que la imagen se deforme */
+  display: block; /* Elimina espacios extra */
+  border: 2px solid transparent; /* Borde opcional para hover/focus */
+  transition: border-color 0.2s;
+}
+
+.user-menu__trigger:hover .user-menu__avatar {
+    border-color: #ddd; /* Borde sutil al pasar el mouse */
+}
+
+
+/* El menú desplegable */
+.user-menu__dropdown {
+  display: none; /* Oculto por defecto */
+  position: absolute;
+  top: calc(100% + 10px); /* 100% del alto del botón + 10px de espacio */
+  right: 0;
+  width: 260px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f0f0f0;
+  padding: 8px 0;
+  z-index: 1000;
+  overflow: hidden; /* Para que los bordes redondeados se apliquen a los hijos */
+}
+
+/* Clase que se añade con JS para mostrar el menú */
+.user-menu.is-open .user-menu__dropdown {
+  display: block;
+}
+
+/* Cabecera del menú (con la foto, nombre y email) */
+.user-menu__header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 8px;
+}
+
+.user-menu__header .user-menu__avatar {
+    width: 48px;
+    height: 48px;
+}
+
+.user-menu__details {
+  margin-left: 12px;
+  line-height: 1.4;
+}
+
+.user-menu__name {
+  font-weight: 600;
+  color: #1a1a1a;
+  display: block;
+}
+
+.user-menu__email {
+  font-size: 0.80rem; /* 14px */
+  color: #666;
+  display: block;
+  word-break: break-word
+}
+
+/* Lista de navegación y sus elementos */
+.user-menu__nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-menu__link {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  text-decoration: none;
+  font-size: 0.85rem; /* ~15px */
+  color: #333;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.user-menu__link:hover {
+  background-color: #f7f7f7;
+}
+
+.user-menu__icon {
+    margin-right: 12px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555; /* Color por defecto para los íconos */
+}
+
+/* Estilo especial para el botón de desconectar */
+.user-menu__item--logout .user-menu__link,
+.user-menu__item--logout .user-menu__icon {
+  color: #d9534f; /* Color rojo */
+  font-weight: 500;
+}
+
+.user-menu__item--logout .user-menu__link:hover {
+    background-color: #fdeeee; /* Un fondo rojizo muy claro al pasar el mouse */
+}
+
+
+/* ========================== Media Queries ===================== */
 
 /* Tablet */
 @media (max-width: 1024px) {
@@ -391,7 +519,7 @@
     }
 }
 
-/* Móvil */
+/* ========= Móvil ========== */
 @media (max-width: 480px) {
     .navbar {
         border-radius: 20px;
@@ -568,5 +696,9 @@
   .navbar-left a img{
     padding-left: 4rem;
     width: 200px;
+  }
+
+  .user-menu{
+    display: none;
   }
 }

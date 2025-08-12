@@ -33,15 +33,6 @@
 			<span class="tutor-card-tag">{{ $materia }}</span> @endforeach
 			<span class="tutor-card-tag tutor-card-mas" style="display:none;">+más</span>
 		</div> --}}
-
-		<!--SOLO MOBILE-->
-		<div class="mobile">
-			<div class="tutor-card-rating">
-				<span class="star">⭐</span>
-					<span>{{ $profile->avg_rating}}</span>
-					<span class="rating-count">( {{ $profile->total_reviews}} reseñas)</span>
-			</div>
-		</div>
 		<div class="tutor-card-actions">
 			<a href="{{ route('tutor', parameters: ['slug' => $profile->slug]) }}" ><button class="btn-profile">Ver Perfil</button></a>
 

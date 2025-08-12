@@ -67,27 +67,44 @@
                         <h3 class="buscartutor-tutor-name">{{ $profile['full_name'] }}</h3>
                         <div class="buscartutor-tutor-meta">
                             <span>⭐ {{ $profile['avg_rating'] }}/5.0 ({{ $profile['total_reviews'] }} reseñas)</span>
-                            <div class="desktop-only">
-                                <span>•</span>
-                                <span>1 Tutorías
-                                </span>
-                                <span>•</span>
-                            </div>
-                            
-                            <div class="mobile-only">
-                                <span>•</span>
-                                <span>1 Tutorías
-                                </span>
-                                <span>•</span>
-                            </div>
-                            <span>Idioma: {{ $profile['native_language'] ?? 'N/A' }}</span>
+                                <div class="tutor-subjects-display">
+                                    
+                                    {{-- CASO 1: Si la búsqueda coincidió con alguna materia, la mostramos --}}
+                                    @if (!empty($profile['matched_subjects']))
+                                        
+                                        <span class="subjects-matched">
+                                            <span>•</span> <strong>{{ implode(', ', $profile['matched_subjects']) }}</strong>
+                                        </span>
+
+                                    {{-- CASO 2: Si no hubo coincidencias (o no hay búsqueda), mostramos el resumen --}}
+                                    @else
+                                        @php
+                                            // Usamos la colección de Laravel para un manejo más fácil
+                                            $subjects = collect($profile['all_subjects']);
+                                            $firstTwo = $subjects->take(2)->implode(', ');
+                                            $moreCount = $subjects->count() > 2 ? $subjects->count() - 2 : 0;
+                                        @endphp
+                                        
+                                        <span class="subjects-summary">
+                                            <span>• </span>{{ $firstTwo }}
+                                            @if ($moreCount > 0)
+                                                <span class="more-subjects">+{{ $moreCount }} más</span>
+                                            @endif
+                                        </span>
+
+                                    @endif
+
+                                </div>
+                            {{-- <span>Idioma: {{ $profile['native_language'] ?? 'N/A' }}</span> --}}
                         </div>
                         <p class="buscartutor-tutor-desc">
                             {{ $profile['description'] }}
                         </p>
                     </div>
                     <div class="buscartutor-tutor-actions">
-                        <button class="buscartutor-tutor-btn buscartutor-tutor-btn-orange">Reservar una sesión</button>
+                        @role('student')
+                            <button class="buscartutor-tutor-btn buscartutor-tutor-btn-orange">Reservar una sesión</button>
+                        @endrole
                         <a href="{{ route('tutor', ['slug' => $profile['slug']]) }}" class="buscartutor-tutor-btn buscartutor-tutor-btn-blue">
                             Ver Perfil
                         </a>

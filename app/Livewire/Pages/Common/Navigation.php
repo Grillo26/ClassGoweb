@@ -130,8 +130,8 @@ class Navigation extends Component
 
             [ 
                 'studentSortOrder' => 4,
-                'route' => 'find-tutors',
-                'onActiveRoute' => ['find-tutors'],
+                'route' => 'buscar.tutor',
+                'onActiveRoute' => ['buscar.tutor'],
                 'title' => __('sidebar.find_tutors'),
                 'icon'  => '<i class="am-icon-user-02"></i>',
                 'accessibility' => ['student'],
