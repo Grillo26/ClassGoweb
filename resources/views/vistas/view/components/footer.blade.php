@@ -33,7 +33,7 @@
                 <div class="box">
                     <h1>Opten la App</h1>
                     <p>¡Lleva tu educación a todas partes!</p>
-                    <a href="https://play.google.com/store/apps/details?id=com.neurasoft.classgo"><img src="{{ asset('images/googleplay.png')}}" alt="" style=" width: 150px; padding-top: 1rem;"></a>
+                    <a href="https://play.google.com/store/apps/details?id=com.neurasoft.classgo" target="_blank"><img src="{{ asset('images/googleplay.png')}}" alt="" style=" width: 150px; padding-top: 1rem;"></a>
                 </div>
                 <div class="box">
                     <a href="{{ route('nosotros')}}"><h1>Nosotros</h1></a>
@@ -49,10 +49,10 @@
 
         </div>
         <div class="container-redes">
-            <a href="https://www.tiktok.com/@classgoapp"><div class="circle-icon"><i class="fa-brands fa-tiktok fa-2x"></i></div></a>
-            <a href="https://www.facebook.com/profile.php?id=61578383078347"><div class="circle-icon"><i class="fa-brands fa-facebook-f"></i></div></a>
-            <a href="https://www.instagram.com/classgo_app/"><div class="circle-icon"><i class="fa-brands fa-instagram"></i></div></a>
-            <a href="https://wa.link/yiegi5"><div class="circle-icon"><i class="fa-brands fa-whatsapp"></i></div></a>
+            <a href="https://www.tiktok.com/@classgoapp" target="_blank"><div class="circle-icon"><i class="fa-brands fa-tiktok fa-2x"></i></div></a>
+            <a href="https://www.facebook.com/profile.php?id=61578383078347" target="_blank"><div class="circle-icon"><i class="fa-brands fa-facebook-f"></i></div></a>
+            <a href="https://www.instagram.com/classgo_app/" target="_blank"><div class="circle-icon"><i class="fa-brands fa-instagram"></i></div></a>
+            <a href="https://wa.link/yiegi5" target="_blank"><div class="circle-icon"><i class="fa-brands fa-whatsapp"></i></div></a>
         </div>
         <hr>
         <p class="derechos-reservados">© 2025 classgobol. Todos los derechos reservados.</p>

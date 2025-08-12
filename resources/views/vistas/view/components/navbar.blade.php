@@ -55,7 +55,7 @@
 							<div class="user-menu__header">
 								<img class="user-menu__avatar" src="{{ Auth::user()->img ?? asset('images/default.png') }}" >
 								<div class="user-menu__details">
-									<span class="user-menu__name">{{ Auth::user()->profile->first_name}}</span>
+									<span class="user-menu__name">Hola {{ Auth::user()->profile->first_name}}!</span>
 									<span class="user-menu__email">{{ Auth::user()->email }}</span>
 								</div>
 							</div>
