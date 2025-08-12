@@ -203,7 +203,8 @@ class Reserva extends Component
                 $emailService = app(MailService::class);
                 $emailService->sendAdminNuevaTutoria(
                     $tutor?->profile?->full_name,
-                    $this->selectedSubject
+                    $this->selectedSubject,
+                    $fechaString
                 );
             } catch (\Exception $emailError) {
                 Log::warning('Error enviando email de nueva tutoría', [

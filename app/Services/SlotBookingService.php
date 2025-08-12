@@ -55,22 +55,15 @@ class SlotBookingService implements interfaces\ISlotBookingService
 
     public function crearReserva( $studentId, $tutorId, $subjectId,$fecha)
     {
-        // Verificar si el slot ya está reservado
-        /* $existingBooking = SlotBooking::where('user_subject_slot_id', $slotId)->first();
-        if ($existingBooking) {
-            throw new \Exception('El slot ya está reservado.');
-        } */
-
         
-       /*  $imagenid =new UserSubjectSlot();
-        $imagenid->start_time = $fecha;
-        $imagenid->end_time = now()->addHours(1);
-        $imagenid->user_id = $tutorId;
-        $imagenid->subject_id = $subjectId;
-        $imagenid->save(); */
+
+
+
+
 
         $startTime = \Carbon\Carbon::parse($fecha); 
         $endTime = $startTime->copy()->addMinutes(20);
+        
 
         // Crear la reserva
         $booking = new SlotBooking();
@@ -83,8 +76,7 @@ class SlotBookingService implements interfaces\ISlotBookingService
         $booking->end_time = $endTime->format('Y-m-d H:i:s');     // Convertir de vuelta a string para la BD
         $booking->booked_at = now();
         $booking->user_subject_slot_id = null; // Asignar el ID del slot creado
-       // $booking->payment_receipt = $paymentReceiptPath; // Ruta del recibo de pago
-        $booking->status = 1; // Estado inicial
+        $booking->status = 2; // Estado inicial
         $booking->save();
         return $booking;
     }

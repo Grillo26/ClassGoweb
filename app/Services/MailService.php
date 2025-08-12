@@ -121,16 +121,16 @@ class MailService
 
 
 
-    public function sendAdminNuevaTutoria($tutor, $materia)
+    public function sendAdminNuevaTutoria($tutor, $materia,$fecha)
     {
         $studiante = Auth::user();
         $nombreEstudiante = $studiante->profile->full_name;
         $adminEmail = env('MAIL_ADMIN');
         $materia = Materia::find($materia);
-        $fechaHora = now()->format('d/m/Y H:i');
+       // $fechaHora = $fecha->format('d/m/Y H:i');
         Mail::to($adminEmail)->send(new AdminNuevaTutoriaMail(
             $nombreEstudiante,
-            $fechaHora,
+            $fecha,
             $tutor,
             $materia->name
         ));
