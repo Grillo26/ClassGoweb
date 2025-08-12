@@ -40,7 +40,7 @@
                             if ($isSelected) $dayClasses .= ' selected';
                             if ($isPast) $dayClasses .= ' past';
                         @endphp
-                        <div wire:click="selectDay({{ $day }})" class="{{ $dayClasses }}">{{ $day }}</div>
+                        <div wire:click="selectDay({{ $day }},{{ $currentDate->month }})" class="{{ $dayClasses }}">{{ $day }}</div>
                     @endfor
                 </div>
             </div>
@@ -60,6 +60,7 @@
                                 $slotClasses = 'tutor-time-slot-btn';
                                 if ($isOccupied) $slotClasses .= ' occupied';
                                 if ($isTimeSelected) $slotClasses .= ' selected';
+                                
                             @endphp
                             <button wire:click="selectTime('{{ $slot['time'] }}')" class="{{ $slotClasses }}" @if($isOccupied) disabled @endif>
                                 {{ $slot['time'] }}

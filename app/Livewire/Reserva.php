@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Log;
 use App\Services\MailService;
 
 
+
 class Reserva extends Component
 {
     use WithFileUploads;
@@ -71,11 +72,13 @@ class Reserva extends Component
         $this->timeSlotsByDay = $this->processRealSlotData($hoarioslibres, $currentYear, $currentMonth);
 
 
+
         // Determina qué días tienen al menos una hora libre para marcarlos en naranja
         $this->daysWithAvailability = collect($this->timeSlotsByDay)
             ->filter(fn($slots) => collect($slots)->where('status', 'free')->isNotEmpty())
             ->keys()
             ->toArray();
+
     }
 
 
@@ -99,14 +102,37 @@ class Reserva extends Component
     /**
      * Se ejecuta cuando el usuario hace clic en un día.
      */
-    public function selectDay(int $day)
+    public function selectDay(int $day, string $month)
     {
+        $fecha_actual = now();
         if ($this->isPastDay($day))
             return;
-
         $this->selectedDay = $day;
         $this->selectedTime = null; // Resetea la hora al cambiar de día
-        $this->availableTimeSlots = $this->timeSlotsByDay[$day] ?? [];
+
+
+
+        if ($month == $fecha_actual->month && $day == $fecha_actual->day) {
+            $slotsForToday = $this->timeSlotsByDay[$day] ?? [];
+             $slotfiltrados = [];      
+             $horaActual = $fecha_actual->format('H:i');
+              
+        
+             for ($i = 0; $i < count($slotsForToday); $i++) {
+                 if($slotsForToday[$i]['time'] > $horaActual ) {
+                     
+                    $slotfiltrados[] = $slotsForToday[$i];
+                  }
+              }
+              //dd($slotfiltrados);
+              $this->availableTimeSlots = $slotfiltrados;
+        } else {
+            $this->availableTimeSlots = $this->timeSlotsByDay[$day] ?? [];
+
+            
+        }
+
+        //$this->availableTimeSlots = $this->timeSlotsByDay[$day] ?? [];
     }
 
     /**
@@ -238,7 +264,7 @@ class Reserva extends Component
 
     private function resetSelection()
     {
-        $this->reset(['selectedDay', 'selectedTime', 'availableTimeSlots']);
+        $this->reset(['selectedDay', 'selectedTime', 'availableTimeSlots', 'paymentReceipt']);
     }
 
 
@@ -349,38 +375,6 @@ class Reserva extends Component
         return $processedData;
     }
 
-
-
-
-
-    /**
-   * 
-
-    $startimes[]=[
-                      $startTime
-                   ];
-
-
-
-    if ($isBooked) {
-                      $slots[]=[$slot];
-                      $datekeys[]=$currentTime;
-                      $debugOcupados[] = [
-                          'datetime_key' => $startTime,
-                          'day' => $day,
-                          'time' => $timeString,
-                          'slot_id' => $slot->id
-                      ];
-                  } else {
-                      $debugLibres[] = [
-                          'datetime_key' => $datetimeKey,
-                          'day' => $day,
-                          'time' => $timeString,
-                          'slot_id' => $slot->id
-                      ];
-                  } 
-     * 
-     *  */
 
 
 

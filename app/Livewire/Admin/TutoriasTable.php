@@ -333,9 +333,9 @@ class TutoriasTable extends Component
             }
             
             // Usar el servicio centralizado para manejar notificaciones
-            $notificationService = new BookingNotificationService();
+            /* $notificationService = new BookingNotificationService();
             $notificationService->handleStatusChangeNotification($tutoria, $oldStatus, $nuevoStatus);
-            
+             */
             // Si se creó un enlace de Zoom, guardar la tutoría nuevamente
             if ($tutoria->meeting_link) {
                 $tutoria->save();
