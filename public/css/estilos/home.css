@@ -115,6 +115,10 @@ body{
 
 }
 
+.buscador-home{
+  padding: 1rem 0rem;
+}
+
     /* 2. Icono de Lupa (.icon-search) */
     /* Lo posicionamos de forma absoluta DENTRO del .search-box */
     .search-box .icon-search {
@@ -241,7 +245,7 @@ body{
   gap: 1rem; /* espacio entre botones */
   flex-wrap: wrap; /* para que se acomoden en móviles */
   justify-content: left; /* o 'flex-start' si los quieres alineados a la izquierda */
-  margin-top: 1.7rem;
+  margin-top: 1.2rem;
 }
 
 .hero-buttons button {
@@ -418,29 +422,120 @@ body{
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
+
+/* ===== VIDEO Y BOTONES ====*/
 .tutor-card .tutor-card-img {
-  height: 140px;
-  background-position: center;
-  width: 100%;
+    height: 140px;
+    background-position: center;
+    width: 100%;
+    /* 1. Importante: Establecer posición relativa para que los hijos absolutos se posicionen respecto a este contenedor */
+    position: relative;
+    border-radius: 12px 12px 0 0; /* Asegurar que el contenedor tenga los bordes redondeados */
+    overflow: hidden; /* Ocultar cualquier contenido que se salga de los bordes redondeados */
 }
 
-.tutor-card .tutor-card-img video{
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 12px 12px 0 0;
-  display: block;
-  margin-bottom: 1rem;
+.tutor-card .tutor-card-img video {
+    width: 100%;
+    height: 100%; /* Cambiar de 140px a 100% para que se ajuste al padre */
+    object-fit: cover;
+    display: block;
+    /* Eliminamos el margin-bottom para que no deje espacio */
+    margin-bottom: 0;
+}
 
+.tutor-card .tutor-card-img .tutor-banner-overlay {
+    /* 2. Importante: Posicionar la superposición de forma absoluta sobre el video */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 3. Estilo del overlay para hacerlo visible */
+    background: rgba(0, 0, 0, 0.4); /* Un fondo semi-transparente oscuro */
+    cursor: pointer;
+    z-index: 10; /* Un z-index alto para asegurar que esté encima del video */
+}
+
+/* Estilos para el botón de play */
+.tutor-card .tutor-card-img .tutor-banner-play {
+    background-color: rgba(255, 255, 255, 0.6);
+    border: none;
+    border-radius: 50%;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Hover en el botón de play */
+.tutor-card .tutor-card-img .tutor-banner-play:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: scale(1.1);
+}
+
+/* Estilos para el ícono de play (SVG) */
+.tutor-card .tutor-card-img .tutor-banner-play-icon {
+    width: 30px;
+    height: 30px;
+    fill: #000;
+    stroke: #000;
+}
+
+/* Estilos para el control de volumen */
+.tutor-card .tutor-card-img .tutor-banner-volume {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 100px;
+}
+
+/* Estilos para el contenedor de controles (pausa y volumen) */
+.tutor-video-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
+    border-radius: 50px;
+    z-index: 15; /* Asegúrate de que esté por encima del overlay inicial */
+}
+
+/* Estilos para los botones de control (pausa, etc.) */
+.tutor-control-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.tutor-control-icon {
+    width: 20px;
+    height: 20px;
+    stroke: #fff;
+    fill: #fff;
+}
+
+/* Estilos para el slider de volumen */
+.tutor-control-volume {
+    width: 80px;
+    margin-left: 10px;
+    /* Estilos para personalizar el slider si usas navegadores modernos */
 }
 
 .mobile{
   display: none;
 }
-
-
 .tutor-card-content { /* CONTENIDO DE LA CARD*/
-  padding: 0.5rem 1.25rem 0.5rem 1.25rem;
+  padding: 0rem 1.25rem 0.5rem 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -449,12 +544,20 @@ body{
 .tutor-card-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+
 }
 .tutor-card-header-left {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding-top: 0.7rem;
+}
+.tutor-card-header-left img{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 .tutor-card-header-left h3 {
   font-size: 1.25rem;
@@ -556,7 +659,7 @@ i.fa-solid.fa-book.icon::before{
 }
 
 .tutor-card .tutor-card-actions {
-  margin-top: 1.25rem;
+  margin-top: 0rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
@@ -659,20 +762,18 @@ i.fa-solid.fa-book.icon::before{
     position: absolute;
     top: 0;
     height: 100%;
-    width: 75px; /* Ancho del degradado. ¡Puedes ajustarlo! */
+    width: 50px; /* Ancho del degradado. ¡Puedes ajustarlo! */
     z-index: 2;
     pointer-events: none; 
 }
 
 .carousel-container::before {
     left: 0;
-    /* IMPORTANTE: Si tu fondo no es blanco, cámbialo aquí */
     background: linear-gradient(to right, var(--panel-background), transparent);
 }
 
 .carousel-container::after {
     right: 0;
-    /* IMPORTANTE: Si tu fondo no es blanco, cámbialo aquí */
     background: linear-gradient(to left, var(--panel-background), transparent);
 }
 
@@ -1568,10 +1669,11 @@ i.fa-solid.fa-book.icon::before{
     background: red;
   }
   .tutors-container h1{
-    line-height: 1.9rem;
+    line-height: 2.3rem;
+    padding-top: 1rem;
   }
   .tutors-container p{
-    padding: 0rem 2rem;
+    padding: 1rem 2rem;
   }
 
   #prev-btn, #next-btn {
@@ -1585,6 +1687,7 @@ i.fa-solid.fa-book.icon::before{
     /* Muy importante: anular la transformación de JS */
     transform: none !important; 
     gap: 20px;
+    padding-top: 0rem;
   }
 
   /* 3. Hacer que cada tarjeta ocupe todo el ancho */
@@ -1602,7 +1705,7 @@ i.fa-solid.fa-book.icon::before{
     flex: 0 0 350px;
     max-width: 330px;
     min-width: 270px;
-    height: 410px;
+    height: 430px;
     margin: 0;
     box-sizing: border-box;
     box-shadow: 0 8px 8px rgba(0,0,0,0.1);
@@ -1633,7 +1736,18 @@ i.fa-solid.fa-book.icon::before{
 
   }
 
+  .tutor-card-header{
+    padding-top: 1rem;
+    display: flex;
+    justify-content: center;
+  }
 
+  .tutor-card-price .price{
+    padding: 0rem 0rem;
+  }
+  .tutor-card-price .price-desc{
+    padding: 0rem 0rem;
+  }
 
 
   
