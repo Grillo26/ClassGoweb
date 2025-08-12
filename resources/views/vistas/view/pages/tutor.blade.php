@@ -43,9 +43,8 @@
                             <img src="{{ asset('storage/' . $tutor->profile->image) }}" alt="Foto de {{ $tutor->profile->first_name ?? '' }}" class="tutor-profile-img" style="background-color: white">
                         @else
                             <img src="{{ asset('images/tutors/default.png') }}" alt="Foto de {{ $tutor->profile->first_name ?? '' }}" class="tutor-profile-img" style="background-color: white">
-                        @endif
+                        @endif  
                         <!-------------------------------------------------------------->
-
                         <div class="tutor-profile-info">
                             <h1 class="tutor-profile-name">{{ $tutor->profile->first_name ?? '' }} {{ $tutor->profile->last_name ?? '' }}</h1>
                             <div class="tutor-profile-meta">
@@ -76,11 +75,8 @@
                 <div class="tutor-tabs-card">
                     <div class="tutor-tabs-nav">
                         <nav class="tutor-tabs-list" aria-label="Tabs">
-                            <button onclick="changeTab(event, 'introduccion')" class="tutor-tab-btn active">Tutoría</button>
-                            {{-- ===== SOLO ROL ESTUDIANTE ===== --}}
-                            @role('student')
-                                <button onclick="changeTab(event, 'disponibilidad')" class="tutor-tab-btn">Disponibilidad</button>
-                            @endrole
+                            <button onclick="changeTab(event, 'introduccion')" class="tutor-tab-btn active">Tutoría</button>                            
+                            <button onclick="changeTab(event, 'disponibilidad')" class="tutor-tab-btn">Disponibilidad</button>
                             <button onclick="changeTab(event, 'curriculum')" class="tutor-tab-btn">Aspectos Destacados</button>
                             <button onclick="changeTab(event, 'resenas')" class="tutor-tab-btn">Reseñas</button>
                         </nav>
@@ -233,14 +229,17 @@
                     </div>
                     <div class="tutor-actions-btns">
                         @role('student')
-                        <button class="tutor-btn tutor-btn-now">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-btn-icon"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                            <span>Tutoría ahora</span>
-                        </button>
-                        <button class="tutor-btn tutor-btn-reservar" id="btn-go-disponibilidad">
+                        <button class="tutor-btn tutor-btn-now" id="btn-go-disponibilidad">
                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-btn-icon"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
                             <span>Reservar</span>
                         </button>
+                        @elserole('tutor')
+                        <a href="{{ route('tutor.dashboard')}}">
+                            <button class="tutor-btn tutor-btn-now">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                            <span>Mi Panel</span>
+                            </button>
+                        </a>
                         @endrole
                         <button class="tutor-btn tutor-btn-share" id="btn-share-profile">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tutor-btn-icon"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line></svg>

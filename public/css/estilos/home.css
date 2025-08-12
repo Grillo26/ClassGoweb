@@ -658,11 +658,14 @@ i.fa-solid.fa-book.icon::before{
   border-radius: 999px;
 }
 
-.tutor-card .tutor-card-actions {
+.tutor-card-actions {
+  display: flex;
+  justify-content: center;
   margin-top: 0rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
+
 }
 .tutor-card .tutor-card-actions button {
   width: 100%;

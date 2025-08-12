@@ -33,7 +33,7 @@
             </div>
 
 
-            <!--Botones-->
+            <!--Botones
             <div class="hero-buttons">
                 <button>
                     <i class="fa-solid fa-bolt-lightning"></i>
@@ -41,7 +41,7 @@
                 </button>
                 <a href=" {{ route('buscar.tutor')}}"><button><i class="fa-solid fa-calendar"></i>Agendar Tutoría</button></a>
                 <a href=" {{ route('buscar.tutor')}}"><button><i class="fa-solid fa-compass"></i>Explorar Tutores</button></a>
-            </div>
+            </div>-->
         </div>
 
         <!-- Columna derecha: imagen -->

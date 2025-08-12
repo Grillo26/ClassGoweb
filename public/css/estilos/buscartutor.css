@@ -216,6 +216,8 @@
 .buscartutor-tutor-btn-orange {
     background: var(--terciary-color2);
     color: #fff;
+    display: flex;
+    justify-content: center;
 }
 .buscartutor-tutor-btn-blue {
     background: var(--secundary-color);
