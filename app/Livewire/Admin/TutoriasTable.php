@@ -9,7 +9,7 @@ use App\Services\BookingNotificationService;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Log;
-use App\Services\ZoomService;
+
 use App\Mail\SessionBookingMail;
 use Illuminate\Support\Facades\Mail;
 
@@ -134,30 +134,113 @@ class TutoriasTable extends Component
             ];
             Log::info('Valor recibido en modalStatus:', ['modalStatus' => $this->modalStatus]);
             $nuevoStatus = $this->modalStatus;
+            Log::info('TutoriasTable: Procesando modalStatus', [
+                'modalStatus' => $this->modalStatus,
+                'is_numeric' => is_numeric($nuevoStatus),
+                'lowercase' => strtolower($nuevoStatus),
+                'mapped_value' => $estados[strtolower($nuevoStatus)] ?? 'NOT_FOUND'
+            ]);
             if (!is_numeric($nuevoStatus)) {
+                $estadoAnterior = $nuevoStatus;
                 $nuevoStatus = $estados[strtolower($nuevoStatus)] ?? 2;
+                Log::info('TutoriasTable: Estado mapeado', [
+                    'original' => $this->modalStatus,
+                    'estado_anterior' => $estadoAnterior,
+                    'mapped' => $nuevoStatus,
+                    'es_aceptado' => strtolower($estadoAnterior) === 'aceptado',
+                    'valor_esperado' => $estados['aceptado']
+                ]);
             }
-            Log::info('Valor de status que se guardará:', ['nuevoStatus' => $nuevoStatus]);
+            // Guardar el estado anterior ANTES de cambiarlo
+            $oldStatus = $tutoria->status;
+            
+            Log::info('TutoriasTable: Estados de la tutoría', [
+                'oldStatus' => $oldStatus,
+                'newStatus' => $nuevoStatus,
+                'oldStatus_type' => gettype($oldStatus),
+                'newStatus_type' => gettype($nuevoStatus)
+            ]);
+            
             $tutoria->status = $nuevoStatus;
-            // Si el nuevo estado es 'Aceptada' (3), crear reunión Zoom y enviar correos
+            
+            // Guardar el cambio de estado inmediatamente
+            $tutoria->save();
+            
+            // Debug: Verificar si entra al bloque de Zoom
+            Log::info('TutoriasTable: Verificando si debe crear reunión de Zoom', [
+                'nuevoStatus' => $nuevoStatus,
+                'nuevoStatus_type' => gettype($nuevoStatus),
+                'should_create_meeting' => ($nuevoStatus == 1),
+                'nuevoStatus_equals_1' => ($nuevoStatus === 1),
+                'nuevoStatus_equals_string_1' => ($nuevoStatus === '1')
+            ]);
+            
+            // Si el nuevo estado es 'Aceptada' (1), crear reunión Zoom y enviar correos
             if ($nuevoStatus == 1) {
+                Log::info('TutoriasTable: ✅ CONDICIÓN CUMPLIDA - Entrando al bloque de creación de reunión de Zoom');
+                Log::info('TutoriasTable: Entrando al bloque de creación de reunión de Zoom');
 
                 $googlemeetservice = new GoogleMeetService;
-                $zoomService = new ZoomService();
-                $startTime = $tutoria->start_time ? date('c', strtotime($tutoria->start_time)) : null;
-                $duration = null;
-                if ($tutoria->start_time && $tutoria->end_time) {
-                    $start = strtotime($tutoria->start_time);
-                    $end = strtotime($tutoria->end_time);
-                    $duration = 20;
+                
+                // Debug: Verificar configuraciones de Zoom desde .env
+                Log::info('TutoriasTable: Verificando configuraciones de Zoom desde .env', [
+                    'zoom_account_id' => env('ZOOM_ACCOUNT_ID') ? 'CONFIGURED' : 'EMPTY',
+                    'zoom_client_id' => env('ZOOM_CLIENT_ID') ? 'CONFIGURED' : 'EMPTY',
+                    'zoom_client_secret' => env('ZOOM_CLIENT_SECRET') ? 'CONFIGURED' : 'EMPTY',
+                    'zoom_account_id_value' => env('ZOOM_ACCOUNT_ID'),
+                    'zoom_client_id_value' => env('ZOOM_CLIENT_ID'),
+                    'zoom_client_secret_value' => env('ZOOM_CLIENT_SECRET') ? '***HIDDEN***' : 'EMPTY'
+                ]);
+                
+                // Crear instancia de Zoom driver directamente con credenciales del .env
+                $meetingService = null;
+                
+                // Debug: Verificar valores de las credenciales
+                $zoomAccountId = env('ZOOM_ACCOUNT_ID');
+                $zoomClientId = env('ZOOM_CLIENT_ID'); // Usar ZOOM_CLIENT_ID en lugar de ZOOM_CLIENT_KEY
+                $zoomClientSecret = env('ZOOM_CLIENT_SECRET');
+                
+                Log::info('TutoriasTable: Verificando credenciales de Zoom', [
+                    'account_id_exists' => !empty($zoomAccountId),
+                    'client_id_exists' => !empty($zoomClientId),
+                    'client_secret_exists' => !empty($zoomClientSecret),
+                    'account_id_length' => strlen($zoomAccountId),
+                    'client_id_length' => strlen($zoomClientId),
+                    'client_secret_length' => strlen($zoomClientSecret)
+                ]);
+                
+                if ($zoomAccountId && $zoomClientId && $zoomClientSecret) {
+                    try {
+                        Log::info('TutoriasTable: Creando instancia de Zoom driver');
+                        $meetingService = new \Modules\MeetFusion\Drivers\Zoom();
+                        
+                        Log::info('TutoriasTable: Configurando credenciales en el driver');
+                        $meetingService->setKeys([
+                            'account_id' => $zoomAccountId,
+                            'client_id' => $zoomClientId,
+                            'client_secret' => $zoomClientSecret,
+                        ]);
+                        
+                        Log::info('TutoriasTable: Driver de Zoom configurado exitosamente');
+                    } catch (\Exception $e) {
+                        Log::error('TutoriasTable: Error al configurar servicio de Zoom', [
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString()
+                        ]);
+                        $meetingService = null;
+                    }
+                } else {
+                    Log::warning('TutoriasTable: Credenciales de Zoom no encontradas en .env');
                 }
+                // Formatear la fecha correctamente para Zoom (ISO 8601)
+                $startTime = $tutoria->start_time ? \Carbon\Carbon::parse($tutoria->start_time)->toIso8601String() : null;
+                
                 $meetingData = [
-                    'host_email' => $tutoria->tutor?->email,
                     'topic' => 'Tutoría',
                     'agenda' => 'Sesión de tutoría',
-                    'duration' => '20',
-                    'timezone' => 'America/La_Paz',
                     'start_time' => $startTime,
+                    'timezone' => 'America/La_Paz',
+                    'duration' => 20, // Duración en minutos
                 ];
 
 
@@ -169,13 +252,61 @@ class TutoriasTable extends Component
                     'timezone' => 'America/La_Paz',
                 ];
 
-                $zoomResponse = $zoomService->createMeeting($meetingData);
-                $joinUrl = $zoomResponse['data']['join_url'];
-                //dd($joinUrl);
-                //$result = $googlemeetservice->createMeeting($meetingDatameet);
-
-                //dd($result); //
-                $tutoria->meeting_link = $joinUrl;
+                $joinUrl = null; // Inicializar la variable
+                
+                if ($meetingService) {
+                    Log::info('TutoriasTable: Servicio de reuniones obtenido, creando reunión', [
+                        'meeting_data' => $meetingData,
+                        'tutoria_id' => $tutoria->id,
+                        'start_time' => $startTime,
+                        'start_time_format' => $startTime ? date('Y-m-d H:i:s', strtotime($startTime)) : null
+                    ]);
+                    
+                    try {
+                        Log::info('TutoriasTable: Llamando a createMeeting en el driver de Zoom');
+                        $zoomResponse = $meetingService->createMeeting($meetingData);
+                        Log::info('TutoriasTable: Respuesta del servicio de reuniones', [
+                            'response' => $zoomResponse,
+                            'status' => $zoomResponse['status'] ?? 'N/A',
+                            'has_data' => isset($zoomResponse['data']),
+                            'has_link' => isset($zoomResponse['data']['link'])
+                        ]);
+                    } catch (\Exception $e) {
+                        Log::error('TutoriasTable: Error al crear reunión', [
+                            'error' => $e->getMessage(),
+                            'error_class' => get_class($e),
+                            'trace' => $e->getTraceAsString(),
+                            'tutoria_id' => $tutoria->id,
+                            'meeting_data' => $meetingData
+                        ]);
+                        $zoomResponse = [
+                            'status' => false,
+                            'message' => 'Error al crear reunión: ' . $e->getMessage()
+                        ];
+                    }
+                    
+                    if ($zoomResponse['status']) {
+                        // MeetFusion devuelve el enlace en ['data']['link']
+                        $joinUrl = $zoomResponse['data']['link'] ?? null;
+                        $tutoria->meeting_link = $joinUrl;
+                        Log::info('TutoriasTable: Enlace de reunión creado exitosamente', [
+                            'join_url' => $joinUrl,
+                            'meeting_id' => $zoomResponse['data']['meeting_id'] ?? 'N/A'
+                        ]);
+                    } else {
+                        Log::warning('TutoriasTable: No se pudo crear reunión', [
+                            'error' => $zoomResponse['message'] ?? 'Error desconocido',
+                            'booking_id' => $tutoria->id,
+                            'response' => $zoomResponse
+                        ]);
+                        $tutoria->meeting_link = null;
+                    }
+                } else {
+                    Log::warning('TutoriasTable: Servicio de reuniones no configurado', [
+                        'booking_id' => $tutoria->id
+                    ]);
+                    $tutoria->meeting_link = null;
+                }
                 // dd($result);
                 $studentProfile = $tutoria->student->profile;
                 $studentName = $studentProfile ? ($studentProfile->first_name . ' ' . $studentProfile->last_name) : '';
@@ -188,15 +319,31 @@ class TutoriasTable extends Component
                 $tutorName = $tutorProfile ? ($tutorProfile->first_name . ' ' . $tutorProfile->last_name) : '';
                 $tutorUser = $tutoria->tutor?->user;
 
+                Log::info('TutoriasTable: Finalizando bloque de creación de reunión de Zoom', [
+                    'meeting_link_created' => !empty($tutoria->meeting_link),
+                    'meeting_link' => $tutoria->meeting_link
+                ]);
+            } else {
+                Log::info('TutoriasTable: ❌ NO SE CUMPLE LA CONDICIÓN - No se creará reunión de Zoom - estado diferente a 1', [
+                    'nuevoStatus' => $nuevoStatus,
+                    'nuevoStatus_type' => gettype($nuevoStatus),
+                    'nuevoStatus_equals_1' => ($nuevoStatus === 1),
+                    'nuevoStatus_equals_string_1' => ($nuevoStatus === '1')
+                ]);
             }
-            // Guardar el estado anterior para comparar
-            $oldStatus = $tutoria->status;
             
-            $tutoria->save();
-
             // Usar el servicio centralizado para manejar notificaciones
             $notificationService = new BookingNotificationService();
             $notificationService->handleStatusChangeNotification($tutoria, $oldStatus, $nuevoStatus);
+            
+            // Si se creó un enlace de Zoom, guardar la tutoría nuevamente
+            if ($tutoria->meeting_link) {
+                $tutoria->save();
+                Log::info('TutoriasTable: Enlace de Zoom guardado exitosamente', [
+                    'tutoria_id' => $tutoria->id,
+                    'meeting_link' => $tutoria->meeting_link
+                ]);
+            }
         }
         $this->dispatch('cerrar-modal-tutoria');
     }

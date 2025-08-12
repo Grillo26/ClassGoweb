@@ -6,6 +6,7 @@ namespace App\Services;
 use App\Services\interfaces;
 use  App\Models\User;
 use  App\Models\SlotBooking;
+use App\Models\UserSubjectSlot; 
 use Illuminate\Support\Facades\Auth;
 use \Illuminate\Database\Eloquent\Collection;
 
@@ -43,4 +44,50 @@ class SlotBookingService implements interfaces\ISlotBookingService
     {
         // Implementación de la lógica para reservar un slot
     }
+
+
+    public function tiempoLibreTutor($tutorId)
+    {
+         return UserSubjectSlot::where('user_id', $tutorId)->get();
+    }
+
+
+
+    public function crearReserva( $studentId, $tutorId, $subjectId,$fecha)
+    {
+        // Verificar si el slot ya está reservado
+        /* $existingBooking = SlotBooking::where('user_subject_slot_id', $slotId)->first();
+        if ($existingBooking) {
+            throw new \Exception('El slot ya está reservado.');
+        } */
+
+        
+       /*  $imagenid =new UserSubjectSlot();
+        $imagenid->start_time = $fecha;
+        $imagenid->end_time = now()->addHours(1);
+        $imagenid->user_id = $tutorId;
+        $imagenid->subject_id = $subjectId;
+        $imagenid->save(); */
+
+        $startTime = \Carbon\Carbon::parse($fecha); 
+        $endTime = $startTime->copy()->addMinutes(20);
+
+        // Crear la reserva
+        $booking = new SlotBooking();
+        //$booking->user_subject_slot_id = $slotId;
+        $booking->student_id = $studentId;
+        $booking->tutor_id = $tutorId;
+        $booking->subject_id = $subjectId;
+        $booking->session_fee=15;
+        $booking->start_time = $fecha; // Asignar la fecha completa
+        $booking->end_time = $endTime->format('Y-m-d H:i:s');     // Convertir de vuelta a string para la BD
+        $booking->booked_at = now();
+        $booking->user_subject_slot_id = null; // Asignar el ID del slot creado
+       // $booking->payment_receipt = $paymentReceiptPath; // Ruta del recibo de pago
+        $booking->status = 1; // Estado inicial
+        $booking->save();
+        return $booking;
+    }
+
+    
 }

@@ -115,12 +115,14 @@ Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('soci
 
 Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::get('find-tutors', [SearchController::class, 'findTutors'])->name('find-tutors');
+    //Route::get('find-tutors', [SearchController::class, 'findTutors'])->name('find-tutors');
+    
     Route::get('/blogs', Blogs::class)->name('blogs');
     Route::get('/blog/{slug}', BlogDetails::class)->name('blog-details');
     Route::view('/subscriptions-page', 'subscriptions-page');
 
     // <==== Grillo kkk ===>
-    Route::get('/home', [HomeController::class, 'index']);
+    Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/nosotros', [HomeController::class, 'nosotros'])->name('nosotros');
     Route::view('/como-trabajamos', 'vistas.view.pages.trabajamos')->name('como-trabajamos');
     Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');

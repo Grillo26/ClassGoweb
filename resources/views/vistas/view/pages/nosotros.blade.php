@@ -68,34 +68,14 @@
                 <div class="nosotros-vision-text">
                     <h2 class="nosotros-vision-title">Visión</h2>
                     <p class="nosotros-vision-subtext">
-                        Nuestra visión: Impulsar el crecimiento del aprendizaje.
+                       Impulsar el crecimiento del aprendizaje.
                     </p>
                     <p class="nosotros-vision-subtext2">
                         Ser la plataforma líder en tutorías virtuales, fomentando el aprendizaje continuo y la accesibilidad
                         educativa en todas las áreas del conocimiento.
                     </p>
                 </div>
-
-
             </div>
-            <div class="nosotros-logros">
-                <div class="nosotros-logros-text">
-                    <h3 class="nosotros-logros-title">Logros clave</h3>
-                    <h2 class="nosotros-logros-text">Conoce nuestros logros más destacados</h2>
-                    <p class="nosotros-logros-subtext">
-                        Estas cifras resaltan nuestros esfuerzos continuos para mantener altos estándares y una mejora
-                        constante
-                        en
-                        todo lo que hacemos.
-                    </p>
-                </div>
-                
-                @include('components.counters', ['color' => 'text-white'])
-            </div>
-            
-            @include('components.alianzas', ['alianzas' => $alianzas])
-
-            
 
         </div>
     </section>
