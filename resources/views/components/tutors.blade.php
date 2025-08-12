@@ -61,8 +61,6 @@
 		</div> --}}
 		<div class="tutor-card-actions">
 			<a href="{{ route('tutor', parameters: ['slug' => $profile->slug]) }}" ><button class="btn-profile">Ver Perfil</button></a>
-
-			<button class="btn-reserve">Reservar</button>
 		</div>
 
 	</div>
