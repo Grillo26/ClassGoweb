@@ -38,8 +38,15 @@
                         </div>
                     </div>
                     <div class="tutor-card-main-content">
-                         <img src="{{ asset('storage/' . $tutor->profile->image) ? asset('storage/' . $tutor->profile->image): asset('images/tutors/profile.jpg') }}" alt="Foto de {{ $tutor->profile->first_name ?? '' }}" class="tutor-profile-img" style="background-color: white">
-                         <div class="tutor-profile-info">
+                        <!-----------------Verifica Imagen por defecto------------------->
+                        @if($tutor->profile->image)
+                            <img src="{{ asset('storage/' . $tutor->profile->image) }}" alt="Foto de {{ $tutor->profile->first_name ?? '' }}" class="tutor-profile-img" style="background-color: white">
+                        @else
+                            <img src="{{ asset('images/tutors/default.png') }}" alt="Foto de {{ $tutor->profile->first_name ?? '' }}" class="tutor-profile-img" style="background-color: white">
+                        @endif
+                        <!-------------------------------------------------------------->
+
+                        <div class="tutor-profile-info">
                             <h1 class="tutor-profile-name">{{ $tutor->profile->first_name ?? '' }} {{ $tutor->profile->last_name ?? '' }}</h1>
                             <div class="tutor-profile-meta">
                                 <div class="tutor-profile-rating">

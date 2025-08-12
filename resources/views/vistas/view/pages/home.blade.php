@@ -320,7 +320,7 @@ let currentSlide = 0;
             
             if (newCardsPerView !== cardsPerView) {
                 // Recalcular slides si es necesario
-                location.reload(); // Simplificado para el ejemplo
+                //location.reload(); 
             }
         }
 
