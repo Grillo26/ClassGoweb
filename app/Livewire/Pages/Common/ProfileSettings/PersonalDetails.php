@@ -13,6 +13,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -99,7 +100,7 @@ class PersonalDetails extends Component
     private function loadUserData(): void
     {
         $profile = $this->profileService->getUserProfile();
-       // dd( $profile);
+
         // Consulta directa a user_languages para el usuario actual
         $userLanguages = UserLanguage::where('user_id', Auth::id())
             ->pluck('language_id')
@@ -180,7 +181,7 @@ class PersonalDetails extends Component
                 'first_name' => 'required|string|max:100',
                 'last_name' => 'required|string|max:100',
                 'phone_number' => 'required|string|max:20',
-                'description' => 'required|string|max:500',
+                'description' => 'string|max:500',
             ], [
                 // Mensajes personalizados (opcional)
             ], [
@@ -200,6 +201,7 @@ class PersonalDetails extends Component
                 'description' => $this->description,
                 'native_language' => $this->native_language,
             ];
+           
             if ($this->image instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
                 // Guardar temporalmente en storage
                 $filename = time() . '_' . $this->image->getClientOriginalName();
@@ -227,22 +229,10 @@ class PersonalDetails extends Component
                 }
                 rename(storage_path('app/' . $tempPath), $destinationPath . '/' . $filename);
                 $profileData['intro_video'] = 'profile_videos/' . $filename;
-               
-               
-               
-           /*      $thumbnailName = pathinfo($filename, PATHINFO_FILENAME) . '.jpg';
-                $thumbnailPath = public_path('storage/profile_videos/thumbnails/' . $thumbnailName);
-                if (!file_exists(dirname($thumbnailPath))) {
-                    mkdir(dirname($thumbnailPath), 0755, true);
-                }
-                $videoFullPath = $destinationPath . '/' . $filename;
-                // Extrae el frame del segundo 1
-                exec("ffmpeg -i \"$videoFullPath\" -ss 00:00:01.000 -vframes 1 \"$thumbnailPath\"");
-                $profileData['intro_video_thumbnail'] = 'profile_videos/thumbnails/' . $thumbnailName; */
-           
             }
-            $this->profileService->setUserProfile($profileData);// Guarda los datos
-            $this->profileService->storeUserLanguages($this->user_languages);// Guardar los IDs de idiomas directamente
+             
+            $this->profileService->setUserProfile($profileData); // Guarda los datos
+            $this->profileService->storeUserLanguages($this->user_languages); // Guardar los IDs de idiomas directamente
             // Enviar correo notificando el cambio de perfil
             try {
                 $user = Auth::user();
@@ -251,11 +241,10 @@ class PersonalDetails extends Component
                 foreach ($profileData as $key => $value) {
                     $contenido .= ucfirst(str_replace('_', ' ', $key)) . ': ' . $value . "\n";
                 }
-                \Mail::raw($contenido, function ($message) use ($user) {
+                Mail::raw($contenido, function ($message) use ($user) {
                     $message->to(env('MAIL_FROM_ADDRESS'))
                         ->subject('Notificación de actualización de perfil');
                 });
-
             } catch (\Exception $e) {
                 Log::error('Error al enviar correo de actualización de perfil: ' . $e->getMessage());
             }
