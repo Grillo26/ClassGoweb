@@ -5,33 +5,25 @@
 @section('body-class', 'Desarrolladores')
 
 @section('content')
-    <!--Desarrolladores-->
-    <section class="content">
-     <div class="CEO">
-        <div class="ceo-content">
-            <div class="ceo-content-imgen">
-
-            </div>
-            <div class="ceo-content-text">
-
-            </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center">Desarrolladores</h1>
+            <p class="text-center">Conoce al equipo detrás de Class Go!</p>
         </div>
-        
-        <div class="personal">
-            <div class="desarrolladores">
-              <div class="desarrolladores-content">
-                <div class="">
-
-                </div>
-              </div>
-
-            </div>
-            <div class="operaciones">
-
-            </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Juan Pérez</h2>
+            <p>Desarrollador Backend</p>
         </div>
-
-     </div>
-
-    </section>
+        <div class="col-md-4">
+            <h2>María López</h2>
+            <p>Desarrolladora Frontend</p>
+        </div>
+        <div class="col-md-4">
+            <h2>Carlos García</h2>
+            <p>Diseñador UX/UI</p>
+        </div>
+    </div>
 @endsection

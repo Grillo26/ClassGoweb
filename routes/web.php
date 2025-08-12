@@ -92,8 +92,7 @@ Route::get('/prueba', function () {
     return '¡Ruta de prueba funcionando!';
 });;
 // web.php
-Route::view('/desarrolladores', 'vistas.view.pages.desarrolladores')
-    ->name('desarrolladores');
+
 
 //OJO -------> Debe de estar dentro del grupo de rutas para el rol TUTOR
 //Route::get('{slug}/ficha/{id}', [ExportImageController::class, 'exportFicha'])->name('tutor.ficha');
@@ -128,6 +127,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::view('/como-trabajamos', 'vistas.view.pages.trabajamos')->name('como-trabajamos');
     Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');
     Route::get('/tutors/{slug}', [HomeController::class, 'tutor'])->name('tutor');
+    Route::view('/desarrolladores', 'vistas.view.pages.desarrolladores')->name('desarrolladores');
     //Route::get('/tutors', [HomeController::class, 'buscarTutor'])->name('buscar.tutor');
 
     Route::get('/buscar-tutor', BuscarTutor::class)->name('buscar.tutor');
