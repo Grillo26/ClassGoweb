@@ -162,6 +162,9 @@ Route::get('tutor-subjects/groups', [UserSubjectController::class, 'getSubjectGr
 Route::get('tutor-subjects/groups/{groupId}/subjects', [UserSubjectController::class, 'getSubjectsByGroup']);
 Route::get('tutor-subjects/available', [UserSubjectController::class, 'getAvailableSubjects']);
 
+// Ruta para eliminar materia del tutor (eliminar relación user_subject)
+Route::delete('tutor/{tutor_id}/subjects/{subject_id}', [UserSubjectController::class, 'removeTutorSubject']);
+
 Route::fallback(function () {
     return response()->json([
         'message' => __('general.api_url_not_found'),

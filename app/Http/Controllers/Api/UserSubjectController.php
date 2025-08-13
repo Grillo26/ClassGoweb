@@ -339,4 +339,40 @@ class UserSubjectController extends Controller
             message: 'Materias disponibles obtenidas exitosamente'
         );
     }
+
+    /**
+     * Eliminar materia del tutor (eliminar relación user_subject)
+     *
+     * @param int $tutor_id
+     * @param int $subject_id
+     * @return \Illuminate\Http\Response
+     */
+    public function removeTutorSubject($tutor_id, $subject_id)
+    {
+        // Buscar la relación específica entre el tutor y la materia
+        $userSubject = UserSubject::where('user_id', $tutor_id)
+            ->where('subject_id', $subject_id)
+            ->first();
+
+        if (!$userSubject) {
+            return $this->error(
+                data: null,
+                message: 'La materia no está asignada a este tutor',
+                code: Response::HTTP_NOT_FOUND
+            );
+        }
+
+        // Eliminar imagen si existe
+        if ($userSubject->image && Storage::disk('public')->exists($userSubject->image)) {
+            Storage::disk('public')->delete($userSubject->image);
+        }
+
+        // Eliminar la relación
+        $userSubject->delete();
+
+        return $this->success(
+            data: null,
+            message: 'Materia eliminada del tutor exitosamente'
+        );
+    }
 } 
