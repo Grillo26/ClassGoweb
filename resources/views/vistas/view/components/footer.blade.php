@@ -11,7 +11,12 @@
                     <i class="fa-brands fa-whatsapp icon"></i>
                     <a href="https://wa.link/yiegi5"><p>77573997</p>    </a>
                 </div>
-                <a href=" {{ route('register')}}"><button class="btn-registrate">Registrate Gratis</button></a>
+                @auth
+                    <a href=" {{ route('buscar.tutor')}}"><button class="btn-registrate">Buscar Tutor</button></a>
+                @endauth
+                @guest
+                    <a href=" {{ route('register')}}"><button class="btn-registrate">Registrate Gratis</button></a>
+                @endguest
 
             </div>
             <div class="footer-about"> <!--List about-->

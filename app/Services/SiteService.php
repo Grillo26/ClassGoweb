@@ -378,6 +378,10 @@ public function getTutors($data = array()) {
                 'profile:id,user_id,first_name,last_name,image,intro_video,native_language,slug,verified_at',
             ])
             ->withAvg('ratings as avg_rating', 'rating')
+            ->orderByRaw(
+                "CASE WHEN EXISTS (\n                SELECT 1 FROM profiles p WHERE p.user_id = users.id AND p.first_name = ? AND p.last_name = ?\n            ) THEN 0 ELSE 1 END",
+                ['Gabriel', 'Alpiry Hurtado']
+            )
             ->withCount('ratings as total_reviews')
 
             ->orderByDesc('avg_rating')
@@ -415,7 +419,7 @@ public function getTutors($data = array()) {
                 'avg_rating' => round($tutor->avg_rating ?? 0, 2),
                 'total_reviews' => $tutor->total_reviews ?? 0,
             ];
-        })->values(); // importante: reinicia índices
+        })->values()->take(4); // Reenderiza solor 4
 
         return [
             'profiles' => $profiles,

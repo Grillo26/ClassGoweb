@@ -1613,7 +1613,7 @@ i.fa-solid.fa-book.icon::before{
     padding: 0;
     display: flex;
     flex-flow: column wrap; /* Esto ya lo tenías, mantiene los elementos uno encima del otro */
-    width: 90px;
+    width: 100px;
     gap: 10px;
     padding: 1rem;
     /* Nuevas propiedades para centrar horizontalmente */
