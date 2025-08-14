@@ -84,11 +84,12 @@
    <div class="tutor-pay-btn-box">
       <button wire:click="openReservationModal" class="tutor-pay-btn">Pagar y reservar</button>
    </div>
-   @endrole
-
-   <div class="tutor-pay-btn-box">
+   
+    @elserole('tutor')
+    <div class="tutor-pay-btn-box">
       <p><i>Debes tener una cuenta "Estudiante" para poder reservar</i></p>
-   </div>
+    </div>
+   @endrole
    <!-- ========================== MODAL RESERVA =========================-->
   @if($showModal)
 <div class="modal-overlay is-visible">

@@ -59,12 +59,14 @@
         <div class="buscartutor-tutorlist-space">
             @forelse ($profiles as $profile)
                 <div class="buscartutor-tutor-card">
-                    <img 
+                    <a href="{{ route('tutor', ['slug' => $profile['slug']]) }}">
+                        <img 
                         src="{{ $profile['image'] ? asset('storage/' . $profile['image']) : asset('images/tutors/default.png') }}" 
                         alt="Foto de {{ $profile['full_name'] }}" 
                         class="buscartutor-tutor-img">
+                    </a>
                     <div class="buscartutor-tutor-info">
-                        <h3 class="buscartutor-tutor-name">{{ $profile['full_name'] }}</h3>
+                        <a href="{{ route('tutor', ['slug' => $profile['slug']]) }}"><h3 class="buscartutor-tutor-name">{{ $profile['full_name'] }}</h3></a>
                         <div class="buscartutor-tutor-meta">
                             <span>⭐ {{ $profile['avg_rating'] }}/5.0 ({{ $profile['total_reviews'] }} reseñas)</span>
                                 <div class="tutor-subjects-display">

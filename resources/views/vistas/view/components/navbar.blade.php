@@ -45,7 +45,15 @@
 
 			<div class="user-menu">
 				<button type="button" class="user-menu__trigger">
-					<img class="user-menu__avatar" src="{{ Auth::user()->img ?? asset('images/default.png') }}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; cursor: pointer;">
+					@role('tutor')
+						<img class="user-menu__avatar" 
+							src="{{ Auth::user()->profile->image ? asset('storage/'.Auth::user()->profile->image) : asset('images/default.png') }}" 
+							style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; cursor: pointer;">
+					@elserole('student')
+						<img class="user-menu__avatar" 
+							src="{{ Auth::user()->profile->image ? asset('storage/'.Auth::user()->profile->image) : asset('images/tutors/default_estudiante.png') }}" 
+							style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; cursor: pointer;">
+					@endrole
 				</button>
 
 				<div class="user-menu__dropdown">
@@ -53,7 +61,7 @@
 						<a href=" {{ auth()->user()->hasRole('tutor') ? route('tutor.dashboard') :  route('student.bookings') }}">
 							
 							<div class="user-menu__header">
-								<img class="user-menu__avatar" src="{{ Auth::user()->img ?? asset('images/default.png') }}" >
+								{{-- <img class="user-menu__avatar" src="{{ asset('storage/'.Auth::user()->profile->image) ?? asset('images/default.png') }}" > --}}
 								<div class="user-menu__details">
 									<span class="user-menu__name">Hola {{ Auth::user()->profile->first_name}}!</span>
 									<span class="user-menu__email">{{ Auth::user()->email }}</span>
