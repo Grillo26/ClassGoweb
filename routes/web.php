@@ -126,11 +126,11 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
     Route::get('/nosotros', [HomeController::class, 'nosotros'])->name('nosotros');
     Route::view('/como-trabajamos', 'vistas.view.pages.trabajamos')->name('como-trabajamos');
     Route::view('/preguntas', 'vistas.view.pages.preguntas')->name('preguntas');
-    Route::get('/tutors/{slug}', [HomeController::class, 'tutor'])->name('tutor');
+    Route::get('/tutores/{slug}', [HomeController::class, 'tutor'])->name('tutor');
     Route::view('/desarrolladores', 'vistas.view.pages.desarrolladores')->name('desarrolladores');
-    //Route::get('/tutors', [HomeController::class, 'buscarTutor'])->name('buscar.tutor');
+    Route::get('/tutores', [HomeController::class, 'buscarTutor'])->name('buscar.tutor');
 
-    Route::get('/buscar-tutor', BuscarTutor::class)->name('buscar.tutor');
+    //Route::get('/buscar-tutor', BuscarTutor::class)->name('buscar.tutor');
     Route::get('/kkkk', BuscadorTutor::class)->name('buscador.tutor');
 
 

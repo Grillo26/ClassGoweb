@@ -1,41 +1,53 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@extends('vistas.view.layouts.app')
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title')</title>
-    @vite([
-    'public/css/bootstrap.min.css',
-    'public/css/fonts.css',
-    'public/css/main.css',
-    'public/css/icomoon/style.css',
-    ])
-    <x-favicon />
-    @stack('styles')
-    @stack('scripts')
-</head>
+@section('content')
+    <section class="error-page-container">
+        <div class="error-content">
+            <div class="error-text-section">
 
-<body class="am-bodywrap">
-    <x-front.header :page="null" />
-    <main class="am-main am-404">
-        <div class="tk-errorpage">
-            <div class="tk-errorpage_content">
-                <h1>@yield('code')</h1>
-                <div class="tk-errorpage_title">
-                    <h2>@yield('heading')</h2>
-                    <p>@yield('message')</p>
-                    <a href="{{ url('/') }}" class="am-btn">{{ __('general.go_to_home') }}</a>
+                <h1 class="main-title">Oops!</h1>
+                <h2 class="subtitle">¡Algo salió mal!</h2>
+                <!-- SOLO EN MOBILE-->
+                <img src="{{ asset('images/home/Tugotecnológico.webp')}}" 
+                alt="Ilustración de error 404" 
+                class="error-image mobile">
+                <p class="description">No te preocupes, nuestro equipo está aquí para ayudarte.</p>
+                
+                
+                <ul class="options-list">
+                    <a href=" {{ route('preguntas') }}">
+                        <li class="option-item">
+                            <svg class="option-icon" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm-1 9V8a1 1 0 012 0v3a1 1 0 01-2 0zm1-5a1 1 0 100-2 1 1 0 000 2z" />
+                            </svg>
+                            <span>Preguntas y respuestas</span>
+                        </li>
+                    </a>
+                    <a href="#">
+                        <li class="option-item">
+                            <svg class="option-icon" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 00.117 1.139l1.83 2.135a1 1 0 00.99 0l6.5-5.5a1 1 0 000-1.5l-6.5-5.5a1 1 0 00-.99 0z" />
+                            </svg>
+                            <span>Contáctate con Soporte</span>
+                        </li>
+                    </a>
+                    
+                </ul>
+                <div class="support-container">
+                    <a href=" {{ route('home')}}">
+                        <button class="support-button">
+                            Pantalla Principal
+                        </button>
+                    </a>
                 </div>
+                
+            </div>
+
+            <img src="{{ asset('images/home/Tugotecnológico.webp')}}" 
+                alt="Ilustración de error 404" 
+                class="error-image escritorio">
+        
             </div>
         </div>
-    </main>
-    @livewireScripts()
-    <script defer src="{{ asset('js/jquery.min.js') }}"></script>
-    <script defer src="{{ asset('js/main.js') }}"></script>
-    <x-popups />
-    <x-front.footer :page="null" />
-</body>
-
-</html>
+    </section>
+@endsection

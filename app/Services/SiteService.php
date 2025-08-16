@@ -430,6 +430,95 @@ public function getTutors($data = array()) {
 
 
     //========================== BUSCAR TUTOR =========================
+
+    public function getTutorDatoPrueba($perPage = 10, $search = null)
+{
+    // 1. Construimos la consulta principal, filtrando solo por el rol 'tutor'.
+    // Ahora, no hay restricciones de perfil verificado, nombres, o materias.
+    $tutorsQuery = User::whereHas('roles', function ($query) {
+        $query->where('name', 'tutor');
+    });
+
+    // 2. Si hay un término de búsqueda, aplicamos la lógica de filtrado.
+    // Esta parte se mantiene igual, ya que filtra por nombre, apellido, o materia si existen.
+    if ($search) {
+        $tutorsQuery->where(function ($query) use ($search) {
+            $query->whereHas('profile', function ($q) use ($search) {
+                $q->where(function($nameQuery) use ($search) {
+                    $nameQuery->where('first_name', 'like', "%$search%")
+                              ->orWhere('last_name', 'like', "%$search%")
+                              ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%$search%"])
+                              ->orWhereRaw("CONCAT(last_name, ' ', first_name) LIKE ?", ["%$search%"]);
+                });
+            })
+            ->orWhereHas('userSubjects.subject', function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%");
+            })
+            ->orWhereHas('userSubjects.subject.group', function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%");
+            });
+        });
+    }
+
+    // 3. Cargamos las relaciones y realizamos los cálculos, incluyendo 'profile' que puede ser nulo.
+    // Usamos 'withDefault()' en la relación 'profile' para manejar los casos donde no existe.
+    $tutors = $tutorsQuery->with([
+            'profile' => fn($q) => $q->withDefault(), // Si no hay perfil, devuelve un objeto vacío.
+            'languages:id,name',
+            'userSubjects.subject.group',
+        ])
+        ->withAvg('ratings as avg_rating', 'rating')
+        ->withCount('ratings as total_reviews')
+        ->orderByDesc('avg_rating')
+        ->paginate($perPage);
+
+    // 4. Mapeamos los resultados para darles el formato deseado.
+    // Añadimos comprobaciones para evitar errores si 'profile' o 'userSubjects' son nulos.
+    $profiles = $tutors->map(function ($tutor) use ($search) {
+        $profile = $tutor->profile;
+        $materias = [];
+        $grupos = [];
+        $allSubjects = [];
+        $matchedSubjects = [];
+
+        // Comprobamos si userSubjects existe antes de iterar.
+        if ($tutor->userSubjects) {
+            foreach ($tutor->userSubjects as $userSubject) {
+                if ($userSubject->subject) {
+                    $subjectName = $userSubject->subject->name;
+                    $allSubjects[] = $subjectName;
+                    
+                    if ($search && \Str::contains(strtolower($subjectName), strtolower($search))) {
+                        $matchedSubjects[] = $subjectName;
+                    }
+                }
+            }
+        }
+
+        // Devolvemos los datos, usando null coalescing (??) para campos que pueden ser nulos.
+        return [
+            'user_id' => $tutor->id,
+            'full_name' => trim(($profile->first_name ? $profile->first_name : '') . ' ' . ($profile->last_name ? $profile->last_name : '')),
+            'slug' => $profile->slug ?? null,
+            'image' => $profile->image ?? null,
+            'description' => $profile->description ?? null,
+            'native_language' => $profile->native_language ?? null,
+            'languages' => $tutor->languages->pluck('name'),
+            'avg_rating' => round($tutor->avg_rating ?? 0, 2),
+            'total_reviews' => $tutor->total_reviews ?? 0,
+            'materias' => array_unique($materias),
+            'grupos' => array_unique($grupos),
+            'all_subjects' => array_unique($allSubjects),
+            'matched_subjects' => array_unique($matchedSubjects)
+        ];
+    });
+
+    // 5. Devolvemos la colección paginada con los datos formateados.
+    $result = $tutors;
+    $result->setCollection($profiles);
+    return $result;
+}
+
     public function getTutorDato($perPage = 10, $search = null)
     {
         // 1. Obtenemos los IDs de usuarios que tienen el rol 'tutor'. Esto no cambia.
@@ -482,7 +571,7 @@ public function getTutors($data = array()) {
             ->orderByDesc('avg_rating')
             ->paginate($perPage);
 
-        // 5. Mapeamos los resultados para darles el formato deseado. Esto no cambia.
+        // 5. Mapeamos los resultados para darles el formato deseado.
         $profiles = $tutors->map(function ($tutor) use ($search) {
             $profile = $tutor->profile;
             $materias = [];

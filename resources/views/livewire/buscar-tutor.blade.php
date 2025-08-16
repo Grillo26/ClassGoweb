@@ -1,7 +1,7 @@
-<div class="container-buscartutor">
+<div class="container-buscartuto">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-    <!-- Hero Section -->
+     {{-- <!-- Hero Section -->
     <section class="buscartutor-hero-section">
         <div class="buscartutor-container">
              <div class="buscartutor-hero-grid">
@@ -18,42 +18,42 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section>  --}}
     
     <!-- Componente de búsqueda y listado de tutores -->
     <section class="buscartutor-search-section">
-    <div class="buscartutor-search-box">
-        <div class="buscartutor-search-grid">
-            <div class="buscartutor-search-keyword">
-                <div class="buscartutor-search-input-wrap">
-                    <!-- BUSCADOR-->
-                    <!--desktop-->
-                    <div class="buscador-desktop">
-                        <input type="text"
-                        id="keyword-search"
-                        placeholder="¿Qué necesitas aprender? Busca por nombre del tutor o materia."
-                        class="buscartutor-search-input"
-                        wire:model.live.debounce.500ms="search">
-                        <span class="buscartutor-search-icon">
-                            <svg class="buscartutor-search-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
-                        </span>
+        <div class="buscartutor-search-box">
+            <div class="buscartutor-search-grid">
+                <div class="buscartutor-search-keyword">
+                    <div class="buscartutor-search-input-wrap">
+                        <!-- BUSCADOR-->
+                        <!--desktop-->
+                        <div class="buscador-desktop">
+                            <input type="text"
+                            id="keyword-search"
+                            placeholder="¿Qué necesitas aprender? Busca por nombre del tutor o materia."
+                            class="buscartutor-search-input"
+                            wire:model.live.debounce.500ms="search">
+                            <span class="buscartutor-search-icon">
+                                <svg class="buscartutor-search-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
+                            </span>
+                        </div>
+                        <!---movile-->
+                        <div class="buscador-mobile">
+                            <input type="text"
+                            id="keyword-search"
+                            placeholder="¿Qué necesitas aprender?"
+                            class="buscartutor-search-input"
+                            wire:model.live.debounce.500ms="search">
+                            <span class="buscartutor-search-icon">
+                                <svg class="buscartutor-search-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
+                            </span>
+                        </div>
+                        
                     </div>
-                    <!---movile-->
-                    <div class="buscador-mobile">
-                        <input type="text"
-                        id="keyword-search"
-                        placeholder="¿Qué necesitas aprender?"
-                        class="buscartutor-search-input"
-                        wire:model.live.debounce.500ms="search">
-                        <span class="buscartutor-search-icon">
-                            <svg class="buscartutor-search-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" /></svg>
-                        </span>
-                    </div>
-                    
                 </div>
             </div>
         </div>
-    </div>
     </section>
     <section class="buscartutor-tutorlist-section">
         <div class="buscartutor-tutorlist-space">
@@ -104,7 +104,6 @@
                         </p>
                     </div>
                     <div class="buscartutor-tutor-actions">
-                        
                         <a href="{{ route('tutor', ['slug' => $profile['slug']]) }}" class="buscartutor-tutor-btn buscartutor-tutor-btn-blue">
                             Ver Perfil
                         </a>
