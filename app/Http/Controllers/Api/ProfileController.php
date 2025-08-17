@@ -371,22 +371,19 @@ class ProfileController extends Controller
         
         // Validación de autorización temporalmente deshabilitada para pruebas
 
-        // Validar que al menos un archivo se envíe
-        if (!$request->file('image') && !$request->file('intro_video')) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Debe enviar al menos una imagen o video'
-            ], 422);
-        }
-
         try {
             // Log de los archivos recibidos
             Log::info('Archivos recibidos en updateUserProfileFiles:', [
                 'file_image' => $request->file('image') ? 'SÍ' : 'NO',
                 'file_video' => $request->file('intro_video') ? 'SÍ' : 'NO',
                 'content_type' => $request->header('Content-Type'),
-                'all_files' => $request->allFiles()
+                'all_files' => $request->allFiles(),
+                'request_all' => $request->all(),
+                'files_array' => $request->files->all()
             ]);
+            
+            // Verificar si se procesó algún archivo
+            $archivosProcesados = false;
             
             $user = User::find($id);
             if (!$user) {
@@ -426,6 +423,7 @@ class ProfileController extends Controller
                     $profile->image = 'profile_images/' . $fileName;
                     
                     Log::info('Imagen guardada: ' . $profile->image);
+                    $archivosProcesados = true;
                 } catch (\Exception $e) {
                     Log::error('Error al guardar imagen: ' . $e->getMessage());
                     return response()->json([
@@ -458,6 +456,7 @@ class ProfileController extends Controller
                     $profile->intro_video = 'profile_videos/' . $fileName;
                     
                     Log::info('Video guardado: ' . $profile->intro_video);
+                    $archivosProcesados = true;
                 } catch (\Exception $e) {
                     Log::error('Error al guardar video: ' . $e->getMessage());
                     return response()->json([
@@ -467,6 +466,14 @@ class ProfileController extends Controller
                 }
             }
 
+            // Verificar que se procesó al menos un archivo
+            if (!$archivosProcesados) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Debe enviar al menos una imagen o video'
+                ], 422);
+            }
+            
             // Guardar el perfil
             $profile->save();
 
