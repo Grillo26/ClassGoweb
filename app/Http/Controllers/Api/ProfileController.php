@@ -170,6 +170,7 @@ class ProfileController extends Controller
         ]);
 
         if ($validator->fails()) {
+            Log::error('Error de validación:', $validator->errors()->toArray());
             return response()->json([
                 'success' => false,
                 'message' => 'Error de validación',
@@ -178,6 +179,9 @@ class ProfileController extends Controller
         }
 
         try {
+            // Log de los datos recibidos
+            Log::info('Datos recibidos en updateUserProfile:', $request->all());
+            
             $user = User::find($id);
             if (!$user) {
                 return $this->error(
@@ -202,7 +206,9 @@ class ProfileController extends Controller
 
             foreach ($profileFields as $field) {
                 if ($request->has($field)) {
+                    $oldValue = $profile->$field;
                     $profile->$field = $request->$field;
+                    Log::info("Campo {$field} actualizado: '{$oldValue}' -> '{$request->$field}'");
                 }
             }
 
@@ -258,7 +264,21 @@ class ProfileController extends Controller
                 $profile->intro_video = 'profile_videos/' . $fileName;
             }
 
+            // Log antes de guardar
+            Log::info('Perfil antes de guardar:', [
+                'first_name' => $profile->first_name,
+                'last_name' => $profile->last_name,
+                'user_id' => $profile->user_id
+            ]);
+
             $profile->save();
+
+            // Log después de guardar
+            Log::info('Perfil después de guardar:', [
+                'first_name' => $profile->first_name,
+                'last_name' => $profile->last_name,
+                'user_id' => $profile->user_id
+            ]);
 
             // Recargar el usuario con el perfil actualizado
             $user->load('profile');
