@@ -157,11 +157,11 @@ Route::post('tutor/availability', [AuthController::class, 'updateTutoringAvailab
 Route::get('user/{id}/profile-image', [ProfileController::class, 'getProfileImage']);
 Route::post('user/{id}/profile-image', [ProfileController::class, 'updateProfileImage']);
 
+// Ruta para actualizar solo archivos del perfil del usuario
+Route::put('user/{id}/profile-files', [ProfileController::class, 'updateUserProfileFiles']);
+
 // Ruta para actualizar datos del perfil del usuario
 Route::put('user/{id}/profile', [ProfileController::class, 'updateUserProfile']);
-
-// Ruta para actualizar solo archivos del perfil del usuario
-Route::put('user/{id}/profile/files', [ProfileController::class, 'updateUserProfileFiles']);
 
 Route::get('subject/{id}/name', [SubjectController::class, 'getSubjectName']);
 

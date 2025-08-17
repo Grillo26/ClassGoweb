@@ -366,6 +366,9 @@ class ProfileController extends Controller
      */
     public function updateUserProfileFiles(Request $request, $id)
     {
+        // Log simple para verificar que el método se ejecuta
+        Log::info('Método updateUserProfileFiles ejecutado', ['id' => $id]);
+        
         // Validación de autorización temporalmente deshabilitada para pruebas
 
         // Validar que al menos un archivo se envíe
