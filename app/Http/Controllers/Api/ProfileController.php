@@ -379,7 +379,12 @@ class ProfileController extends Controller
                 'content_type' => $request->header('Content-Type'),
                 'all_files' => $request->allFiles(),
                 'request_all' => $request->all(),
-                'files_array' => $request->files->all()
+                'files_array' => $request->files->all(),
+                'request_files_object' => $request->files,
+                'has_files' => $request->hasFile('image'),
+                'has_video' => $request->hasFile('intro_video'),
+                'input_image' => $request->input('image'),
+                'input_video' => $request->input('intro_video')
             ]);
             
             // Verificar si se procesó algún archivo
