@@ -98,6 +98,65 @@ class SubjectSlotController extends Controller
         }
     }
 
+    /**
+     * Eliminar un slot de disponibilidad de un tutor
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteUserSubjectSlot(Request $request)
+    {
+        // Validar los datos de entrada
+        $validator = Validator::make($request->all(), [
+            'slot_id' => 'required|exists:user_subject_slots,id',
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            // Buscar el slot y verificar que pertenece al usuario
+            $slot = UserSubjectSlot::where('id', $request->slot_id)
+                ->where('user_id', $request->user_id)
+                ->first();
+
+            if (!$slot) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Slot no encontrado o no tienes permisos para eliminarlo'
+                ], 404);
+            }
+
+            // Verificar si el slot tiene reservas
+            if ($slot->bookings()->count() > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se puede eliminar el slot porque tiene reservas activas'
+                ], 400);
+            }
+
+            // Eliminar el slot
+            $slot->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Slot de disponibilidad eliminado exitosamente'
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al eliminar el slot de disponibilidad',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     protected function fetchUserSubjectSlots($userId, $date = null) {
         $slots = UserSubjectSlot::select('id','start_time','end_time','duracion','date','user_id')
             ->withCount('bookings')
