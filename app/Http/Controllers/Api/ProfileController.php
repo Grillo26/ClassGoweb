@@ -9,6 +9,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\ProfileService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
 
@@ -156,6 +157,7 @@ class ProfileController extends Controller
 
         // Validar los datos de entrada
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'name' => 'nullable|string|max:255',
             'first_name' => 'nullable|string|max:150',
             'last_name' => 'nullable|string|max:150',
             'gender' => 'nullable|integer|in:0,1,2', // 0: No especificado, 1: Masculino, 2: Femenino
@@ -205,26 +207,38 @@ class ProfileController extends Controller
                 }
             }
 
+            // Manejar el campo name (actualizar tanto el usuario como el perfil)
+            if ($request->has('name')) {
+                $user->name = $request->name;
+                $user->save();
+            }
+
             // Manejar la imagen si se envía
             if ($request->hasFile('image')) {
-                $request->validate([
-                    'image' => 'image|mimes:jpeg,png,jpg,gif,webp|max:4096'
-                ]);
+                try {
+                    $request->validate([
+                        'image' => 'image|mimes:jpeg,png,jpg,gif,webp|max:4096'
+                    ]);
 
-                // Generar nombre único para la imagen
-                $fileName = uniqid() . '_' . $request->file('image')->getClientOriginalName();
-                
-                // Crear directorio si no existe
-                $destinationPath = public_path('storage/profile_images');
-                if (!file_exists($destinationPath)) {
-                    mkdir($destinationPath, 0777, true);
+                    // Generar nombre único para la imagen
+                    $fileName = uniqid() . '_' . $request->file('image')->getClientOriginalName();
+                    
+                    // Crear directorio si no existe
+                    $destinationPath = public_path('storage/profile_images');
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0777, true);
+                    }
+                    
+                    // Mover la imagen al directorio correcto
+                    $request->file('image')->move($destinationPath, $fileName);
+                    
+                    // Guardar solo la ruta relativa en la base de datos
+                    $profile->image = 'profile_images/' . $fileName;
+                    
+                    Log::info('Imagen guardada: ' . $profile->image);
+                } catch (\Exception $e) {
+                    Log::error('Error al guardar imagen: ' . $e->getMessage());
                 }
-                
-                // Mover la imagen al directorio correcto
-                $request->file('image')->move($destinationPath, $fileName);
-                
-                // Guardar solo la ruta relativa en la base de datos
-                $profile->image = 'profile_images/' . $fileName;
             }
 
             // Manejar el video de introducción si se envía
@@ -254,11 +268,35 @@ class ProfileController extends Controller
             // Recargar el usuario con el perfil actualizado
             $user->load('profile');
 
-            return $this->success(
-                message: __('api.profile_data_updated_successfully'),
-                data: new UserResource($user),
-                code: Response::HTTP_OK
-            );
+            // Devolver respuesta con datos más detallados
+            return response()->json([
+                'success' => true,
+                'message' => 'Profile data updated successfully.',
+                'data' => [
+                    'id' => $user->id,
+                    'email' => $user->email,
+                    'name' => $user->name,
+                    'status' => $user->status,
+                    'profile_completed' => $user->profile_completed,
+                    'verified' => $user->verified,
+                    'profile' => [
+                        'id' => $profile->id,
+                        'user_id' => $profile->user_id,
+                        'first_name' => $profile->first_name,
+                        'last_name' => $profile->last_name,
+                        'gender' => $profile->gender,
+                        'recommend_tutor' => $profile->recommend_tutor,
+                        'slug' => $profile->slug,
+                        'native_language' => $profile->native_language,
+                        'tagline' => $profile->tagline,
+                        'description' => $profile->description,
+                        'phone_number' => $profile->phone_number,
+                        'keywords' => $profile->keywords,
+                        'image' => $profile->image,
+                        'intro_video' => $profile->intro_video,
+                    ]
+                ]
+            ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
