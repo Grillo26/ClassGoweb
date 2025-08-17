@@ -387,9 +387,6 @@ class ProfileController extends Controller
                 'input_video' => $request->input('intro_video')
             ]);
             
-            // Verificar si se procesó algún archivo
-            $archivosProcesados = false;
-            
             $user = User::find($id);
             if (!$user) {
                 return response()->json([
@@ -405,13 +402,13 @@ class ProfileController extends Controller
                 $profile->user_id = $user->id;
             }
 
-            // Manejar la imagen si se envía
-            if ($request->file('image')) {
-                try {
-                    $request->validate([
-                        'image' => 'image|mimes:jpeg,png,jpg,gif,webp|max:4096'
-                    ]);
+            // Procesar imagen directamente (como hace el método que funciona)
+            try {
+                $request->validate([
+                    'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:4096'
+                ]);
 
+                if ($request->file('image')) {
                     // Generar nombre único para la imagen
                     $fileName = uniqid() . '_' . $request->file('image')->getClientOriginalName();
                     
@@ -428,23 +425,22 @@ class ProfileController extends Controller
                     $profile->image = 'profile_images/' . $fileName;
                     
                     Log::info('Imagen guardada: ' . $profile->image);
-                    $archivosProcesados = true;
-                } catch (\Exception $e) {
-                    Log::error('Error al guardar imagen: ' . $e->getMessage());
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Error al guardar la imagen: ' . $e->getMessage()
-                    ], 500);
                 }
+            } catch (\Exception $e) {
+                Log::error('Error al guardar imagen: ' . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al guardar la imagen: ' . $e->getMessage()
+                ], 500);
             }
 
-            // Manejar el video de introducción si se envía
-            if ($request->file('intro_video')) {
-                try {
-                    $request->validate([
-                        'intro_video' => 'mimes:mp4,avi,mov,wmv,flv|max:10240' // 10MB máximo
-                    ]);
+            // Procesar video directamente (como hace el método que funciona)
+            try {
+                $request->validate([
+                    'intro_video' => 'nullable|mimes:mp4,avi,mov,wmv,flv|max:10240'
+                ]);
 
+                if ($request->file('intro_video')) {
                     // Generar nombre único para el video
                     $fileName = uniqid() . '_' . $request->file('intro_video')->getClientOriginalName();
                     
@@ -461,18 +457,17 @@ class ProfileController extends Controller
                     $profile->intro_video = 'profile_videos/' . $fileName;
                     
                     Log::info('Video guardado: ' . $profile->intro_video);
-                    $archivosProcesados = true;
-                } catch (\Exception $e) {
-                    Log::error('Error al guardar video: ' . $e->getMessage());
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Error al guardar el video: ' . $e->getMessage()
-                    ], 500);
                 }
+            } catch (\Exception $e) {
+                Log::error('Error al guardar video: ' . $e->getMessage());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error al guardar el video: ' . $e->getMessage()
+                ], 500);
             }
 
             // Verificar que se procesó al menos un archivo
-            if (!$archivosProcesados) {
+            if (!$profile->image && !$profile->intro_video) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Debe enviar al menos una imagen o video'
