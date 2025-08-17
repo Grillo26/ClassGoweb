@@ -159,8 +159,8 @@ class ProfileController extends Controller
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'first_name' => 'nullable|string|max:150',
             'last_name' => 'nullable|string|max:150',
-            'gender' => 'nullable|integer|in:0,1,2', // 0: No especificado, 1: Masculino, 2: Femenino
-            'recommend_tutor' => 'nullable|integer|in:0,1',
+            'gender' => 'nullable|string|in:0,1,2', // Cambiado a string para form-data
+            'recommend_tutor' => 'nullable|string|in:0,1', // Cambiado a string para form-data
             'slug' => 'nullable|string|max:255|unique:profiles,slug,' . $id . ',user_id',
             'native_language' => 'nullable|string|max:255',
             'tagline' => 'nullable|string|max:255',
@@ -181,6 +181,13 @@ class ProfileController extends Controller
         try {
             // Log de los datos recibidos
             Log::info('Datos recibidos en updateUserProfile:', $request->all());
+            Log::info('Content-Type:', ['content_type' => $request->header('Content-Type')]);
+            Log::info('¿Tiene archivos?', [
+                'has_image' => $request->hasFile('image'),
+                'has_video' => $request->hasFile('intro_video'),
+                'first_name_type' => gettype($request->input('first_name')),
+                'last_name_type' => gettype($request->input('last_name'))
+            ]);
             
             $user = User::find($id);
             if (!$user) {
