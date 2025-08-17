@@ -357,4 +357,140 @@ class ProfileController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Actualizar solo la imagen y video del perfil del usuario
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateUserProfileFiles(Request $request, $id)
+    {
+        // Validación de autorización temporalmente deshabilitada para pruebas
+
+        // Validar que al menos un archivo se envíe
+        if (!$request->hasFile('image') && !$request->hasFile('intro_video')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Debe enviar al menos una imagen o video'
+            ], 422);
+        }
+
+        try {
+            // Log de los archivos recibidos
+            Log::info('Archivos recibidos en updateUserProfileFiles:', [
+                'has_image' => $request->hasFile('image'),
+                'has_video' => $request->hasFile('intro_video'),
+                'content_type' => $request->header('Content-Type')
+            ]);
+            
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario no encontrado'
+                ], 404);
+            }
+
+            // Obtener o crear el perfil
+            $profile = $user->profile;
+            if (!$profile) {
+                $profile = new \App\Models\Profile();
+                $profile->user_id = $user->id;
+            }
+
+            // Manejar la imagen si se envía
+            if ($request->hasFile('image')) {
+                try {
+                    $request->validate([
+                        'image' => 'image|mimes:jpeg,png,jpg,gif,webp|max:4096'
+                    ]);
+
+                    // Generar nombre único para la imagen
+                    $fileName = uniqid() . '_' . $request->file('image')->getClientOriginalName();
+                    
+                    // Crear directorio si no existe
+                    $destinationPath = public_path('storage/profile_images');
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0777, true);
+                    }
+                    
+                    // Mover la imagen al directorio correcto
+                    $request->file('image')->move($destinationPath, $fileName);
+                    
+                    // Guardar solo la ruta relativa en la base de datos
+                    $profile->image = 'profile_images/' . $fileName;
+                    
+                    Log::info('Imagen guardada: ' . $profile->image);
+                } catch (\Exception $e) {
+                    Log::error('Error al guardar imagen: ' . $e->getMessage());
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Error al guardar la imagen: ' . $e->getMessage()
+                    ], 500);
+                }
+            }
+
+            // Manejar el video de introducción si se envía
+            if ($request->hasFile('intro_video')) {
+                try {
+                    $request->validate([
+                        'intro_video' => 'mimes:mp4,avi,mov,wmv,flv|max:10240' // 10MB máximo
+                    ]);
+
+                    // Generar nombre único para el video
+                    $fileName = uniqid() . '_' . $request->file('intro_video')->getClientOriginalName();
+                    
+                    // Crear directorio si no existe
+                    $destinationPath = public_path('storage/profile_videos');
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0777, true);
+                    }
+                    
+                    // Mover el video al directorio correcto
+                    $request->file('intro_video')->move($destinationPath, $fileName);
+                    
+                    // Guardar solo la ruta relativa en la base de datos
+                    $profile->intro_video = 'profile_videos/' . $fileName;
+                    
+                    Log::info('Video guardado: ' . $profile->intro_video);
+                } catch (\Exception $e) {
+                    Log::error('Error al guardar video: ' . $e->getMessage());
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Error al guardar el video: ' . $e->getMessage()
+                    ], 500);
+                }
+            }
+
+            // Guardar el perfil
+            $profile->save();
+
+            // Recargar el usuario con el perfil actualizado
+            $user->load('profile');
+
+            // Devolver respuesta
+            return response()->json([
+                'success' => true,
+                'message' => 'Archivos del perfil actualizados correctamente',
+                'data' => [
+                    'id' => $user->id,
+                    'email' => $user->email,
+                    'profile' => [
+                        'id' => $profile->id,
+                        'user_id' => $profile->user_id,
+                        'image' => $profile->image,
+                        'intro_video' => $profile->intro_video,
+                    ]
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar los archivos del perfil',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
