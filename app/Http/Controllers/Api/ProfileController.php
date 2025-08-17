@@ -196,6 +196,14 @@ class ProfileController extends Controller
             if (!$profile) {
                 $profile = new \App\Models\Profile();
                 $profile->user_id = $user->id;
+            } else {
+                // Log del perfil existente
+                Log::info('Perfil existente encontrado:', [
+                    'id' => $profile->id,
+                    'first_name' => $profile->first_name,
+                    'last_name' => $profile->last_name,
+                    'user_id' => $profile->user_id
+                ]);
             }
 
             // Actualizar solo los campos que se envían en la request
@@ -209,6 +217,10 @@ class ProfileController extends Controller
                     $oldValue = $profile->$field;
                     $profile->$field = $request->$field;
                     Log::info("Campo {$field} actualizado: '{$oldValue}' -> '{$request->$field}'");
+                    Log::info("Valor del request para {$field}: '{$request->$field}'");
+                    Log::info("Valor asignado al perfil para {$field}: '{$profile->$field}'");
+                } else {
+                    Log::info("Campo {$field} NO está en la request");
                 }
             }
 
@@ -271,7 +283,15 @@ class ProfileController extends Controller
                 'user_id' => $profile->user_id
             ]);
 
-            $profile->save();
+            // Log antes de guardar
+            Log::info('Perfil antes de guardar:', [
+                'first_name' => $profile->first_name,
+                'last_name' => $profile->last_name,
+                'user_id' => $profile->user_id
+            ]);
+
+            $result = $profile->save();
+            Log::info('Resultado del save(): ' . ($result ? 'true' : 'false'));
 
             // Log después de guardar
             Log::info('Perfil después de guardar:', [
@@ -282,6 +302,15 @@ class ProfileController extends Controller
 
             // Recargar el usuario con el perfil actualizado
             $user->load('profile');
+
+            // Verificar si los cambios se guardaron en la base de datos
+            $profileRefreshed = \App\Models\Profile::find($profile->id);
+            Log::info('Perfil desde la base de datos después de guardar:', [
+                'id' => $profileRefreshed->id,
+                'first_name' => $profileRefreshed->first_name,
+                'last_name' => $profileRefreshed->last_name,
+                'user_id' => $profileRefreshed->user_id
+            ]);
 
             // Devolver respuesta con datos más detallados
             return response()->json([
