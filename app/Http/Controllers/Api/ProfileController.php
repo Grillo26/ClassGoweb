@@ -234,7 +234,7 @@ class ProfileController extends Controller
 
 
             // Manejar la imagen si se envía
-            if ($request->hasFile('image')) {
+            if ($request->file('image')) {
                 try {
                     $request->validate([
                         'image' => 'image|mimes:jpeg,png,jpg,gif,webp|max:4096'
@@ -262,7 +262,7 @@ class ProfileController extends Controller
             }
 
             // Manejar el video de introducción si se envía
-            if ($request->hasFile('intro_video')) {
+            if ($request->file('intro_video')) {
                 $request->validate([
                     'intro_video' => 'mimes:mp4,avi,mov,wmv,flv|max:10240' // 10MB máximo
                 ]);
@@ -372,7 +372,7 @@ class ProfileController extends Controller
         // Validación de autorización temporalmente deshabilitada para pruebas
 
         // Validar que al menos un archivo se envíe
-        if (!$request->hasFile('image') && !$request->hasFile('intro_video')) {
+        if (!$request->file('image') && !$request->file('intro_video')) {
             return response()->json([
                 'success' => false,
                 'message' => 'Debe enviar al menos una imagen o video'
@@ -382,9 +382,10 @@ class ProfileController extends Controller
         try {
             // Log de los archivos recibidos
             Log::info('Archivos recibidos en updateUserProfileFiles:', [
-                'has_image' => $request->hasFile('image'),
-                'has_video' => $request->hasFile('intro_video'),
-                'content_type' => $request->header('Content-Type')
+                'file_image' => $request->file('image') ? 'SÍ' : 'NO',
+                'file_video' => $request->file('intro_video') ? 'SÍ' : 'NO',
+                'content_type' => $request->header('Content-Type'),
+                'all_files' => $request->allFiles()
             ]);
             
             $user = User::find($id);
@@ -403,7 +404,7 @@ class ProfileController extends Controller
             }
 
             // Manejar la imagen si se envía
-            if ($request->hasFile('image')) {
+            if ($request->file('image')) {
                 try {
                     $request->validate([
                         'image' => 'image|mimes:jpeg,png,jpg,gif,webp|max:4096'
@@ -435,7 +436,7 @@ class ProfileController extends Controller
             }
 
             // Manejar el video de introducción si se envía
-            if ($request->hasFile('intro_video')) {
+            if ($request->file('intro_video')) {
                 try {
                     $request->validate([
                         'intro_video' => 'mimes:mp4,avi,mov,wmv,flv|max:10240' // 10MB máximo
