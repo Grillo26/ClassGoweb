@@ -143,4 +143,136 @@ class ProfileController extends Controller
             'message' => 'Imagen de perfil actualizada correctamente'
         ]);
     }
+
+    /**
+     * Actualizar solo los datos del perfil del usuario
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateUserProfile(Request $request, $id)
+    {
+        // Verificar que el usuario esté autenticado y sea el propietario del perfil
+        if ($id != Auth::user()?->id) {
+            return $this->error(
+                data: null,
+                message: __('api.unauthorized_access'),
+                code: Response::HTTP_FORBIDDEN
+            );
+        }
+
+        // Validar los datos de entrada
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'first_name' => 'nullable|string|max:150',
+            'last_name' => 'nullable|string|max:150',
+            'gender' => 'nullable|integer|in:0,1,2', // 0: No especificado, 1: Masculino, 2: Femenino
+            'recommend_tutor' => 'nullable|integer|in:0,1',
+            'slug' => 'nullable|string|max:255|unique:profiles,slug,' . $id . ',user_id',
+            'native_language' => 'nullable|string|max:255',
+            'tagline' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'phone_number' => 'nullable|string|max:20',
+            'keywords' => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $user = User::find($id);
+            if (!$user) {
+                return $this->error(
+                    data: null,
+                    message: __('api.not_found'),
+                    code: Response::HTTP_NOT_FOUND
+                );
+            }
+
+            // Obtener o crear el perfil
+            $profile = $user->profile;
+            if (!$profile) {
+                $profile = new \App\Models\Profile();
+                $profile->user_id = $user->id;
+            }
+
+            // Actualizar solo los campos que se envían en la request
+            $profileFields = [
+                'first_name', 'last_name', 'gender', 'recommend_tutor', 'slug',
+                'native_language', 'tagline', 'description', 'phone_number', 'keywords'
+            ];
+
+            foreach ($profileFields as $field) {
+                if ($request->has($field)) {
+                    $profile->$field = $request->$field;
+                }
+            }
+
+            // Manejar la imagen si se envía
+            if ($request->hasFile('image')) {
+                $request->validate([
+                    'image' => 'image|mimes:jpeg,png,jpg,gif,webp|max:4096'
+                ]);
+
+                // Generar nombre único para la imagen
+                $fileName = uniqid() . '_' . $request->file('image')->getClientOriginalName();
+                
+                // Crear directorio si no existe
+                $destinationPath = public_path('storage/profile_images');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0777, true);
+                }
+                
+                // Mover la imagen al directorio correcto
+                $request->file('image')->move($destinationPath, $fileName);
+                
+                // Guardar solo la ruta relativa en la base de datos
+                $profile->image = 'profile_images/' . $fileName;
+            }
+
+            // Manejar el video de introducción si se envía
+            if ($request->hasFile('intro_video')) {
+                $request->validate([
+                    'intro_video' => 'mimes:mp4,avi,mov,wmv,flv|max:10240' // 10MB máximo
+                ]);
+
+                // Generar nombre único para el video
+                $fileName = uniqid() . '_' . $request->file('intro_video')->getClientOriginalName();
+                
+                // Crear directorio si no existe
+                $destinationPath = public_path('storage/profile_videos');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0777, true);
+                }
+                
+                // Mover el video al directorio correcto
+                $request->file('intro_video')->move($destinationPath, $fileName);
+                
+                // Guardar solo la ruta relativa en la base de datos
+                $profile->intro_video = 'profile_videos/' . $fileName;
+            }
+
+            $profile->save();
+
+            // Recargar el usuario con el perfil actualizado
+            $user->load('profile');
+
+            return $this->success(
+                message: __('api.profile_data_updated_successfully'),
+                data: new UserResource($user),
+                code: Response::HTTP_OK
+            );
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar el perfil',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

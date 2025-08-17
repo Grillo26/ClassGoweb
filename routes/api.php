@@ -157,6 +157,9 @@ Route::post('tutor/availability', [AuthController::class, 'updateTutoringAvailab
 Route::get('user/{id}/profile-image', [ProfileController::class, 'getProfileImage']);
 Route::post('user/{id}/profile-image', [ProfileController::class, 'updateProfileImage']);
 
+// Ruta para actualizar datos del perfil del usuario
+Route::put('user/{id}/profile', [ProfileController::class, 'updateUserProfile']);
+
 Route::get('subject/{id}/name', [SubjectController::class, 'getSubjectName']);
 
 // Rutas adicionales para gestión de materias de tutores
