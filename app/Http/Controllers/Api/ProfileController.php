@@ -157,7 +157,6 @@ class ProfileController extends Controller
 
         // Validar los datos de entrada
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-            'name' => 'nullable|string|max:255',
             'first_name' => 'nullable|string|max:150',
             'last_name' => 'nullable|string|max:150',
             'gender' => 'nullable|integer|in:0,1,2', // 0: No especificado, 1: Masculino, 2: Femenino
@@ -207,11 +206,7 @@ class ProfileController extends Controller
                 }
             }
 
-            // Manejar el campo name (actualizar tanto el usuario como el perfil)
-            if ($request->has('name')) {
-                $user->name = $request->name;
-                $user->save();
-            }
+
 
             // Manejar la imagen si se envía
             if ($request->hasFile('image')) {
