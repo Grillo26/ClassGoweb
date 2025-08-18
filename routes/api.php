@@ -158,7 +158,7 @@ Route::get('user/{id}/profile-image', [ProfileController::class, 'getProfileImag
 Route::post('user/{id}/profile-image', [ProfileController::class, 'updateProfileImage']);
 
 // Ruta para actualizar solo archivos del perfil del usuario
-Route::put('user/{id}/profile-files', [ProfileController::class, 'updateUserProfileFiles']);
+Route::post('user/{id}/profile-files', [ProfileController::class, 'updateUserProfileFiles']);
 
 // Ruta para actualizar datos del perfil del usuario
 Route::put('user/{id}/profile', [ProfileController::class, 'updateUserProfile']);
