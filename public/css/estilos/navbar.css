@@ -665,6 +665,7 @@
   .navbar-mobile a[href*="Empezar"] {
     display: none !important;
   }
+  
   /* Centrar logo y colocar selector de idioma a la izquierda */
   .navbar-container {
     flex-direction: row;

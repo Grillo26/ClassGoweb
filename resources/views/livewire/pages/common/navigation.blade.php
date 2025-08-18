@@ -1,7 +1,8 @@
 <div class="am-sidebar" style="background-color:white">
     <div class="am-sidebar_logo">
         <strong class="am-logo">
-            <x-application-logo />
+            <a href=" {{ route('home') }}"><img src="{{ asset('images/ClassGo-81.png')}}"></a>
+            {{-- <x-application-logo /> --}}
         </strong>
         <div class="am-sidebar_toggle">
             <a href="javascript:void(0);">

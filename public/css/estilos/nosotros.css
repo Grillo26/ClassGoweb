@@ -374,6 +374,157 @@
     text-transform: none;
 }
 
+/* Personal */
+/* Estilos base para dispositivos móviles (ancho < 768px) */
+/* -------------------------------------------------------- */
+
+.team-section {
+    padding: 2rem 1rem;
+    background-color: #f7f7f7;
+}
+
+.team-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.team-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.team-title {
+    font-size: 2rem; /* Tamaño de fuente para móviles */
+    font-weight: 800;
+    color: #023047;
+    margin-bottom: 0.5rem;
+}
+
+.team-subtitle {
+    font-size: 1rem;
+    color: #666;
+    max-width: 48rem;
+    margin: 0 auto;
+}
+
+.team-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr; /* Una columna por defecto en móviles */
+}
+
+.team-card {
+    background-color: #fff;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.team-member-img {
+    width: 6rem; /* Imagen más pequeña en móviles */
+    height: 6rem;
+    border-radius: 9999px;
+    object-fit: cover;
+    border: 4px solid #219EBC;
+    margin-bottom: 1rem;
+}
+
+.team-member-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #023047;
+}
+
+.team-member-role {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #FB8500;
+    margin-bottom: 0.5rem;
+}
+
+.team-member-rating {
+    display: flex;
+    justify-content: center;
+    color: #FACC15;
+    margin-bottom: 1rem;
+}
+
+.rating-star {
+    width: 1rem;
+    height: 1rem;
+}
+
+.team-member-quote {
+    font-size: 0.875rem;
+    color: #666;
+    font-style: italic;
+}
+
+
+/* -------------------------------------------------------- */
+/* Media Query para Tablets (ancho >= 768px) */
+/* -------------------------------------------------------- */
+
+@media (min-width: 768px) {
+    .team-section {
+        padding: 4rem 1rem;
+    }
+
+    .team-header {
+        margin-bottom: 3rem;
+    }
+
+    .team-title {
+        font-size: 3rem; /* Tamaño de fuente para tablets y desktop */
+    }
+
+    .team-subtitle {
+        font-size: 1.125rem;
+    }
+
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr); /* Dos columnas en tablets */
+        gap: 2rem;
+    }
+
+    .team-card {
+        padding: 2rem;
+    }
+
+    .team-member-img {
+        width: 8rem;
+        height: 8rem;
+    }
+
+    .team-member-name {
+        font-size: 1.5rem;
+    }
+
+    .team-member-role {
+        font-size: 1rem;
+    }
+    
+    .rating-star {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+}
+
+/* -------------------------------------------------------- */
+/* Media Query para Escritorio (ancho >= 1024px)  personal*/ 
+/* -------------------------------------------------------- */
+
+@media (min-width: 1024px) {
+    .team-grid {
+        grid-template-columns: repeat(3, 1fr); /* Tres columnas en escritorio */
+    }
+}
+
 /* =================== home-tablets.css =================== */
 /* home-tablet.css: Estilos responsivos para tablets (max-width: 900px) */
 

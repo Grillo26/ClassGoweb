@@ -559,6 +559,7 @@
 .tutor-pay-btn-box {
 	margin-top: 2rem;
 	text-align: center;
+    padding: 0rem 2rem;
 }
 
 .tutor-pay-btn {
@@ -1216,6 +1217,8 @@ body.modal-open {
     }
     .tutor-profile-quote {
         margin-top: 0rem;
+        padding: 1rem 1rem;
+        text-align: justify;
     }
     /* FIN REVERTIR estilos de .tutor-card-main */
     /* Ajuste para que los textos largos en skills/materias hagan salto de línea */

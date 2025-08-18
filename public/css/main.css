@@ -3516,7 +3516,7 @@ form p span i {
 .am-sidebar_logo {
   display: flex;
   padding: 22px 16px;
-  align-items: center;
+  align-items: start;
 }
 .am-sidebar_toggle {
   margin-left: auto;
@@ -3547,7 +3547,17 @@ form p span i {
   fill: none !important;
   stroke: #060606 !important;
 }
+
+/* ESTILOS LOGOS*/
 .am-logo {
+  display: flex;
+  width: 200px;
+  justify-content: center;
+  padding-left: 4rem;
+}
+.am-logo img {
+  max-width: 120px;
+  height: auto;
   display: block;
 }
 .am-logo a, .am-logo svg {

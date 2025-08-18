@@ -15,8 +15,13 @@ class BuscarTutor extends Component
 
     public $search = '';
     public $perPage = 10;
+     public $page = 1;
 
-    protected $queryString = ['search', 'page'];
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'page' => ['except' => 1],
+    ];
+
     protected $paginationTheme = 'tailwind'; // O 'bootstrap' si usas Bootstrap
 
     public function updatingSearch()

@@ -75,7 +75,7 @@
 
 .buscartutor-search-section {
     max-width: 1200px;
-    margin: -40px auto 0 auto;
+    margin: -50px auto 0 auto;
     padding: 0 32px;
 }
 .buscartutor-search-box {
@@ -159,7 +159,7 @@
     flex-direction: row;
     gap: 32px;
     padding: 32px;
-    align-items: flex-start;
+    align-items: center;
 }
 .buscartutor-tutor-img {
     width: 128px;
@@ -194,6 +194,7 @@
     margin-top: 16px;
     color: #555;
     font-size: 1rem;
+    text-align: justify;
 }
 .buscartutor-tutor-actions {
     display: flex;
@@ -313,6 +314,7 @@
     margin-top: 0;
     display: block;
     text-align: center;
+    padding-top: 1rem;
   }
 
   .buscador-desktop{
@@ -351,7 +353,7 @@
   
   .buscartutor-search-section {
     padding: 0 8px;
-    margin-top: -20px;
+    margin-top: -40px;
   }
   .buscartutor-search-box {
     padding: 16px;
@@ -405,6 +407,7 @@
     flex-direction: column;
     gap: 0.5rem;
     width: 100%;
+    padding-top: 1rem;
   }
   .buscartutor-tutor-btn {
     width: 100%;
@@ -412,5 +415,8 @@
   }
   .buscartutor-pagination {
     margin-top: 1.5rem;
+  }
+  .buscartutor-tutor-desc{
+    display: none;
   }
 } 

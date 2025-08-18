@@ -7,7 +7,7 @@
         <ul>
             @forelse($results as $tutor)
                 <li>
-                    <strong>{{ $tutor['full_name'] }}</strong><br>
+                    <a href=" {{ route('tutor', $tutor['slug']) }}"><strong>{{ $tutor['full_name'] }}</strong><br></a>
                     <small>{{ implode(', ', $tutor['materias']) }}</small>
                 </li>
             @empty

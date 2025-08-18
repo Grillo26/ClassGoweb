@@ -42,6 +42,20 @@
                 <a href=" {{ route('buscar.tutor')}}"><button><i class="fa-solid fa-calendar"></i>Agendar Tutoría</button></a>
                 <a href=" {{ route('buscar.tutor')}}"><button><i class="fa-solid fa-compass"></i>Explorar Tutores</button></a>
             </div>-->
+
+            <div class="hero-buttons">
+                @guest
+                    <a href=" {{ route('buscar.tutor')}}"><button class="button-explorar-tutores"><i class="fa-solid fa-compass"></i>Tutores</button></a>
+                    <a href=" {{ route(name: 'register')}}"><button class="button-explorar-tutores"><i class="fa-solid fa-user"></i>Regístrate</button></a>
+                    <a href=" {{ route(name: 'login')}}"><button class="button-explorar-tutores"><i class="fa-solid fa-right-to-bracket"></i>Ingresa</button></a>
+                @endguest
+
+                @auth
+                    <a href=" {{ route('buscar.tutor')}}"><button class="button-explorar-tutores"><i class="fa-solid fa-compass"></i>Buscar Tutores</button></a>
+                    <a href="https://play.google.com/store/apps/details?id=com.neurasoft.classgo" target="_blank"><button class="button-explorar-tutores"><i class="fa-solid fa-mobile"></i>Nuestra App</button></a>
+                @endauth
+            </div>
+         
         </div>
 
         <!-- Columna derecha: imagen -->
