@@ -114,6 +114,8 @@ Route::get('tutor/{id}/available-slots', [\App\Http\Controllers\Api\SubjectSlotC
 // Ruta para crear slots de disponibilidad (pública)
 Route::post('tutor/slots', [\App\Http\Controllers\Api\SubjectSlotController::class, 'createUserSubjectSlot']);
 
+// Ruta para eliminar slots de disponibilidad (pública)
+Route::delete('tutor/slots', [\App\Http\Controllers\Api\SubjectSlotController::class, 'deleteUserSubjectSlot']);
 // Ruta para obtener las tutorías del usuario autenticado (pública temporalmente)
 Route::get('user/bookings', [\App\Http\Controllers\Api\BookingController::class, 'getUpComingBooking']);
 
@@ -154,6 +156,12 @@ Route::post('tutor/availability', [AuthController::class, 'updateTutoringAvailab
 
 Route::get('user/{id}/profile-image', [ProfileController::class, 'getProfileImage']);
 Route::post('user/{id}/profile-image', [ProfileController::class, 'updateProfileImage']);
+
+// Ruta para actualizar solo archivos del perfil del usuario
+Route::post('user/{id}/profile-files', [ProfileController::class, 'updateUserProfileFiles']);
+
+// Ruta para actualizar datos del perfil del usuario
+Route::put('user/{id}/profile', [ProfileController::class, 'updateUserProfile']);
 
 Route::get('subject/{id}/name', [SubjectController::class, 'getSubjectName']);
 
