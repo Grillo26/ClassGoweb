@@ -114,13 +114,16 @@ class Reserva extends Component
 
         if ($month == $fecha_actual->month && $day == $fecha_actual->day) {
             $slotsForToday = $this->timeSlotsByDay[$day] ?? [];
-             $slotfiltrados = [];      
+            //dd($slotsForToday);
+            $slotfiltrados = [];      
              $horaActual = $fecha_actual->format('H:i');
               
         
+             //dd($horaActual); 
              for ($i = 0; $i < count($slotsForToday); $i++) {
-                 if($slotsForToday[$i]['time'] > $horaActual ) {
-                     
+                 
+                if($slotsForToday[$i]['time'] > $horaActual ) {
+            
                     $slotfiltrados[] = $slotsForToday[$i];
                   }
               }
@@ -156,6 +159,22 @@ class Reserva extends Component
             session()->flash('error', 'Por favor, selecciona un día y una hora antes de continuar.');
             return;
         }
+         $estudianteId = auth()->user()->id;
+         
+            $fechaCompleta = $this->currentDate->copy()
+                ->setDay($this->selectedDay)
+                ->setTimeFromTimeString($this->selectedTime . ':00');
+         $tienereserva= SlotBooking::where('student_id', $estudianteId)->get();
+       
+         for ($i = 0; $i < count($tienereserva); $i++) {
+             if ($tienereserva[$i]->start_time === $fechaCompleta->format('Y-m-d H:i:s')) {
+                 session()->flash('error', 'Ya tienes una reserva activa en este horario. Por favor, completa  esa reserva antes de hacer una nueva.');
+                 return;
+             }
+         }
+         
+         
+        // dd($tienereserva->start_time,$fechaCompleta);    
 
         $this->showModal = true;
         // Emite un evento global que el JavaScript del frontend escuchará.
@@ -192,7 +211,11 @@ class Reserva extends Component
                 ->setTimeFromTimeString($this->selectedTime . ':00');
             $fechaString = $fechaCompleta->format('Y-m-d H:i:s');
 
-            // 1. Guardar imagen - Obtener el servicio cuando lo necesites
+           
+
+
+            // 1
+            // . Guardar imagen - Obtener el servicio cuando lo necesites
             $imageService = app(ImagenesService::class);
             $path = $imageService->guardarqrEstudianteReserva($this->paymentReceipt);
 
@@ -214,6 +237,7 @@ class Reserva extends Component
             ]);
 
             // 4. Crear registro de pago del tutor
+             
             $pagostutorreserva->create(
                 slot_booking_id: $reserva->id,
                 payment_date: now(),

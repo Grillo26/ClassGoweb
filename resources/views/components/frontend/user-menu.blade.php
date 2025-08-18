@@ -56,17 +56,17 @@
                         @endif
                     </figure>
                     <div class="am-user_name">
-                        <h6>
+                         <h6>
                             <a href={{ url(auth()->user()->redirect_after_login) }}>{{ auth()?->user()?->profile?->full_name }}</a>
                             @if(auth()->user()->hasRole('tutor'))
-                                <a href="{{ route('tutor-detail',['slug' => auth()?->user()?->profile?->slug]) }}" class="am-custom-tooltip">
+                                <a href="{{ route('tutor',['slug' => auth()?->user()?->profile?->slug]) }}" class="am-custom-tooltip">
                                     <span class="am-tooltip-text">
                                         <span>{{ __('general.visit_profile') }}</span>
                                     </span>
                                     <i class="am-icon-external-link-02"></i>
                                 </a>
                             @endif
-                        </h6>
+                        </h6> 
                         <span>{{ auth()?->user()?->email }}</span>
                     </div>
                 </div>
@@ -95,20 +95,7 @@
                         </a>
                     </li>
                 @endif
-                <li>
-                    <a href="{{ route('student.billing-detail') }}">
-                        <svg class="am-svg-fill" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <path d="M16.4336 13.7498C16.4336 14.394 17.1102 15.0201 17.8296 15.0201C18.6889 15.0201 19.385 14.5165 19.4239 13.7453C19.5405 11.4225 16.4336 12.8606 16.4258 10.7193C16.4219 9.94812 16.9702 9.42188 17.8257 9.42188C18.5373 9.42188 19.4239 9.83017 19.4239 10.7284" stroke="#585858" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/>
-                            <path d="M17.8301 15.7237V15.0205" stroke="#585858" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/>
-                            <path d="M17.8301 9.42227V8.72363" stroke="#585858" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/>
-                            <path d="M17.8364 17.9648V18C17.8364 19.6569 16.4933 21 14.8364 21H7.57324C5.91639 21 4.57324 19.6569 4.57324 18V6C4.57324 4.34315 5.91639 3 7.57324 3H11.2048H14.5206C16.3519 3 17.8364 4.48453 17.8364 6.31579V6.31579" stroke="#585858" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M7.64844 8.83896L8.51252 9.59971L11.2591 6.84766" stroke="#585858" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M7.64844 13.3896H12.6484" stroke="#585858" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/>
-                            <path d="M7.64844 17.082H12.6484" stroke="#585858" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/>
-                        </svg>
-                        {{ __('sidebar.billing_detail') }}
-                    </a>
-                </li>
+             
                 <li>
                     <a href="{{ route('student.favourites') }}">
                         <i class="am-icon-heart-01"></i>
@@ -116,7 +103,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('find-tutors') }}" >
+                    <a href="{{ route('buscar.tutor') }}" >
                         <i class="am-icon-user-02"></i>
                         {{__('sidebar.find_tutors') }}
                     </a>

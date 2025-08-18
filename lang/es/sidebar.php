@@ -74,5 +74,5 @@ return [
     'manage-dispute' => 'Gestionar disputa',
     'history_tutorials' => 'Historial de Tutorias ',
     'courses' => 'Cursos',
-    'invoices' => 'Recibos',
+    'invoices' => 'Historial Tutorias',
 ];

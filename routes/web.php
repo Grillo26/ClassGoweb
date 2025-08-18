@@ -114,7 +114,7 @@ Route::get('auth/{provider}', [SocialController::class, 'redirect'])->name('soci
 
 
 Route::middleware(['locale', 'maintenance'])->group(function () {
-    Route::get('find-tutors', [SearchController::class, 'findTutors'])->name('find-tutors');
+    //Route::get('find-tutors', [SearchController::class, 'findTutors'])->name('find-tutors');
     //Route::get('find-tutors', [SearchController::class, 'findTutors'])->name('find-tutors');
 
     Route::get('/blogs', Blogs::class)->name('blogs');
@@ -191,7 +191,7 @@ Route::middleware(['locale', 'maintenance'])->group(function () {
             });
             Route::get('bookings', UserBooking::class)->name('bookings');
             Route::get('invoices', Invoices::class)->name('invoices');
-            Route::get('billing-detail', BillingDetail::class)->name('billing-detail');
+           
             Route::get('favourites', Favourites::class)->name('favourites');
             Route::get('reschedule-session/{id}', RescheduleSession::class)->name('reschedule-session');
             Route::get('complete-booking/{id}', [SiteController::class, 'completeBooking'])->name('complete-booking');
