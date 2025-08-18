@@ -384,7 +384,11 @@ class ProfileController extends Controller
                 'has_files' => $request->hasFile('image'),
                 'has_video' => $request->hasFile('intro_video'),
                 'input_image' => $request->input('image'),
-                'input_video' => $request->input('intro_video')
+                'input_video' => $request->input('intro_video'),
+                'files_count' => count($request->allFiles()),
+                'request_method' => $request->method(),
+                'request_url' => $request->url(),
+                'request_headers' => $request->headers->all()
             ]);
             
             $user = User::find($id);
@@ -404,30 +408,46 @@ class ProfileController extends Controller
 
             // Procesar imagen directamente (como hace el método que funciona)
             try {
-                $request->validate([
-                    'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:4096'
-                ]);
-
+                Log::info('=== PROCESANDO IMAGEN ===');
+                Log::info('¿Existe archivo image?', ['existe' => $request->file('image') ? 'SÍ' : 'NO']);
+                
                 if ($request->file('image')) {
+                    Log::info('Archivo image encontrado:', [
+                        'nombre_original' => $request->file('image')->getClientOriginalName(),
+                        'tamaño' => $request->file('image')->getSize(),
+                        'mime_type' => $request->file('image')->getMimeType(),
+                        'extension' => $request->file('image')->getClientOriginalExtension()
+                    ]);
+                    
+                    $request->validate([
+                        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:4096'
+                    ]);
+
                     // Generar nombre único para la imagen
                     $fileName = uniqid() . '_' . $request->file('image')->getClientOriginalName();
+                    Log::info('Nombre generado para imagen:', ['nombre' => $fileName]);
                     
                     // Crear directorio si no existe
                     $destinationPath = public_path('storage/profile_images');
                     if (!file_exists($destinationPath)) {
                         mkdir($destinationPath, 0777, true);
+                        Log::info('Directorio creado:', ['path' => $destinationPath]);
                     }
                     
                     // Mover la imagen al directorio correcto
-                    $request->file('image')->move($destinationPath, $fileName);
+                    $result = $request->file('image')->move($destinationPath, $fileName);
+                    Log::info('Resultado del move():', ['resultado' => $result ? 'ÉXITO' : 'FALLO']);
                     
                     // Guardar solo la ruta relativa en la base de datos
                     $profile->image = 'profile_images/' . $fileName;
                     
-                    Log::info('Imagen guardada: ' . $profile->image);
+                    Log::info('Imagen guardada en perfil:', ['ruta' => $profile->image]);
+                } else {
+                    Log::info('NO se encontró archivo image para procesar');
                 }
             } catch (\Exception $e) {
                 Log::error('Error al guardar imagen: ' . $e->getMessage());
+                Log::error('Stack trace:', ['trace' => $e->getTraceAsString()]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Error al guardar la imagen: ' . $e->getMessage()
@@ -436,30 +456,46 @@ class ProfileController extends Controller
 
             // Procesar video directamente (como hace el método que funciona)
             try {
-                $request->validate([
-                    'intro_video' => 'nullable|mimes:mp4,avi,mov,wmv,flv|max:10240'
-                ]);
-
+                Log::info('=== PROCESANDO VIDEO ===');
+                Log::info('¿Existe archivo intro_video?', ['existe' => $request->file('intro_video') ? 'SÍ' : 'NO']);
+                
                 if ($request->file('intro_video')) {
+                    Log::info('Archivo intro_video encontrado:', [
+                        'nombre_original' => $request->file('intro_video')->getClientOriginalName(),
+                        'tamaño' => $request->file('intro_video')->getSize(),
+                        'mime_type' => $request->file('intro_video')->getMimeType(),
+                        'extension' => $request->file('intro_video')->getClientOriginalExtension()
+                    ]);
+                    
+                    $request->validate([
+                        'intro_video' => 'nullable|mimes:mp4,avi,mov,wmv,flv|max:10240'
+                    ]);
+
                     // Generar nombre único para el video
                     $fileName = uniqid() . '_' . $request->file('intro_video')->getClientOriginalName();
+                    Log::info('Nombre generado para video:', ['nombre' => $fileName]);
                     
                     // Crear directorio si no existe
                     $destinationPath = public_path('storage/profile_videos');
                     if (!file_exists($destinationPath)) {
                         mkdir($destinationPath, 0777, true);
+                        Log::info('Directorio creado:', ['path' => $destinationPath]);
                     }
                     
                     // Mover el video al directorio correcto
-                    $request->file('intro_video')->move($destinationPath, $fileName);
+                    $result = $request->file('intro_video')->move($destinationPath, $fileName);
+                    Log::info('Resultado del move() video:', ['resultado' => $result ? 'ÉXITO' : 'FALLO']);
                     
                     // Guardar solo la ruta relativa en la base de datos
                     $profile->intro_video = 'profile_videos/' . $fileName;
                     
-                    Log::info('Video guardado: ' . $profile->intro_video);
+                    Log::info('Video guardado en perfil:', ['ruta' => $profile->intro_video]);
+                } else {
+                    Log::info('NO se encontró archivo intro_video para procesar');
                 }
             } catch (\Exception $e) {
                 Log::error('Error al guardar video: ' . $e->getMessage());
+                Log::error('Stack trace video:', ['trace' => $e->getTraceAsString()]);
                 return response()->json([
                     'success' => false,
                     'message' => 'Error al guardar el video: ' . $e->getMessage()
@@ -467,15 +503,26 @@ class ProfileController extends Controller
             }
 
             // Verificar que se procesó al menos un archivo
+            Log::info('=== VERIFICACIÓN FINAL ===');
+            Log::info('Estado del perfil antes de guardar:', [
+                'image' => $profile->image,
+                'intro_video' => $profile->intro_video,
+                'user_id' => $profile->user_id
+            ]);
+            
             if (!$profile->image && !$profile->intro_video) {
+                Log::warning('NO se procesó ningún archivo, devolviendo error');
                 return response()->json([
                     'success' => false,
                     'message' => 'Debe enviar al menos una imagen o video'
                 ], 422);
             }
             
+            Log::info('Se procesó al menos un archivo, procediendo a guardar');
+            
             // Guardar el perfil
-            $profile->save();
+            $result = $profile->save();
+            Log::info('Resultado del save():', ['resultado' => $result ? 'ÉXITO' : 'FALLO']);
 
             // Recargar el usuario con el perfil actualizado
             $user->load('profile');
