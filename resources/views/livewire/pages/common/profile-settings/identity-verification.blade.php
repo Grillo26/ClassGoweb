@@ -13,6 +13,8 @@
     @slot('title')
         {{ __('identity.title') }}
     @endslot
+
+    
     {{-- Tabs de navegación del perfil --}}
     @include('livewire.pages.common.profile-settings.tabs')
     <div class="am-userperinfo">
@@ -263,6 +265,13 @@
                     @endif
                 </form>
             </div>
+
+
+        @if (session()->has('error'))
+        <div class="alert alert-danger" style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 6px;margin-top:10px; margin-bottom: 20px;">
+            {{ session('error') }}
+        </div>
+    @endif    
         {{-- Si el usuario ya está verificado --}}
         @elseif(!empty($profile->verified_at))
             <div class="am-successmsg-wrap">
@@ -422,3 +431,19 @@
 @endpush
 
 
+
+
+
+{{-- ...existing code... --}}
+@push('scripts')
+<script>
+    document.addEventListener('showConfirmAndRedirect', function(event) {
+        console.log("llega por aca")
+        const data = event.detail[0];
+        if (confirm(data.message + '\n\n¿Desea completar su perfil ahora?')) {
+            window.location.href = data.url;
+        }
+    });
+</script>
+@endpush
+{{-- ...existing code... --}}

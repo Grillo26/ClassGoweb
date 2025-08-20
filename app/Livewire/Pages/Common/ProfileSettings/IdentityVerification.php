@@ -80,10 +80,18 @@ class IdentityVerification extends Component
         $this->fileExt = fileValidationText($this->allowImgFileExt);
 
         // Si el perfil no está completo, redirige y muestra error
-        if (Auth::user()->profile?->created_at == Auth::user()->profile?->updated_at) {
-            Session::flash('error', __('general.incomplete_profile_error'));
-            return $this->redirect(route(Auth::user()->role . '.profile.personal-details'), navigate: true);
-        }
+        /*  if (Auth::user()->profile?->created_at == Auth::user()->profile?->updated_at) {
+             $redirectRoute = route(Auth::user()->role . '.profile.personal-details');
+             $message = __('general.incomplete_profile_error');
+
+             $this->dispatch('showConfirmAndRedirect', [
+                 'message' => $message,
+                 'url' => $redirectRoute,
+
+             ]);
+         } */
+
+
 
         $this->dispatch('initSelect2', target: '.am-select2');
     }
@@ -165,21 +173,21 @@ class IdentityVerification extends Component
     public function updateInfo()
     {
         $this->data = $this->form->updateInfo($this->hasStates);
-  
-        
-        //$response = isDemoSite();
-       /*  if ($response) {
-            $this->dispatch('showAlertMessage', type: 'error', title: __('general.demosite_res_title'), message: __('general.demosite_res_txt'));
-            return;
-        } */
+
+
+        if (Auth::user()->profile?->created_at == Auth::user()->profile?->updated_at) {
+            session()->flash('error', __('general.incomplete_profile_error'));
+            //return $this->redirect(route(Auth::user()->role . '.profile.personal-details'), navigate: true);
+        }
+        else {
         try {
             $this->data['address']['lat'] = 0.0;
             $this->data['address']['long'] = 0.0;
             DB::beginTransaction();
             $this->data['identityInfo']['name'] = $this->user->profile->first_name . ' ' . $this->user->profile->last_name;
-           
+
             $userIdentity = $this->userIdentity->setUserIdentityVerification($this->data['identityInfo']);
-           
+
             $this->userIdentity->setUserAddress($userIdentity?->id, $this->data['address']);
             DB::commit();
             $this->Coupons();
@@ -197,10 +205,10 @@ class IdentityVerification extends Component
 
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            
+
             //dd($e->errors());
             DB::rollBack();
-             //dd('errores');  
+            //dd('errores');  
         }
         $this->data['identityInfo']['gender'] = $this->profile?->gender;
         $this->data['identityInfo']['email'] = Auth::user()->email;
@@ -210,7 +218,9 @@ class IdentityVerification extends Component
             return;
         }
         dispatch(new SendNotificationJob('identityVerificationRequest', Auth::user(), $this->data));
+       }
     }
+
 
 
 

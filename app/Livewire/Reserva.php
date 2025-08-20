@@ -38,6 +38,7 @@ class Reserva extends Component
     public $showModal = false;
 
 
+     public bool $isAugustPromotion = false;
 
     // Propiedades para el tutor
     public $tutorId;
@@ -51,6 +52,8 @@ class Reserva extends Component
     {
         $this->tutorId = $tutorId;
         $this->currentDate = Carbon::now();
+         $this->isAugustPromotion = $this->currentDate->month === 8; // ✅ Verificar si es agosto
+       
         $this->loadMonthData();
         $this->materiasTutor = UserSubject::where("user_id", $this->tutorId)->get();
     }
@@ -115,24 +118,24 @@ class Reserva extends Component
         if ($month == $fecha_actual->month && $day == $fecha_actual->day) {
             $slotsForToday = $this->timeSlotsByDay[$day] ?? [];
             //dd($slotsForToday);
-            $slotfiltrados = [];      
-             $horaActual = $fecha_actual->format('H:i');
-              
-        
-             //dd($horaActual); 
-             for ($i = 0; $i < count($slotsForToday); $i++) {
-                 
-                if($slotsForToday[$i]['time'] > $horaActual ) {
-            
+            $slotfiltrados = [];
+            $horaActual = $fecha_actual->format('H:i');
+
+
+            //dd($horaActual); 
+            for ($i = 0; $i < count($slotsForToday); $i++) {
+
+                if ($slotsForToday[$i]['time'] > $horaActual) {
+
                     $slotfiltrados[] = $slotsForToday[$i];
-                  }
-              }
-              //dd($slotfiltrados);
-              $this->availableTimeSlots = $slotfiltrados;
+                }
+            }
+            //dd($slotfiltrados);
+            $this->availableTimeSlots = $slotfiltrados;
         } else {
             $this->availableTimeSlots = $this->timeSlotsByDay[$day] ?? [];
 
-            
+
         }
 
         //$this->availableTimeSlots = $this->timeSlotsByDay[$day] ?? [];
@@ -159,21 +162,21 @@ class Reserva extends Component
             session()->flash('error', 'Por favor, selecciona un día y una hora antes de continuar.');
             return;
         }
-         $estudianteId = auth()->user()->id;
-         
-            $fechaCompleta = $this->currentDate->copy()
-                ->setDay($this->selectedDay)
-                ->setTimeFromTimeString($this->selectedTime . ':00');
-         $tienereserva= SlotBooking::where('student_id', $estudianteId)->get();
-       
-         for ($i = 0; $i < count($tienereserva); $i++) {
-             if ($tienereserva[$i]->start_time === $fechaCompleta->format('Y-m-d H:i:s')) {
-                 session()->flash('error', 'Ya tienes una reserva activa en este horario. Por favor, completa  esa reserva antes de hacer una nueva.');
-                 return;
-             }
-         }
-         
-         
+        $estudianteId = auth()->user()->id;
+
+        $fechaCompleta = $this->currentDate->copy()
+            ->setDay($this->selectedDay)
+            ->setTimeFromTimeString($this->selectedTime . ':00');
+        $tienereserva = SlotBooking::where('student_id', $estudianteId)->get();
+
+        for ($i = 0; $i < count($tienereserva); $i++) {
+            if ($tienereserva[$i]->start_time === $fechaCompleta->format('Y-m-d H:i:s')) {
+                session()->flash('error', 'Ya tienes una reserva activa en este horario. Por favor, completa  esa reserva antes de hacer una nueva.');
+                return;
+            }
+        }
+
+
         // dd($tienereserva->start_time,$fechaCompleta);    
 
         $this->showModal = true;
@@ -194,10 +197,21 @@ class Reserva extends Component
      */
     public function makeReservation()
     {
-        $this->validate([
-            'paymentReceipt' => 'required|image|max:4096',
-            'selectedSubject' => 'required',
-        ]);
+
+        $isAugustPromotion = $this->currentDate->month === 8;
+
+
+        if ($isAugustPromotion) {
+            $this->validate([
+                'selectedSubject' => 'required',
+            ]);
+        } else {
+            $this->validate([
+                'paymentReceipt' => 'required|image|max:5120',
+                'selectedSubject' => 'required',
+            ]);
+        }
+
 
         try {
             DB::beginTransaction();
@@ -211,14 +225,19 @@ class Reserva extends Component
                 ->setTimeFromTimeString($this->selectedTime . ':00');
             $fechaString = $fechaCompleta->format('Y-m-d H:i:s');
 
-           
+
 
 
             // 1
             // . Guardar imagen - Obtener el servicio cuando lo necesites
-            $imageService = app(ImagenesService::class);
-            $path = $imageService->guardarqrEstudianteReserva($this->paymentReceipt);
-
+            if ($isAugustPromotion) {
+                // Usar imagen por defecto para promoción
+                $path = 'qr/77b1a7da.jpg'; // Imagen por defecto
+            } else {
+                // Guardar imagen del usuario
+                $imageService = app(ImagenesService::class);
+                $path = $imageService->guardarqrEstudianteReserva($this->paymentReceipt);
+            }
             // 2. Crear reserva
             $slotBookingService = app(SlotBookingService::class);
             $reserva = $slotBookingService->crearReserva(
@@ -237,7 +256,7 @@ class Reserva extends Component
             ]);
 
             // 4. Crear registro de pago del tutor
-             
+
             $pagostutorreserva->create(
                 slot_booking_id: $reserva->id,
                 payment_date: now(),

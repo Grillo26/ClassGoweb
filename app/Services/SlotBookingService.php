@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\SlotBooking;
 use App\Models\UserSubjectSlot;
 use Illuminate\Support\Facades\Auth;
-use \Illuminate\Database\Eloquent\Collection;
+
 
 class SlotBookingService implements interfaces\ISlotBookingService
 {
@@ -30,26 +30,16 @@ class SlotBookingService implements interfaces\ISlotBookingService
         // Implementación de la lógica para reservar un slot
     }
 
-
     public function tiempoLibreTutor($tutorId)
     {
         return UserSubjectSlot::where('user_id', $tutorId)->get();
     }
 
-
-
     public function crearReserva($studentId, $tutorId, $subjectId, $fecha)
     {
 
-
-
-
-
-
         $startTime = \Carbon\Carbon::parse($fecha);
         $endTime = $startTime->copy()->addMinutes(20);
-
-
         // Crear la reserva
         $booking = new SlotBooking();
         //$booking->user_subject_slot_id = $slotId;

@@ -104,8 +104,16 @@
 <div class="modal-overlay is-visible">
     <div class="modal-content">
         <form wire:submit="makeReservation" class="modal-body">
-            <div class="modal-qr-column">
-                <img src="{{ asset('storage/qr/77b1a7da.jpg')}}" alt="Código QR" class="qr-image">
+             <div class="modal-qr-column">
+                @if($isAugustPromotion)
+                    {{-- ✅ Banner de promoción en lugar del QR --}}
+                    <div class="promotion-banner">
+                        <h3>🎉 ¡PROMOCIÓN AGOSTO!</h3>
+                        <p>Tutorías completamente <strong>GRATIS</strong></p>
+                       </div>
+                @else
+                    <img src="{{ asset('storage/qr/77b1a7da.jpg')}}" alt="Código QR" class="qr-image">
+                @endif
             </div>
             <div class="modal-form-column">
                 <h2 class="form-title">Confirmar Reserva</h2>
@@ -154,3 +162,5 @@
 @endif
 
 </div>
+
+
