@@ -32,7 +32,7 @@ class BuscarTutor extends Component
     public function getFilteredProfiles(SiteService $siteService)
     {
         \Log::info('Buscando tutores con search:', ['search' => $this->search]);
-        $result = $siteService->getTutorDato($this->perPage, $this->search);
+        $result = $siteService->getTutorDatoPrueba($this->perPage, $this->search);
         \Log::info('Total de tutores encontrados:', ['total' => $result->total()]);
         return $result;
     }
@@ -40,6 +40,8 @@ class BuscarTutor extends Component
     public function render(SiteService $siteService)
     {
         $profiles = $this->getFilteredProfiles($siteService);
+        // Agrega esta línea para emitir el evento personalizado
+        $this->dispatch('tutorListUpdated');
 
         return view('livewire.buscar-tutor', compact('profiles'))
             ->layout('vistas.view.layouts.app');

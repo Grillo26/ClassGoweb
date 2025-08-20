@@ -4,12 +4,14 @@
     <div class="steps-alianzas">
         <!-- Alianzas Cards DESDE BD -->
         @foreach($alianzas as $alianza)
-            <div class="alianzas-card">
-                <img src="{{ $alianza->imagen ? asset('storage/' . $alianza->imagen) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $alianza->imagen }}">
-                <div class="centro">
-                    <p>{{ $alianza->titulo }}</p>
+            <a href="{{ $alianza->enlace }}" target="_blank">
+                <div class="alianzas-card">
+                    <img src="{{ $alianza->imagen ? asset('storage/' . $alianza->imagen) : asset('images/tutors/default.png') }}" alt="Imagen de {{ $alianza->imagen }}">
+                    <div class="centro">
+                        <p>{{ $alianza->titulo }}</p>
+                    </div>
                 </div>
-            </div>
+            </a>
         @endforeach
     </div>
 </div> 

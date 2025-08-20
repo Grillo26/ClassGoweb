@@ -1568,7 +1568,7 @@ i.fa-solid.fa-book.icon::before{
   }
   .hero-container {
     flex-direction: column;
-    padding-top: 2rem;
+    padding-top: 0rem;
     align-items: center;
   }
   .hero-image {
@@ -1579,7 +1579,7 @@ i.fa-solid.fa-book.icon::before{
   .hero-container img {
     margin: 0 auto;
     display: block;
-    max-width: 60vw;
+    max-width: 70vw;
     min-width: 150px;
     padding: 3rem 0rem 0rem 0rem;
   }
@@ -1600,7 +1600,8 @@ i.fa-solid.fa-book.icon::before{
   }
   .hero-subtext{
     font-size: 1em !important;
-    padding: 0rem 2rem 0rem 2rem;
+    padding-top: 1rem;
+    margin: 0rem;
   }
   .search-box{
     display: flex;
@@ -1610,6 +1611,7 @@ i.fa-solid.fa-book.icon::before{
   .hero-buttons{
     display: flex;
     justify-content: center;
+    margin-top: 0rem;
   }
   .hero-buttons button {
     padding: 0;

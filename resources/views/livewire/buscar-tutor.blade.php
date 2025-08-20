@@ -70,33 +70,37 @@
                         <div class="buscartutor-tutor-meta">
                             <span>⭐ {{ $profile['avg_rating'] }}/5.0 ({{ $profile['total_reviews'] }} reseñas)</span>
                                 <div class="tutor-subjects-display">
+                                {{-- CASO 1: Si la búsqueda coincidió con alguna materia, la mostramos --}}
+                                @if (!empty($profile['matched_subjects']))
+                                    <span class="subjects-matched">
+                                        <span>•</span> <strong>{{ implode(', ', $profile['matched_subjects']) }}</strong>
+                                    </span>
+                                @else
+                                {{-- CASO 2: Si no hubo coincidencias, mostramos el resumen --}}
+                                    @php
+                                        $subjects = collect($profile['all_subjects']);
+                                        $firstThree = $subjects->take(3)->implode(', ');
+                                        $remaining = $subjects->slice(3);
+                                    @endphp
                                     
-                                    {{-- CASO 1: Si la búsqueda coincidió con alguna materia, la mostramos --}}
-                                    @if (!empty($profile['matched_subjects']))
+                                    <span class="subjects-summary">
+                                        <span>• </span>
+                                        <span class="subjects-visible">{{ $firstThree }}</span>
                                         
-                                        <span class="subjects-matched">
-                                            <span>•</span> <strong>{{ implode(', ', $profile['matched_subjects']) }}</strong>
-                                        </span>
-
-                                    {{-- CASO 2: Si no hubo coincidencias (o no hay búsqueda), mostramos el resumen --}}
-                                    @else
-                                        @php
-                                            // Usamos la colección de Laravel para un manejo más fácil
-                                            $subjects = collect($profile['all_subjects']);
-                                            $firstTwo = $subjects->take(2)->implode(', ');
-                                            $moreCount = $subjects->count() > 2 ? $subjects->count() - 2 : 0;
-                                        @endphp
-                                        
-                                        <span class="subjects-summary">
-                                            <span>• </span>{{ $firstTwo }}
-                                            @if ($moreCount > 0)
-                                                <span class="more-subjects">+{{ $moreCount }} más</span>
-                                            @endif
-                                        </span>
-
-                                    @endif
-
-                                </div>
+                                        @if ($remaining->isNotEmpty())
+                                            <span class="more-subjects-wrapper" data-target="subjects-{{ $loop->index }}">
+                                                <span class="more-subjects-toggle" style="cursor: pointer; color: #007bff;">...Más</span>
+                                                <span class="remaining-subjects" style="display: none;">
+                                                    , {{ $remaining->implode(', ') }}
+                                                </span>
+                                                <span class="less-subjects-toggle" style="display: none; cursor: pointer; color: #007bff;">
+                                                    ...Menos
+                                                </span>
+                                            </span>
+                                        @endif
+                                    </span>
+                                @endif
+                            </div>            
                             {{-- <span>Idioma: {{ $profile['native_language'] ?? 'N/A' }}</span> --}}
                         </div>
                         <p class="buscartutor-tutor-desc">
@@ -161,3 +165,53 @@
         </div>
     </section>
 </div>
+
+{{-- Script de JavaScript para manejar la funcionalidad de "mostrar más" y "mostrar menos" --}}
+<script>
+    // Función para inicializar los event listeners de los botones
+    function initializeSubjectToggles() {
+        const toggleButtons = document.querySelectorAll('.more-subjects-toggle');
+        const lessButtons = document.querySelectorAll('.less-subjects-toggle');
+
+        const toggleHandler = function() {
+            const wrapper = this.closest('.more-subjects-wrapper');
+            if (!wrapper) return;
+
+            const remainingSubjects = wrapper.querySelector('.remaining-subjects');
+            const moreButton = wrapper.querySelector('.more-subjects-toggle');
+            const lessButton = wrapper.querySelector('.less-subjects-toggle');
+
+            // Alternar la visibilidad
+            if (remainingSubjects.style.display === 'none' || remainingSubjects.style.display === '') {
+                remainingSubjects.style.display = 'inline';
+                moreButton.style.display = 'none';
+                lessButton.style.display = 'inline';
+            } else {
+                remainingSubjects.style.display = 'none';
+                moreButton.style.display = 'inline';
+                lessButton.style.display = 'none';
+            }
+        };
+
+        // Asigna el event listener a cada botón, asegurando que no se dupliquen
+        toggleButtons.forEach(button => {
+            button.removeEventListener('click', toggleHandler);
+            button.addEventListener('click', toggleHandler);
+        });
+
+        lessButtons.forEach(button => {
+            button.removeEventListener('click', toggleHandler);
+            button.addEventListener('click', toggleHandler);
+        });
+    }
+
+    // 1. Inicializa los botones cuando el componente se carga por primera vez
+    document.addEventListener('livewire:initialized', () => {
+        initializeSubjectToggles();
+    });
+
+    // 2. Vuelve a inicializar los botones cuando el evento personalizado es recibido
+    Livewire.on('tutorListUpdated', () => {
+        initializeSubjectToggles();
+    });
+</script>
