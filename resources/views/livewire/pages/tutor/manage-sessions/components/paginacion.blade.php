@@ -18,7 +18,7 @@
 
     <!-- Botón Siguiente -->
     <button wire:click="nextPage" @if($currentPage==$totalPages) disabled @endif class="am-btn"
-        style="padding: 8px 15px; @if($currentPage == $totalPages) opacity: 0.5; @endif">
+        style="padding: 8px 26px; @if($currentPage == $totalPages) opacity: 0.5; @endif">
         {{ __('general.next') }}
         <i class="am-icon-arrow-right"></i>
     </button>

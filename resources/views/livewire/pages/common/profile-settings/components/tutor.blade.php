@@ -1,4 +1,4 @@
-+<!-- Datos personales -->
+<!-- Datos personales -->
 <div class="tutor-profile-section">
     <form wire:submit.prevent="updateInfo" class="tutor-profile-section row g-4 am-themeform am-themeform_personalinfo">
         <div class="tutor-profile-data-card">
@@ -182,8 +182,8 @@
 
 
         </div>
-        <div class="profile-details-actions mt-4">
-            <x-primary-button type="submit" wire:loading.class="am-btn_disable" wire:target="updateInfo">
+        <div class="profile-details-actions">
+            <x-primary-button type="submit" wire:loading.class="am-btn_disable" wire:target="updateInfo" class="button_save">
                 {{ __('general.save_update') }}
             </x-primary-button>
         </div>

@@ -286,6 +286,9 @@
 
     
     @media (max-width: 700px) {
+        .container{
+            padding: 3rem 1rem 0rem 1rem;
+        }
         .am-filtros-card {
             padding: 12px 8px;
         }
@@ -294,5 +297,23 @@
             flex-direction: column;
             align-items: stretch;
             gap: 12px;
+        }
+
+        .am-pagination-numbers {
+
+            display: none !important; 
+            flex-wrap: wrap;
+            gap: 5px;
+            /* 1. Habilitar el scroll horizontal */
+            overflow-x: auto;
+            /* 2. Evitar que el contenido se envuelva en varias líneas */
+            white-space: nowrap;
+            /* 3. Opcional: Estilo para la barra de scroll (para navegadores Webkit como Chrome) */
+            -webkit-overflow-scrolling: touch; /* Mejora el scroll en dispositivos táctiles */
+        }
+
+        /* Opcional: Ocultar la barra de scroll si lo deseas */
+        .am-pagination-numbers::-webkit-scrollbar {
+            display: none; /* Para Chrome, Safari y Edge */
         }
     }
