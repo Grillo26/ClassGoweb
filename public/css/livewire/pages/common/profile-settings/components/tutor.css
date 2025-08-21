@@ -1,4 +1,4 @@
-
+/*========= VISTA MOBILE =========*/
 @media (max-width: 768px) {
     .tutor-profile-title{
         text-align: center !important;
@@ -28,13 +28,25 @@
         margin-top: 0rem;
     }
     .button_save{
-        width: 60%;
-        border-radius: 1.2rem;
-        height: 3rem !important;
-    
+        width: 70% !important;
     }
+    
 
 }
+
+    .profile-details-actions{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 0rem;
+    }
+    .button_save{
+        width: 30%;
+        border-radius: 1.1rem;
+        height: 3.5rem !important;
+    
+    }
     .tutor-profile-section {
         margin-bottom: 0rem;
     }
@@ -49,6 +61,7 @@
     width: 97%;               /* Que no ocupe todo el contenedor */
     box-sizing: border-box;   /* Incluye el padding en el ancho */
     }
+    /* ========= HASTA AQUÍ EDITE GRILLO KKKK ===========*/
 
 
     .tutor-profile-title {

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Administrar tiempo disponible',
+    'title' => 'Tiempo disponible',
     'add_session' => 'Agregar detalles de tiempo disponible',
     'add_title' => 'Añadir descripción de reserva',
     'subject_group' => 'Grupo de materias',

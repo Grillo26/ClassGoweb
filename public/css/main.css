@@ -1889,6 +1889,7 @@ blockquote, address {
 .am-themeform fieldset {
   border: 0;
   padding: 0;
+  margin: -10px;
 }
 .am-themeform__btn {
   margin-top: 10px;
